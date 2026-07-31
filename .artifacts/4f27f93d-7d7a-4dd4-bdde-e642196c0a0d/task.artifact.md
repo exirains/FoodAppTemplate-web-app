@@ -1,0 +1,27 @@
+# Task List - Sangak Design System & Phased Implementation (v1.3)
+
+- `[x]` 1. Design System Foundation (v1.0.0)
+    - `[x]` Document Brand Strategy (Values, Voice, Tone, Photography)
+    - `[x]` Define Tokens: `SangakColors`, `SangakTypography`, `SangakDimens`
+    - `[x]` Implement `SangakThemeExtension` & `ThemeData`
+    - `[x]` Atomic Components: `SangakButton`, `SangakTextField`, `FreshnessBadge`
+    - `[x]` Signature Components: **Product Card**, `HeroBanner`, `QuantitySelector`
+    - `[x]` Navigation & Feedback: `AppBar`, `BottomNav`, `Skeletons`, `EmptyStates`
+    - `[x]` Developer Gallery (Hidden `/gallery` route)
+- `[ ]` 2. Phase 1: Onboarding & Identity
+    - `[ ]` Splash Screen (Signature Brand Moment)
+    - `[ ]` Language Selection (EN/TR/FA)
+    - `[ ]` Authentication (Login/Register/Google)
+- `[ ]` 3. Phase 2: Discovery
+    - `[ ]` Home Dashboard (Storytelling layout)
+    - `[ ]` Product Details (Photography focus)
+    - `[ ]` Search & Categories
+- `[ ]` 4. Phase 3: Transactional & Account
+    - `[ ]` Cart & Checkout Flow
+    - `[ ]` Address Management
+    - `[ ]` Order Tracking & History
+    - `[ ]` Profile & Settings
+- `[x]` 5. Verification & Audit
+    - `[x]` Pixel-perfect & Token consistency audit
+    - `[x]` Accessibility & Performance audit
+    - `[x]` Responsive (Phone/Tablet/Web) check
