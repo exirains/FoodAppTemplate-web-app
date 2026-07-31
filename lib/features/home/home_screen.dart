@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends ConsumerWidget {
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final user = ref.watch(authProvider).value;
     final isGuest = user == null;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -43,10 +45,10 @@ class HomeScreen extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(isGuest ? 'Welcome to Sangak,' : 'Good Morning,', style: SangakTypography.bodySmall),
+                            Text(isGuest ? l10n.welcomeToSangakGuest : l10n.goodMorning, style: SangakTypography.bodySmall),
                             Row(
                               children: [
-                                Text(isGuest ? 'Guest' : (user.email?.split('@')[0] ?? 'User'), style: SangakTypography.h3),
+                                Text(isGuest ? l10n.guest : (user.email?.split('@')[0] ?? 'User'), style: SangakTypography.h3),
                                 if (isGuest) ...[
                                   const SizedBox(width: 8),
                                   Container(
@@ -56,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      'GUEST',
+                                      l10n.guest.toUpperCase(),
                                       style: SangakTypography.caption.copyWith(
                                         color: SangakColors.primary,
                                         fontWeight: FontWeight.bold,
@@ -92,15 +94,15 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Hero Banner
-                  const HeroBanner(
-                    title: 'Freshly Baked Sangak',
+                  HeroBanner(
+                    title: 'Freshly Baked Sangak', // TODO: Translate when we have a marketing banner model
                     subtitle: 'Straight from the stone oven to your door.',
                     imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800',
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
 
                   // Categories
-                  Text('Categories', style: SangakTypography.h3),
+                  Text(l10n.categories, style: SangakTypography.h3),
                   const SizedBox(height: SangakDimens.spacing16),
                   categoriesAsync.when(
                     data: (categories) => SizedBox(
@@ -112,7 +114,7 @@ class HomeScreen extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           if (index == 0) {
                             return CategoryChip(
-                              label: 'All',
+                              label: 'All', // TODO: Localize 'All'
                               isSelected: selectedCategoryId == null,
                               onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
                             );
@@ -135,10 +137,10 @@ class HomeScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Popular Today', style: SangakTypography.h3),
+                      Text(l10n.popularToday, style: SangakTypography.h3),
                       TextButton(
                         onPressed: () {},
-                        child: Text('See All', style: SangakTypography.bodySmall.copyWith(color: SangakColors.primary)),
+                        child: Text(l10n.seeAll, style: SangakTypography.bodySmall.copyWith(color: SangakColors.primary)),
                       ),
                     ],
                   ),
@@ -175,8 +177,8 @@ class HomeScreen extends ConsumerWidget {
                           action: () {
                             // TODO: Implement favorite toggle
                           },
-                          title: 'Save your favorites',
-                          message: 'Create an account to save your favorite artisan breads and access them anytime.',
+                          title: l10n.saveYourFavorites,
+                          message: l10n.saveFavoritesMessage,
                         );
                       },
                       onAddToCart: () {
@@ -186,7 +188,7 @@ class HomeScreen extends ConsumerWidget {
                           action: () {
                             // TODO: Implement add to cart logic (Riverpod state)
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('${bread.title} added to basket!')),
+                              SnackBar(content: Text(l10n.addedToBasket(bread.title))),
                             );
                           },
                         );
@@ -215,7 +217,7 @@ class HomeScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Traditional Favorites', style: SangakTypography.h3),
+                  Text(l10n.traditionalFavorites, style: SangakTypography.h3),
                   const SizedBox(height: SangakDimens.spacing16),
                 ],
               ),
@@ -268,7 +270,7 @@ class HomeScreen extends ConsumerWidget {
                                   ref,
                                   action: () {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('${bread.title} added to basket!')),
+                                      SnackBar(content: Text(l10n.addedToBasket(bread.title))),
                                     );
                                   },
                                 );

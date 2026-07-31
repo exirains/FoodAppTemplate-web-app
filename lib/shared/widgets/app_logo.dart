@@ -17,15 +17,15 @@ class AppLogo extends StatelessWidget {
   });
 
   const AppLogo.small({super.key})
-      : size = 40,
+      : size = 56,
         showCircle = true;
 
   const AppLogo.medium({super.key})
-      : size = 80,
+      : size = 100,
         showCircle = true;
 
   const AppLogo.large({super.key})
-      : size = 120,
+      : size = 160,
         showCircle = true;
 
   const AppLogo.nav({super.key})

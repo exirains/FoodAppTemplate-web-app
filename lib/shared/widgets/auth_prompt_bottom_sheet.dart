@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -7,13 +8,13 @@ import 'sangak_button.dart';
 import 'app_logo.dart';
 
 class AuthPromptBottomSheet extends StatelessWidget {
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
 
   const AuthPromptBottomSheet({
     super.key,
-    this.title = 'Create your Sangak account',
-    this.message = 'Create an account to add products to your basket and manage orders.',
+    this.title,
+    this.message,
   });
 
   static Future<void> show(BuildContext context, {String? title, String? message}) {
@@ -22,14 +23,16 @@ class AuthPromptBottomSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => AuthPromptBottomSheet(
-        title: title ?? 'Create your Sangak account',
-        message: message ?? 'Create an account to add products to your basket and manage orders.',
+        title: title,
+        message: message,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       decoration: const BoxDecoration(
         color: SangakColors.surface,
@@ -57,19 +60,19 @@ class AuthPromptBottomSheet extends StatelessWidget {
           const AppLogo.medium(),
           const SizedBox(height: SangakDimens.spacing24),
           Text(
-            title,
+            title ?? l10n.createAccount,
             style: SangakTypography.h2,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: SangakDimens.spacing12),
           Text(
-            message,
+            message ?? l10n.cartGuestMessage,
             style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: SangakDimens.spacing40),
           SangakButton.primary(
-            label: 'Create Account',
+            label: l10n.createAccount,
             width: double.infinity,
             onPressed: () {
               Navigator.pop(context);
@@ -78,7 +81,7 @@ class AuthPromptBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: SangakDimens.spacing12),
           SangakButton.ghost(
-            label: 'Sign In',
+            label: l10n.signIn,
             width: double.infinity,
             onPressed: () {
               Navigator.pop(context);

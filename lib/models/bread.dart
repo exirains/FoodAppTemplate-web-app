@@ -25,20 +25,29 @@ class Bread {
     required this.categoryId,
   });
 
-  Bread copyWith({
-    bool? isFavorite,
-  }) {
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'rating': rating,
+      'reviews': reviews,
+      'categoryId': categoryId,
+    };
+  }
+
+  factory Bread.fromJson(Map<String, dynamic> json) {
     return Bread(
-      id: id,
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-      rating: rating,
-      reviews: reviews,
-      freshness: freshness,
-      isFavorite: isFavorite ?? this.isFavorite,
-      categoryId: categoryId,
+      id: json['id'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      price: (json['price'] as num).toDouble(),
+      imageUrl: json['imageUrl'] as String,
+      rating: (json['rating'] as num).toDouble(),
+      reviews: json['reviews'] as int,
+      categoryId: json['categoryId'] as String,
     );
   }
 }

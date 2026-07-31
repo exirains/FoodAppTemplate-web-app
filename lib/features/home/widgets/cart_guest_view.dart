@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
@@ -11,6 +12,8 @@ class CartGuestView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: Center(
@@ -22,25 +25,25 @@ class CartGuestView extends StatelessWidget {
               const AppLogo.medium(),
               const SizedBox(height: SangakDimens.spacing32),
               Text(
-                'Your basket is waiting',
+                l10n.yourBasketIsWaiting,
                 style: SangakTypography.h2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
-                'Create an account to save your items, track orders, and complete your checkout effortlessly.',
+                l10n.cartGuestMessage,
                 style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing40),
               SangakButton.primary(
-                label: 'Create Account',
+                label: l10n.createAccount,
                 width: double.infinity,
                 onPressed: () => context.push('/register'),
               ),
               const SizedBox(height: SangakDimens.spacing12),
               SangakButton.ghost(
-                label: 'Sign In',
+                label: l10n.signIn,
                 width: double.infinity,
                 onPressed: () => context.push('/login'),
               ),

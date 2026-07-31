@@ -7,6 +7,7 @@ import '../../features/auth/register_screen.dart';
 
 import '../../features/home/main_screen.dart';
 import '../../features/home/product_details_screen.dart';
+import '../../features/cart/checkout_screen.dart';
 import '../../models/bread.dart';
 
 final appRouter = GoRouter(
@@ -35,6 +36,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/home',
       builder: (context, state) => const MainScreen(),
+    ),
+    GoRoute(
+      path: '/checkout',
+      builder: (context, state) => const CheckoutScreen(),
     ),
     GoRoute(
       path: '/product-details',

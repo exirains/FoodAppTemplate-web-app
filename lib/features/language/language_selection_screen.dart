@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/language_card.dart';
 import '../../shared/widgets/app_logo.dart';
-import 'language_provider.dart';
+import '../../core/localization/locale_provider.dart';
 
 class LanguageSelectionScreen extends ConsumerStatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -27,11 +28,13 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
   @override
   void initState() {
     super.initState();
-    _selectedCode = ref.read(languageProvider);
+    _selectedCode = ref.read(localeProvider).languageCode;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -42,13 +45,13 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
               const Center(child: AppLogo.medium()),
               const SizedBox(height: SangakDimens.spacing32),
               Text(
-                'Welcome to Sangak',
+                l10n.welcomeToSangak,
                 style: SangakTypography.h1,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
-                'Please select your preferred language to continue.',
+                l10n.pleaseSelectLanguage,
                 style: SangakTypography.bodyLarge,
                 textAlign: TextAlign.center,
               ),
@@ -64,7 +67,10 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                       label: lang['label']!,
                       flag: lang['flag']!,
                       isSelected: _selectedCode == lang['code'],
-                      onTap: () => setState(() => _selectedCode = lang['code']),
+                      onTap: () {
+                        setState(() => _selectedCode = lang['code']);
+                        ref.read(localeProvider.notifier).setLocale(lang['code']!);
+                      },
                     );
                   },
                 ),
@@ -72,15 +78,12 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
               Padding(
                 padding: const EdgeInsets.only(bottom: SangakDimens.spacing24),
                 child: SangakButton.primary(
-                  label: 'Continue',
+                  label: l10n.continueButton,
                   width: double.infinity,
                   onPressed: _selectedCode == null
                       ? null
-                      : () async {
-                          await ref.read(languageProvider.notifier).setLanguage(_selectedCode!);
-                          if (mounted) {
-                            context.go('/login');
-                          }
+                      : () {
+                          context.go('/home');
                         },
                 ),
               ),

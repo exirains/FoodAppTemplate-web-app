@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -72,6 +73,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authProvider).isLoading;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +81,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => context.pop(),
         ),
-        title: Text('Create Account', style: SangakTypography.h3),
+        title: Text(l10n.createAccount, style: SangakTypography.h3),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -88,39 +90,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SangakTextField(
-                label: 'Full Name',
-                hintText: 'Enter your full name',
+                label: l10n.fullName,
+                hintText: l10n.enterFullName,
                 controller: _nameController,
                 leadingIcon: Icons.person_outline,
               ),
               const SizedBox(height: SangakDimens.spacing16),
               SangakTextField(
-                label: 'Email',
-                hintText: 'Enter your email',
+                label: l10n.email,
+                hintText: l10n.enterEmail,
                 controller: _emailController,
                 leadingIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: SangakDimens.spacing16),
               SangakTextField(
-                label: 'Phone Number',
-                hintText: 'Enter your phone number',
+                label: l10n.phoneNumber,
+                hintText: l10n.enterPhoneNumber,
                 controller: _phoneController,
                 leadingIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: SangakDimens.spacing16),
               SangakTextField(
-                label: 'Password',
-                hintText: 'Enter your password',
+                label: l10n.password,
+                hintText: l10n.enterPassword,
                 controller: _passwordController,
                 isPassword: true,
                 leadingIcon: Icons.lock_outline,
               ),
               const SizedBox(height: SangakDimens.spacing16),
               SangakTextField(
-                label: 'Confirm Password',
-                hintText: 'Re-enter your password',
+                label: l10n.confirmPassword,
+                hintText: l10n.reEnterPassword,
                 controller: _confirmPasswordController,
                 isPassword: true,
                 leadingIcon: Icons.lock_clock_outlined,
@@ -136,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      'I agree to the Terms & Conditions',
+                      l10n.iAgreeToTerms,
                       style: SangakTypography.bodySmall,
                     ),
                   ),
@@ -144,7 +146,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
               const SizedBox(height: SangakDimens.spacing32),
               SangakButton.primary(
-                label: 'Create Account',
+                label: l10n.createAccount,
                 width: double.infinity,
                 isLoading: isLoading,
                 onPressed: _register,
@@ -155,14 +157,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   const Expanded(child: Divider()),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('OR', style: SangakTypography.caption),
+                    child: Text(l10n.or, style: SangakTypography.caption),
                   ),
                   const Expanded(child: Divider()),
                 ],
               ),
               const SizedBox(height: SangakDimens.spacing24),
               SangakButton.outlined(
-                label: 'Continue with Google',
+                label: l10n.continueWithGoogle,
                 width: double.infinity,
                 icon: Icons.g_mobiledata,
                 onPressed: () => ref.read(authProvider.notifier).signInWithGoogle(),

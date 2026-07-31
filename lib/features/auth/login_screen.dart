@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -49,6 +50,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authProvider).isLoading;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: SafeArea(
@@ -67,22 +69,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: SangakDimens.spacing24),
               Center(
                 child: Text(
-                  'Welcome Back',
+                  l10n.welcomeBack,
                   style: SangakTypography.h1,
                 ),
               ),
               const SizedBox(height: SangakDimens.spacing48),
               SangakTextField(
-                label: 'Email',
-                hintText: 'Enter your email',
+                label: l10n.email,
+                hintText: l10n.enterEmail,
                 controller: _emailController,
                 leadingIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: SangakDimens.spacing24),
               SangakTextField(
-                label: 'Password',
-                hintText: 'Enter your password',
+                label: l10n.password,
+                hintText: l10n.enterPassword,
                 controller: _passwordController,
                 isPassword: true,
                 leadingIcon: Icons.lock_outline,
@@ -94,14 +96,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: TextButton(
                   onPressed: () {}, // TODO: Forgot Password
                   child: Text(
-                    'Forgot Password?',
+                    l10n.forgotPassword,
                     style: SangakTypography.bodySmall.copyWith(color: SangakColors.primary),
                   ),
                 ),
               ),
               const SizedBox(height: SangakDimens.spacing32),
               SangakButton.primary(
-                label: 'Login',
+                label: l10n.login,
                 width: double.infinity,
                 isLoading: isLoading,
                 onPressed: _login,
@@ -112,14 +114,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const Expanded(child: Divider()),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('OR', style: SangakTypography.caption),
+                    child: Text(l10n.or, style: SangakTypography.caption),
                   ),
                   const Expanded(child: Divider()),
                 ],
               ),
               const SizedBox(height: SangakDimens.spacing24),
               SangakButton.outlined(
-                label: 'Continue with Google',
+                label: l10n.continueWithGoogle,
                 width: double.infinity,
                 icon: Icons.g_mobiledata, // Placeholder for Google icon
                 onPressed: () => ref.read(authProvider.notifier).signInWithGoogle(),
@@ -128,11 +130,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account? ", style: SangakTypography.bodyMedium),
+                  Text(l10n.dontHaveAccount, style: SangakTypography.bodyMedium),
                   GestureDetector(
                     onTap: () => context.push('/register'),
                     child: Text(
-                      'Create one',
+                      l10n.createOne,
                       style: SangakTypography.title.copyWith(
                         color: SangakColors.primary,
                         fontSize: 14,

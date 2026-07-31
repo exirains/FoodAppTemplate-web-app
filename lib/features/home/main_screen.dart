@@ -6,6 +6,8 @@ import '../auth/pending_action_provider.dart';
 import 'home_screen.dart';
 import 'widgets/cart_guest_view.dart';
 import 'widgets/profile_guest_view.dart';
+import '../cart/cart_screen.dart';
+import 'tab_provider.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -15,8 +17,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -30,25 +30,26 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void _onTabTapped(int index) {
-    setState(() => _currentIndex = index);
+    ref.read(tabProvider.notifier).state = index;
   }
 
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider).value;
+    final currentIndex = ref.watch(tabProvider);
     final isGuest = user == null;
 
     final List<Widget> screens = [
       const HomeScreen(),
       const Scaffold(body: Center(child: Text('Search Screen'))),
-      isGuest ? const CartGuestView() : const Scaffold(body: Center(child: Text('Cart Screen'))),
+      isGuest ? const CartGuestView() : const CartScreen(),
       isGuest ? const ProfileGuestView() : const Scaffold(body: Center(child: Text('Profile Screen'))),
     ];
 
     return Scaffold(
-      body: screens[_currentIndex],
+      body: screens[currentIndex],
       bottomNavigationBar: SangakBottomNav(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap: _onTabTapped,
       ),
     );

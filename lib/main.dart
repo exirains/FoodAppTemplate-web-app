@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sangak/l10n/app_localizations.dart';
+import 'core/localization/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/sangak_theme.dart';
 import 'services/supabase_service.dart';
@@ -36,16 +39,26 @@ void main() async {
   );
 }
 
-class SangakApp extends StatelessWidget {
+class SangakApp extends ConsumerWidget {
   const SangakApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
+
     return MaterialApp.router(
       title: 'Sangak',
       debugShowCheckedModeBanner: false,
       theme: SangakTheme.light,
       routerConfig: appRouter,
+      locale: locale,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

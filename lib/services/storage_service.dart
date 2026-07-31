@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StorageService {
   static const String _keyLanguage = 'selected_language';
   static const String _keyFirstLaunch = 'is_first_launch';
+  static const String _keyCart = 'local_cart';
 
   final SharedPreferences _prefs;
 
@@ -19,4 +20,10 @@ class StorageService {
   }
 
   bool get isFirstLaunch => _prefs.getBool(_keyFirstLaunch) ?? true;
+
+  Future<void> saveCart(String cartJson) async {
+    await _prefs.setString(_keyCart, cartJson);
+  }
+
+  String? get cart => _prefs.getString(_keyCart);
 }

@@ -1,19 +1,24 @@
-# Task List - Guest Mode & Context Preservation
+# Task List - Update Service & Refinements
 
-- `[x]` 1. Infrastructure Update
-    - `[x]` Create `AuthPromptBottomSheet`
-    - `[x]` Implement `PendingActionNotifier` for context preservation
-    - `[x]` Create `AuthGate` utility
-- `[x]` 2. Flow & Routing
-    - `[x]` Update `SplashScreen` routing (Default to `/home`)
-    - `[x]` Update `AppRouter` to handle guest states
-- `[x]` 3. Tab & Header Refinement
-    - `[x]` Add Guest Indicator to `HomeScreen` header
-    - `[x]` Create `CartGuestView` for the Cart tab
-    - `[x]` Create `ProfileGuestView` for the Profile tab
-- `[x]` 4. Action Interception
-    - `[x]` Wrap "Add to Cart" with `AuthGate`
-    - `[x]` Wrap "Favorite" with `AuthGate`
-- `[x]` 5. Verification
-    - `[x]` Test context preservation (Auto-add after login)
-    - `[x]` UI audit of prompts and guest views
+- `[ ]` 1. Localization & Cleanup
+    - `[ ]` Add update and settings keys to ARB files
+    - `[ ]` Migrate hardcoded strings in features (Home, Cart, Checkout, details)
+    - `[ ]` Fix lint warnings (unused imports, underscores, print)
+- `[ ]` 2. Core Update System
+    - `[ ]` Create `UpdateModel` (`lib/core/update/update_model.dart`)
+    - `[ ]` Create `UpdateRepository` (`lib/core/update/update_repository.dart`)
+    - `[ ]` Create `UpdateService` (`lib/core/update/update_service.dart`)
+- `[ ]` 3. Update UI
+    - `[ ]` Create `UpdateDialog` (`lib/core/update/update_dialog.dart`)
+    - `[ ]` Hook update check into `SplashScreen`
+- `[ ]` 4. Settings & Language
+    - `[ ]` Implement `SettingsBottomSheet`
+    - `[ ]` Add Settings button to `HomeScreen` header
+    - `[ ]` Display app version in settings
+- `[ ]` 5. Animation Overhaul
+    - `[ ]` Review and rework `SplashScreen` animations
+    - `[ ]` Review and rework `ProductCard` and Button animations
+- `[ ]` 6. Verification
+    - `[ ]` Verify update logic (normal & force)
+    - `[ ]` Verify language switching
+    - `[ ]` Final audit of all animations

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_tokens.dart';
@@ -92,6 +93,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: Center(
@@ -105,7 +108,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 const AppLogo.large(),
                 const SizedBox(height: 32),
                 Text(
-                  'SANGAK',
+                  l10n.appName.toUpperCase(),
                   style: SangakTypography.display.copyWith(
                     letterSpacing: 4,
                     color: SangakColors.primary,
@@ -113,7 +116,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Artisan Persian Bakery',
+                  l10n.bakerySubtitle,
                   style: SangakTypography.subtitle,
                 ),
               ],

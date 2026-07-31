@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -20,6 +21,7 @@ class UpdateDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMandatory = updateInfo.forceUpdate;
+    final l10n = AppLocalizations.of(context);
 
     return PopScope(
       canPop: !isMandatory,
@@ -35,18 +37,18 @@ class UpdateDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'New Update Available',
+                l10n.newUpdateAvailable,
                 style: SangakTypography.h2,
               ),
               const SizedBox(height: SangakDimens.spacing8),
               Text(
-                'A new version (${updateInfo.version}) of Sangak is available. Update now to enjoy the latest features and improvements.',
+                l10n.updateAvailableMessage(updateInfo.version),
                 style: SangakTypography.bodyMedium,
               ),
               const SizedBox(height: SangakDimens.spacing16),
               if (updateInfo.changelog.isNotEmpty) ...[
                 Text(
-                  "What's New:",
+                  l10n.whatsNew,
                   style: SangakTypography.title.copyWith(fontSize: 14),
                 ),
                 const SizedBox(height: SangakDimens.spacing8),
@@ -79,14 +81,14 @@ class UpdateDialog extends StatelessWidget {
                   if (!isMandatory)
                     Expanded(
                       child: SangakButton.ghost(
-                        label: 'Later',
+                        label: l10n.later,
                         onPressed: onDismiss ?? () => Navigator.pop(context),
                       ),
                     ),
                   if (!isMandatory) const SizedBox(width: SangakDimens.spacing12),
                   Expanded(
                     child: SangakButton.primary(
-                      label: 'Update Now',
+                      label: l10n.updateNow,
                       onPressed: onUpdate,
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
@@ -10,6 +11,8 @@ class ProfileGuestView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: Center(
@@ -21,19 +24,19 @@ class ProfileGuestView extends StatelessWidget {
               const Icon(Icons.person_outline, size: 80, color: SangakColors.primary),
               const SizedBox(height: SangakDimens.spacing32),
               Text(
-                'Join the Sangak family',
+                l10n.joinTheFamily,
                 style: SangakTypography.h2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
-                'Sign in to manage your profile, view order history, and access exclusive bakery offers.',
+                l10n.profileGuestMessage,
                 style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing40),
               SangakButton.primary(
-                label: 'Sign In / Register',
+                label: l10n.signInRegister,
                 width: double.infinity,
                 onPressed: () => context.push('/login'),
               ),

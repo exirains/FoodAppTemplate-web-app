@@ -26,7 +26,7 @@ class FreshnessBadge extends StatelessWidget {
         vertical: SangakDimens.spacing4,
       ),
       decoration: BoxDecoration(
-        color: token.color.withValues(alpha: 0.12),
+        color: token.color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
       ),
       child: Row(
