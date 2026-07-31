@@ -6,8 +6,9 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_tokens.dart';
 import '../../main.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../shared/widgets/app_logo.dart';
-import '../../shared/widgets/update_dialog.dart';
+import '../../core/update/update_dialog.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -26,15 +27,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: SangakTokens.animSlow,
+      duration: const Duration(milliseconds: 1500),
     );
 
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.98, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: SangakTokens.curveEmphasized,
@@ -62,11 +63,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     final updateInfo = await updateService.checkForUpdates();
 
     if (updateInfo != null && mounted) {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (!mounted) return;
       await showDialog(
         context: context,
         barrierDismissible: !updateInfo.forceUpdate,
         builder: (context) => UpdateDialog(
           updateInfo: updateInfo,
+          currentVersion: packageInfo.version,
           onUpdate: () => updateService.launchUpdateUrl(updateInfo.apkUrl),
           onDismiss: updateInfo.forceUpdate ? null : () => Navigator.pop(context),
         ),

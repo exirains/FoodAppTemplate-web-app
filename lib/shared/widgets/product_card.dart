@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -41,132 +42,158 @@ class ProductCard extends StatefulWidget {
   State<ProductCard> createState() => _ProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _ProductCardState extends State<ProductCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: SangakTokens.animFast,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) => _controller.reverse(),
+      onTapCancel: () => _controller.reverse(),
       onTap: widget.bread != null ? () => context.push('/product-details', extra: widget.bread) : null,
-      child: Container(
-        width: 220,
-        decoration: BoxDecoration(
-          color: SangakColors.surface,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-          boxShadow: SangakDimens.shadowMedium,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Photography-first section
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
-                  child: AspectRatio(
-                    aspectRatio: 1, // Strict square ratio for consistency
-                    child: Image.network(
-                      widget.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: SangakColors.border,
-                        child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
-                      ),
-                    ),
-                  ),
-                ),
-                // Favorite Button
-                Positioned(
-                  top: SangakDimens.spacing12,
-                  right: SangakDimens.spacing12,
-                  child: GestureDetector(
-                    onTap: widget.onFavoriteToggle,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: AnimatedSwitcher(
-                        duration: SangakTokens.animMedium,
-                        child: Icon(
-                          widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-                          key: ValueKey(widget.isFavorite),
-                          size: 20,
-                          color: widget.isFavorite ? SangakColors.error : SangakColors.inkLight,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          width: 220,
+          decoration: BoxDecoration(
+            color: SangakColors.surface,
+            borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+            boxShadow: SangakDimens.shadowMedium,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Photography-first section
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+                    child: AspectRatio(
+                      aspectRatio: 1, // Strict square ratio for consistency
+                      child: Image.network(
+                        widget.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: SangakColors.border,
+                          child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
                         ),
                       ),
                     ),
                   ),
-                ),
-                // Freshness Badge
-                if (widget.freshness != null)
+                  // Favorite Button
                   Positioned(
-                    bottom: SangakDimens.spacing12,
-                    left: SangakDimens.spacing12,
-                    child: FreshnessBadge(token: widget.freshness!),
-                  ),
-              ],
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.all(SangakDimens.spacing16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.title,
-                    style: SangakTypography.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: SangakDimens.spacing4),
-                  Text(
-                    widget.description,
-                    style: SangakTypography.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: SangakDimens.spacing16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '₺${widget.price.toStringAsFixed(0)}',
-                        style: SangakTypography.price,
+                    top: SangakDimens.spacing12,
+                    right: SangakDimens.spacing12,
+                    child: GestureDetector(
+                      onTap: widget.onFavoriteToggle,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: AnimatedSwitcher(
+                          duration: SangakTokens.animMedium,
+                          child: Icon(
+                            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            key: ValueKey(widget.isFavorite),
+                            size: 20,
+                            color: widget.isFavorite ? SangakColors.error : SangakColors.inkLight,
+                          ),
+                        ),
                       ),
-                      // Add to Cart / Quantity Morph
-                      AnimatedSwitcher(
-                        duration: SangakTokens.animMedium,
-                        transitionBuilder: (child, animation) {
-                          return ScaleTransition(scale: animation, child: child);
-                        },
-                        child: widget.quantity > 0
-                            ? QuantitySelector(
-                                key: const ValueKey('quantity'),
-                                quantity: widget.quantity,
-                                onIncrement: widget.onAddToCart,
-                                onDecrement: widget.onAddToCart, // Placeholder
-                              )
-                            : ElevatedButton(
-                                key: const ValueKey('add'),
-                                onPressed: widget.onAddToCart,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: SangakColors.primary,
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                                  ),
-                                ),
-                                child: const Text('Add'),
-                              ),
-                      ),
-                    ],
+                    ),
                   ),
+                  // Freshness Badge
+                  if (widget.freshness != null)
+                    Positioned(
+                      bottom: SangakDimens.spacing12,
+                      left: SangakDimens.spacing12,
+                      child: FreshnessBadge(token: widget.freshness!),
+                    ),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(SangakDimens.spacing16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: SangakTypography.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: SangakDimens.spacing4),
+                    Text(
+                      widget.description,
+                      style: SangakTypography.bodySmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: SangakDimens.spacing16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '₺${widget.price.toStringAsFixed(0)}',
+                          style: SangakTypography.price,
+                        ),
+                        // Add to Cart / Quantity Morph
+                        AnimatedSwitcher(
+                          duration: SangakTokens.animMedium,
+                          transitionBuilder: (child, animation) {
+                            return ScaleTransition(scale: animation, child: child);
+                          },
+                          child: widget.quantity > 0
+                              ? QuantitySelector(
+                                  key: const ValueKey('quantity'),
+                                  quantity: widget.quantity,
+                                  onIncrement: widget.onAddToCart,
+                                  onDecrement: widget.onAddToCart, // Placeholder
+                                )
+                              : ElevatedButton(
+                                  key: const ValueKey('add'),
+                                  onPressed: widget.onAddToCart,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: SangakColors.primary,
+                                    foregroundColor: Colors.white,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                    ),
+                                  ),
+                                  child: Text(AppLocalizations.of(context).add),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

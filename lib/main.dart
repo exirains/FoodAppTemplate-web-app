@@ -9,7 +9,7 @@ import 'core/theme/sangak_theme.dart';
 import 'services/supabase_service.dart';
 import 'services/storage_service.dart';
 
-import 'services/update_service.dart';
+import 'core/update/update_service.dart';
 
 // Providers for services
 final storageServiceProvider = Provider<StorageService>((ref) {

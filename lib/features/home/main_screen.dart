@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../shared/widgets/sangak_bottom_nav.dart';
 import '../auth/auth_provider.dart';
 import '../auth/pending_action_provider.dart';
@@ -38,12 +39,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final user = ref.watch(authProvider).value;
     final currentIndex = ref.watch(tabProvider);
     final isGuest = user == null;
+    final l10n = AppLocalizations.of(context);
 
     final List<Widget> screens = [
       const HomeScreen(),
-      const Scaffold(body: Center(child: Text('Search Screen'))),
+      Scaffold(body: Center(child: Text(l10n.explore))),
       isGuest ? const CartGuestView() : const CartScreen(),
-      isGuest ? const ProfileGuestView() : const Scaffold(body: Center(child: Text('Profile Screen'))),
+      isGuest ? const ProfileGuestView() : Scaffold(body: Center(child: Text(l10n.profile))),
     ];
 
     return Scaffold(

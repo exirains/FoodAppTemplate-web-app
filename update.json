@@ -1,0 +1,15 @@
+{
+  "app_name": "Sangak",
+  "version": "1.0.1",
+  "build_number": 2,
+  "force_update": false,
+  "notes": [
+    "Added production in-app update service",
+    "New Product Management CLI tool for admins",
+    "100% localization in English, Turkish, and Persian",
+    "Refined animations and premium brand identity",
+    "Persistent guest basket (items saved locally)",
+    "Centralized version management"
+  ],
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.0.1.apk"
+}

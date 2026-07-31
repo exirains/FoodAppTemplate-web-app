@@ -115,7 +115,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToBasket => 'Add to Basket';
 
   @override
-  String addedToBasket(Object title) {
+  String addedToBasket(String title) {
     return '$title added to basket!';
   }
 
@@ -159,9 +159,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newUpdateAvailable => 'New Update Available';
 
   @override
-  String updateAvailableMessage(Object version) {
-    return 'A new version ($version) of Sangak is available. Update now to enjoy the latest features and improvements.';
-  }
+  String get updateAvailableMessage =>
+      'A new version of Sangak is available. Update now to enjoy the latest features and improvements.';
 
   @override
   String get whatsNew => 'What\'s New:';
@@ -171,4 +170,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get later => 'Later';
+
+  @override
+  String get currentVersion => 'Current Version';
+
+  @override
+  String get newVersion => 'New Version';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get appVersion => 'App Version';
+
+  @override
+  String get checkout => 'Checkout';
+
+  @override
+  String get deliveryAddress => 'Delivery Address';
+
+  @override
+  String get orderSummary => 'Order Summary';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get grandTotal => 'Grand Total';
+
+  @override
+  String get placeOrder => 'Place Order';
+
+  @override
+  String get orderPlacedSuccessfully => 'Order placed successfully!';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get deliveryFee => 'Delivery Fee';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get proceedToCheckout => 'Proceed to Checkout';
+
+  @override
+  String get searchBreads => 'Search breads...';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get addedToCart => 'Added to cart';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get errorLoadingCategories => 'Error loading categories';
+
+  @override
+  String get errorLoadingBreads => 'Error loading breads';
+
+  @override
+  String get freshlyBakedSangak => 'Freshly Baked Sangak';
+
+  @override
+  String get heroSubtitle => 'Straight from the stone oven to your door.';
+
+  @override
+  String get pleaseAgreeToTerms => 'Please agree to the terms';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String reviewsCount(int count) {
+    return '($count reviews)';
+  }
+
+  @override
+  String mins(int count) {
+    return '$count min';
+  }
+
+  @override
+  String kcal(int count) {
+    return '$count kcal';
+  }
+
+  @override
+  String get organic => 'Organic';
+
+  @override
+  String get add => 'Add';
 }

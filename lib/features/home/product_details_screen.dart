@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -18,6 +19,8 @@ class ProductDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: CustomScrollView(
@@ -55,8 +58,8 @@ class ProductDetailsScreen extends ConsumerWidget {
                         action: () {
                           // TODO: Implement favorite toggle
                         },
-                        title: 'Save your favorites',
-                        message: 'Create an account to save your favorite artisan breads.',
+                        title: l10n.saveYourFavorites,
+                        message: l10n.saveFavoritesMessage,
                       );
                     },
                   ),
@@ -101,11 +104,11 @@ class ProductDetailsScreen extends ConsumerWidget {
                       const SizedBox(width: 4),
                       Text(bread.rating.toString(), style: SangakTypography.title.copyWith(fontSize: 14)),
                       const SizedBox(width: 4),
-                      Text('(${bread.reviews} reviews)', style: SangakTypography.bodySmall),
+                      Text(l10n.reviewsCount(bread.reviews), style: SangakTypography.bodySmall),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing24),
-                  Text('Description', style: SangakTypography.title),
+                  Text(l10n.description, style: SangakTypography.title),
                   const SizedBox(height: SangakDimens.spacing8),
                   Text(
                     bread.description,
@@ -117,9 +120,9 @@ class ProductDetailsScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildInfoItem(Icons.timer_outlined, '20 min'),
-                      _buildInfoItem(Icons.local_fire_department_outlined, '250 kcal'),
-                      _buildInfoItem(Icons.eco_outlined, 'Organic'),
+                      _buildInfoItem(Icons.timer_outlined, l10n.mins(20)),
+                      _buildInfoItem(Icons.local_fire_department_outlined, l10n.kcal(250)),
+                      _buildInfoItem(Icons.eco_outlined, l10n.organic),
                     ],
                   ),
                   
@@ -157,7 +160,7 @@ class ProductDetailsScreen extends ConsumerWidget {
             const SizedBox(width: SangakDimens.spacing16),
             Expanded(
               child: SangakButton.primary(
-                label: 'Add to Cart',
+                label: l10n.addToBasket,
                 onPressed: () {
                   AuthGate.run(
                     context,
@@ -165,7 +168,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                     action: () {
                       // TODO: Implement cart logic
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${bread.title} added to basket!')),
+                        SnackBar(content: Text(l10n.addedToBasket(bread.title))),
                       );
                     },
                   );

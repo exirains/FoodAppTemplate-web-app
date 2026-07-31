@@ -100,41 +100,46 @@ class _SangakButtonState extends State<SangakButton> {
         onTapUp: _isEnabled ? (_) => setState(() => _isPressed = false) : null,
         onTapCancel: () => setState(() => _isPressed = false),
         onTap: _isEnabled ? widget.onPressed : null,
-        child: AnimatedContainer(
+        child: AnimatedScale(
+          scale: _isPressed ? 0.98 : 1.0,
           duration: SangakTokens.animFast,
-          width: widget.width,
-          height: 54, // Fixed height for consistency
-          padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(),
-            borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-            border: _getBorder(),
-          ),
-          child: Center(
-            child: widget.isLoading
-                ? SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(_getForegroundColor()),
-                    ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.icon != null) ...[
-                        Icon(widget.icon, size: 20, color: _getForegroundColor()),
-                        const SizedBox(width: SangakDimens.spacing8),
-                      ],
-                      Text(
-                        widget.label,
-                        style: SangakTypography.button.copyWith(
-                          color: _getForegroundColor(),
-                        ),
+          child: AnimatedContainer(
+            duration: SangakTokens.animFast,
+            width: widget.width,
+            height: 54, // Fixed height for consistency
+            padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+            decoration: BoxDecoration(
+              color: _getBackgroundColor(),
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              border: _getBorder(),
+              boxShadow: _isPressed ? null : SangakDimens.shadowLow,
+            ),
+            child: Center(
+              child: widget.isLoading
+                  ? SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(_getForegroundColor()),
                       ),
-                    ],
-                  ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.icon != null) ...[
+                          Icon(widget.icon, size: 20, color: _getForegroundColor()),
+                          const SizedBox(width: SangakDimens.spacing8),
+                        ],
+                        Text(
+                          widget.label,
+                          style: SangakTypography.button.copyWith(
+                            color: _getForegroundColor(),
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),

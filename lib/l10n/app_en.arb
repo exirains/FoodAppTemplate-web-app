@@ -36,6 +36,13 @@
   "traditionalFavorites": "Traditional Favorites",
   "addToBasket": "Add to Basket",
   "addedToBasket": "{title} added to basket!",
+  "@addedToBasket": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "saveYourFavorites": "Save your favorites",
   "saveFavoritesMessage": "Create an account to save your favorite artisan breads and access them anytime.",
   "yourBasketIsWaiting": "Your basket is waiting",
@@ -48,8 +55,60 @@
   "cart": "Cart",
   "profile": "Profile",
   "newUpdateAvailable": "New Update Available",
-  "updateAvailableMessage": "A new version ({version}) of Sangak is available. Update now to enjoy the latest features and improvements.",
+  "updateAvailableMessage": "A new version of Sangak is available. Update now to enjoy the latest features and improvements.",
   "whatsNew": "What's New:",
   "updateNow": "Update Now",
-  "later": "Later"
+  "later": "Later",
+  "currentVersion": "Current Version",
+  "newVersion": "New Version",
+  "settings": "Settings",
+  "language": "Language",
+  "appVersion": "App Version",
+  "checkout": "Checkout",
+  "deliveryAddress": "Delivery Address",
+  "orderSummary": "Order Summary",
+  "paymentMethod": "Payment Method",
+  "grandTotal": "Grand Total",
+  "placeOrder": "Place Order",
+  "orderPlacedSuccessfully": "Order placed successfully!",
+  "subtotal": "Subtotal",
+  "deliveryFee": "Delivery Fee",
+  "total": "Total",
+  "proceedToCheckout": "Proceed to Checkout",
+  "searchBreads": "Search breads...",
+  "description": "Description",
+  "addedToCart": "Added to cart",
+  "all": "All",
+  "errorLoadingCategories": "Error loading categories",
+  "errorLoadingBreads": "Error loading breads",
+  "freshlyBakedSangak": "Freshly Baked Sangak",
+  "heroSubtitle": "Straight from the stone oven to your door.",
+  "pleaseAgreeToTerms": "Please agree to the terms",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "reviewsCount": "({count} reviews)",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mins": "{count} min",
+  "@mins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kcal": "{count} kcal",
+  "@kcal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "organic": "Organic",
+  "add": "Add"
 }

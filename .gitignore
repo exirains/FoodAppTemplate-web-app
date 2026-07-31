@@ -53,6 +53,10 @@ flutter/
 .ai/
 .ai-cache/
 .ai-artifacts/
+
+# Environment Variables
+.env
+.env.*
 .prompts/
 .prompt-history/
 .llm/

@@ -26,7 +26,7 @@
   "confirmPassword": "Şifreyi Onayla",
   "reEnterPassword": "Şifrenizi tekrar girin",
   "iAgreeToTerms": "Şartlar ve Koşulları kabul ediyorum",
-  "verificationEmailSent": "Doğrulama e-postası gönderildi!",
+  "verificationEmailSent": "Doğrulama epostası gönderildi!",
   "goodMorning": "Günaydın,",
   "welcomeToSangakGuest": "Sangak'a Hoş Geldiniz,",
   "guest": "Misafir",
@@ -36,6 +36,13 @@
   "traditionalFavorites": "Geleneksel Favoriler",
   "addToBasket": "Sepete Ekle",
   "addedToBasket": "{title} sepete eklendi!",
+  "@addedToBasket": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "saveYourFavorites": "Favorilerinizi kaydedin",
   "saveFavoritesMessage": "Favori artizan ekmeklerinizi kaydetmek ve istediğiniz zaman erişmek için bir hesap oluşturun.",
   "yourBasketIsWaiting": "Sepetiniz sizi bekliyor",
@@ -48,8 +55,60 @@
   "cart": "Sepet",
   "profile": "Profil",
   "newUpdateAvailable": "Yeni Güncelleme Mevcut",
-  "updateAvailableMessage": "Sangak'ın yeni bir versiyonu ({version}) mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.",
+  "updateAvailableMessage": "Sangak'ın yeni bir versiyonu mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.",
   "whatsNew": "Yenilikler:",
   "updateNow": "Şimdi Güncelle",
-  "later": "Sonra"
+  "later": "Sonra",
+  "currentVersion": "Mevcut Versiyon",
+  "newVersion": "Yeni Versiyon",
+  "settings": "Ayarlar",
+  "language": "Dil",
+  "appVersion": "Uygulama Versiyonu",
+  "checkout": "Ödeme",
+  "deliveryAddress": "Teslimat Adresi",
+  "orderSummary": "Sipariş Özeti",
+  "paymentMethod": "Ödeme Yöntemi",
+  "grandTotal": "Genel Toplam",
+  "placeOrder": "Siparişi Ver",
+  "orderPlacedSuccessfully": "Sipariş başarıyla verildi!",
+  "subtotal": "Ara Toplam",
+  "deliveryFee": "Teslimat Ücreti",
+  "total": "Toplam",
+  "proceedToCheckout": "Ödemeye Geç",
+  "searchBreads": "Ekmek ara...",
+  "description": "Açıklama",
+  "addedToCart": "Sepete eklendi",
+  "all": "Hepsi",
+  "errorLoadingCategories": "Kategoriler yüklenirken hata oluştu",
+  "errorLoadingBreads": "Ekmekler yüklenirken hata oluştu",
+  "freshlyBakedSangak": "Taze Pişmiş Sangak",
+  "heroSubtitle": "Taş fırından doğrudan kapınıza.",
+  "pleaseAgreeToTerms": "Lütfen şartları kabul edin",
+  "passwordsDoNotMatch": "Şifreler eşleşmiyor",
+  "reviewsCount": "({count} değerlendirme)",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mins": "{count} dk",
+  "@mins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kcal": "{count} kcal",
+  "@kcal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "organic": "Organik",
+  "add": "Ekle"
 }

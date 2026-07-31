@@ -115,7 +115,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get addToBasket => 'افزودن به سبد';
 
   @override
-  String addedToBasket(Object title) {
+  String addedToBasket(String title) {
     return '$title به سبد خرید اضافه شد!';
   }
 
@@ -159,9 +159,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get newUpdateAvailable => 'نسخه جدید در دسترس است';
 
   @override
-  String updateAvailableMessage(Object version) {
-    return 'نسخه جدید ($version) سنگک در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.';
-  }
+  String get updateAvailableMessage =>
+      'نسخه جدید سنگک در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.';
 
   @override
   String get whatsNew => 'موارد جدید:';
@@ -171,4 +170,103 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get later => 'بعداً';
+
+  @override
+  String get currentVersion => 'نسخه فعلی';
+
+  @override
+  String get newVersion => 'نسخه جدید';
+
+  @override
+  String get settings => 'تنظیمات';
+
+  @override
+  String get language => 'زبان';
+
+  @override
+  String get appVersion => 'نسخه اپلیکیشن';
+
+  @override
+  String get checkout => 'تسویه حساب';
+
+  @override
+  String get deliveryAddress => 'آدرس تحویل';
+
+  @override
+  String get orderSummary => 'خلاصه سفارش';
+
+  @override
+  String get paymentMethod => 'روش پرداخت';
+
+  @override
+  String get grandTotal => 'مبلغ کل';
+
+  @override
+  String get placeOrder => 'ثبت سفارش';
+
+  @override
+  String get orderPlacedSuccessfully => 'سفارش با موفقیت ثبت شد!';
+
+  @override
+  String get subtotal => 'جمع جزئی';
+
+  @override
+  String get deliveryFee => 'هزینه ارسال';
+
+  @override
+  String get total => 'جمع کل';
+
+  @override
+  String get proceedToCheckout => 'ادامه به تسویه حساب';
+
+  @override
+  String get searchBreads => 'جستجوی نان...';
+
+  @override
+  String get description => 'توضیحات';
+
+  @override
+  String get addedToCart => 'به سبد اضافه شد';
+
+  @override
+  String get all => 'همه';
+
+  @override
+  String get errorLoadingCategories => 'خطا در بارگذاری دسته‌بندی‌ها';
+
+  @override
+  String get errorLoadingBreads => 'خطا در بارگذاری محصولات';
+
+  @override
+  String get freshlyBakedSangak => 'سنگک تازه پخته شده';
+
+  @override
+  String get heroSubtitle => 'مستقیم از تنور سنگی به درب منزل شما.';
+
+  @override
+  String get pleaseAgreeToTerms => 'لطفاً با شرایط موافقت کنید';
+
+  @override
+  String get passwordsDoNotMatch => 'رمزهای عبور مطابقت ندارند';
+
+  @override
+  String reviewsCount(int count) {
+    return '($count نظر)';
+  }
+
+  @override
+  String mins(int count) {
+    return '$count دقیقه';
+  }
+
+  @override
+  String kcal(int count) {
+    return '$count کالری';
+  }
+
+  @override
+  String get organic => 'ارگانیک';
+
+  @override
+  String get add => 'افزودن';
 }

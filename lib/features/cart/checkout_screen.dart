@@ -20,7 +20,7 @@ class CheckoutScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: SangakColors.background,
       appBar: AppBar(
-        title: const Text('Checkout'),
+        title: Text(l10n.checkout),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),
@@ -31,15 +31,15 @@ class CheckoutScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader('Delivery Address'),
+            _buildSectionHeader(l10n.deliveryAddress),
             const SizedBox(height: 12),
             _buildAddressCard(),
             const SizedBox(height: 32),
-            _buildSectionHeader('Order Summary'),
+            _buildSectionHeader(l10n.orderSummary),
             const SizedBox(height: 12),
             _buildOrderSummary(cart),
             const SizedBox(height: 32),
-            _buildSectionHeader('Payment Method'),
+            _buildSectionHeader(l10n.paymentMethod),
             const SizedBox(height: 12),
             _buildPaymentCard(),
             const SizedBox(height: 120),
@@ -145,19 +145,19 @@ class CheckoutScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Grand Total', style: SangakTypography.h3),
+              Text(l10n.grandTotal, style: SangakTypography.h3),
               Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2.copyWith(color: SangakColors.primary)),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
-            label: 'Place Order',
+            label: l10n.placeOrder,
             width: double.infinity,
             onPressed: () {
               // TODO: Implement order placement
               ref.read(cartProvider.notifier).clear();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Order placed successfully!')),
+                SnackBar(content: Text(l10n.orderPlacedSuccessfully)),
               );
               Navigator.pop(context);
             },

@@ -11,6 +11,7 @@ import '../../shared/widgets/sangak_skeletons.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../auth/auth_provider.dart';
 import 'home_provider.dart';
+import 'widgets/settings_bottom_sheet.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -48,9 +49,11 @@ class HomeScreen extends ConsumerWidget {
                             Text(isGuest ? l10n.welcomeToSangakGuest : l10n.goodMorning, style: SangakTypography.bodySmall),
                             Row(
                               children: [
-                                Text(isGuest ? l10n.guest : (user.email?.split('@')[0] ?? 'User'), style: SangakTypography.h3),
-                                if (isGuest) ...[
+                                if (!isGuest) ...[
+                                  Text(user.email?.split('@')[0] ?? 'User', style: SangakTypography.h3),
                                   const SizedBox(width: 8),
+                                ],
+                                if (isGuest)
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
@@ -65,19 +68,21 @@ class HomeScreen extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
-                                ],
                               ],
                             ),
                           ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: SangakColors.surface,
-                            shape: BoxShape.circle,
-                            boxShadow: SangakDimens.shadowLow,
+                        GestureDetector(
+                          onTap: () => SettingsBottomSheet.show(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: SangakColors.surface,
+                              shape: BoxShape.circle,
+                              boxShadow: SangakDimens.shadowLow,
+                            ),
+                            child: const Icon(Icons.settings_outlined, color: SangakColors.ink),
                           ),
-                          child: const Icon(Icons.notifications_outlined, color: SangakColors.ink),
                         ),
                       ],
                     ),
@@ -95,8 +100,8 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   // Hero Banner
                   HeroBanner(
-                    title: 'Freshly Baked Sangak', // TODO: Translate when we have a marketing banner model
-                    subtitle: 'Straight from the stone oven to your door.',
+                    title: l10n.freshlyBakedSangak,
+                    subtitle: l10n.heroSubtitle,
                     imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800',
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
@@ -104,33 +109,33 @@ class HomeScreen extends ConsumerWidget {
                   // Categories
                   Text(l10n.categories, style: SangakTypography.h3),
                   const SizedBox(height: SangakDimens.spacing16),
-                  categoriesAsync.when(
-                    data: (categories) => SizedBox(
-                      height: 50,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length + 1,
-                        separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing12),
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
+                    categoriesAsync.when(
+                      data: (categories) => SizedBox(
+                        height: 50,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categories.length + 1,
+                          separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing12),
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return CategoryChip(
+                                label: l10n.all,
+                                isSelected: selectedCategoryId == null,
+                                onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
+                              );
+                            }
+                            final category = categories[index - 1];
                             return CategoryChip(
-                              label: 'All', // TODO: Localize 'All'
-                              isSelected: selectedCategoryId == null,
-                              onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
+                              label: category.name,
+                              isSelected: selectedCategoryId == category.id,
+                              onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category.id,
                             );
-                          }
-                          final category = categories[index - 1];
-                          return CategoryChip(
-                            label: category.name,
-                            isSelected: selectedCategoryId == category.id,
-                            onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category.id,
-                          );
-                        },
+                          },
+                        ),
                       ),
+                      loading: () => const SizedBox(height: 50, child: Center(child: CircularProgressIndicator())),
+                      error: (error, stack) => Text(l10n.errorLoadingCategories),
                     ),
-                    loading: () => const SizedBox(height: 50, child: Center(child: CircularProgressIndicator())),
-                    error: (_, __) => const Text('Error loading categories'),
-                  ),
                   const SizedBox(height: SangakDimens.spacing32),
 
                   // Popular Today
@@ -203,7 +208,7 @@ class HomeScreen extends ConsumerWidget {
                   separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
                   itemBuilder: (context, index) => const ProductCardSkeleton(),
                 ),
-                error: (_, __) => const Center(child: Text('Error loading breads')),
+                error: (error, stack) => Center(child: Text(l10n.errorLoadingBreads)),
               ),
             ),
           ),
@@ -287,7 +292,7 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
-            error: (_, __) => const SliverToBoxAdapter(child: Center(child: Text('Error loading breads'))),
+            error: (error, stack) => SliverToBoxAdapter(child: Center(child: Text(l10n.errorLoadingBreads))),
           ),
           
           const SliverToBoxAdapter(child: SizedBox(height: SangakDimens.spacing64)),

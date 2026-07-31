@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:sangak/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../models/update_model.dart';
-import 'sangak_button.dart';
+import '../design_system/sangak_colors.dart';
+import '../design_system/sangak_typography.dart';
+import '../design_system/sangak_dimens.dart';
+import '../../shared/widgets/sangak_button.dart';
+import 'update_model.dart';
 
 class UpdateDialog extends StatelessWidget {
   final UpdateModel updateInfo;
+  final String currentVersion;
   final VoidCallback onUpdate;
   final VoidCallback? onDismiss;
 
   const UpdateDialog({
     super.key,
     required this.updateInfo,
+    required this.currentVersion,
     required this.onUpdate,
     this.onDismiss,
   });
@@ -40,32 +42,29 @@ class UpdateDialog extends StatelessWidget {
                 l10n.newUpdateAvailable,
                 style: SangakTypography.h2,
               ),
-              const SizedBox(height: SangakDimens.spacing8),
-              Text(
-                l10n.updateAvailableMessage(updateInfo.version),
-                style: SangakTypography.bodyMedium,
-              ),
               const SizedBox(height: SangakDimens.spacing16),
-              if (updateInfo.changelog.isNotEmpty) ...[
+              _buildVersionInfo(l10n),
+              const SizedBox(height: SangakDimens.spacing24),
+              if (updateInfo.notes.isNotEmpty) ...[
                 Text(
                   l10n.whatsNew,
                   style: SangakTypography.title.copyWith(fontSize: 14),
                 ),
                 const SizedBox(height: SangakDimens.spacing8),
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 150),
+                  constraints: const BoxConstraints(maxHeight: 200),
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: updateInfo.changelog.length,
+                    itemCount: updateInfo.notes.length,
                     itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
                           Expanded(
                             child: Text(
-                              updateInfo.changelog[index],
+                              updateInfo.notes[index],
                               style: SangakTypography.bodySmall,
                             ),
                           ),
@@ -98,6 +97,33 @@ class UpdateDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildVersionInfo(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.all(SangakDimens.spacing12),
+      decoration: BoxDecoration(
+        color: SangakColors.background,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildVersionColumn(l10n.currentVersion, currentVersion),
+          const Icon(Icons.arrow_forward, size: 16, color: SangakColors.inkLight),
+          _buildVersionColumn(l10n.newVersion, updateInfo.version),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVersionColumn(String label, String version) {
+    return Column(
+      children: [
+        Text(label, style: SangakTypography.caption),
+        Text(version, style: SangakTypography.title.copyWith(color: SangakColors.primary)),
+      ],
     );
   }
 }

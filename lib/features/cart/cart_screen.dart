@@ -51,7 +51,7 @@ class CartScreen extends ConsumerWidget {
             child: ListView.separated(
               padding: const EdgeInsets.all(SangakDimens.spacing24),
               itemCount: cart.length,
-              separatorBuilder: (_, __) => const SizedBox(height: SangakDimens.spacing16),
+              separatorBuilder: (context, index) => const SizedBox(height: SangakDimens.spacing16),
               itemBuilder: (context, index) {
                 final item = cart[index];
                 return Container(
@@ -123,7 +123,7 @@ class CartScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Subtotal', style: SangakTypography.bodyMedium),
+              Text(l10n.subtotal, style: SangakTypography.bodyMedium),
               Text('₺${total.toStringAsFixed(0)}', style: SangakTypography.title),
             ],
           ),
@@ -131,7 +131,7 @@ class CartScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Delivery Fee', style: SangakTypography.bodyMedium),
+              Text(l10n.deliveryFee, style: SangakTypography.bodyMedium),
               Text('₺${deliveryFee.toStringAsFixed(0)}', style: SangakTypography.title),
             ],
           ),
@@ -142,13 +142,13 @@ class CartScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total', style: SangakTypography.h3),
+              Text(l10n.total, style: SangakTypography.h3),
               Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2.copyWith(color: SangakColors.primary)),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
-            label: 'Proceed to Checkout',
+            label: l10n.proceedToCheckout,
             width: double.infinity,
             onPressed: () => context.push('/checkout'),
           ),

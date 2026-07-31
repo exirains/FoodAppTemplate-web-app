@@ -36,6 +36,13 @@
   "traditionalFavorites": "محبوب‌های سنتی",
   "addToBasket": "افزودن به سبد",
   "addedToBasket": "{title} به سبد خرید اضافه شد!",
+  "@addedToBasket": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "saveYourFavorites": "علاقه‌مندی‌های خود را ذخیره کنید",
   "saveFavoritesMessage": "برای ذخیره نان‌های مورد علاقه خود و دسترسی همیشگی به آن‌ها، یک حساب کاربری بسازید.",
   "yourBasketIsWaiting": "سبد خرید شما منتظر است",
@@ -48,8 +55,60 @@
   "cart": "سبد خرید",
   "profile": "پروفایل",
   "newUpdateAvailable": "نسخه جدید در دسترس است",
-  "updateAvailableMessage": "نسخه جدید ({version}) سنگک در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.",
+  "updateAvailableMessage": "نسخه جدید سنگک در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.",
   "whatsNew": "موارد جدید:",
   "updateNow": "بروزرسانی",
-  "later": "بعداً"
+  "later": "بعداً",
+  "currentVersion": "نسخه فعلی",
+  "newVersion": "نسخه جدید",
+  "settings": "تنظیمات",
+  "language": "زبان",
+  "appVersion": "نسخه اپلیکیشن",
+  "checkout": "تسویه حساب",
+  "deliveryAddress": "آدرس تحویل",
+  "orderSummary": "خلاصه سفارش",
+  "paymentMethod": "روش پرداخت",
+  "grandTotal": "مبلغ کل",
+  "placeOrder": "ثبت سفارش",
+  "orderPlacedSuccessfully": "سفارش با موفقیت ثبت شد!",
+  "subtotal": "جمع جزئی",
+  "deliveryFee": "هزینه ارسال",
+  "total": "جمع کل",
+  "proceedToCheckout": "ادامه به تسویه حساب",
+  "searchBreads": "جستجوی نان...",
+  "description": "توضیحات",
+  "addedToCart": "به سبد اضافه شد",
+  "all": "همه",
+  "errorLoadingCategories": "خطا در بارگذاری دسته‌بندی‌ها",
+  "errorLoadingBreads": "خطا در بارگذاری محصولات",
+  "freshlyBakedSangak": "سنگک تازه پخته شده",
+  "heroSubtitle": "مستقیم از تنور سنگی به درب منزل شما.",
+  "pleaseAgreeToTerms": "لطفاً با شرایط موافقت کنید",
+  "passwordsDoNotMatch": "رمزهای عبور مطابقت ندارند",
+  "reviewsCount": "({count} نظر)",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mins": "{count} دقیقه",
+  "@mins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kcal": "{count} کالری",
+  "@kcal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "organic": "ارگانیک",
+  "add": "افزودن"
 }

@@ -36,13 +36,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    final l10n = AppLocalizations.of(context);
     if (!_agreedToTerms) {
-      setState(() => _error = 'Please agree to the terms');
+      setState(() => _error = l10n.pleaseAgreeToTerms);
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      setState(() => _error = 'Passwords do not match');
+      setState(() => _error = l10n.passwordsDoNotMatch);
       return;
     }
 
@@ -56,11 +57,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       final authState = ref.read(authProvider);
       if (authState.hasError) {
         setState(() => _error = authState.error.toString());
-      } else {
+       } else {
         // Supabase usually sends a verification email
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verification email sent!')),
+            SnackBar(content: Text(AppLocalizations.of(context).verificationEmailSent)),
           );
           context.go('/login');
         }

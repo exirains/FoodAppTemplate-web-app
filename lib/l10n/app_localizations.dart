@@ -314,7 +314,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{title} added to basket!'**
-  String addedToBasket(Object title);
+  String addedToBasket(String title);
 
   /// No description provided for @saveYourFavorites.
   ///
@@ -391,8 +391,8 @@ abstract class AppLocalizations {
   /// No description provided for @updateAvailableMessage.
   ///
   /// In en, this message translates to:
-  /// **'A new version ({version}) of Sangak is available. Update now to enjoy the latest features and improvements.'**
-  String updateAvailableMessage(Object version);
+  /// **'A new version of Sangak is available. Update now to enjoy the latest features and improvements.'**
+  String get updateAvailableMessage;
 
   /// No description provided for @whatsNew.
   ///
@@ -411,6 +411,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get later;
+
+  /// No description provided for @currentVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Version'**
+  String get currentVersion;
+
+  /// No description provided for @newVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'New Version'**
+  String get newVersion;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get appVersion;
+
+  /// No description provided for @checkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout'**
+  String get checkout;
+
+  /// No description provided for @deliveryAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Address'**
+  String get deliveryAddress;
+
+  /// No description provided for @orderSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Summary'**
+  String get orderSummary;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @grandTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Grand Total'**
+  String get grandTotal;
+
+  /// No description provided for @placeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Order'**
+  String get placeOrder;
+
+  /// No description provided for @orderPlacedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order placed successfully!'**
+  String get orderPlacedSuccessfully;
+
+  /// No description provided for @subtotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtotal'**
+  String get subtotal;
+
+  /// No description provided for @deliveryFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Fee'**
+  String get deliveryFee;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @proceedToCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed to Checkout'**
+  String get proceedToCheckout;
+
+  /// No description provided for @searchBreads.
+  ///
+  /// In en, this message translates to:
+  /// **'Search breads...'**
+  String get searchBreads;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @addedToCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to cart'**
+  String get addedToCart;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @errorLoadingCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading categories'**
+  String get errorLoadingCategories;
+
+  /// No description provided for @errorLoadingBreads.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading breads'**
+  String get errorLoadingBreads;
+
+  /// No description provided for @freshlyBakedSangak.
+  ///
+  /// In en, this message translates to:
+  /// **'Freshly Baked Sangak'**
+  String get freshlyBakedSangak;
+
+  /// No description provided for @heroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Straight from the stone oven to your door.'**
+  String get heroSubtitle;
+
+  /// No description provided for @pleaseAgreeToTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to the terms'**
+  String get pleaseAgreeToTerms;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'({count} reviews)'**
+  String reviewsCount(int count);
+
+  /// No description provided for @mins.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String mins(int count);
+
+  /// No description provided for @kcal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} kcal'**
+  String kcal(int count);
+
+  /// No description provided for @organic.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic'**
+  String get organic;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
 }
 
 class _AppLocalizationsDelegate

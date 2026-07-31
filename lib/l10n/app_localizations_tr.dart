@@ -88,7 +88,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get iAgreeToTerms => 'Şartlar ve Koşulları kabul ediyorum';
 
   @override
-  String get verificationEmailSent => 'Doğrulama e-postası gönderildi!';
+  String get verificationEmailSent => 'Doğrulama epostası gönderildi!';
 
   @override
   String get goodMorning => 'Günaydın,';
@@ -115,7 +115,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addToBasket => 'Sepete Ekle';
 
   @override
-  String addedToBasket(Object title) {
+  String addedToBasket(String title) {
     return '$title sepete eklendi!';
   }
 
@@ -159,9 +159,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get newUpdateAvailable => 'Yeni Güncelleme Mevcut';
 
   @override
-  String updateAvailableMessage(Object version) {
-    return 'Sangak\'ın yeni bir versiyonu ($version) mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.';
-  }
+  String get updateAvailableMessage =>
+      'Sangak\'ın yeni bir versiyonu mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.';
 
   @override
   String get whatsNew => 'Yenilikler:';
@@ -171,4 +170,103 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get later => 'Sonra';
+
+  @override
+  String get currentVersion => 'Mevcut Versiyon';
+
+  @override
+  String get newVersion => 'Yeni Versiyon';
+
+  @override
+  String get settings => 'Ayarlar';
+
+  @override
+  String get language => 'Dil';
+
+  @override
+  String get appVersion => 'Uygulama Versiyonu';
+
+  @override
+  String get checkout => 'Ödeme';
+
+  @override
+  String get deliveryAddress => 'Teslimat Adresi';
+
+  @override
+  String get orderSummary => 'Sipariş Özeti';
+
+  @override
+  String get paymentMethod => 'Ödeme Yöntemi';
+
+  @override
+  String get grandTotal => 'Genel Toplam';
+
+  @override
+  String get placeOrder => 'Siparişi Ver';
+
+  @override
+  String get orderPlacedSuccessfully => 'Sipariş başarıyla verildi!';
+
+  @override
+  String get subtotal => 'Ara Toplam';
+
+  @override
+  String get deliveryFee => 'Teslimat Ücreti';
+
+  @override
+  String get total => 'Toplam';
+
+  @override
+  String get proceedToCheckout => 'Ödemeye Geç';
+
+  @override
+  String get searchBreads => 'Ekmek ara...';
+
+  @override
+  String get description => 'Açıklama';
+
+  @override
+  String get addedToCart => 'Sepete eklendi';
+
+  @override
+  String get all => 'Hepsi';
+
+  @override
+  String get errorLoadingCategories => 'Kategoriler yüklenirken hata oluştu';
+
+  @override
+  String get errorLoadingBreads => 'Ekmekler yüklenirken hata oluştu';
+
+  @override
+  String get freshlyBakedSangak => 'Taze Pişmiş Sangak';
+
+  @override
+  String get heroSubtitle => 'Taş fırından doğrudan kapınıza.';
+
+  @override
+  String get pleaseAgreeToTerms => 'Lütfen şartları kabul edin';
+
+  @override
+  String get passwordsDoNotMatch => 'Şifreler eşleşmiyor';
+
+  @override
+  String reviewsCount(int count) {
+    return '($count değerlendirme)';
+  }
+
+  @override
+  String mins(int count) {
+    return '$count dk';
+  }
+
+  @override
+  String kcal(int count) {
+    return '$count kcal';
+  }
+
+  @override
+  String get organic => 'Organik';
+
+  @override
+  String get add => 'Ekle';
 }
