@@ -32,8 +32,8 @@ class SangakBottomNav extends StatelessWidget {
         unselectedLabelStyle: SangakTypography.caption,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.bakery_dining_outlined),
-            activeIcon: Icon(Icons.bakery_dining),
+            icon: Icon(Icons.breakfast_dining_outlined),
+            activeIcon: Icon(Icons.breakfast_dining),
             label: 'Home',
           ),
           BottomNavigationBarItem(

@@ -1,32 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/sangak_tokens.dart';
+import '../../main.dart';
+import '../../shared/widgets/app_logo.dart';
+import '../../shared/widgets/update_dialog.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
-    _navigateToNext();
+    _controller = AnimationController(
+      vsync: this,
+      duration: SangakTokens.animSlow,
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: SangakTokens.curveEmphasized,
+      ),
+    );
+
+    _controller.forward();
+    _init();
   }
 
-  Future<void> _navigateToNext() async {
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _init() async {
     // Artificial delay for the "Signature Brand Moment"
     await Future.delayed(const Duration(seconds: 2));
-    if (mounted) {
-      // In a real app, check auth state here. 
-      // For now, go to Gallery to show off the system, 
-      // but the requirement says "the normal app should still start with the Splash screen".
-      // I'll add a button or just navigate to a placeholder home.
-      context.go('/gallery'); 
+    
+    if (!mounted) return;
+
+    // Check for Updates
+    final updateService = ref.read(updateServiceProvider);
+    final updateInfo = await updateService.checkForUpdates();
+
+    if (updateInfo != null && mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: !updateInfo.forceUpdate,
+        builder: (context) => UpdateDialog(
+          updateInfo: updateInfo,
+          onUpdate: () => updateService.launchUpdateUrl(updateInfo.apkUrl),
+          onDismiss: updateInfo.forceUpdate ? null : () => Navigator.pop(context),
+        ),
+      );
+      if (updateInfo.forceUpdate) return; // Halt if forced and not updated
     }
+
+    if (!mounted) return;
+
+    final storage = ref.read(storageServiceProvider);
+    final language = storage.language;
+    final isFirstLaunch = storage.isFirstLaunch;
+
+    if (isFirstLaunch || language == null) {
+      // Mark first launch as done when they reach language selection
+      await storage.setFirstLaunch(false);
+      if (mounted) context.go('/language');
+      return;
+    }
+
+    // Guest flow: Always go home
+    if (mounted) context.go('/home');
   }
 
   @override
@@ -34,36 +95,30 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo Placeholder
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: SangakColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.bakery_dining,
-                size: 80,
-                color: SangakColors.primary,
-              ),
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const AppLogo.large(),
+                const SizedBox(height: 32),
+                Text(
+                  'SANGAK',
+                  style: SangakTypography.display.copyWith(
+                    letterSpacing: 4,
+                    color: SangakColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Artisan Persian Bakery',
+                  style: SangakTypography.subtitle,
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
-            Text(
-              'SANGAK',
-              style: SangakTypography.display.copyWith(
-                letterSpacing: 4,
-                color: SangakColors.primary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Artisan Persian Bakery',
-              style: SangakTypography.subtitle,
-            ),
-          ],
+          ),
         ),
       ),
     );

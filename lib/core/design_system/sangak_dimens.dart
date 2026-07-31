@@ -11,6 +11,7 @@ class SangakDimens {
   static const double spacing16 = 16.0;
   static const double spacing24 = 24.0;
   static const double spacing32 = 32.0;
+  static const double spacing40 = 40.0;
   static const double spacing48 = 48.0;
   static const double spacing64 = 64.0;
 

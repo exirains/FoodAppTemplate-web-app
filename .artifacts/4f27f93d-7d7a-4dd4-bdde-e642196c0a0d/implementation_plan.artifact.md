@@ -1,90 +1,59 @@
-# Implementation Plan - Sangak Brand Identity & Design System (v1.3)
+# Implementation Plan - Guest Mode & Adaptive Authentication (Refined)
 
-This plan defines the flagship visual identity and production-ready design system (v1.0.0) for **Sangak**. It balances traditional Persian craftsmanship with modern simplicity, ensuring every component is built for scale, performance, and appetite appeal.
+This plan describes the implementation of **Guest Mode** for Sangak, allowing users to experience the artisan bakery before requiring an account.
 
-## 1. Design System Specification (v1.0.0)
+## Goal
+Establish a high-conversion onboarding flow where users can browse, view details, and see prices as guests. Authentication is only requested when it adds value (Basket, Favorites, Orders).
 
-Every component in the system is tracked with:
-- **Version**: 1.0.0
-- **Status**: Draft / Stable / Deprecated
-- **Definition of Done**:
-    - ✓ Pixel-perfect to the brand identity
-    - ✓ Responsive & Theme-aware
-    - ✓ Accessible (min 48x48 touch targets, semantic labels)
-    - ✓ Tested in all states (Default, Hover, Pressed, Focus, Disabled, Loading, Error)
-    - ✓ Uses Design Tokens only (no hardcoded colors/spacing)
-    - ✓ Fully documented and localizable
+## Proposed Changes
 
-## 2. Sangak Design Language: "Artisanal Precision"
+### [Core Logic]
 
-The interface philosophy:
-- **Warm, never cold**: Soft creams and golden crust tones.
-- **Premium, never luxurious for the sake of luxury**: Focused on quality, not ornament.
-- **Handmade, never rustic**: Clean execution with organic rhythm.
-- **Calm, never busy**: Every screen is a moment of peace.
+#### [NEW] [auth_gate.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/shared/utils/auth_gate.dart)
+A utility to handle authenticated actions:
+- Checks if the user is logged in.
+- If guest: Stores the "pending action" (e.g., "Add Sangak to Cart") and triggers the `AuthPromptBottomSheet`.
+- **Context Preservation**: After successful login/registration, the stored pending action is automatically executed.
 
-## 3. Brand Identity & Visual Strategy
+### [UI & Experience]
 
-### Photography: The Visual North Star
-Product photography is our primary asset.
-- **Guidelines**: Warm natural lighting, shallow depth of field, texture-focused (crust/crumb), consistent framing. UI is built *around* the photography.
+#### [NEW] [auth_prompt_bottom_sheet.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/shared/widgets/auth_prompt_bottom_sheet.dart)
+A premium brand introduction:
+- **Design**: "🥖 Create your Sangak account" with a warm welcome.
+- **Messaging**: Focus on benefits (Save basket, track orders).
+- **Actions**: [Create Account] (Primary), [Sign In] (Secondary).
 
-### Signature Component: The Product Card
-- **Goal**: Instantly recognizable as "Sangak."
-- **Immutable Rules**: Fixed image ratios, padding, and badge placement.
-- **Interactions**: Smooth morphing for "Add-to-Cart" and elegant favorite fills.
+#### [MODIFY] [splash_screen.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/features/splash/splash_screen.dart)
+- Update routing: `/splash` -> `/language` (if first time) -> `/home` (always).
 
-### Freshness & Status System
-- `Fresh Today`: Olive Sage + Wheat Icon.
-- `Just Out of Oven`: Amber Accent + Steam Icon.
-- `Limited Quantity`: Soft Red + Alert Icon.
-- Also: `Bestseller`, `Seasonal`, `Preorder`, `Sold Out`.
+#### [MODIFY] Home Header
+- Add a **Guest Indicator** (e.g., "Browsing as Guest") in the profile/header area to provide context for future prompts.
 
-## 4. Foundation Tokens
+#### [MODIFY] Cart Tab (Guest State)
+- Instead of a simple block, show a **Welcoming Preview**:
+  - "Your basket is waiting. Create an account to save your items and complete your order."
+  - Consistent styling with the design system.
 
-### [NEW] [sangak_colors.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/core/design_system/sangak_colors.dart)
-- `primary` (Golden Crust): #C68A2B
-- `secondary` (Oven Stone): #7D4F39
-- `background` (Natural Paper): #FDFCF8
-- `surface` (Flour White): #FFFFFF
-- `textPrimary` (Ink): #2A241E
+#### [MODIFY] Actions
+- **Add to Basket**: Intercepted by `AuthGate`.
+- **Favorite**: Intercepted by `AuthGate` (persisted synced data).
+- **Orders/Profile**: Redirects to the welcoming auth invitation.
 
-### [NEW] [sangak_typography.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/core/design_system/sangak_typography.dart)
-- **High-Impact**: *Fraunces* (Headlines only).
-- **Functional**: *Plus Jakarta Sans* (Everything else).
+---
 
-### [NEW] [sangak_tokens.dart](file:///C:/Users/Mahyar/StudioProjects/Sangak/lib/core/design_system/sangak_tokens.dart)
-- **Spacing**: 8pt grid system.
-- **Radii**: 8 (S), 12 (M), 16 (L), 24 (XL).
-- **Animations**: Use appropriate Flutter animation approaches (built-in or package-based) prioritizing performance and consistency.
+## User Review Required
 
-## 5. Execution Roadmap
+> [!IMPORTANT]
+> **Automatic Action Completion**: I will implement a `pendingActionProvider` in Riverpod to store closures. After auth state changes to `user != null`, the app will check this provider and execute the call (e.g., add to cart) before clearing it.
 
-### Phase 0: Design System Foundation (Current)
-1. Brand Identity Documentation & Tokens
-2. Atomic Components (Buttons, Inputs, Badges)
-3. Complex Components (Product Cards, Banners, Nav)
-4. Developer Gallery (Hidden route `/gallery`)
-
-### Phase 1: Onboarding & Identity
-Splash, Language Selection, Login/Register (Email & Google).
-
-### Phase 2: Core Experience
-Home, Product Details, Search, Categories.
-
-### Phase 3: Transactional
-Cart, Checkout, Address Management.
-
-### Phase 4: Post-Purchase & Account
-Orders, Tracking, Profile.
-
-### Phase 5: Retention
-Notifications, Favorites, Coupons, Loyalty.
-
-## 6. Architecture for Scale
-Designed for: Multi-branch, delivery zones, pickup/delivery, seasonal products, and future expansion (Istanbul/Izmir).
+> [!TIP]
+> **Guest Indicator**: I'll use a subtle "Guest" tag next to the greeting in the Home header to keep the UI clean but informative.
 
 ## Verification Plan
-1. **Gallery Audit**: Verify all component states and tokens.
-2. **Contrast & Accessibility**: Audit via screen reader and contrast checkers.
-3. **Responsive Check**: Test on small phone, large phone, and tablet layouts.
+1.  **Guest Journey**: Verify flow from Splash -> Language -> Home without a login screen.
+2.  **Context Preservation**:
+    - As guest: Tap "Add Traditional Sangak".
+    - Sign in.
+    - Verify user is back on the product page AND the bread is already in their basket.
+3.  **Cart Preview**: Verify the Cart tab shows a welcoming invitation when guest.
+4.  **UI Audit**: Ensure the `AuthPromptBottomSheet` follows "Artisanal Precision" (no bouncy wiggles, just smooth slides).

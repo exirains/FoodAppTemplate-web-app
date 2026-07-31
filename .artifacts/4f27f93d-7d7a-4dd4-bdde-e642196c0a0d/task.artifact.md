@@ -1,27 +1,19 @@
-# Task List - Sangak Design System & Phased Implementation (v1.3)
+# Task List - Guest Mode & Context Preservation
 
-- `[x]` 1. Design System Foundation (v1.0.0)
-    - `[x]` Document Brand Strategy (Values, Voice, Tone, Photography)
-    - `[x]` Define Tokens: `SangakColors`, `SangakTypography`, `SangakDimens`
-    - `[x]` Implement `SangakThemeExtension` & `ThemeData`
-    - `[x]` Atomic Components: `SangakButton`, `SangakTextField`, `FreshnessBadge`
-    - `[x]` Signature Components: **Product Card**, `HeroBanner`, `QuantitySelector`
-    - `[x]` Navigation & Feedback: `AppBar`, `BottomNav`, `Skeletons`, `EmptyStates`
-    - `[x]` Developer Gallery (Hidden `/gallery` route)
-- `[ ]` 2. Phase 1: Onboarding & Identity
-    - `[ ]` Splash Screen (Signature Brand Moment)
-    - `[ ]` Language Selection (EN/TR/FA)
-    - `[ ]` Authentication (Login/Register/Google)
-- `[ ]` 3. Phase 2: Discovery
-    - `[ ]` Home Dashboard (Storytelling layout)
-    - `[ ]` Product Details (Photography focus)
-    - `[ ]` Search & Categories
-- `[ ]` 4. Phase 3: Transactional & Account
-    - `[ ]` Cart & Checkout Flow
-    - `[ ]` Address Management
-    - `[ ]` Order Tracking & History
-    - `[ ]` Profile & Settings
-- `[x]` 5. Verification & Audit
-    - `[x]` Pixel-perfect & Token consistency audit
-    - `[x]` Accessibility & Performance audit
-    - `[x]` Responsive (Phone/Tablet/Web) check
+- `[x]` 1. Infrastructure Update
+    - `[x]` Create `AuthPromptBottomSheet`
+    - `[x]` Implement `PendingActionNotifier` for context preservation
+    - `[x]` Create `AuthGate` utility
+- `[x]` 2. Flow & Routing
+    - `[x]` Update `SplashScreen` routing (Default to `/home`)
+    - `[x]` Update `AppRouter` to handle guest states
+- `[x]` 3. Tab & Header Refinement
+    - `[x]` Add Guest Indicator to `HomeScreen` header
+    - `[x]` Create `CartGuestView` for the Cart tab
+    - `[x]` Create `ProfileGuestView` for the Profile tab
+- `[x]` 4. Action Interception
+    - `[x]` Wrap "Add to Cart" with `AuthGate`
+    - `[x]` Wrap "Favorite" with `AuthGate`
+- `[x]` 5. Verification
+    - `[x]` Test context preservation (Auto-add after login)
+    - `[x]` UI audit of prompts and guest views
