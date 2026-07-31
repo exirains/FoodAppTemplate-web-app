@@ -44,6 +44,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Flutter SDK
+flutter/
+
+
 # Artifacts
 .artifacts/
 .ai/
