@@ -94,6 +94,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get goodMorning => 'Günaydın,';
 
   @override
+  String get goodAfternoon => 'Good Afternoon,';
+
+  @override
+  String get goodEvening => 'Good Evening,';
+
+  @override
   String get welcomeToSangakGuest => 'Sangak\'a Hoş Geldiniz,';
 
   @override
@@ -115,9 +121,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addToBasket => 'Sepete Ekle';
 
   @override
+  String get updateBasket => 'Update Basket';
+
+  @override
   String addedToBasket(String title) {
     return '$title sepete eklendi!';
   }
+
+  @override
+  String get loginSuccessful => 'Başarıyla giriş yapıldı!';
+
+  @override
+  String get registeredSuccessfully => 'Hesap başarıyla oluşturuldu!';
 
   @override
   String get saveYourFavorites => 'Favorilerinizi kaydedin';

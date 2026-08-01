@@ -5,6 +5,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
+import '../../shared/utils/sangak_toast.dart';
 import '../../models/cart_item.dart';
 import 'cart_provider.dart';
 
@@ -97,7 +98,7 @@ class CheckoutScreen extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${item.quantity}x ${item.bread.title}', style: SangakTypography.bodyMedium),
+                  Text('${item.quantity}x ${item.bread.name}', style: SangakTypography.bodyMedium),
                   Text('₺${item.total.toStringAsFixed(0)}', style: SangakTypography.title.copyWith(fontSize: 14)),
                 ],
               ),
@@ -156,9 +157,7 @@ class CheckoutScreen extends ConsumerWidget {
             onPressed: () {
               // TODO: Implement order placement
               ref.read(cartProvider.notifier).clear();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.orderPlacedSuccessfully)),
-              );
+              SangakToast.show(context, l10n.orderPlacedSuccessfully);
               Navigator.pop(context);
             },
           ),

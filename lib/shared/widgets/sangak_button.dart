@@ -131,12 +131,15 @@ class _SangakButtonState extends State<SangakButton> {
                           Icon(widget.icon, size: 20, color: _getForegroundColor()),
                           const SizedBox(width: SangakDimens.spacing8),
                         ],
-                        Text(
+                        FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
                           widget.label,
                           style: SangakTypography.button.copyWith(
                             color: _getForegroundColor(),
                           ),
                         ),
+                      ),
                       ],
                     ),
             ),

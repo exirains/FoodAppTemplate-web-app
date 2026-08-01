@@ -1,48 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../core/design_system/sangak_tokens.dart';
 import '../../models/bread.dart';
+import '../../features/cart/cart_provider.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
+import 'sangak_dialogs.dart';
 
 /// Sangak Design System Signature Product Card (v1.0.0)
-///
-/// Immutable rules: Fixed image ratio, consistent padding, photography-first.
-class ProductCard extends StatefulWidget {
-  final String title;
+class ProductCard extends ConsumerStatefulWidget {
+  final String name;
   final String description;
   final double price;
   final String imageUrl;
   final FreshnessToken? freshness;
   final bool isFavorite;
-  final int quantity;
   final VoidCallback onAddToCart;
   final VoidCallback onFavoriteToggle;
   final Bread? bread;
 
   const ProductCard({
     super.key,
-    required this.title,
+    required this.name,
     required this.description,
     required this.price,
     required this.imageUrl,
     this.freshness,
     this.isFavorite = false,
-    this.quantity = 0,
     required this.onAddToCart,
     required this.onFavoriteToggle,
     this.bread,
   });
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  ConsumerState<ProductCard> createState() => _ProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> with SingleTickerProviderStateMixin {
+class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -66,6 +66,10 @@ class _ProductCardState extends State<ProductCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final cart = ref.watch(cartProvider);
+    final cartItem = cart.where((item) => item.bread.id == widget.bread?.id).firstOrNull;
+    final int quantity = cartItem?.quantity ?? 0;
+
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) => _controller.reverse(),
@@ -74,7 +78,6 @@ class _ProductCardState extends State<ProductCard> with SingleTickerProviderStat
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          width: 220,
           decoration: BoxDecoration(
             color: SangakColors.surface,
             borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
@@ -89,17 +92,50 @@ class _ProductCardState extends State<ProductCard> with SingleTickerProviderStat
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
                     child: AspectRatio(
-                      aspectRatio: 1, // Strict square ratio for consistency
-                      child: Image.network(
-                        widget.imageUrl,
+                      aspectRatio: 1,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
+                        placeholder: (context, url) => Container(
+                          color: SangakColors.border,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
                           color: SangakColors.border,
                           child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
                         ),
                       ),
                     ),
                   ),
+                  // Tag Badge (Top Left)
+                  if (widget.bread?.tag != null)
+                    Positioned(
+                      top: SangakDimens.spacing12,
+                      left: SangakDimens.spacing12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: SangakColors.accent.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+                          boxShadow: SangakDimens.shadowLow,
+                        ),
+                        child: Text(
+                          widget.bread!.tag!.toUpperCase(),
+                          style: SangakTypography.caption.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ),
                   // Favorite Button
                   Positioned(
                     top: SangakDimens.spacing12,
@@ -139,7 +175,7 @@ class _ProductCardState extends State<ProductCard> with SingleTickerProviderStat
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.title,
+                      widget.name,
                       style: SangakTypography.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -160,32 +196,59 @@ class _ProductCardState extends State<ProductCard> with SingleTickerProviderStat
                           style: SangakTypography.price,
                         ),
                         // Add to Cart / Quantity Morph
-                        AnimatedSwitcher(
-                          duration: SangakTokens.animMedium,
-                          transitionBuilder: (child, animation) {
-                            return ScaleTransition(scale: animation, child: child);
-                          },
-                          child: widget.quantity > 0
-                              ? QuantitySelector(
-                                  key: const ValueKey('quantity'),
-                                  quantity: widget.quantity,
-                                  onIncrement: widget.onAddToCart,
-                                  onDecrement: widget.onAddToCart, // Placeholder
-                                )
-                              : ElevatedButton(
-                                  key: const ValueKey('add'),
-                                  onPressed: widget.onAddToCart,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: SangakColors.primary,
-                                    foregroundColor: Colors.white,
-                                    elevation: 0,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                        SizedBox(
+                          height: 36, // Strict height to avoid jump
+                          child: AnimatedSwitcher(
+                            duration: SangakTokens.animMedium,
+                            layoutBuilder: (currentChild, previousChildren) {
+                              return Stack(
+                                alignment: Alignment.centerRight,
+                                children: <Widget>[
+                                  ...previousChildren,
+                                  currentChild ?? const SizedBox.shrink(),
+                                ],
+                              );
+                            },
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(scale: animation, child: child),
+                              );
+                            },
+                            child: quantity > 0
+                                ? QuantitySelector(
+                                    key: const ValueKey('quantity'),
+                                    quantity: quantity,
+                                    onIncrement: () => ref.read(cartProvider.notifier).addItem(widget.bread!),
+                                    onDecrement: () => ref.read(cartProvider.notifier).updateQuantity(widget.bread!.id, -1),
+                                    onDelete: () {
+                                      SangakConfirmDialog.show(
+                                        context,
+                                        title: 'Remove item',
+                                        message: 'Are you sure you want to remove this item from your basket?',
+                                        confirmLabel: 'Remove',
+                                        cancelLabel: 'Cancel',
+                                        onConfirm: () => ref.read(cartProvider.notifier).removeItem(widget.bread!.id),
+                                        isDestructive: true,
+                                      );
+                                    },
+                                  )
+                                : ElevatedButton(
+                                    key: const ValueKey('add'),
+                                    onPressed: widget.onAddToCart,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: SangakColors.primary,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                      minimumSize: const Size(80, 36),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                      ),
                                     ),
+                                    child: Text(AppLocalizations.of(context).add),
                                   ),
-                                  child: Text(AppLocalizations.of(context).add),
-                                ),
+                          ),
                         ),
                       ],
                     ),

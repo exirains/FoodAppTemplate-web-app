@@ -36,7 +36,13 @@ class ProfileGuestView extends StatelessWidget {
               ),
               const SizedBox(height: SangakDimens.spacing40),
               SangakButton.primary(
-                label: l10n.signInRegister,
+                label: l10n.createAccount,
+                width: double.infinity,
+                onPressed: () => context.push('/register'),
+              ),
+              const SizedBox(height: SangakDimens.spacing12),
+              SangakButton.outlined(
+                label: l10n.signIn,
                 width: double.infinity,
                 onPressed: () => context.push('/login'),
               ),

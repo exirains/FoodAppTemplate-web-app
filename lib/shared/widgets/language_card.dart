@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/design_system/sangak_tokens.dart';
 
+/// Sangak Design System Language Card (v1.1.0)
+///
+/// Refined with 200ms animation and tactile selection feel.
 class LanguageCard extends StatelessWidget {
   final String label;
   final String flag;
@@ -20,43 +21,46 @@ class LanguageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: SangakTokens.animFast,
-        padding: const EdgeInsets.symmetric(
-          horizontal: SangakDimens.spacing24,
-          vertical: SangakDimens.spacing24,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? SangakColors.surface : Colors.transparent,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-          border: Border.all(
-            color: isSelected ? SangakColors.primary : SangakColors.border,
-            width: isSelected ? 2 : 1,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? SangakColors.primary.withValues(alpha: 0.1) 
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected 
+                  ? SangakColors.primary 
+                  : SangakColors.border.withValues(alpha: 0.5),
+              width: 2,
+            ),
           ),
-          boxShadow: isSelected ? SangakDimens.shadowLow : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              flag,
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(width: SangakDimens.spacing16),
-            Text(
-              label,
-              style: SangakTypography.title.copyWith(
-                color: isSelected ? SangakColors.primary : SangakColors.ink,
+          child: Row(
+            children: [
+              Text(flag, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 16),
+              Text(
+                label,
+                style: SangakTypography.title.copyWith(
+                  fontSize: 18,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                  color: isSelected ? SangakColors.primary : SangakColors.ink,
+                ),
               ),
-            ),
-            const Spacer(),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: SangakColors.primary,
-              ),
-          ],
+              const Spacer(),
+              if (isSelected)
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: SangakColors.primary,
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -94,6 +94,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goodMorning => 'Good Morning,';
 
   @override
+  String get goodAfternoon => 'Good Afternoon,';
+
+  @override
+  String get goodEvening => 'Good Evening,';
+
+  @override
   String get welcomeToSangakGuest => 'Welcome to Sangak,';
 
   @override
@@ -115,9 +121,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToBasket => 'Add to Basket';
 
   @override
+  String get updateBasket => 'Update Basket';
+
+  @override
   String addedToBasket(String title) {
     return '$title added to basket!';
   }
+
+  @override
+  String get loginSuccessful => 'Successfully logged in!';
+
+  @override
+  String get registeredSuccessfully => 'Account created successfully!';
 
   @override
   String get saveYourFavorites => 'Save your favorites';

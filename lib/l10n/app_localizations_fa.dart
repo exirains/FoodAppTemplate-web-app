@@ -94,6 +94,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get goodMorning => 'صبح بخیر،';
 
   @override
+  String get goodAfternoon => 'Good Afternoon,';
+
+  @override
+  String get goodEvening => 'Good Evening,';
+
+  @override
   String get welcomeToSangakGuest => 'به سنگک خوش آمدید،';
 
   @override
@@ -115,9 +121,18 @@ class AppLocalizationsFa extends AppLocalizations {
   String get addToBasket => 'افزودن به سبد';
 
   @override
+  String get updateBasket => 'Update Basket';
+
+  @override
   String addedToBasket(String title) {
     return '$title به سبد خرید اضافه شد!';
   }
+
+  @override
+  String get loginSuccessful => 'با موفقیت وارد شدید!';
+
+  @override
+  String get registeredSuccessfully => 'حساب کاربری با موفقیت ایجاد شد!';
 
   @override
   String get saveYourFavorites => 'علاقه‌مندی‌های خود را ذخیره کنید';

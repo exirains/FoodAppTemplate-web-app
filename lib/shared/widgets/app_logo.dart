@@ -25,7 +25,7 @@ class AppLogo extends StatelessWidget {
         showCircle = true;
 
   const AppLogo.large({super.key})
-      : size = 160,
+      : size = 200,
         showCircle = true;
 
   const AppLogo.nav({super.key})

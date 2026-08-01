@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -14,6 +15,8 @@ class SangakTextField extends StatefulWidget {
   final TextEditingController? controller;
   final IconData? leadingIcon;
   final TextInputType keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String?)? validator;
   final Function(String)? onChanged;
 
   const SangakTextField({
@@ -25,6 +28,8 @@ class SangakTextField extends StatefulWidget {
     this.controller,
     this.leadingIcon,
     this.keyboardType = TextInputType.text,
+    this.inputFormatters,
+    this.validator,
     this.onChanged,
   });
 
@@ -62,10 +67,12 @@ class _SangakTextFieldState extends State<SangakTextField> {
               ),
               boxShadow: _isFocused ? SangakDimens.shadowLow : null,
             ),
-            child: TextField(
+            child: TextFormField(
               controller: widget.controller,
               obscureText: widget.isPassword && _obscureText,
               keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatters,
+              validator: widget.validator,
               onChanged: widget.onChanged,
               style: SangakTypography.bodyLarge,
               decoration: InputDecoration(

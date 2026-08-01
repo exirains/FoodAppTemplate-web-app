@@ -77,7 +77,7 @@ class CartScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(item.bread.title, style: SangakTypography.title),
+                            Text(item.bread.name, style: SangakTypography.title),
                             const SizedBox(height: 4),
                             Text('₺${item.bread.price.toStringAsFixed(0)}', style: SangakTypography.price.copyWith(fontSize: 14)),
                           ],

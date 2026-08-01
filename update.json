@@ -1,15 +1,18 @@
 {
   "app_name": "Sangak",
-  "version": "1.0.1",
-  "build_number": 2,
+  "version": "1.1.0",
+  "build_number": 3,
   "force_update": false,
   "notes": [
-    "Added production in-app update service",
-    "New Product Management CLI tool for admins",
-    "100% localization in English, Turkish, and Persian",
-    "Refined animations and premium brand identity",
-    "Persistent guest basket (items saved locally)",
-    "Centralized version management"
+    "Major backend integration update",
+    "Connected products and categories to live Supabase data",
+    "Added real product management through the admin CLI tool",
+    "Added product image uploads with Supabase Storage",
+    "Implemented real product browsing and category filtering",
+    "Added foundation for cart, favorites, orders, and profile systems",
+    "Improved authentication and user data handling",
+    "Enhanced multilingual support in English, Turkish, and Persian",
+    "Improved UI consistency and prepared the app for full shopping features"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.0.1.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.1.0.apk"
 }

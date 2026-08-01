@@ -4,48 +4,67 @@ from supabase_client import supabase
 from image_uploader import upload_product_image
 
 def list_products():
-    response = supabase.table("products").select("id, name_en, price, is_available").execute()
+    response = supabase.table("products").select("id, name, price, available, tag").execute()
     products = response.data
-    print(f"{'ID':<36} | {'Name (EN)':<20} | {'Price':<6} | {'Available'}")
-    print("-" * 75)
+    print(f"{'ID':<36} | {'Name':<20} | {'Price':<6} | {'Available':<10} | {'Tag'}")
+    print("-" * 90)
     for p in products:
-        print(f"{p['id']:<36} | {p['name_en']:<20} | {p['price']:<6} | {p['is_available']}")
+        tag = p.get('tag') or "None"
+        print(f"{p['id']:<36} | {p['name']:<20} | {p['price']:<6} | {p['available']:<10} | {tag}")
+
+def get_tag_selection():
+    tags = ["Popular", "New", "Traditional", "Recommended", "Seasonal", "No Tag"]
+    print("\nSelect a product tag:")
+    for i, tag in enumerate(tags, 1):
+        print(f"{i}. {tag}")
+    
+    while True:
+        try:
+            choice = int(input("Choice (1-6): "))
+            if 1 <= choice <= 6:
+                selected = tags[choice - 1]
+                return None if selected == "No Tag" else selected
+            print("Invalid choice. Please select 1-6.")
+        except ValueError:
+            print("Please enter a number.")
 
 def add_product():
     print("Adding a new product. Please provide the details:")
-    name_en = input("Product name (English): ")
-    name_tr = input("Product name (Turkish): ")
-    name_fa = input("Product name (Persian): ")
-
-    desc_en = input("Description (English): ")
-    desc_tr = input("Description (Turkish): ")
-    desc_fa = input("Description (Persian): ")
-
+    name = input("Product name: ")
+    description = input("Description: ")
+    
     price = float(input("Price: "))
-    category = input("Category (e.g., bread, desserts): ")
+    category_id = input("Category UUID: ")
+    
+    tag = get_tag_selection()
+    
+    prep_time = int(input("Preparation time (mins) [20]: ") or 20)
+    calories = int(input("Calories (kcal) [250]: ") or 250)
+    is_organic = input("Is it organic? (y/n): ").lower() == 'y'
+    
     image_path = input("Image path: ")
     available = input("Available? (y/n): ").lower() == 'y'
 
     print("Uploading image...")
-    image_url = upload_product_image(image_path, category)
+    image_url = upload_product_image(image_path, "bread") # Defaulting to bread category for bucket path
     if not image_url:
         print("Failed to upload image. Aborting.")
         return
 
     print("Creating product record...")
     data = {
-        "name_en": name_en,
-        "name_tr": name_tr,
-        "name_fa": name_fa,
-        "description_en": desc_en,
-        "description_tr": desc_tr,
-        "description_fa": desc_fa,
+        "name": name,
+        "description": description,
         "price": price,
-        "category": category,
+        "category_id": category_id,
         "image_url": image_url,
-        "is_available": available
+        "available": available,
+        "tag": tag,
+        "prep_time": prep_time,
+        "calories": calories,
+        "is_organic": is_organic
     }
-
+    
     try:
         response = supabase.table("products").insert(data).execute()
         print(f"✓ Product created successfully! ID: {response.data[0]['id']}")
@@ -58,20 +77,39 @@ def update_product(product_id):
     if not res.data:
         print(f"Error: Product with ID {product_id} not found.")
         return
-
+    
     p = res.data[0]
-    print(f"Updating product: {p['name_en']}")
-
-    name_en = input(f"New name (EN) [{p['name_en']}]: ") or p['name_en']
+    print(f"Updating product: {p['name']}")
+    
+    name = input(f"New name [{p['name']}]: ") or p['name']
+    description = input(f"New description [{p['description']}]: ") or p['description']
     price = input(f"New price [{p['price']}]: ")
     price = float(price) if price else p['price']
-    available = input(f"Available (y/n) [{ 'y' if p['is_available'] else 'n'}]: ").lower()
-    available = available == 'y' if available else p['is_available']
+    
+    prep_time = input(f"New prep time [{p.get('prep_time', 20)}]: ")
+    prep_time = int(prep_time) if prep_time else p.get('prep_time', 20)
+
+    calories = input(f"New calories [{p.get('calories', 250)}]: ")
+    calories = int(calories) if calories else p.get('calories', 250)
+
+    is_organic = input(f"Is organic? (y/n) [{ 'y' if p.get('is_organic') else 'n'}]: ").lower()
+    is_organic = is_organic == 'y' if is_organic else p.get('is_organic', False)
+
+    change_tag = input(f"Change tag? (current: {p.get('tag') or 'None'}) (y/n): ").lower() == 'y'
+    tag = get_tag_selection() if change_tag else p.get('tag')
+    
+    available = input(f"Available (y/n) [{ 'y' if p['available'] else 'n'}]: ").lower()
+    available = available == 'y' if available else p['available']
 
     data = {
-        "name_en": name_en,
+        "name": name,
+        "description": description,
         "price": price,
-        "is_available": available
+        "prep_time": prep_time,
+        "calories": calories,
+        "is_organic": is_organic,
+        "available": available,
+        "tag": tag
     }
 
     try:

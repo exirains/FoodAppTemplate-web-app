@@ -109,19 +109,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const AppLogo.large(),
-                const SizedBox(height: 32),
+                const Hero(
+                  tag: 'app_logo',
+                  child: AppLogo.large(),
+                ),
+                const SizedBox(height: 56), // More space
                 Text(
                   l10n.appName.toUpperCase(),
                   style: SangakTypography.display.copyWith(
-                    letterSpacing: 4,
+                    letterSpacing: 8, // Heroic spacing
                     color: SangakColors.primary,
+                    fontSize: 48, // Flagship size
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Text(
-                  l10n.bakerySubtitle,
-                  style: SangakTypography.subtitle,
+                  l10n.bakerySubtitle.toUpperCase(),
+                  style: SangakTypography.subtitle.copyWith(
+                    letterSpacing: 4,
+                    fontSize: 16,
+                    color: SangakColors.inkLight,
+                  ),
                 ),
               ],
             ),

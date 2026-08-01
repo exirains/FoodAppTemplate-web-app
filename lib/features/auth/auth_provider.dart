@@ -22,28 +22,34 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     });
   }
 
-  Future<void> signIn(String email, String password) async {
+  Future<User?> signIn(String email, String password) async {
     state = const AsyncValue.loading();
     try {
-      await SupabaseService.client.auth.signInWithPassword(
+      final response = await SupabaseService.client.auth.signInWithPassword(
         email: email,
         password: password,
       );
+      state = AsyncValue.data(response.user);
+      return response.user;
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
+      rethrow;
     }
   }
 
-  Future<void> signUp(String email, String password, String fullName) async {
+  Future<User?> signUp(String email, String password, String fullName) async {
     state = const AsyncValue.loading();
     try {
-      await SupabaseService.client.auth.signUp(
+      final response = await SupabaseService.client.auth.signUp(
         email: email,
         password: password,
         data: {'full_name': fullName},
       );
+      state = AsyncValue.data(response.user);
+      return response.user;
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
+      rethrow;
     }
   }
 

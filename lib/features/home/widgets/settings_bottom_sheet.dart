@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
+import '../../../core/constants/version_config.dart';
 import '../../../core/localization/locale_provider.dart';
 import '../../../shared/widgets/language_card.dart';
 
@@ -81,22 +81,15 @@ class SettingsBottomSheet extends ConsumerWidget {
           const SizedBox(height: SangakDimens.spacing32),
           const Divider(),
           const SizedBox(height: SangakDimens.spacing16),
-          FutureBuilder<PackageInfo>(
-            future: PackageInfo.fromPlatform(),
-            builder: (context, snapshot) {
-              final version = snapshot.data?.version ?? '...';
-              final build = snapshot.data?.buildNumber ?? '';
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.appVersion, style: SangakTypography.bodyMedium),
-                  Text(
-                    '$version ($build)',
-                    style: SangakTypography.bodySmall.copyWith(color: SangakColors.inkLight),
-                  ),
-                ],
-              );
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.appVersion, style: SangakTypography.bodyMedium),
+              Text(
+                '${VersionConfig.version} (${VersionConfig.buildNumber})',
+                style: SangakTypography.bodySmall.copyWith(color: SangakColors.inkLight),
+              ),
+            ],
           ),
         ],
       ),

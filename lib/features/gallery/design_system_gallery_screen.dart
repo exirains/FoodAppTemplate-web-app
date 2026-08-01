@@ -128,13 +128,12 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
             const SizedBox(height: 24),
             Center(
               child: ProductCard(
-                title: 'Traditional Sangak',
+                name: 'Traditional Sangak',
                 description: 'Stone-baked whole wheat flatbread, perfect for breakfast.',
                 price: 80,
                 imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?q=80&w=400',
                 freshness: SangakTokens.outOfOven,
                 isFavorite: _isFavorite,
-                quantity: _productQuantity,
                 onFavoriteToggle: () => setState(() => _isFavorite = !_isFavorite),
                 onAddToCart: () => setState(() => _productQuantity++),
               ),

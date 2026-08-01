@@ -28,6 +28,8 @@
   "iAgreeToTerms": "I agree to the Terms & Conditions",
   "verificationEmailSent": "Verification email sent!",
   "goodMorning": "Good Morning,",
+  "goodAfternoon": "Good Afternoon,",
+  "goodEvening": "Good Evening,",
   "welcomeToSangakGuest": "Welcome to Sangak,",
   "guest": "Guest",
   "popularToday": "Popular Today",
@@ -35,7 +37,10 @@
   "categories": "Categories",
   "traditionalFavorites": "Traditional Favorites",
   "addToBasket": "Add to Basket",
+  "updateBasket": "Update Basket",
   "addedToBasket": "{title} added to basket!",
+  "loginSuccessful": "Successfully logged in!",
+  "registeredSuccessfully": "Account created successfully!",
   "@addedToBasket": {
     "placeholders": {
       "title": {

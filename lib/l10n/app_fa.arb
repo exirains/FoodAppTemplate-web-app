@@ -36,6 +36,8 @@
   "traditionalFavorites": "محبوب‌های سنتی",
   "addToBasket": "افزودن به سبد",
   "addedToBasket": "{title} به سبد خرید اضافه شد!",
+  "loginSuccessful": "با موفقیت وارد شدید!",
+  "registeredSuccessfully": "حساب کاربری با موفقیت ایجاد شد!",
   "@addedToBasket": {
     "placeholders": {
       "title": {

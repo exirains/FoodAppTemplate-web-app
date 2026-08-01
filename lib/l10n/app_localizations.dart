@@ -268,6 +268,18 @@ abstract class AppLocalizations {
   /// **'Good Morning,'**
   String get goodMorning;
 
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon,'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening,'**
+  String get goodEvening;
+
   /// No description provided for @welcomeToSangakGuest.
   ///
   /// In en, this message translates to:
@@ -310,11 +322,29 @@ abstract class AppLocalizations {
   /// **'Add to Basket'**
   String get addToBasket;
 
+  /// No description provided for @updateBasket.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Basket'**
+  String get updateBasket;
+
   /// No description provided for @addedToBasket.
   ///
   /// In en, this message translates to:
   /// **'{title} added to basket!'**
   String addedToBasket(String title);
+
+  /// No description provided for @loginSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully logged in!'**
+  String get loginSuccessful;
+
+  /// No description provided for @registeredSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully!'**
+  String get registeredSuccessfully;
 
   /// No description provided for @saveYourFavorites.
   ///

@@ -36,6 +36,8 @@
   "traditionalFavorites": "Geleneksel Favoriler",
   "addToBasket": "Sepete Ekle",
   "addedToBasket": "{title} sepete eklendi!",
+  "loginSuccessful": "Başarıyla giriş yapıldı!",
+  "registeredSuccessfully": "Hesap başarıyla oluşturuldu!",
   "@addedToBasket": {
     "placeholders": {
       "title": {

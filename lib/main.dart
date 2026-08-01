@@ -8,7 +8,7 @@ import 'core/router/app_router.dart';
 import 'core/theme/sangak_theme.dart';
 import 'services/supabase_service.dart';
 import 'services/storage_service.dart';
-
+import 'services/favorite_service.dart';
 import 'core/update/update_service.dart';
 
 // Providers for services
@@ -18,6 +18,10 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 
 final updateServiceProvider = Provider<UpdateService>((ref) {
   return UpdateService();
+});
+
+final favoriteServiceProvider = Provider<FavoriteService>((ref) {
+  return FavoriteService();
 });
 
 void main() async {
@@ -46,19 +50,22 @@ class SangakApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
 
-    return MaterialApp.router(
-      title: 'Sangak',
-      debugShowCheckedModeBanner: false,
-      theme: SangakTheme.light,
-      routerConfig: appRouter,
-      locale: locale,
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+    return Container(
+      color: const Color(0xFFFDFCF8), // Natural Paper background to avoid black flash
+      child: MaterialApp.router(
+        title: 'Sangak',
+        debugShowCheckedModeBanner: false,
+        theme: SangakTheme.light,
+        routerConfig: appRouter,
+        locale: locale,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
   }
 }

@@ -3,17 +3,21 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 
-/// Sangak Design System Quantity Selector (v1.0.0)
+/// Sangak Design System Quantity Selector (v1.1.0)
+///
+/// Supports Trash icon for deletion when quantity is 1.
 class QuantitySelector extends StatelessWidget {
   final int quantity;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final VoidCallback? onDelete;
 
   const QuantitySelector({
     super.key,
     required this.quantity,
     required this.onIncrement,
     required this.onDecrement,
+    this.onDelete,
   });
 
   @override
@@ -27,9 +31,12 @@ class QuantitySelector extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _IconButton(icon: Icons.remove, onPressed: onDecrement),
+          _IconButton(
+            icon: quantity == 1 && onDelete != null ? Icons.delete_outline : Icons.remove,
+            onPressed: quantity == 1 && onDelete != null ? onDelete! : onDecrement,
+          ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               '$quantity',
               style: SangakTypography.title.copyWith(color: Colors.white, fontSize: 14),
@@ -56,7 +63,7 @@ class _IconButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Icon(icon, size: 18, color: Colors.white),
         ),
       ),

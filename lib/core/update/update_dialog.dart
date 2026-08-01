@@ -102,17 +102,16 @@ class UpdateDialog extends StatelessWidget {
 
   Widget _buildVersionInfo(AppLocalizations l10n) {
     return Container(
-      padding: const EdgeInsets.all(SangakDimens.spacing12),
+      padding: const EdgeInsets.symmetric(vertical: SangakDimens.spacing12, horizontal: 8),
       decoration: BoxDecoration(
         color: SangakColors.background,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildVersionColumn(l10n.currentVersion, currentVersion),
-          const Icon(Icons.arrow_forward, size: 16, color: SangakColors.inkLight),
-          _buildVersionColumn(l10n.newVersion, updateInfo.version),
+          Expanded(child: _buildVersionColumn(l10n.currentVersion, currentVersion)),
+          Icon(Icons.arrow_forward, size: 16, color: SangakColors.inkLight.withValues(alpha: 0.5)),
+          Expanded(child: _buildVersionColumn(l10n.newVersion, updateInfo.version)),
         ],
       ),
     );
@@ -120,9 +119,17 @@ class UpdateDialog extends StatelessWidget {
 
   Widget _buildVersionColumn(String label, String version) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: SangakTypography.caption),
-        Text(version, style: SangakTypography.title.copyWith(color: SangakColors.primary)),
+        Text(label, style: SangakTypography.caption, textAlign: TextAlign.center),
+        const SizedBox(height: 2),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            version,
+            style: SangakTypography.title.copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     );
   }

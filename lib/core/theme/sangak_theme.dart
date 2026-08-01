@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import '../design_system/sangak_colors.dart';
 import '../design_system/sangak_typography.dart';
 import '../design_system/sangak_dimens.dart';
@@ -30,6 +31,12 @@ class SangakTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: SangakTypography.h3,
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
       ),
       // Extend the theme with Sangak-specific tokens
       extensions: [
