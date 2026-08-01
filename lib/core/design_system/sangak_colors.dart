@@ -10,8 +10,8 @@ class SangakColors {
   static const Color accent = Color(0xFF919D7E); // Olive Sage
 
   // Neutral Colors
-  static const Color background = Color(0xFFFDFCF8); // Natural Paper
-  static const Color surface = Color(0xFFFFFFFF); // Flour White
+  static const Color background = Color(0xFFFBF6EE); // Warm parchment
+  static const Color surface = Color(0xFFFFFFFF);    // Flour white
   static const Color ink = Color(0xFF2A241E); // Primary Text
   static const Color inkLight = Color(0xFF6D675F); // Secondary Text
   static const Color border = Color(0xFFE8E4D9); // Subtle Divider/Border

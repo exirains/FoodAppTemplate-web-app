@@ -84,7 +84,7 @@ class UpdateDialog extends StatelessWidget {
                         onPressed: onDismiss ?? () => Navigator.pop(context),
                       ),
                     ),
-                  if (!isMandatory) const SizedBox(width: SangakDimens.spacing12),
+                  if (!isMandatory) const SizedBox(width: 12),
                   Expanded(
                     child: SangakButton.primary(
                       label: l10n.updateNow,

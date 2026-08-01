@@ -26,6 +26,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
     final breadsAsync = ref.watch(filteredBreadsProvider);
+    final popularBreadsAsync = ref.watch(popularBreadsProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final user = ref.watch(authProvider).value;
     final isGuest = user == null;
@@ -163,7 +164,7 @@ class HomeScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: SizedBox(
               height: 380,
-              child: breadsAsync.when(
+              child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
                   scrollDirection: Axis.horizontal,
@@ -179,6 +180,7 @@ class HomeScreen extends ConsumerWidget {
                       imageUrl: bread.imageUrl,
                       freshness: bread.freshness,
                       isFavorite: bread.isFavorite,
+                      width: 220, // Pass fixed width for horizontal scrolling
                       onFavoriteToggle: () {
                         AuthGate.run(
                           context,
@@ -256,6 +258,7 @@ class HomeScreen extends ConsumerWidget {
                                   width: 80,
                                   height: 80,
                                   fit: BoxFit.cover,
+                                  memCacheHeight: 200,
                                   placeholder: (context, url) => Container(
                                     width: 80,
                                     height: 80,
@@ -303,22 +306,25 @@ class HomeScreen extends ConsumerWidget {
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      AuthGate.run(
-                                        context,
-                                        ref,
-                                        action: () => ref.read(favoritesProvider.notifier).toggle(bread.id),
-                                        title: l10n.saveYourFavorites,
-                                        message: l10n.saveFavoritesMessage,
-                                      );
-                                    },
-                                    icon: Icon(
-                                      bread.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                      color: bread.isFavorite ? SangakColors.error : SangakColors.inkLight,
-                                      size: 20,
-                                    ),
-                                  ),
+                                  Consumer(builder: (context, ref, child) {
+                                    final isFavorite = ref.watch(isFavoriteProvider(bread.id));
+                                    return IconButton(
+                                      onPressed: () {
+                                        AuthGate.run(
+                                          context,
+                                          ref,
+                                          action: () => ref.read(favoritesProvider.notifier).toggle(bread.id),
+                                          title: l10n.saveYourFavorites,
+                                          message: l10n.saveFavoritesMessage,
+                                        );
+                                      },
+                                      icon: Icon(
+                                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                                        color: isFavorite ? SangakColors.error : SangakColors.inkLight,
+                                        size: 20,
+                                      ),
+                                    );
+                                  }),
                                   IconButton(
                                     onPressed: () {
                                       AuthGate.run(

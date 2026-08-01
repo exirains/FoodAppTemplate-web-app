@@ -35,8 +35,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     final cartItem = cart.where((item) => item.bread.id == widget.bread.id).firstOrNull;
     final inCartQuantity = cartItem?.quantity ?? 0;
     
-    final favorites = ref.watch(favoritesProvider).value ?? [];
-    final isFavorite = favorites.contains(widget.bread.id);
+    final isFavorite = ref.watch(isFavoriteProvider(widget.bread.id));
 
     return Scaffold(
       backgroundColor: SangakColors.background,

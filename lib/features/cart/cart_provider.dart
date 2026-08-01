@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import '../../models/bread.dart';
@@ -69,7 +70,6 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     if (user != null) {
       // Save to Supabase
       try {
-        print('Saving cart for user ${user.id}...');
         // First clear old items for this user
         await SupabaseService.client.from('cart_items').delete().eq('user_id', user.id);
         
@@ -80,10 +80,9 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
             'quantity': item.quantity,
           }).toList();
           await SupabaseService.client.from('cart_items').insert(data);
-          print('Cart items inserted: ${data.length}');
         }
       } catch (e) {
-        print('Error saving cart to Supabase: $e');
+        debugPrint('Error saving cart to Supabase: $e');
       }
     } else {
       // Save locally

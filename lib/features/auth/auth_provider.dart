@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/supabase_service.dart';
@@ -57,12 +58,21 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     await SupabaseService.client.auth.signOut();
   }
 
+  Future<void> updateMetadata(Map<String, dynamic> data) async {
+    await SupabaseService.client.auth.updateUser(UserAttributes(data: data));
+    // The session listener in _init will trigger a state update
+  }
+
   Future<void> signInWithGoogle() async {
-    // Note: This requires native configuration for google_sign_in
-    // and setting up Google provider in Supabase dashboard.
-    // For now, providing the basic trigger.
+    final redirectUrl = kIsWeb
+        ? 'https://sangak.tr'
+        : 'com.sangak.app://login-callback';
+
     try {
-      await SupabaseService.client.auth.signInWithOAuth(OAuthProvider.google);
+      await SupabaseService.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: redirectUrl,
+      );
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
     }

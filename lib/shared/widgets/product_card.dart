@@ -9,6 +9,7 @@ import '../../core/design_system/sangak_dimens.dart';
 import '../../core/design_system/sangak_tokens.dart';
 import '../../models/bread.dart';
 import '../../features/cart/cart_provider.dart';
+import '../../features/home/home_provider.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
 import 'sangak_dialogs.dart';
@@ -24,6 +25,7 @@ class ProductCard extends ConsumerStatefulWidget {
   final VoidCallback onAddToCart;
   final VoidCallback onFavoriteToggle;
   final Bread? bread;
+  final double? width;
 
   const ProductCard({
     super.key,
@@ -36,6 +38,7 @@ class ProductCard extends ConsumerStatefulWidget {
     required this.onAddToCart,
     required this.onFavoriteToggle,
     this.bread,
+    this.width,
   });
 
   @override
@@ -69,6 +72,8 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
     final cart = ref.watch(cartProvider);
     final cartItem = cart.where((item) => item.bread.id == widget.bread?.id).firstOrNull;
     final int quantity = cartItem?.quantity ?? 0;
+    
+    final isFavorite = ref.watch(isFavoriteProvider(widget.bread?.id ?? ''));
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
@@ -78,6 +83,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
+          width: widget.width, // Use configurable width
           decoration: BoxDecoration(
             color: SangakColors.surface,
             borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
@@ -96,6 +102,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       child: CachedNetworkImage(
                         imageUrl: widget.imageUrl,
                         fit: BoxFit.cover,
+                        memCacheHeight: 400, // Image performance improvement
                         placeholder: (context, url) => Container(
                           color: SangakColors.border,
                           child: const Center(
@@ -151,10 +158,10 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         child: AnimatedSwitcher(
                           duration: SangakTokens.animMedium,
                           child: Icon(
-                            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-                            key: ValueKey(widget.isFavorite),
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            key: ValueKey(isFavorite),
                             size: 20,
-                            color: widget.isFavorite ? SangakColors.error : SangakColors.inkLight,
+                            color: isFavorite ? SangakColors.error : SangakColors.inkLight,
                           ),
                         ),
                       ),

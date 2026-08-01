@@ -1,65 +1,118 @@
+# =========================
 # Miscellaneous
+# =========================
 *.class
 *.log
 *.pyc
 *.swp
+*.swo
 .DS_Store
 .atom/
-.build/
-.buildlog/
 .history
 .svn/
-.swiftpm/
-migrate_working_dir/
+.migrate_working_dir/
 
-# IntelliJ related
+# =========================
+# IntelliJ / Android Studio
+# =========================
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# Android Studio local files
+local.properties
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# Flutter / Dart
+# =========================
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
-/coverage/
+build/
+**/doc/api/
 
-# Symbolication related
-app.*.symbols
+# Flutter generated files
+**/ios/Flutter/.last_build_id
 
-# Obfuscation related
-app.*.map.json
+# Coverage
+coverage/
 
-# Android Studio will place build artifacts here
+# =========================
+# Android Build Files
+# =========================
 /android/app/debug
 /android/app/profile
 /android/app/release
 
-# Flutter SDK
-flutter/
+# Gradle
+.gradle/
 
+# =========================
+# Android Signing (IMPORTANT)
+# =========================
+*.jks
+*.keystore
+key.properties
+android/key.properties
 
-# Artifacts
-.artifacts/
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Supabase / Secrets
+# =========================
+supabase/.temp/
+supabase/.branches/
+
+# =========================
+# Python Tools
+# =========================
+__pycache__/
+*.pyo
+*.pyd
+venv/
+.venv/
+
+# =========================
+# AI Tools / Prompts
+# =========================
 .ai/
 .ai-cache/
 .ai-artifacts/
-
-# Environment Variables
-.env
-.env.*
 .prompts/
 .prompt-history/
 .llm/
 .claude/
 .cursor/
 .copilot/
+
+# =========================
+# Release Artifacts
+# =========================
+*.apk
+*.aab
+*.ipa
+
+# Mapping / Symbol Files
+app.*.symbols
+app.*.map.json
+
+# =========================
+# Temporary Files
+# =========================
+*.tmp
+*.temp
+*.bak

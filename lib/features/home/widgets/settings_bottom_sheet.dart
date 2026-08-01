@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
@@ -81,15 +82,21 @@ class SettingsBottomSheet extends ConsumerWidget {
           const SizedBox(height: SangakDimens.spacing32),
           const Divider(),
           const SizedBox(height: SangakDimens.spacing16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.appVersion, style: SangakTypography.bodyMedium),
-              Text(
-                '${VersionConfig.version} (${VersionConfig.buildNumber})',
-                style: SangakTypography.bodySmall.copyWith(color: SangakColors.inkLight),
-              ),
-            ],
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              final version = snapshot.data?.version ?? VersionConfig.version;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(l10n.appVersion, style: SangakTypography.bodyMedium),
+                  Text(
+                    'Sangak Version $version',
+                    style: SangakTypography.bodySmall.copyWith(color: SangakColors.inkLight),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),

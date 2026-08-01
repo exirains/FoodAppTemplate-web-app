@@ -1,0 +1,26 @@
+# Task List - Phase 5: Backend Sync & UI Perfection
+
+- `[ ]` 1. Bug Fixes & Infrastructure
+    - `[ ]` Fix Login Button & add Back Button to `LoginScreen`
+    - `[ ]` Fix 32px overflow in `ExploreScreen`
+    - `[ ]` Fix "Height Jump" in `ProductCard` button morph
+    - `[ ]` Implement `GreetingService` for dynamic time-based headers
+- `[ ]` 2. Transactional & Sync
+    - `[ ]` Implement local -> Supabase `cart_items` sync logic
+    - `[ ]` Make Quantity Selector in Product Details functional
+    - `[ ]` Verify real-time cart persistence
+- `[ ]` 3. User Profile Hub (Refined)
+    - `[ ]` Fix Avatar display (fetch from `profiles` table)
+    - `[ ]` Remove redundant language selection from Profile
+    - `[ ]` Add E.164 phone formatting and field validation
+- `[ ]` 4. Product Details & Favorites
+    - `[ ]` Connect Product Details heart button to `FavoriteService`
+    - `[ ]` Implement Optimistic Updates for favorites (Instant heart fill)
+    - `[ ]` Dynamic "Organic" chip display
+- `[ ]` 5. CLI & Schema Extension
+    - `[ ]` Update `Bread` model for Prep Time, Calories, Organic
+    - `[ ]` Update `main.py` CLI for new fields
+- `[ ]` 6. Silky Polish
+    - `[ ]` Implement smooth `PageTransitionsTheme`
+    - `[ ]` Enlarge logo on Splash screen
+    - `[ ]` Final 0-issue audit

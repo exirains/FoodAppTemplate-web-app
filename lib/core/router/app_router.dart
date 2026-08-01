@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/gallery/design_system_gallery_screen.dart';
@@ -10,42 +11,103 @@ import '../../features/home/product_details_screen.dart';
 import '../../features/cart/checkout_screen.dart';
 import '../../models/bread.dart';
 
+// Helper for silky smooth transitions
+CustomTransitionPage _buildPageWithTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // Professional fade + slightly more pronounced slide
+      return FadeTransition(
+        opacity: CurveTween(curve: Curves.easeIn).animate(animation),
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.05), // Increased from 0.02 to 0.05
+            end: Offset.zero,
+          ).animate(CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          )),
+          child: child,
+        ),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 500), // Increased from 400 to 500
+  );
+}
+
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const SplashScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const SplashScreen(),
+      ),
     ),
     GoRoute(
       path: '/language',
-      builder: (context, state) => const LanguageSelectionScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const LanguageSelectionScreen(),
+      ),
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const LoginScreen(),
+      ),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) => const RegisterScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const RegisterScreen(),
+      ),
     ),
     GoRoute(
       path: '/gallery',
-      builder: (context, state) => const DesignSystemGalleryScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const DesignSystemGalleryScreen(),
+      ),
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) => const MainScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const MainScreen(),
+      ),
     ),
     GoRoute(
       path: '/checkout',
-      builder: (context, state) => const CheckoutScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const CheckoutScreen(),
+      ),
     ),
     GoRoute(
       path: '/product-details',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final bread = state.extra as Bread;
-        return ProductDetailsScreen(bread: bread);
+        return _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: ProductDetailsScreen(bread: bread),
+        );
       },
     ),
   ],

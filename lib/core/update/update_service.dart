@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../constants/version_config.dart';
 import 'update_repository.dart';
 import 'update_model.dart';
 
@@ -17,24 +16,19 @@ class UpdateService {
     final updateInfo = await _repository.fetchUpdateInfo();
     if (updateInfo == null) return null;
 
-    // Use VersionConfig as the primary source of truth
-    final currentVersion = Version.parse(VersionConfig.version);
-    final latestVersion = Version.parse(updateInfo.version);
+    // Get local version from PackageInfo
+    final packageInfo = await PackageInfo.fromPlatform();
+    final localVersion = Version.parse(packageInfo.version);
+    final localBuild = int.tryParse(packageInfo.buildNumber) ?? 0;
     
-    final currentBuild = VersionConfig.buildNumber;
-    final latestBuild = updateInfo.buildNumber;
+    final remoteVersion = Version.parse(updateInfo.version);
+    final remoteBuild = updateInfo.buildNumber;
 
-    // PackageInfo used as fallback/verification
-    try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      debugPrint('System reported version: ${packageInfo.version}+${packageInfo.buildNumber}');
-    } catch (e) {
-      debugPrint('Failed to get PackageInfo: $e');
-    }
+    debugPrint('Local: $localVersion+$localBuild, Remote: $remoteVersion+$remoteBuild');
 
-    if (latestVersion > currentVersion) {
+    if (remoteVersion > localVersion) {
       return updateInfo;
-    } else if (latestVersion == currentVersion && latestBuild > currentBuild) {
+    } else if (remoteVersion == localVersion && remoteBuild > localBuild) {
       return updateInfo;
     }
     

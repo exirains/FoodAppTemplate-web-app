@@ -8,10 +8,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
+import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
+
+import '../../features/home/home_provider.dart';
+import '../../features/home/widgets/settings_bottom_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -47,6 +51,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
       // Update profile
       await SupabaseService.client.from('profiles').update({'avatar_url': avatarUrl}).eq('id', user.id);
+      
+      // Update auth metadata to ensure it shows up everywhere instantly
+      await ref.read(authProvider.notifier).updateMetadata({'avatar_url': avatarUrl});
 
       if (mounted) {
         SangakToast.show(context, 'Profile picture updated successfully!');
@@ -77,6 +84,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final authState = ref.watch(authProvider);
     final user = authState.value;
     final l10n = AppLocalizations.of(context);
+    final favoriteCount = ref.watch(favoriteCountProvider);
 
     if (user == null) return const SizedBox.shrink();
 
@@ -86,29 +94,106 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(l10n.profile),
         actions: [
           IconButton(
-            onPressed: _signOut,
-            icon: const Icon(Icons.logout_rounded, color: SangakColors.error),
+            onPressed: () => SettingsBottomSheet.show(context),
+            icon: const Icon(Icons.settings_outlined),
           ),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(SangakDimens.spacing24),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildAvatar(user),
             const SizedBox(height: 24),
-            Text(
-              user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-              style: SangakTypography.h2,
-            ),
-            Text(
-              user.email ?? '',
-              style: SangakTypography.bodyMedium.copyWith(color: SangakColors.inkLight),
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
+                    style: SangakTypography.h2,
+                  ),
+                  Text(
+                    user.email ?? '',
+                    style: SangakTypography.bodyMedium.copyWith(color: SangakColors.inkLight),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 48),
-            _buildInfoTile(Icons.phone_outlined, l10n.phoneNumber, user.userMetadata?['phone'] ?? '-'),
+            
+            // Activity Section
+            Text('Activity', style: SangakTypography.title),
             const SizedBox(height: 16),
-            _buildInfoTile(Icons.email_outlined, l10n.email, user.email ?? '-'),
+            Row(
+              children: [
+                Expanded(child: _buildActivityCard(Icons.favorite_rounded, 'Favorites', '$favoriteCount')),
+                const SizedBox(width: 16),
+                Expanded(child: _buildActivityCard(Icons.shopping_bag_rounded, 'Orders', '0')),
+              ],
+            ),
+            
+            const SizedBox(height: 32),
+            
+            // Account Section
+            Text('Account', style: SangakTypography.title),
+            const SizedBox(height: 16),
+            _buildInfoTile(Icons.phone_outlined, l10n.phoneNumber, user.userMetadata?['phone'] ?? '-'),
+            const SizedBox(height: 12),
+            _buildActionTile(Icons.edit_outlined, 'Edit Profile', () {}),
+            const SizedBox(height: 12),
+            _buildActionTile(Icons.language_rounded, 'Language', () => SettingsBottomSheet.show(context)),
+            
+            const SizedBox(height: 48),
+            SangakButton.outlined(
+              label: 'Sign Out',
+              width: double.infinity,
+              onPressed: _signOut,
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActivityCard(IconData icon, String label, String value) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+        boxShadow: SangakDimens.shadowLow,
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: SangakColors.primary),
+          const SizedBox(height: 8),
+          Text(value, style: SangakTypography.h3),
+          Text(label, style: SangakTypography.caption),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionTile(IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: SangakColors.surface,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+          border: Border.all(color: SangakColors.border),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: SangakColors.primary, size: 22),
+            const SizedBox(width: 16),
+            Text(label, style: SangakTypography.title.copyWith(fontSize: 16)),
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: SangakColors.inkLight, size: 20),
           ],
         ),
       ),
@@ -135,8 +220,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ? CachedNetworkImage(
                       imageUrl: avatarUrl,
                       fit: BoxFit.cover,
-                      placeholder: (_, __) => const Center(child: CircularProgressIndicator()),
-                      errorWidget: (_, __, ___) => const Icon(Icons.person_rounded, size: 64, color: SangakColors.border),
+                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => const Icon(Icons.person_rounded, size: 64, color: SangakColors.border),
                     )
                   : const Icon(Icons.person_rounded, size: 64, color: SangakColors.border),
             ),

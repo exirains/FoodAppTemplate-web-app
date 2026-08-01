@@ -134,6 +134,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
                 imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?q=80&w=400',
                 freshness: SangakTokens.outOfOven,
                 isFavorite: _isFavorite,
+                width: 220,
                 onFavoriteToggle: () => setState(() => _isFavorite = !_isFavorite),
                 onAddToCart: () => setState(() => _productQuantity++),
               ),

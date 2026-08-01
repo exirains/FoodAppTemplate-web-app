@@ -1,21 +1,41 @@
+import 'package:hive/hive.dart';
 import '../core/design_system/sangak_tokens.dart';
 
+part 'bread.g.dart';
+
+@HiveType(typeId: 0)
 class Bread {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final String categoryId;
+  @HiveField(2)
   final String name;
+  @HiveField(3)
   final String description;
+  @HiveField(4)
   final double price;
+  @HiveField(5)
   final String imageUrl;
+  @HiveField(6)
   final bool available;
+  @HiveField(7)
   final String? tag;
+  @HiveField(8)
   final int prepTime;
+  @HiveField(9)
   final int calories;
+  @HiveField(10)
   final bool isOrganic;
+  @HiveField(11)
   final DateTime? createdAt;
+  @HiveField(12)
   final DateTime? updatedAt;
+  @HiveField(13)
   final double rating;
+  @HiveField(14)
   final int reviews;
+  
   final FreshnessToken? freshness;
   final bool isFavorite;
 
@@ -62,6 +82,13 @@ class Bread {
     return 0.0;
   }
 
+  static int _toInt(dynamic value, int defaultValue) {
+    if (value == null) return defaultValue;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? defaultValue;
+    return defaultValue;
+  }
+
   factory Bread.fromJson(Map<String, dynamic> json) {
     return Bread(
       id: json['id'] as String,
@@ -72,13 +99,13 @@ class Bread {
       imageUrl: json['image_url'] as String? ?? '',
       available: json['available'] as bool? ?? true,
       tag: json['tag'] as String?,
-      prepTime: json['prep_time'] as int? ?? 20,
-      calories: json['calories'] as int? ?? 250,
+      prepTime: _toInt(json['prep_time'], 20),
+      calories: _toInt(json['calories'], 250),
       isOrganic: json['is_organic'] as bool? ?? false,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at'] as String) : null,
       rating: _toDouble(json['rating']),
-      reviews: json['reviews'] as int? ?? 0,
+      reviews: _toInt(json['reviews'], 0),
     );
   }
 

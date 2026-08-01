@@ -36,12 +36,12 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView( // Added scrolling to prevent overflow
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 20), // Reduced from 40
               const AppLogo.large(),
               const SizedBox(height: 24),
               Text(
@@ -55,7 +55,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey, fontSize: 13),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32), // Reduced from 48
               ..._languages.map((lang) => LanguageCard(
                     label: lang['label']!,
                     flag: lang['flag']!,
@@ -65,7 +65,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                       ref.read(localeProvider.notifier).setLocale(lang['code']!);
                     },
                   )),
-              const Spacer(),
+              const SizedBox(height: 48), // Replaced Spacer
               const Text(
                 "You can change this anytime in settings\nBu seçeneği dilediğiniz zaman ayarlardan değiştirebilirsiniz\nمی‌توانید این را هر زمان در تنظیمات تغییر دهید",
                 textAlign: TextAlign.center,

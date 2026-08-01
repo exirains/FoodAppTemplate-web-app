@@ -21,11 +21,11 @@ class AppLogo extends StatelessWidget {
         showCircle = true;
 
   const AppLogo.medium({super.key})
-      : size = 100,
+      : size = 80,
         showCircle = true;
 
   const AppLogo.large({super.key})
-      : size = 200,
+      : size = 160,
         showCircle = true;
 
   const AppLogo.nav({super.key})
@@ -43,7 +43,7 @@ class AppLogo extends StatelessWidget {
 
     if (showCircle) {
       return Container(
-        padding: EdgeInsets.all(size * 0.2),
+        padding: EdgeInsets.all(size * 0.1), // Reduced padding from 0.2 to 0.1
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,

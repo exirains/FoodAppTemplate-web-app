@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -65,11 +66,29 @@ class CartScreen extends ConsumerWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                        child: Image.network(
-                          item.bread.imageUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: item.bread.imageUrl,
                           width: 70,
                           height: 70,
                           fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            width: 70,
+                            height: 70,
+                            color: SangakColors.border,
+                            child: const Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            width: 70,
+                            height: 70,
+                            color: SangakColors.border,
+                            child: const Icon(Icons.broken_image_outlined, color: SangakColors.inkLight),
+                          ),
                         ),
                       ),
                       const SizedBox(width: SangakDimens.spacing16),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import 'core/localization/locale_provider.dart';
@@ -9,7 +10,10 @@ import 'core/theme/sangak_theme.dart';
 import 'services/supabase_service.dart';
 import 'services/storage_service.dart';
 import 'services/favorite_service.dart';
+import 'services/cache_service.dart';
 import 'core/update/update_service.dart';
+import 'models/bread.dart';
+import 'models/category.dart';
 
 // Providers for services
 final storageServiceProvider = Provider<StorageService>((ref) {
@@ -24,8 +28,18 @@ final favoriteServiceProvider = Provider<FavoriteService>((ref) {
   return FavoriteService();
 });
 
+final cacheServiceProvider = Provider<CacheService>((ref) {
+  return CacheService();
+});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Hive
+  await Hive.initFlutter();
+  Hive.registerAdapter(BreadAdapter());
+  Hive.registerAdapter(CategoryAdapter());
+  await Hive.openBox<List>('cache');
   
   // Initialize Supabase
   await SupabaseService.initialize();
