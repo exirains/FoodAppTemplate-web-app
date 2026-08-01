@@ -1,5 +1,7 @@
 import sys
 import argparse
+import random
+from datetime import date
 from supabase_client import supabase
 from image_uploader import upload_product_image
 
@@ -142,6 +144,9 @@ def main():
     delete_parser = subparsers.add_parser("delete", help="Delete a product")
     delete_parser.add_argument("id", help="The UUID of the product to delete")
 
+    popular_parser = subparsers.add_parser("popular", help="Manage Popular Today products")
+    popular_parser.add_argument("action", choices=["list", "generate", "clear"], help="Action to perform")
+
     args = parser.parse_args()
 
     if args.command == "list":
@@ -152,6 +157,27 @@ def main():
         update_product(args.id)
     elif args.command == "delete":
         delete_product(args.id)
+    elif args.command == "popular":
+        if args.action == "list":
+            res = supabase.table("popular_today").select("display_date, products(name)").execute()
+            for p in res.data:
+                print(f"{p['display_date']} | {p['products']['name']}")
+        elif args.action == "generate":
+            print("Generating popular products...")
+            import random
+            from datetime import date
+            res = supabase.table("products").select("id").eq("available", True).execute()
+            if not res.data:
+                print("No products available.")
+            else:
+                selection = random.sample(res.data, min(3, len(res.data)))
+                today = str(date.today())
+                data = [{"product_id": p['id'], "display_date": today} for p in selection]
+                supabase.table("popular_today").upsert(data).execute()
+                print(f"Generated {len(selection)} popular products for {today}.")
+        elif args.action == "clear":
+            supabase.table("popular_today").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+            print("Cleared popular today table.")
     else:
         parser.print_help()
 
