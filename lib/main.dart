@@ -39,7 +39,8 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(BreadAdapter());
   Hive.registerAdapter(CategoryAdapter());
-  await Hive.openBox<List>('cache');
+  final cacheBox = await Hive.openBox<List>('cache');
+  await cacheBox.clear(); // Clear cache to ensure fresh schema data with descriptions
   
   // Initialize Supabase
   await SupabaseService.initialize();

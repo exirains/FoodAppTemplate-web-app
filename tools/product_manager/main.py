@@ -73,11 +73,11 @@ def add_product():
     except Exception as e:
         print(f"Error creating product: {e}")
 
-def update_product(product_id):
+def update_product(name):
     # Fetch existing data first
-    res = supabase.table("products").select("*").eq("id", product_id).execute()
+    res = supabase.table("products").select("*").eq("name", name).execute()
     if not res.data:
-        print(f"Error: Product with ID {product_id} not found.")
+        print(f"Error: Product with name {name} not found.")
         return
     
     p = res.data[0]
@@ -115,7 +115,7 @@ def update_product(product_id):
     }
 
     try:
-        supabase.table("products").update(data).eq("id", product_id).execute()
+        supabase.table("products").update(data).eq("name", name).execute()
         print("✓ Product updated successfully!")
     except Exception as e:
         print(f"Error updating product: {e}")

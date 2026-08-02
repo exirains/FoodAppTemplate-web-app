@@ -31,7 +31,7 @@ class BreadRepository {
   Future<List<Bread>> getBreads({String? categoryId}) async {
     try {
       debugPrint('Fetching breads (category: $categoryId)...');
-      var query = _client.from('products').select('id, category_id, name, price, image_url, available, tag, prep_time, calories, is_organic'); // Optimized select
+      var query = _client.from('products').select(); // Select all fields to ensure nothing is missed
       if (categoryId != null) {
         query = query.eq('category_id', categoryId);
       }
