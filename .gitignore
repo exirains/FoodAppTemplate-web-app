@@ -116,3 +116,10 @@ app.*.map.json
 *.tmp
 *.temp
 *.bak
+
+# =========================
+# Flutter / Dart
+# =========================
+/flutter/
+.dart_tool/
+.flutter-plugins
