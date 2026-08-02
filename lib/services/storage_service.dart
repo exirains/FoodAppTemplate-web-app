@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StorageService {
   static const String _keyLanguage = 'selected_language';
   static const String _keyFirstLaunch = 'is_first_launch';
-  static const String _keyCart = 'local_cart';
+  static const String _keyBasket = 'local_basket';
+  static const String _keyAddresses = 'saved_addresses';
 
   final SharedPreferences _prefs;
 
@@ -21,9 +22,15 @@ class StorageService {
 
   bool get isFirstLaunch => _prefs.getBool(_keyFirstLaunch) ?? true;
 
-  Future<void> saveCart(String cartJson) async {
-    await _prefs.setString(_keyCart, cartJson);
+  Future<void> saveBasket(String basketJson) async {
+    await _prefs.setString(_keyBasket, basketJson);
   }
 
-  String? get cart => _prefs.getString(_keyCart);
+  String? get basket => _prefs.getString(_keyBasket);
+
+  Future<void> saveAddresses(String addressesJson) async {
+    await _prefs.setString(_keyAddresses, addressesJson);
+  }
+
+  String? get addresses => _prefs.getString(_keyAddresses);
 }

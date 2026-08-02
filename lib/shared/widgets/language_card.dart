@@ -47,7 +47,7 @@ class LanguageCard extends StatelessWidget {
               const SizedBox(width: 16),
               Text(
                 label,
-                style: SangakTypography.title.copyWith(
+                style: SangakTypography.title(context).copyWith(
                   fontSize: 18,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
                   color: isSelected ? SangakColors.primary : SangakColors.ink,

@@ -94,10 +94,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get goodMorning => 'صبح بخیر،';
 
   @override
-  String get goodAfternoon => 'Good Afternoon,';
+  String get goodAfternoon => 'بعدازظهر بخیر،';
 
   @override
-  String get goodEvening => 'Good Evening,';
+  String get goodEvening => 'عصر بخیر،';
 
   @override
   String get welcomeToSangakGuest => 'به سنگک خوش آمدید،';
@@ -121,7 +121,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get addToBasket => 'افزودن به سبد';
 
   @override
-  String get updateBasket => 'Update Basket';
+  String get updateBasket => 'بروزرسانی سبد';
 
   @override
   String addedToBasket(String title) {
@@ -145,7 +145,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get yourBasketIsWaiting => 'سبد خرید شما منتظر است';
 
   @override
-  String get cartGuestMessage =>
+  String get basketGuestMessage =>
       'برای ذخیره اقلام، پیگیری سفارشات و تکمیل خرید خود، یک حساب کاربری بسازید.';
 
   @override
@@ -165,7 +165,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get explore => 'جستجو';
 
   @override
-  String get cart => 'سبد خرید';
+  String get basket => 'سبد';
 
   @override
   String get profile => 'پروفایل';
@@ -235,13 +235,71 @@ class AppLocalizationsFa extends AppLocalizations {
   String get proceedToCheckout => 'ادامه به تسویه حساب';
 
   @override
+  String get useCurrentLocation => 'استفاده از موقعیت فعلی';
+
+  @override
+  String get address => 'آدرس';
+
+  @override
+  String get noAddressSelected => 'آدرسی انتخاب نشده است';
+
+  @override
+  String get cashOnDelivery => 'پرداخت نقدی در محل';
+
+  @override
+  String get cashOnDeliveryDescription =>
+      'هزینه را هنگام تحویل سفارش به صورت نقدی پرداخت کنید.';
+
+  @override
+  String get confirmOrder => 'تأیید نهایی سفارش';
+
+  @override
+  String get addDeliveryNote => 'یادداشت برای پیک';
+
+  @override
+  String get street => 'خیابان';
+
+  @override
+  String get city => 'شهر';
+
+  @override
+  String get district => 'منطقه/محله';
+
+  @override
+  String get building => 'ساختمان/پلاک';
+
+  @override
+  String get floor => 'طبقه';
+
+  @override
+  String get door => 'واحد';
+
+  @override
+  String get saveAddress => 'ذخیره آدرس';
+
+  @override
+  String get orderReceived => 'سفارش شما دریافت شد';
+
+  @override
+  String get orderNumber => 'شماره سفارش';
+
+  @override
+  String get estimatedTime => 'زمان تقریبی آماده‌سازی';
+
+  @override
+  String get estimatedDeliveryTime => 'زمان تقریبی تحویل';
+
+  @override
+  String get backToHome => 'بازگشت به خانه';
+
+  @override
   String get searchBreads => 'جستجوی نان...';
 
   @override
-  String get description => 'توضیحات';
+  String get noProductsFound => 'محصولی پیدا نشد';
 
   @override
-  String get addedToCart => 'به سبد اضافه شد';
+  String get description => 'توضیحات';
 
   @override
   String get all => 'همه';
@@ -270,7 +328,7 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String mins(int count) {
+  String mins(num count) {
     return '$count دقیقه';
   }
 
@@ -284,4 +342,197 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get add => 'افزودن';
+
+  @override
+  String get invalidEmail => 'لطفاً یک آدرس ایمیل معتبر وارد کنید';
+
+  @override
+  String get passwordTooShort => 'رمز عبور باید حداقل 8 کاراکتر باشد';
+
+  @override
+  String get passwordRequirements =>
+      'رمز عبور باید شامل حداقل یک حرف بزرگ، یک حرف کوچک و یک عدد باشد';
+
+  @override
+  String get requiredField => 'این فیلد الزامی است';
+
+  @override
+  String get invalidCredentials => 'ایمیل یا رمز عبور نادرست است';
+
+  @override
+  String get networkError => 'مشکل اتصال. لطفاً دوباره تلاش کنید.';
+
+  @override
+  String get tooManyAttempts =>
+      'تلاش‌های ورود بیش از حد. لطفاً بعداً دوباره تلاش کنید.';
+
+  @override
+  String get emailAlreadyInUse => 'این ایمیل قبلاً ثبت‌نام شده است';
+
+  @override
+  String get emailNotVerified => 'لطفاً ایمیل خود را تأیید کنید';
+
+  @override
+  String get invalidPhoneNumber => 'شماره تلفن نامعتبر';
+
+  @override
+  String get passwordStrength => 'قوت رمز عبور';
+
+  @override
+  String get weak => 'ضعیف';
+
+  @override
+  String get fair => 'متوسط';
+
+  @override
+  String get good => 'خوب';
+
+  @override
+  String get strong => 'قوی';
+
+  @override
+  String get showPassword => 'نمایش';
+
+  @override
+  String get hidePassword => 'پنهان';
+
+  @override
+  String get saveYourFavoritesDescription =>
+      'برای ذخیره علاقه‌مندی‌های خود در کل دستگاه‌ها، یک حساب کاربری بسازید.';
+
+  @override
+  String get continueWithEmailOrGoogle => 'ادامه با ایمیل یا گوگل';
+
+  @override
+  String get maybeLater => 'شاید بعداً';
+
+  @override
+  String get completeYourProfile => 'تکمیل پروفایل خود';
+
+  @override
+  String get addPhoneNumber => 'افزودن شماره تلفن';
+
+  @override
+  String get optional => 'اختیاری';
+
+  @override
+  String get skip => 'پرش';
+
+  @override
+  String get next => 'بعدی';
+
+  @override
+  String get alreadyHaveAccount => 'قبلاً حساب کاربری دارید؟ ';
+
+  @override
+  String get profileCompletion => 'تکمیل پروفایل';
+
+  @override
+  String get syncBasket => 'همگام‌سازی سبد';
+
+  @override
+  String get syncingBasket => 'همگام‌سازی اقلام شما...';
+
+  @override
+  String get basketSynced => 'سبد شما ذخیره شد!';
+
+  @override
+  String get loginToContinue => 'برای ادامه تسویه، وارد شوید';
+
+  @override
+  String get loginToPlaceOrder => 'برای ثبت سفارش وارد شوید.';
+
+  @override
+  String get nameTooShort => 'نام باید حداقل 2 کاراکتر باشد';
+
+  @override
+  String get nameTooLong => 'نام باید کمتر از 100 کاراکتر باشد';
+
+  @override
+  String get activity => 'فعالیت';
+
+  @override
+  String get account => 'حساب کاربری';
+
+  @override
+  String get favorites => 'علاقه‌مندی‌ها';
+
+  @override
+  String get orders => 'سفارش‌ها';
+
+  @override
+  String get editProfile => 'ویرایش پروفایل';
+
+  @override
+  String get signOut => 'خروج';
+
+  @override
+  String get signOutConfirmation =>
+      'آیا مطمئن هستید که می‌خواهید از حساب کاربری سنگک خود خارج شوید؟';
+
+  @override
+  String get profilePictureUpdated => 'تصویر پروفایل با موفقیت بروزرسانی شد!';
+
+  @override
+  String get failedToUpdateProfilePicture => 'خطا در بروزرسانی تصویر پروفایل';
+
+  @override
+  String get locationCaptured => 'موقعیت با موفقیت ثبت شد';
+
+  @override
+  String get locationError => 'خطا در دریافت موقعیت. لطفاً دستی وارد کنید.';
+
+  @override
+  String get selectPaymentMethod => 'انتخاب روش پرداخت';
+
+  @override
+  String get creditCard => 'کارت اعتباری / بانکی';
+
+  @override
+  String get payWithCardOnDelivery => 'پرداخت با کارت هنگام تحویل (به زودی)';
+
+  @override
+  String get thankYouSangak =>
+      'ممنون که سنگک را انتخاب کردید! نان تازه شما در حال آماده‌سازی است.';
+
+  @override
+  String get no => 'نه';
+
+  @override
+  String get paymentInfo => 'اطلاعات پرداخت';
+
+  @override
+  String get profileUpdated => 'پروفایل با موفقیت بروزرسانی شد';
+
+  @override
+  String get saveChanges => 'ذخیره تغییرات';
+
+  @override
+  String get remove => 'حذف';
+
+  @override
+  String get cancel => 'لغو';
+
+  @override
+  String get removeItemFromBasket =>
+      'آیا مطمئن هستید که می‌خواهید این مورد را از سبد خود حذف کنید؟';
+
+  @override
+  String get comingSoon => 'به زودی';
+
+  @override
+  String get roleSwitch => 'تغییر نقش';
+
+  @override
+  String get customerApp => 'اپلیکیشن مشتری';
+
+  @override
+  String get adminPanel => 'پنل مدیریت';
+
+  @override
+  String get deliveryPanel => 'پنل پیک';
+
+  @override
+  String get changeSettingAnytime =>
+      'می‌توانید این را هر زمان در تنظیمات تغییر دهید.';
 }

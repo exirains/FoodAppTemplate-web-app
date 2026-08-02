@@ -1,15 +1,16 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.1.1",
-  "build_number": 4,
+  "version": "1.2.0",
+  "build_number": 5,
   "force_update": false,
   "notes": [
-    "Fixed product loading and caching issues",
-    "Added reliable Popular Today recommendations",
-    "Improved product browsing performance",
-    "Fixed UI crashes and layout issues",
-    "Improved app stability and overall user experience"
+    "Improved product translations and multilingual support",
+    "Fixed product and category loading issues",
+    "Added a smoother ordering experience",
+    "Improved basket, checkout, and address flows",
+    "Fixed authentication and profile issues",
+    "Improved app stability and performance"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.1.1.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.2.0.apk"
 }

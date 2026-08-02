@@ -57,14 +57,14 @@ class SettingsBottomSheet extends ConsumerWidget {
           const SizedBox(height: SangakDimens.spacing32),
           Text(
             l10n.settings,
-            style: SangakTypography.h2,
+            style: SangakTypography.h2(context),
           ),
           const SizedBox(height: SangakDimens.spacing32),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
               l10n.language,
-              style: SangakTypography.title,
+              style: SangakTypography.title(context),
             ),
           ),
           const SizedBox(height: SangakDimens.spacing16),
@@ -89,10 +89,10 @@ class SettingsBottomSheet extends ConsumerWidget {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(l10n.appVersion, style: SangakTypography.bodyMedium),
+                  Text(l10n.appVersion, style: SangakTypography.bodyMedium(context)),
                   Text(
                     'Sangak Version $version',
-                    style: SangakTypography.bodySmall.copyWith(color: SangakColors.inkLight),
+                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
                   ),
                 ],
               );

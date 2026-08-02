@@ -7,8 +7,8 @@ import '../../../shared/widgets/sangak_button.dart';
 import '../../../shared/widgets/app_logo.dart';
 import 'package:go_router/go_router.dart';
 
-class CartGuestView extends StatelessWidget {
-  const CartGuestView({super.key});
+class BasketGuestView extends StatelessWidget {
+  const BasketGuestView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class CartGuestView extends StatelessWidget {
               const SizedBox(height: SangakDimens.spacing32),
               Text(
                 l10n.yourBasketIsWaiting,
-                style: SangakTypography.h2,
+                style: SangakTypography.h2(context),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
-                l10n.cartGuestMessage,
-                style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
+                l10n.basketGuestMessage,
+                style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing40),

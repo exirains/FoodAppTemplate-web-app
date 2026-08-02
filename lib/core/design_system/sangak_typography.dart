@@ -1,91 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'sangak_colors.dart';
 
-/// Sangak Design System Typography (v1.0.0)
+/// Sangak Design System Typography (v1.1.0)
 ///
-/// Combines Fraunces (Headlines) and Plus Jakarta Sans (UI/Body).
+/// This class now acts as a bridge to the [ThemeData.textTheme],
+/// ensuring that the correct font family (Fraunces/Jakarta or IranYekan)
+/// is applied automatically based on the current locale.
 class SangakTypography {
-  // --- Headline Styles (Fraunces) ---
-  
-  static TextStyle display = GoogleFonts.fraunces(
-    fontSize: 48,
-    fontWeight: FontWeight.w700,
-    color: SangakColors.ink,
-    height: 1.1,
-  );
+  static TextTheme _of(BuildContext context) => Theme.of(context).textTheme;
 
-  static TextStyle h1 = GoogleFonts.fraunces(
-    fontSize: 32,
-    fontWeight: FontWeight.w700,
-    color: SangakColors.ink,
-    height: 1.2,
-  );
+  static TextStyle display(BuildContext context) => _of(context).displayLarge!;
+  static TextStyle h1(BuildContext context) => _of(context).headlineLarge!;
+  static TextStyle h2(BuildContext context) => _of(context).headlineMedium!;
+  static TextStyle h3(BuildContext context) => _of(context).headlineSmall!;
 
-  static TextStyle h2 = GoogleFonts.fraunces(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    color: SangakColors.ink,
-    height: 1.2,
-  );
+  static TextStyle title(BuildContext context) => _of(context).titleLarge!;
+  static TextStyle subtitle(BuildContext context) => _of(context).titleMedium!;
 
-  static TextStyle h3 = GoogleFonts.fraunces(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: SangakColors.ink,
-    height: 1.3,
-  );
+  static TextStyle bodyLarge(BuildContext context) => _of(context).bodyLarge!;
+  static TextStyle bodyMedium(BuildContext context) => _of(context).bodyMedium!;
+  static TextStyle bodySmall(BuildContext context) => _of(context).bodySmall!;
 
-  // --- UI & Body Styles (Plus Jakarta Sans) ---
-
-  static TextStyle title = GoogleFonts.plusJakartaSans(
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: SangakColors.ink,
-  );
-
-  static TextStyle subtitle = GoogleFonts.plusJakartaSans(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-    color: SangakColors.inkLight,
-  );
-
-  static TextStyle bodyLarge = GoogleFonts.plusJakartaSans(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    color: SangakColors.ink,
-    height: 1.5,
-  );
-
-  static TextStyle bodyMedium = GoogleFonts.plusJakartaSans(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    color: SangakColors.ink,
-    height: 1.5,
-  );
-
-  static TextStyle bodySmall = GoogleFonts.plusJakartaSans(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: SangakColors.inkLight,
-  );
-
-  static TextStyle button = GoogleFonts.plusJakartaSans(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
-  );
-
-  static TextStyle price = GoogleFonts.plusJakartaSans(
-    fontSize: 18,
-    fontWeight: FontWeight.w700,
-    color: SangakColors.ink,
-  );
-
-  static TextStyle caption = GoogleFonts.plusJakartaSans(
-    fontSize: 11,
-    fontWeight: FontWeight.w500,
-    color: SangakColors.inkLight,
-    letterSpacing: 0.5,
-  );
+  static TextStyle button(BuildContext context) => _of(context).labelLarge!;
+  static TextStyle price(BuildContext context) => _of(context).titleLarge!.copyWith(fontWeight: FontWeight.w700);
+  static TextStyle caption(BuildContext context) => _of(context).bodySmall!.copyWith(fontSize: 11, letterSpacing: 0.5);
 }

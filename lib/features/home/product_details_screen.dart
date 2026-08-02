@@ -8,9 +8,11 @@ import '../../core/design_system/sangak_dimens.dart';
 import '../../models/bread.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/freshness_badge.dart';
+import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/sangak_toast.dart';
-import '../cart/cart_provider.dart';
+import '../../core/localization/locale_provider.dart';
+import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
@@ -31,11 +33,16 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cart = ref.watch(cartProvider);
-    final cartItem = cart.where((item) => item.bread.id == widget.bread.id).firstOrNull;
-    final inCartQuantity = cartItem?.quantity ?? 0;
+    final basket = ref.watch(basketProvider);
+    final basketItem = basket.where((item) => item.bread.id == widget.bread.id).firstOrNull;
+    final inBasketQuantity = basketItem?.quantity ?? 0;
     
     final isFavorite = ref.watch(isFavoriteProvider(widget.bread.id));
+    final locale = ref.watch(localeProvider);
+    final languageCode = locale.languageCode;
+
+    final displayName = widget.bread.localizedName(languageCode);
+    final displayDescription = widget.bread.localizedDescription(languageCode);
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -97,61 +104,27 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.bread.isOrganic) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-                        border: Border.all(color: Colors.green.withValues(alpha: 0.5)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.eco_rounded, size: 14, color: Colors.green),
-                          const SizedBox(width: 4),
-                          Text(
-                            l10n.organic.toUpperCase(),
-                            style: SangakTypography.caption.copyWith(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: SangakDimens.spacing12),
-                  ],
-                  if (widget.bread.tag != null) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: SangakColors.accent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-                        border: Border.all(color: SangakColors.accent.withValues(alpha: 0.5)),
-                      ),
-                      child: Text(
-                        widget.bread.tag!.toUpperCase(),
-                        style: SangakTypography.caption.copyWith(
-                          color: SangakColors.accent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: SangakDimens.spacing12),
-                  ],
-                  if (widget.bread.freshness != null) ...[
-                    FreshnessBadge(token: widget.bread.freshness!),
-                    const SizedBox(height: SangakDimens.spacing12),
-                  ],
+                  Wrap(
+                    spacing: SangakDimens.spacing8,
+                    runSpacing: SangakDimens.spacing8,
+                    children: [
+                      if (widget.bread.isOrganic)
+                        _buildTag(context, l10n.organic.toUpperCase(), SangakColors.success, icon: Icons.eco_rounded),
+                      if (widget.bread.tag != null)
+                        _buildTag(context, widget.bread.tag!.toUpperCase(), _tagColor(widget.bread.tag!)),
+                      if (widget.bread.freshness != null)
+                        FreshnessBadge(token: widget.bread.freshness!),
+                    ],
+                  ),
+                  const SizedBox(height: SangakDimens.spacing12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Text(widget.bread.name, style: SangakTypography.h1),
+                        child: Text(displayName, style: SangakTypography.h1(context)),
                       ),
-                      Text('₺${widget.bread.price.toStringAsFixed(0)}', style: SangakTypography.h1.copyWith(color: SangakColors.primary)),
+                      Text('₺${widget.bread.price.toStringAsFixed(0)}', style: SangakTypography.h1(context).copyWith(color: SangakColors.primary)),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing8),
@@ -159,17 +132,17 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     children: [
                       const Icon(Icons.star, color: Color(0xFFFFB800), size: 20),
                       const SizedBox(width: 4),
-                      Text(widget.bread.rating.toString(), style: SangakTypography.title.copyWith(fontSize: 14)),
+                      Text(widget.bread.rating.toString(), style: SangakTypography.title(context).copyWith(fontSize: 14)),
                       const SizedBox(width: 4),
-                      Text(l10n.reviewsCount(widget.bread.reviews), style: SangakTypography.bodySmall),
+                      Text(l10n.reviewsCount(widget.bread.reviews), style: SangakTypography.bodySmall(context)),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing24),
-                  Text(l10n.description, style: SangakTypography.title),
+                  Text(l10n.description, style: SangakTypography.title(context)),
                   const SizedBox(height: SangakDimens.spacing8),
                   Text(
-                    widget.bread.description,
-                    style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
+                    displayDescription,
+                    style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
                   
@@ -197,58 +170,42 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
           boxShadow: SangakDimens.shadowHigh,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
         ),
-        child: Row(
-          children: [
-            Container(
-              height: 54,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                color: SangakColors.background,
-                borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              ),
-              child: Row(
+        child: inBasketQuantity > 0
+            ? Center(
+                child: QuantitySelector(
+                  quantity: inBasketQuantity,
+                  compact: true,
+                  onIncrement: () => ref.read(basketProvider.notifier).addItem(widget.bread),
+                  onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1),
+                  onDelete: () => ref.read(basketProvider.notifier).removeItem(widget.bread.id),
+                ),
+              )
+            : Row(
                 children: [
-                  IconButton(
-                    onPressed: _localQuantity > 1 ? () => setState(() => _localQuantity--) : null,
-                    icon: const Icon(Icons.remove),
+                  QuantitySelector(
+                    quantity: _localQuantity,
+                    compact: true,
+                    onIncrement: () => setState(() => _localQuantity++),
+                    onDecrement: _localQuantity > 1 ? () => setState(() => _localQuantity--) : () {},
                   ),
-                  SizedBox(
-                    width: 30,
-                    child: Text(
-                      '$_localQuantity',
-                      style: SangakTypography.title,
-                      textAlign: TextAlign.center,
+                  const SizedBox(width: SangakDimens.spacing16),
+                  Expanded(
+                    child: SangakButton.primary(
+                      label: l10n.addToBasket,
+                      onPressed: () {
+                        AuthGate.run(
+                          context,
+                          ref,
+                          action: () {
+                            ref.read(basketProvider.notifier).addItem(widget.bread, quantity: _localQuantity);
+                            SangakToast.show(context, l10n.addedToBasket(displayName));
+                          },
+                        );
+                      },
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() => _localQuantity++),
-                    icon: const Icon(Icons.add),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: SangakDimens.spacing16),
-            Expanded(
-              child: SangakButton.primary(
-                label: inCartQuantity > 0 ? 'Update Basket' : l10n.addToBasket,
-                onPressed: () {
-                  AuthGate.run(
-                    context,
-                    ref,
-                    action: () {
-                      if (inCartQuantity > 0) {
-                        ref.read(cartProvider.notifier).updateQuantity(widget.bread.id, _localQuantity - inCartQuantity);
-                      } else {
-                        ref.read(cartProvider.notifier).addItem(widget.bread, quantity: _localQuantity);
-                      }
-                      SangakToast.show(context, l10n.addedToBasket(widget.bread.name));
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -265,7 +222,42 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         children: [
           Icon(icon, size: 18, color: SangakColors.primary),
           const SizedBox(width: 8),
-          Text(label, style: SangakTypography.bodySmall.copyWith(fontWeight: FontWeight.w600)),
+          Text(label, style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+
+  Color _tagColor(String tag) {
+    final normalized = tag.toLowerCase();
+    if (normalized.contains('traditional')) return SangakColors.secondary;
+    if (normalized.contains('popular')) return SangakColors.primary;
+    if (normalized.contains('new')) return SangakColors.info;
+    return SangakColors.accent;
+  }
+
+  Widget _buildTag(BuildContext context, String label, Color color, {IconData? icon}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            label,
+            style: SangakTypography.caption(context).copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

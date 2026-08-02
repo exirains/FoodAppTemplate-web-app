@@ -20,19 +20,22 @@ class CategoryAdapter extends TypeAdapter<Category> {
       id: fields[0] as String,
       name: fields[1] as String,
       imageUrl: fields[2] as String,
+      translations: (fields[3] as Map?)?.cast<String, String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.imageUrl);
+      ..write(obj.imageUrl)
+      ..writeByte(3)
+      ..write(obj.translations);
   }
 
   @override

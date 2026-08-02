@@ -25,13 +25,13 @@ class ProfileGuestView extends StatelessWidget {
               const SizedBox(height: SangakDimens.spacing32),
               Text(
                 l10n.joinTheFamily,
-                style: SangakTypography.h2,
+                style: SangakTypography.h2(context),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
                 l10n.profileGuestMessage,
-                style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
+                style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing40),

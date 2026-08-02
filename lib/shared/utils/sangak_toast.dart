@@ -121,7 +121,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                     Flexible(
                       child: Text(
                         widget.message,
-                        style: SangakTypography.bodyMedium.copyWith(
+                        style: SangakTypography.bodyMedium(context).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.3,

@@ -40,7 +40,7 @@ class FreshnessBadge extends StatelessWidget {
           const SizedBox(width: SangakDimens.spacing4),
           Text(
             token.label.toUpperCase(),
-            style: SangakTypography.caption.copyWith(
+            style: SangakTypography.caption(context).copyWith(
               color: token.color,
               fontWeight: FontWeight.w700,
             ),

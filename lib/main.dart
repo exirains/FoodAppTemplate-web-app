@@ -14,6 +14,7 @@ import 'services/cache_service.dart';
 import 'core/update/update_service.dart';
 import 'models/bread.dart';
 import 'models/category.dart';
+import 'models/address.dart';
 
 // Providers for services
 final storageServiceProvider = Provider<StorageService>((ref) {
@@ -39,6 +40,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(BreadAdapter());
   Hive.registerAdapter(CategoryAdapter());
+  Hive.registerAdapter(AddressAdapter());
   final cacheBox = await Hive.openBox<List>('cache');
   await cacheBox.clear(); // Clear cache to ensure fresh schema data with descriptions
   
@@ -70,7 +72,7 @@ class SangakApp extends ConsumerWidget {
       child: MaterialApp.router(
         title: 'Sangak',
         debugShowCheckedModeBanner: false,
-        theme: SangakTheme.light,
+        theme: SangakTheme.light(locale),
         routerConfig: appRouter,
         locale: locale,
         localizationsDelegates: [

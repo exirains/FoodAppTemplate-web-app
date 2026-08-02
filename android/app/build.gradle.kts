@@ -15,7 +15,7 @@ plugins {
 
 android {
     namespace = "com.sangak.app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     signingConfigs {
@@ -35,7 +35,7 @@ android {
     defaultConfig {
         applicationId = "com.sangak.app"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

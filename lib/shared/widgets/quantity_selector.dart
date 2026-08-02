@@ -11,6 +11,7 @@ class QuantitySelector extends StatelessWidget {
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
   final VoidCallback? onDelete;
+  final bool compact;
 
   const QuantitySelector({
     super.key,
@@ -18,12 +19,13 @@ class QuantitySelector extends StatelessWidget {
     required this.onIncrement,
     required this.onDecrement,
     this.onDelete,
+    this.compact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 36,
+      height: compact ? 34 : 36,
       decoration: BoxDecoration(
         color: SangakColors.primary,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
@@ -34,15 +36,17 @@ class QuantitySelector extends StatelessWidget {
           _IconButton(
             icon: quantity == 1 && onDelete != null ? Icons.delete_outline : Icons.remove,
             onPressed: quantity == 1 && onDelete != null ? onDelete! : onDecrement,
+            compact: compact,
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            constraints: BoxConstraints(minWidth: compact ? 24 : 28),
+            padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
             child: Text(
               '$quantity',
-              style: SangakTypography.title.copyWith(color: Colors.white, fontSize: 14),
+              style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
             ),
           ),
-          _IconButton(icon: Icons.add, onPressed: onIncrement),
+          _IconButton(icon: Icons.add, onPressed: onIncrement, compact: compact),
         ],
       ),
     );
@@ -52,8 +56,13 @@ class QuantitySelector extends StatelessWidget {
 class _IconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
+  final bool compact;
 
-  const _IconButton({required this.icon, required this.onPressed});
+  const _IconButton({
+    required this.icon,
+    required this.onPressed,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +72,8 @@ class _IconButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Icon(icon, size: 18, color: Colors.white),
+          padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 8),
+          child: Icon(icon, size: compact ? 17 : 18, color: Colors.white),
         ),
       ),
     );

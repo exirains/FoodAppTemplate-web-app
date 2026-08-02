@@ -4,9 +4,9 @@ import '../../shared/widgets/sangak_bottom_nav.dart';
 import '../auth/auth_provider.dart';
 import '../auth/pending_action_provider.dart';
 import 'home_screen.dart';
-import 'widgets/cart_guest_view.dart';
+import 'widgets/basket_guest_view.dart';
 import 'widgets/profile_guest_view.dart';
-import '../cart/cart_screen.dart';
+import '../basket/basket_screen.dart';
 import '../profile/profile_screen.dart';
 import '../explore/explore_screen.dart';
 import 'tab_provider.dart';
@@ -44,7 +44,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final List<Widget> screens = [
       const HomeScreen(),
       const ExploreScreen(),
-      isGuest ? const CartGuestView() : const CartScreen(),
+      isGuest ? const BasketGuestView() : const BasketScreen(),
       isGuest ? const ProfileGuestView() : const ProfileScreen(),
     ];
 

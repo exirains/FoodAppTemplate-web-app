@@ -57,17 +57,17 @@ class HeroBanner extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(SangakDimens.spacing24),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center, // Center for symmetry
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: SangakTypography.h2.copyWith(color: Colors.white),
+                      style: SangakTypography.h2(context).copyWith(color: Colors.white),
                     ),
                     const SizedBox(height: SangakDimens.spacing4),
                     Text(
                       subtitle,
-                      style: SangakTypography.bodyMedium.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+                      style: SangakTypography.bodyMedium(context).copyWith(color: Colors.white.withValues(alpha: 0.9)),
                     ),
                   ],
                 ),

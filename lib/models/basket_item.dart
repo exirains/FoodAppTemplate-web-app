@@ -1,20 +1,20 @@
 import 'bread.dart';
 
-class CartItem {
+class BasketItem {
   final Bread bread;
   final int quantity;
 
-  const CartItem({
+  const BasketItem({
     required this.bread,
     required this.quantity,
   });
 
   double get total => bread.price * quantity;
 
-  CartItem copyWith({
+  BasketItem copyWith({
     int? quantity,
   }) {
-    return CartItem(
+    return BasketItem(
       bread: bread,
       quantity: quantity ?? this.quantity,
     );
@@ -27,8 +27,8 @@ class CartItem {
     };
   }
 
-  factory CartItem.fromJson(Map<String, dynamic> json) {
-    return CartItem(
+  factory BasketItem.fromJson(Map<String, dynamic> json) {
+    return BasketItem(
       bread: Bread.fromJson(json['bread'] as Map<String, dynamic>),
       quantity: json['quantity'] as int,
     );

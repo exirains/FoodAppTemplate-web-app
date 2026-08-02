@@ -8,7 +8,8 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../core/design_system/sangak_tokens.dart';
 import '../../models/bread.dart';
-import '../../features/cart/cart_provider.dart';
+import '../../core/localization/locale_provider.dart';
+import '../../features/basket/basket_provider.dart';
 import '../../features/home/home_provider.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
@@ -22,7 +23,7 @@ class ProductCard extends ConsumerStatefulWidget {
   final String imageUrl;
   final FreshnessToken? freshness;
   final bool isFavorite;
-  final VoidCallback onAddToCart;
+  final VoidCallback onAddToBasket;
   final VoidCallback onFavoriteToggle;
   final Bread? bread;
   final double? width;
@@ -35,7 +36,7 @@ class ProductCard extends ConsumerStatefulWidget {
     required this.imageUrl,
     this.freshness,
     this.isFavorite = false,
-    required this.onAddToCart,
+    required this.onAddToBasket,
     required this.onFavoriteToggle,
     this.bread,
     this.width,
@@ -69,11 +70,17 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final cart = ref.watch(cartProvider);
-    final cartItem = cart.where((item) => item.bread.id == widget.bread?.id).firstOrNull;
-    final int quantity = cartItem?.quantity ?? 0;
+    final basket = ref.watch(basketProvider);
+    final l10n = AppLocalizations.of(context);
+    final basketItem = basket.where((item) => item.bread.id == widget.bread?.id).firstOrNull;
+    final int quantity = basketItem?.quantity ?? 0;
     
     final isFavorite = ref.watch(isFavoriteProvider(widget.bread?.id ?? ''));
+    final locale = ref.watch(localeProvider);
+    final languageCode = locale.languageCode;
+
+    final displayName = widget.bread?.localizedName(languageCode) ?? widget.name;
+    final displayDescription = widget.bread?.localizedDescription(languageCode) ?? widget.description;
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
@@ -134,7 +141,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         ),
                         child: Text(
                           widget.bread!.tag!.toUpperCase(),
-                          style: SangakTypography.caption.copyWith(
+                          style: SangakTypography.caption(context).copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
@@ -177,87 +184,103 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(SangakDimens.spacing16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SangakDimens.spacing12,
+                  vertical: SangakDimens.spacing8,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.name,
-                      style: SangakTypography.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    SizedBox(
+                      height: 20, // Strict height for title
+                      child: Text(
+                        displayName,
+                        style: SangakTypography.title(context).copyWith(fontSize: 14),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(height: SangakDimens.spacing4),
-                    Text(
-                      widget.description,
-                      style: SangakTypography.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: SangakDimens.spacing16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '₺${widget.price.toStringAsFixed(0)}',
-                          style: SangakTypography.price,
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      height: 32, // Strict height for description (2 lines)
+                      child: Text(
+                        displayDescription,
+                        style: SangakTypography.bodySmall(context).copyWith(
+                          fontSize: 11,
+                          height: 1.1,
+                          color: SangakColors.inkLight,
                         ),
-                        // Add to Cart / Quantity Morph
-                        SizedBox(
-                          height: 36, // Strict height to avoid jump
-                          child: AnimatedSwitcher(
-                            duration: SangakTokens.animMedium,
-                            layoutBuilder: (currentChild, previousChildren) {
-                              return Stack(
-                                alignment: Alignment.centerRight,
-                                children: <Widget>[
-                                  ...previousChildren,
-                                  currentChild ?? const SizedBox.shrink(),
-                                ],
-                              );
-                            },
-                            transitionBuilder: (child, animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(scale: animation, child: child),
-                              );
-                            },
-                            child: quantity > 0
-                                ? QuantitySelector(
-                                    key: const ValueKey('quantity'),
-                                    quantity: quantity,
-                                    onIncrement: () => ref.read(cartProvider.notifier).addItem(widget.bread!),
-                                    onDecrement: () => ref.read(cartProvider.notifier).updateQuantity(widget.bread!.id, -1),
-                                    onDelete: () {
-                                      SangakConfirmDialog.show(
-                                        context,
-                                        title: 'Remove item',
-                                        message: 'Are you sure you want to remove this item from your basket?',
-                                        confirmLabel: 'Remove',
-                                        cancelLabel: 'Cancel',
-                                        onConfirm: () => ref.read(cartProvider.notifier).removeItem(widget.bread!.id),
-                                        isDestructive: true,
-                                      );
-                                    },
-                                  )
-                                : ElevatedButton(
-                                    key: const ValueKey('add'),
-                                    onPressed: widget.onAddToCart,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: SangakColors.primary,
-                                      foregroundColor: Colors.white,
-                                      elevation: 0,
-                                      minimumSize: const Size(80, 36),
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                                      ),
-                                    ),
-                                    child: Text(AppLocalizations.of(context).add),
-                                  ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 36,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '₺${widget.price.toStringAsFixed(0)}',
+                            style: SangakTypography.price(context).copyWith(fontSize: 17),
                           ),
-                        ),
-                      ],
+                          // Add to Basket / Quantity Morph
+                          SizedBox(
+                            height: 36, // Strict height to avoid jump
+                            child: AnimatedSwitcher(
+                              duration: SangakTokens.animMedium,
+                              layoutBuilder: (currentChild, previousChildren) {
+                                return Stack(
+                                  alignment: Alignment.centerRight,
+                                  children: <Widget>[
+                                    ...previousChildren,
+                                    currentChild ?? const SizedBox.shrink(),
+                                  ],
+                                );
+                              },
+                              transitionBuilder: (child, animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: ScaleTransition(scale: animation, child: child),
+                                );
+                              },
+                              child: quantity > 0
+                                  ? QuantitySelector(
+                                      key: const ValueKey('quantity'),
+                                      quantity: quantity,
+                                      onIncrement: () => ref.read(basketProvider.notifier).addItem(widget.bread!),
+                                      onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(widget.bread!.id, -1),
+                                      onDelete: () {
+                                        SangakConfirmDialog.show(
+                                          context,
+                                          title: l10n.remove,
+                                          message: l10n.removeItemFromBasket,
+                                          confirmLabel: l10n.remove,
+                                          cancelLabel: l10n.cancel,
+                                          onConfirm: () => ref.read(basketProvider.notifier).removeItem(widget.bread!.id),
+                                          isDestructive: true,
+                                        );
+                                      },
+                                    )
+                                  : ElevatedButton(
+                                      key: const ValueKey('add'),
+                                      onPressed: widget.onAddToBasket,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: SangakColors.primary,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        minimumSize: const Size(80, 36),
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                        ),
+                                      ),
+                                      child: Text(l10n.add),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

@@ -10,9 +10,9 @@ class Bread {
   @HiveField(1)
   final String categoryId;
   @HiveField(2)
-  final String name;
+  final String name; // Original/Fallback name
   @HiveField(3)
-  final String description;
+  final String description; // Original/Fallback description
   @HiveField(4)
   final double price;
   @HiveField(5)
@@ -35,6 +35,8 @@ class Bread {
   final double rating;
   @HiveField(14)
   final int reviews;
+  @HiveField(15)
+  final Map<String, dynamic>? translations; // { 'en': {'name': '...', 'description': '...'}, ... }
   
   final FreshnessToken? freshness;
   final bool isFavorite;
@@ -55,9 +57,28 @@ class Bread {
     this.updatedAt,
     this.rating = 0.0,
     this.reviews = 0,
+    this.translations,
     this.freshness,
     this.isFavorite = false,
   });
+
+  String localizedName(String locale) {
+    if (translations == null) return name;
+    final lang = locale.split('_')[0].split('-')[0];
+    return translations![lang]?['name'] ?? 
+           translations!['tr']?['name'] ?? 
+           translations!['en']?['name'] ?? 
+           name;
+  }
+
+  String localizedDescription(String locale) {
+    if (translations == null) return description;
+    final lang = locale.split('_')[0].split('-')[0];
+    return translations![lang]?['description'] ?? 
+           translations!['tr']?['description'] ?? 
+           translations!['en']?['description'] ?? 
+           description;
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -72,6 +93,7 @@ class Bread {
       'prep_time': prepTime,
       'calories': calories,
       'is_organic': isOrganic,
+      'translations': translations,
     };
   }
 
@@ -90,10 +112,28 @@ class Bread {
   }
 
   factory Bread.fromJson(Map<String, dynamic> json) {
+    // Handle translations from Supabase
+    Map<String, dynamic>? translationsMap;
+    final rawTranslations = json['product_translations'];
+    
+    if (rawTranslations is Iterable) {
+      translationsMap = {};
+      for (final t in rawTranslations) {
+        if (t is Map) {
+          final code = t['language_code']?.toString();
+          if (code == null || code.isEmpty) continue;
+          translationsMap[code] = {
+            'name': t['name']?.toString(),
+            'description': t['description']?.toString(),
+          };
+        }
+      }
+    }
+
     return Bread(
       id: json['id'] as String,
       categoryId: json['category_id'] as String? ?? '',
-      name: json['name'] as String,
+      name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
       price: _toDouble(json['price']),
       imageUrl: json['image_url'] as String? ?? '',
@@ -106,12 +146,14 @@ class Bread {
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at'] as String) : null,
       rating: _toDouble(json['rating']),
       reviews: _toInt(json['reviews'], 0),
+      translations: translationsMap,
     );
   }
 
   Bread copyWith({
     bool? isFavorite,
     String? tag,
+    Map<String, dynamic>? translations,
   }) {
     return Bread(
       id: id,
@@ -129,6 +171,7 @@ class Bread {
       updatedAt: updatedAt,
       rating: rating,
       reviews: reviews,
+      translations: translations ?? this.translations,
       freshness: freshness,
       isFavorite: isFavorite ?? this.isFavorite,
     );

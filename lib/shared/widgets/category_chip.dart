@@ -38,7 +38,7 @@ class CategoryChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: SangakTypography.title.copyWith(
+          style: SangakTypography.title(context).copyWith(
             color: isSelected ? Colors.white : SangakColors.inkLight,
             fontSize: 14,
           ),

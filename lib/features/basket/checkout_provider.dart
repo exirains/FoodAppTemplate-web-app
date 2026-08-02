@@ -8,22 +8,26 @@ class CheckoutState {
   final Address? selectedAddress;
   final PaymentMethod paymentMethod;
   final bool isSubmitting;
+  final int estimatedPrepMinutes;
 
   CheckoutState({
     this.selectedAddress,
     this.paymentMethod = PaymentMethod.cash,
     this.isSubmitting = false,
+    this.estimatedPrepMinutes = 0,
   });
 
   CheckoutState copyWith({
     Address? selectedAddress,
     PaymentMethod? paymentMethod,
     bool? isSubmitting,
+    int? estimatedPrepMinutes,
   }) {
     return CheckoutState(
       selectedAddress: selectedAddress ?? this.selectedAddress,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      estimatedPrepMinutes: estimatedPrepMinutes ?? this.estimatedPrepMinutes,
     );
   }
 }
@@ -41,6 +45,10 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
 
   void setSubmitting(bool value) {
     state = state.copyWith(isSubmitting: value);
+  }
+
+  void setEstimatedPrepMinutes(int minutes) {
+    state = state.copyWith(estimatedPrepMinutes: minutes);
   }
 }
 

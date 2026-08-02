@@ -40,15 +40,15 @@ class UpdateDialog extends StatelessWidget {
             children: [
               Text(
                 l10n.newUpdateAvailable,
-                style: SangakTypography.h2,
+                style: SangakTypography.h2(context),
               ),
               const SizedBox(height: SangakDimens.spacing16),
-              _buildVersionInfo(l10n),
+              _buildVersionInfo(l10n, context),
               const SizedBox(height: SangakDimens.spacing24),
               if (updateInfo.notes.isNotEmpty) ...[
                 Text(
                   l10n.whatsNew,
-                  style: SangakTypography.title.copyWith(fontSize: 14),
+                  style: SangakTypography.title(context).copyWith(fontSize: 14),
                 ),
                 const SizedBox(height: SangakDimens.spacing8),
                 Container(
@@ -65,7 +65,7 @@ class UpdateDialog extends StatelessWidget {
                           Expanded(
                             child: Text(
                               updateInfo.notes[index],
-                              style: SangakTypography.bodySmall,
+                              style: SangakTypography.bodySmall(context),
                             ),
                           ),
                         ],
@@ -100,7 +100,7 @@ class UpdateDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildVersionInfo(AppLocalizations l10n) {
+  Widget _buildVersionInfo(AppLocalizations l10n, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: SangakDimens.spacing12, horizontal: 8),
       decoration: BoxDecoration(
@@ -109,25 +109,25 @@ class UpdateDialog extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _buildVersionColumn(l10n.currentVersion, currentVersion)),
+          Expanded(child: _buildVersionColumn(l10n.currentVersion, currentVersion, context)),
           Icon(Icons.arrow_forward, size: 16, color: SangakColors.inkLight.withValues(alpha: 0.5)),
-          Expanded(child: _buildVersionColumn(l10n.newVersion, updateInfo.version)),
+          Expanded(child: _buildVersionColumn(l10n.newVersion, updateInfo.version, context)),
         ],
       ),
     );
   }
 
-  Widget _buildVersionColumn(String label, String version) {
+  Widget _buildVersionColumn(String label, String version, BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: SangakTypography.caption, textAlign: TextAlign.center),
+        Text(label, style: SangakTypography.caption(context), textAlign: TextAlign.center),
         const SizedBox(height: 2),
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
             version,
-            style: SangakTypography.title.copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
+            style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
           ),
         ),
       ],

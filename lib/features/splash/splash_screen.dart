@@ -116,7 +116,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 const SizedBox(height: 56), // More space
                 Text(
                   l10n.appName.toUpperCase(),
-                  style: SangakTypography.display.copyWith(
+                  style: SangakTypography.display(context).copyWith(
                     letterSpacing: 8, // Heroic spacing
                     color: SangakColors.primary,
                     fontSize: 48, // Flagship size
@@ -125,7 +125,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 const SizedBox(height: 12),
                 Text(
                   l10n.bakerySubtitle.toUpperCase(),
-                  style: SangakTypography.subtitle.copyWith(
+                  style: SangakTypography.subtitle(context).copyWith(
                     letterSpacing: 4,
                     fontSize: 16,
                     color: SangakColors.inkLight,

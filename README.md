@@ -7,7 +7,7 @@ Sangak is a premium Flutter app for browsing and ordering authentic Persian arti
 * Modern and minimalist UI
 * Browse artisan bakery products
 * User authentication
-* Shopping cart
+* Shopping basket
 * Order management
 * Responsive design
 

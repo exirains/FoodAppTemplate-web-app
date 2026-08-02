@@ -8,7 +8,10 @@ import '../../features/auth/register_screen.dart';
 
 import '../../features/home/main_screen.dart';
 import '../../features/home/product_details_screen.dart';
-import '../../features/cart/checkout_screen.dart';
+import '../../features/basket/checkout_screen.dart';
+import '../../features/basket/address_selection_screen.dart';
+import '../../features/basket/payment_selection_screen.dart';
+import '../../features/basket/order_confirmation_screen.dart';
 import '../../models/bread.dart';
 
 // Helper for silky smooth transitions
@@ -21,22 +24,19 @@ CustomTransitionPage _buildPageWithTransition<T>({
     key: state.pageKey,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      // Professional fade + slightly more pronounced slide
-      return FadeTransition(
-        opacity: CurveTween(curve: Curves.easeIn).animate(animation),
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.05), // Increased from 0.02 to 0.05
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
-          child: child,
-        ),
+      // Modern horizontal sliding transition
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1.0, 0.0), // Start from right
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOutCubic,
+        )),
+        child: child,
       );
     },
-    transitionDuration: const Duration(milliseconds: 500), // Increased from 400 to 500
+    transitionDuration: const Duration(milliseconds: 400),
   );
 }
 
@@ -97,6 +97,30 @@ final appRouter = GoRouter(
         context: context,
         state: state,
         child: const CheckoutScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/address-selection',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const AddressSelectionScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/payment-selection',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const PaymentSelectionScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/order-confirmation',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const OrderConfirmationScreen(),
       ),
     ),
     GoRoute(

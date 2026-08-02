@@ -1,6 +1,8 @@
 #!/bin/bash
-
 set -e
+
+# Define custom pub cache directory inside the project root
+export PUB_CACHE="$PWD/.pub-cache"
 
 if [ ! -d "flutter" ]; then
   echo "Installing Flutter..."
@@ -11,9 +13,6 @@ export PATH="$PATH:$PWD/flutter/bin"
 
 echo "Flutter version:"
 flutter --version
-
-echo "Enabling Flutter web..."
-flutter config --enable-web
 
 echo "Installing dependencies..."
 flutter pub get

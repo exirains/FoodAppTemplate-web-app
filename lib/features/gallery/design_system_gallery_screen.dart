@@ -32,32 +32,32 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
         padding: const EdgeInsets.all(SangakDimens.spacing24),
         children: [
           _buildSection('Typography', [
-            Text('Display Heading', style: SangakTypography.display),
+            Text('Display Heading', style: SangakTypography.display(context)),
             const SizedBox(height: 8),
-            Text('Headline 1', style: SangakTypography.h1),
+            Text('Headline 1', style: SangakTypography.h1(context)),
             const SizedBox(height: 8),
-            Text('Headline 2', style: SangakTypography.h2),
+            Text('Headline 2', style: SangakTypography.h2(context)),
             const SizedBox(height: 8),
-            Text('Headline 3', style: SangakTypography.h3),
+            Text('Headline 3', style: SangakTypography.h3(context)),
             const SizedBox(height: 16),
-            Text('Body Large - Jakarta Sans', style: SangakTypography.bodyLarge),
-            Text('Body Medium - Regular reading text', style: SangakTypography.bodyMedium),
-            Text('Price Label: ₺80', style: SangakTypography.price),
-          ]),
+            Text('Body Large - Jakarta Sans', style: SangakTypography.bodyLarge(context)),
+            Text('Body Medium - Regular reading text', style: SangakTypography.bodyMedium(context)),
+            Text('Price Label: ₺80', style: SangakTypography.price(context)),
+          ], context),
           
           _buildSection('Colors', [
             Wrap(
               spacing: 12,
               runSpacing: 12,
               children: [
-                _buildColorCircle(SangakColors.primary, 'Primary'),
-                _buildColorCircle(SangakColors.secondary, 'Secondary'),
-                _buildColorCircle(SangakColors.background, 'BG'),
-                _buildColorCircle(SangakColors.accent, 'Accent'),
-                _buildColorCircle(SangakColors.error, 'Error'),
+                _buildColorCircle(SangakColors.primary, 'Primary', context),
+                _buildColorCircle(SangakColors.secondary, 'Secondary', context),
+                _buildColorCircle(SangakColors.background, 'BG', context),
+                _buildColorCircle(SangakColors.accent, 'Accent', context),
+                _buildColorCircle(SangakColors.error, 'Error', context),
               ],
             ),
-          ]),
+          ], context),
 
           _buildSection('Buttons', [
             SangakButton.primary(
@@ -80,7 +80,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
               label: 'Disabled Button',
               onPressed: null,
             ),
-          ]),
+          ], context),
 
           _buildSection('Inputs', [
             const SangakTextField(
@@ -95,7 +95,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
               isPassword: true,
               errorText: 'Password is too short',
             ),
-          ]),
+          ], context),
 
           _buildSection('Badges', [
             Wrap(
@@ -106,7 +106,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
                 FreshnessBadge.limited(),
               ],
             ),
-          ]),
+          ], context),
 
           _buildSection('Chips', [
             Wrap(
@@ -117,7 +117,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
                 onTap: () => setState(() => _selectedCategory = index),
               )),
             ),
-          ]),
+          ], context),
 
           _buildSection('Signature Components', [
             const HeroBanner(
@@ -136,16 +136,16 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
                 isFavorite: _isFavorite,
                 width: 220,
                 onFavoriteToggle: () => setState(() => _isFavorite = !_isFavorite),
-                onAddToCart: () => setState(() => _productQuantity++),
+                onAddToBasket: () => setState(() => _productQuantity++),
               ),
             ),
-          ]),
+          ], context),
         ],
       ),
     );
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
+  Widget _buildSection(String title, List<Widget> children, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -154,7 +154,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: SangakTypography.h2),
+              Text(title, style: SangakTypography.h2(context)),
               const Divider(),
             ],
           ),
@@ -164,7 +164,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
     );
   }
 
-  Widget _buildColorCircle(Color color, String label) {
+  Widget _buildColorCircle(Color color, String label, BuildContext context) {
     return Column(
       children: [
         Container(
@@ -177,7 +177,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
           ),
         ),
         const SizedBox(height: 4),
-        Text(label, style: SangakTypography.caption),
+        Text(label, style: SangakTypography.caption(context)),
       ],
     );
   }

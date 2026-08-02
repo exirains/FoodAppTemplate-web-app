@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/utils/sangak_toast.dart';
-import '../../models/cart_item.dart';
-import 'cart_provider.dart';
+import '../../shared/utils/auth_gate.dart';
+import '../../core/localization/locale_provider.dart';
+import '../../models/basket_item.dart';
+import '../../models/address.dart';
+import 'basket_provider.dart';
+import 'checkout_provider.dart';
 
 class CheckoutScreen extends ConsumerWidget {
   const CheckoutScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cart = ref.watch(cartProvider);
-    final total = ref.watch(cartTotalProvider);
+    final basket = ref.watch(basketProvider);
+    final total = ref.watch(basketTotalProvider);
+    final checkoutState = ref.watch(checkoutProvider);
     final l10n = AppLocalizations.of(context);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
       appBar: AppBar(
-        title: Text(l10n.checkout),
+        title: Text(l10n.orderSummary),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),
@@ -32,17 +40,17 @@ class CheckoutScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(l10n.deliveryAddress),
+            _buildSectionHeader(l10n.deliveryAddress, context),
             const SizedBox(height: 12),
-            _buildAddressCard(),
+            _buildAddressCard(checkoutState.selectedAddress, context),
             const SizedBox(height: 32),
-            _buildSectionHeader(l10n.orderSummary),
+            _buildSectionHeader(l10n.paymentMethod, context),
             const SizedBox(height: 12),
-            _buildOrderSummary(cart),
+            _buildPaymentCard(checkoutState.paymentMethod, l10n, context),
             const SizedBox(height: 32),
-            _buildSectionHeader(l10n.paymentMethod),
+            _buildSectionHeader(l10n.orderSummary, context),
             const SizedBox(height: 12),
-            _buildPaymentCard(),
+            _buildOrderSummary(basket, lang, context),
             const SizedBox(height: 120),
           ],
         ),
@@ -51,11 +59,11 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(title, style: SangakTypography.h3);
+  Widget _buildSectionHeader(String title, BuildContext context) {
+    return Text(title, style: SangakTypography.h3(context));
   }
 
-  Widget _buildAddressCard() {
+  Widget _buildAddressCard(Address? address, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -71,18 +79,20 @@ class CheckoutScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Home', style: SangakTypography.title),
-                Text('Atatürk Mah. No: 123, Çankaya, Ankara', style: SangakTypography.bodySmall),
+                Text(address?.title ?? AppLocalizations.of(context).address, style: SangakTypography.title(context)),
+                Text(
+                  address?.fullAddress ?? AppLocalizations.of(context).noAddressSelected,
+                  style: SangakTypography.bodySmall(context),
+                ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: SangakColors.inkLight),
         ],
       ),
     );
   }
 
-  Widget _buildOrderSummary(List<CartItem> cart) {
+  Widget _buildOrderSummary(List<BasketItem> basket, String lang, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -92,14 +102,14 @@ class CheckoutScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          for (final item in cart)
+          for (final item in basket)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${item.quantity}x ${item.bread.name}', style: SangakTypography.bodyMedium),
-                  Text('₺${item.total.toStringAsFixed(0)}', style: SangakTypography.title.copyWith(fontSize: 14)),
+                  Text('${item.quantity}x ${item.bread.localizedName(lang)}', style: SangakTypography.bodyMedium(context)),
+                  Text('₺${item.total.toStringAsFixed(0)}', style: SangakTypography.title(context).copyWith(fontSize: 14)),
                 ],
               ),
             ),
@@ -108,7 +118,7 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildPaymentCard() {
+  Widget _buildPaymentCard(PaymentMethod method, AppLocalizations l10n, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -118,12 +128,14 @@ class CheckoutScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.credit_card, color: SangakColors.primary),
+          const Icon(Icons.payments_outlined, color: SangakColors.primary),
           const SizedBox(width: 16),
           Expanded(
-            child: Text('**** **** **** 1234', style: SangakTypography.title),
+            child: Text(
+              method == PaymentMethod.cash ? l10n.cashOnDelivery : l10n.creditCard,
+              style: SangakTypography.title(context),
+            ),
           ),
-          const Icon(Icons.chevron_right, color: SangakColors.inkLight),
         ],
       ),
     );
@@ -132,6 +144,7 @@ class CheckoutScreen extends ConsumerWidget {
   Widget _buildBottomAction(BuildContext context, double total, AppLocalizations l10n, WidgetRef ref) {
     const deliveryFee = 15.0;
     final grandTotal = total + deliveryFee;
+    final basket = ref.read(basketProvider);
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -146,19 +159,31 @@ class CheckoutScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.grandTotal, style: SangakTypography.h3),
-              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2.copyWith(color: SangakColors.primary)),
+              Text(l10n.grandTotal, style: SangakTypography.h3(context)),
+              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2(context).copyWith(color: SangakColors.primary)),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
-            label: l10n.placeOrder,
+            label: l10n.confirmOrder,
             width: double.infinity,
             onPressed: () {
-              // TODO: Implement order placement
-              ref.read(cartProvider.notifier).clear();
-              SangakToast.show(context, l10n.orderPlacedSuccessfully);
-              Navigator.pop(context);
+              AuthGate.run(
+                context,
+                ref,
+                action: () {
+                  final prepMinutes = basket.fold<int>(
+                    0,
+                    (sum, item) => sum + (item.bread.prepTime * item.quantity),
+                  );
+                  ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
+                  ref.read(basketProvider.notifier).clear();
+                  SangakToast.show(context, l10n.orderPlacedSuccessfully);
+                  context.go('/order-confirmation');
+                },
+                title: l10n.confirmOrder,
+                message: l10n.loginToPlaceOrder,
+              );
             },
           ),
         ],

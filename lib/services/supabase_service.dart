@@ -1,10 +1,20 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
   static Future<void> initialize() async {
+    await dotenv.load();
+    
+    final supabaseUrl = dotenv.env['SUPABASE_URL'];
+    final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'];
+
+    if (supabaseUrl == null || supabaseKey == null) {
+      throw Exception('Missing Supabase configuration. Check your .env file.');
+    }
+
     await Supabase.initialize(
-      url: 'https://obealvlqkffozfigtobc.supabase.co',
-      publishableKey: 'sb_publishable_TNlYa89a1LyOQ4Z3janYFQ_1lc5gkSk',
+      url: supabaseUrl,
+      publishableKey: supabaseKey,
     );
   }
 

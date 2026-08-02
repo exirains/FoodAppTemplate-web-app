@@ -58,13 +58,13 @@ class SangakConfirmDialog extends StatelessWidget {
           children: [
             Text(
               title,
-              style: SangakTypography.h3,
+              style: SangakTypography.h3(context),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: SangakDimens.spacing12),
             Text(
               message,
-              style: SangakTypography.bodyMedium.copyWith(color: SangakColors.inkLight),
+              style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: SangakDimens.spacing32),
@@ -80,6 +80,7 @@ class SangakConfirmDialog extends StatelessWidget {
                 Expanded(
                   child: SangakButton.primary(
                     label: confirmLabel,
+                    backgroundColor: isDestructive ? SangakColors.error : null,
                     onPressed: () {
                       onConfirm();
                       Navigator.pop(context, true);

@@ -30,7 +30,7 @@ class PaymentSelectionScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select Payment Method', style: SangakTypography.h3(context)),
+            Text(l10n.selectPaymentMethod, style: SangakTypography.h3(context)),
             const SizedBox(height: 16),
             _buildPaymentMethodItem(
               context,
@@ -46,8 +46,8 @@ class PaymentSelectionScreen extends ConsumerWidget {
               context,
               ref,
               PaymentMethod.card,
-              'Credit / Debit Card',
-              'Pay with card upon delivery (Coming Soon)',
+              l10n.creditCard,
+              l10n.payWithCardOnDelivery,
               Icons.credit_card_outlined,
               selectedMethod == PaymentMethod.card,
               isEnabled: false,

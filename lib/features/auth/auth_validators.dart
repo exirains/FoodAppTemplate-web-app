@@ -1,0 +1,206 @@
+// Authentication validation utilities for Sangak.
+// Provides production-level validation for email, password, name, and phone fields.
+
+class AuthValidators {
+  /// Maximum length for name field
+  static const int maxNameLength = 100;
+
+  /// Minimum length for password
+  static const int minPasswordLength = 8;
+
+  /// Maximum length for password
+  static const int maxPasswordLength = 128;
+
+  /// Email regex pattern (RFC 5322 simplified)
+  static final RegExp _emailRegex = RegExp(
+    r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+  );
+
+  /// Password pattern: must contain uppercase, lowercase, and number
+  static final RegExp _passwordRegex = RegExp(
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)',
+  );
+
+  /// Validates email address
+  /// - Trims whitespace
+  /// - Converts to lowercase
+  /// - Checks for valid format
+  /// Returns null if valid, error message otherwise
+  static String? validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return 'required_field'; // Key for localization
+    }
+
+    email = email.trim().toLowerCase();
+
+    if (!_emailRegex.hasMatch(email)) {
+      return 'invalid_email'; // Key for localization
+    }
+
+    return null;
+  }
+
+  /// Sanitizes email for authentication
+  /// - Trims whitespace
+  /// - Converts to lowercase
+  static String sanitizeEmail(String email) {
+    return email.trim().toLowerCase();
+  }
+
+  /// Validates password strength
+  /// - Minimum 8 characters
+  /// - Must contain uppercase letter
+  /// - Must contain lowercase letter
+  /// - Must contain number
+  /// Returns null if valid, error message otherwise
+  static String? validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'required_field'; // Key for localization
+    }
+
+    if (password.length < minPasswordLength) {
+      return 'password_too_short'; // Key for localization
+    }
+
+    if (password.length > maxPasswordLength) {
+      return 'password_too_long'; // Key for localization (optional)
+    }
+
+    if (!_passwordRegex.hasMatch(password)) {
+      return 'password_requirements'; // Key for localization
+    }
+
+    return null;
+  }
+
+  /// Calculates password strength (0.0 to 1.0)
+  /// 0.0 = very weak, 1.0 = very strong
+  static double calculatePasswordStrength(String password) {
+    if (password.isEmpty) return 0.0;
+    if (password.length < minPasswordLength) return 0.2;
+
+    double strength = 0.4; // Base strength for meeting requirements
+
+    // Bonus for length
+    if (password.length >= 12) strength += 0.2;
+    if (password.length >= 16) strength += 0.1;
+
+    // Bonus for special characters
+    if (RegExp(r'[!@#$%^&*()_+\-=\[\]{};:''",.<>?/\\|`~]').hasMatch(password)) {
+      strength += 0.3;
+    }
+
+    return strength.clamp(0.0, 1.0);
+  }
+
+  /// Gets password strength label
+  /// Returns one of: 'weak', 'fair', 'good', 'strong'
+  static String getPasswordStrengthLabel(String password) {
+    final strength = calculatePasswordStrength(password);
+
+    if (strength < 0.4) return 'weak';
+    if (strength < 0.6) return 'fair';
+    if (strength < 0.8) return 'good';
+    return 'strong';
+  }
+
+  /// Validates that two passwords match
+  /// Returns null if valid, error message otherwise
+  static String? validatePasswordMatch(String? password, String? confirmPassword) {
+    if (password == null || confirmPassword == null) {
+      return 'required_field'; // Key for localization
+    }
+
+    if (password != confirmPassword) {
+      return 'passwords_do_not_match'; // Key for localization
+    }
+
+    return null;
+  }
+
+  /// Validates name/full name
+  /// - Required
+  /// - Minimum 2 characters
+  /// - Maximum 100 characters
+  /// - Cannot be only whitespace
+  /// - Trims extra spaces
+  /// Returns null if valid, error message otherwise
+  static String? validateName(String? name) {
+    if (name == null || name.isEmpty) {
+      return 'required_field'; // Key for localization
+    }
+
+    name = name.trim();
+
+    if (name.isEmpty || name.replaceAll(RegExp(r'\s'), '').isEmpty) {
+      return 'required_field'; // Key for localization
+    }
+
+    if (name.length < 2) {
+      return 'name_too_short'; // Key for localization
+    }
+
+    if (name.length > maxNameLength) {
+      return 'name_too_long'; // Key for localization
+    }
+
+    return null;
+  }
+
+  /// Sanitizes name by trimming extra spaces
+  /// Converts multiple spaces to single space
+  static String sanitizeName(String name) {
+    return name.trim().replaceAll(RegExp(r'\s+'), ' ');
+  }
+
+  /// Validates phone number for Turkey.
+  /// - Required
+  /// - Must start with +90
+  /// - Must contain exactly 10 national digits after the country code
+  /// Returns null if valid, error message otherwise
+  static String? validatePhoneNumber(String? phone) {
+    if (phone == null || phone.isEmpty) {
+      return 'required_field'; // Key for localization
+    }
+
+    phone = phone.trim();
+
+    if (!phone.startsWith('+90')) {
+      return 'invalid_phone_number'; // Key for localization
+    }
+
+    final digitsOnly = phone.substring(1);
+    if (!RegExp(r'^\d+$').hasMatch(digitsOnly)) {
+      return 'invalid_phone_number'; // Key for localization
+    }
+
+    if (digitsOnly.length != 12) {
+      return 'invalid_phone_number'; // Key for localization
+    }
+
+    return null;
+  }
+
+  /// Sanitizes phone number by trimming whitespace
+  static String sanitizePhoneNumber(String phone) {
+    return phone.trim();
+  }
+}
+
+/// Password strength levels for UI display
+enum PasswordStrengthLevel {
+  weak,
+  fair,
+  good,
+  strong,
+}
+
+/// Extension to easily access strength level from double
+extension PasswordStrengthExtension on double {
+  PasswordStrengthLevel get strengthLevel {
+    if (this < 0.4) return PasswordStrengthLevel.weak;
+    if (this < 0.6) return PasswordStrengthLevel.fair;
+    if (this < 0.8) return PasswordStrengthLevel.good;
+    return PasswordStrengthLevel.strong;
+  }
+}

@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../design_system/sangak_colors.dart';
-import '../design_system/sangak_typography.dart';
 import '../design_system/sangak_dimens.dart';
 
-/// Sangak Theme Configuration (v1.0.0)
+/// Sangak Theme Configuration (v1.1.0)
 class SangakTheme {
-  static ThemeData get light {
+  static ThemeData light(Locale locale) {
+    final isPersian = locale.languageCode == 'fa';
+    
+    // Choose font families based on locale
+    final String baseFont = isPersian ? 'IRANYekanX' : GoogleFonts.plusJakartaSans().fontFamily!;
+    final String headingFont = isPersian ? 'IRANYekanX' : GoogleFonts.fraunces().fontFamily!;
+
+    final textTheme = TextTheme(
+      displayLarge: TextStyle(fontFamily: headingFont, fontSize: 48, fontWeight: FontWeight.w700, color: SangakColors.ink, height: 1.1),
+      headlineLarge: TextStyle(fontFamily: headingFont, fontSize: 32, fontWeight: FontWeight.w700, color: SangakColors.ink, height: 1.2),
+      headlineMedium: TextStyle(fontFamily: headingFont, fontSize: 24, fontWeight: FontWeight.w600, color: SangakColors.ink, height: 1.2),
+      headlineSmall: TextStyle(fontFamily: headingFont, fontSize: 20, fontWeight: FontWeight.w600, color: SangakColors.ink, height: 1.3),
+      titleLarge: TextStyle(fontFamily: baseFont, fontSize: 18, fontWeight: FontWeight.w600, color: SangakColors.ink),
+      titleMedium: TextStyle(fontFamily: baseFont, fontSize: 16, fontWeight: FontWeight.w500, color: SangakColors.inkLight),
+      bodyLarge: TextStyle(fontFamily: baseFont, fontSize: 16, fontWeight: FontWeight.w400, color: SangakColors.ink, height: 1.5),
+      bodyMedium: TextStyle(fontFamily: baseFont, fontSize: 14, fontWeight: FontWeight.w400, color: SangakColors.ink, height: 1.5),
+      bodySmall: TextStyle(fontFamily: baseFont, fontSize: 12, fontWeight: FontWeight.w400, color: SangakColors.inkLight),
+      labelLarge: TextStyle(fontFamily: baseFont, fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: isPersian ? 0 : 0.5),
+    );
+
     return ThemeData(
       useMaterial3: true,
+      fontFamily: baseFont,
       colorScheme: ColorScheme.fromSeed(
         seedColor: SangakColors.primary,
         primary: SangakColors.primary,
@@ -19,6 +39,7 @@ class SangakTheme {
         onSecondary: Colors.white,
         onSurface: SangakColors.ink,
       ),
+      textTheme: textTheme,
       scaffoldBackgroundColor: SangakColors.background,
       dividerTheme: const DividerThemeData(
         color: SangakColors.border,
@@ -30,7 +51,7 @@ class SangakTheme {
         foregroundColor: SangakColors.ink,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: SangakTypography.h3,
+        titleTextStyle: textTheme.headlineSmall,
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -38,7 +59,6 @@ class SangakTheme {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      // Extend the theme with Sangak-specific tokens
       extensions: [
         SangakThemeExtension(
           spacing8: SangakDimens.spacing8,

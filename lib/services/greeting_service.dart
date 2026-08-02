@@ -9,17 +9,9 @@ class GreetingService {
     if (hour < 12) {
       return l10n.goodMorning;
     } else if (hour < 17) {
-      try {
-        return (l10n as dynamic).goodAfternoon ?? 'Good Afternoon,';
-      } catch (e) {
-        return 'Good Afternoon,';
-      }
+      return l10n.goodAfternoon;
     } else {
-      try {
-        return (l10n as dynamic).goodEvening ?? 'Good Evening,';
-      } catch (e) {
-        return 'Good Evening,';
-      }
+      return l10n.goodEvening;
     }
   }
 }

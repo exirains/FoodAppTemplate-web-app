@@ -145,7 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourBasketIsWaiting => 'Your basket is waiting';
 
   @override
-  String get cartGuestMessage =>
+  String get basketGuestMessage =>
       'Create an account to save your items, track orders, and complete your checkout effortlessly.';
 
   @override
@@ -165,7 +165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explore => 'Explore';
 
   @override
-  String get cart => 'Cart';
+  String get basket => 'Basket';
 
   @override
   String get profile => 'Profile';
@@ -235,13 +235,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proceedToCheckout => 'Proceed to Checkout';
 
   @override
+  String get useCurrentLocation => 'Use my current location';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get noAddressSelected => 'No address selected';
+
+  @override
+  String get cashOnDelivery => 'Cash on Delivery';
+
+  @override
+  String get cashOnDeliveryDescription =>
+      'Pay with cash when your order arrives.';
+
+  @override
+  String get confirmOrder => 'Confirm Order';
+
+  @override
+  String get addDeliveryNote => 'Add delivery note';
+
+  @override
+  String get street => 'Street';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get district => 'District';
+
+  @override
+  String get building => 'Building / No';
+
+  @override
+  String get floor => 'Floor';
+
+  @override
+  String get door => 'Door No';
+
+  @override
+  String get saveAddress => 'Save Address';
+
+  @override
+  String get orderReceived => 'Your order has been received';
+
+  @override
+  String get orderNumber => 'Order Number';
+
+  @override
+  String get estimatedTime => 'Approximate preparation time';
+
+  @override
+  String get estimatedDeliveryTime => 'Approximate delivery time';
+
+  @override
+  String get backToHome => 'Back to Home';
+
+  @override
   String get searchBreads => 'Search breads...';
 
   @override
-  String get description => 'Description';
+  String get noProductsFound => 'No products found';
 
   @override
-  String get addedToCart => 'Added to cart';
+  String get description => 'Description';
 
   @override
   String get all => 'All';
@@ -270,8 +328,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String mins(int count) {
-    return '$count min';
+  String mins(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -284,4 +353,197 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add => 'Add';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email address';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 8 characters long';
+
+  @override
+  String get passwordRequirements =>
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+
+  @override
+  String get requiredField => 'This field is required';
+
+  @override
+  String get invalidCredentials => 'Incorrect email or password';
+
+  @override
+  String get networkError => 'Connection problem. Please try again.';
+
+  @override
+  String get tooManyAttempts =>
+      'Too many login attempts. Please try again later.';
+
+  @override
+  String get emailAlreadyInUse => 'This email is already registered';
+
+  @override
+  String get emailNotVerified => 'Please verify your email first';
+
+  @override
+  String get invalidPhoneNumber => 'Invalid phone number';
+
+  @override
+  String get passwordStrength => 'Password Strength';
+
+  @override
+  String get weak => 'Weak';
+
+  @override
+  String get fair => 'Fair';
+
+  @override
+  String get good => 'Good';
+
+  @override
+  String get strong => 'Strong';
+
+  @override
+  String get showPassword => 'Show';
+
+  @override
+  String get hidePassword => 'Hide';
+
+  @override
+  String get saveYourFavoritesDescription =>
+      'Create an account to save your favorite breads across devices.';
+
+  @override
+  String get continueWithEmailOrGoogle => 'Continue with Email or Google';
+
+  @override
+  String get maybeLater => 'Maybe Later';
+
+  @override
+  String get completeYourProfile => 'Complete Your Profile';
+
+  @override
+  String get addPhoneNumber => 'Add Phone Number';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account? ';
+
+  @override
+  String get profileCompletion => 'Profile Completion';
+
+  @override
+  String get syncBasket => 'Sync Basket';
+
+  @override
+  String get syncingBasket => 'Syncing your items...';
+
+  @override
+  String get basketSynced => 'Your basket has been saved!';
+
+  @override
+  String get loginToContinue => 'Sign in to continue with checkout';
+
+  @override
+  String get loginToPlaceOrder => 'Sign in to place your order.';
+
+  @override
+  String get nameTooShort => 'Name must be at least 2 characters';
+
+  @override
+  String get nameTooLong => 'Name must be less than 100 characters';
+
+  @override
+  String get activity => 'Activity';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get orders => 'Orders';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get signOutConfirmation =>
+      'Are you sure you want to sign out of your Sangak account?';
+
+  @override
+  String get profilePictureUpdated => 'Profile picture updated successfully!';
+
+  @override
+  String get failedToUpdateProfilePicture => 'Failed to update profile picture';
+
+  @override
+  String get locationCaptured => 'Location captured successfully';
+
+  @override
+  String get locationError => 'Could not get location. Please enter manually.';
+
+  @override
+  String get selectPaymentMethod => 'Select Payment Method';
+
+  @override
+  String get creditCard => 'Credit / Debit Card';
+
+  @override
+  String get payWithCardOnDelivery =>
+      'Pay with card upon delivery (Coming Soon)';
+
+  @override
+  String get thankYouSangak =>
+      'Thank you for choosing Sangak! Your fresh bread is being prepared.';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get paymentInfo => 'Payment Info';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get removeItemFromBasket =>
+      'Are you sure you want to remove this item from your basket?';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get roleSwitch => 'Switch Role';
+
+  @override
+  String get customerApp => 'Customer App';
+
+  @override
+  String get adminPanel => 'Admin Panel';
+
+  @override
+  String get deliveryPanel => 'Delivery Panel';
+
+  @override
+  String get changeSettingAnytime => 'You can change this anytime in Settings.';
 }

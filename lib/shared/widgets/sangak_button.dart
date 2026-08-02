@@ -15,7 +15,11 @@ class SangakButton extends StatefulWidget {
   final SangakButtonVariant variant;
   final bool isLoading;
   final IconData? icon;
+  final Widget? leading;
   final double? width;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final Color? borderColor;
 
   const SangakButton.primary({
     super.key,
@@ -23,7 +27,11 @@ class SangakButton extends StatefulWidget {
     this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.leading,
     this.width,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
   }) : variant = SangakButtonVariant.primary;
 
   const SangakButton.outlined({
@@ -32,7 +40,11 @@ class SangakButton extends StatefulWidget {
     this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.leading,
     this.width,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
   }) : variant = SangakButtonVariant.outlined;
 
   const SangakButton.ghost({
@@ -41,7 +53,11 @@ class SangakButton extends StatefulWidget {
     this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.leading,
     this.width,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
   }) : variant = SangakButtonVariant.ghost;
 
   @override
@@ -60,7 +76,7 @@ class _SangakButtonState extends State<SangakButton> {
     
     switch (widget.variant) {
       case SangakButtonVariant.primary:
-        return _isPressed ? SangakColors.secondary : SangakColors.primary;
+        return widget.backgroundColor ?? (_isPressed ? SangakColors.secondary : SangakColors.primary);
       case SangakButtonVariant.outlined:
       case SangakButtonVariant.ghost:
         return _isPressed ? SangakColors.background : Colors.transparent;
@@ -69,6 +85,7 @@ class _SangakButtonState extends State<SangakButton> {
 
   Color _getForegroundColor() {
     if (!_isEnabled) return SangakColors.inkLight;
+    if (widget.foregroundColor != null) return widget.foregroundColor!;
     
     switch (widget.variant) {
       case SangakButtonVariant.primary:
@@ -82,7 +99,7 @@ class _SangakButtonState extends State<SangakButton> {
   Border? _getBorder() {
     if (widget.variant == SangakButtonVariant.outlined) {
       return Border.all(
-        color: _isEnabled ? SangakColors.primary : SangakColors.border,
+        color: _isEnabled ? (widget.borderColor ?? SangakColors.primary) : SangakColors.border,
         width: 1.5,
       );
     }
@@ -112,7 +129,9 @@ class _SangakButtonState extends State<SangakButton> {
               color: _getBackgroundColor(),
               borderRadius: BorderRadius.circular(SangakDimens.radiusM),
               border: _getBorder(),
-              boxShadow: _isPressed ? null : SangakDimens.shadowLow,
+              boxShadow: widget.variant == SangakButtonVariant.primary && !_isPressed
+                  ? SangakDimens.shadowLow
+                  : null,
             ),
             child: Center(
               child: widget.isLoading
@@ -127,6 +146,10 @@ class _SangakButtonState extends State<SangakButton> {
                   : Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        if (widget.leading != null) ...[
+                          widget.leading!,
+                          const SizedBox(width: SangakDimens.spacing8),
+                        ],
                         if (widget.icon != null) ...[
                           Icon(widget.icon, size: 20, color: _getForegroundColor()),
                           const SizedBox(width: SangakDimens.spacing8),
@@ -135,7 +158,7 @@ class _SangakButtonState extends State<SangakButton> {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           widget.label,
-                          style: SangakTypography.button.copyWith(
+                          style: SangakTypography.button(context).copyWith(
                             color: _getForegroundColor(),
                           ),
                         ),

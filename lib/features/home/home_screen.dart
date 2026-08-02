@@ -7,16 +7,18 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../auth/auth_provider.dart';
-import '../cart/cart_provider.dart';
+import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 import 'tab_provider.dart';
 import 'widgets/settings_bottom_sheet.dart';
+import '../../core/localization/locale_provider.dart';
 import '../../services/greeting_service.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/widgets/category_chip.dart';
 import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
+import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/widgets/sangak_skeletons.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -31,6 +33,8 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(authProvider).value;
     final isGuest = user == null;
     final l10n = AppLocalizations.of(context);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -39,57 +43,58 @@ class HomeScreen extends ConsumerWidget {
           // Custom App Bar with Search
           SliverAppBar(
             floating: true,
-            expandedHeight: 120,
+            expandedHeight: 88,
             backgroundColor: SangakColors.background,
             surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 60, 24, 0),
-                child: Column(
+                padding: const EdgeInsets.fromLTRB(24, 36, 24, 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(GreetingService.getGreeting(context), style: SangakTypography.bodySmall),
-                            const SizedBox(height: 4),
-                            if (!isGuest)
-                              Text(
-                                user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                                style: SangakTypography.h3,
-                              ),
-                            if (isGuest)
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: SangakColors.primary.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  l10n.guest.toUpperCase(),
-                                  style: SangakTypography.caption.copyWith(
-                                    color: SangakColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () => SettingsBottomSheet.show(context),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: SangakColors.surface,
-                              shape: BoxShape.circle,
-                              boxShadow: SangakDimens.shadowLow,
-                            ),
-                            child: const Icon(Icons.settings_outlined, color: SangakColors.ink),
+                        Text(GreetingService.getGreeting(context), style: SangakTypography.bodySmall(context)),
+                        const SizedBox(height: 1),
+                        if (!isGuest)
+                          Text(
+                            user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
+                            style: SangakTypography.h3(context),
                           ),
-                        ),
+                        if (isGuest)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3.0),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: SangakColors.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                l10n.guest.toUpperCase(),
+                                style: SangakTypography.caption(context).copyWith(
+                                  color: SangakColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
+                    ),
+                    GestureDetector(
+                      onTap: () => SettingsBottomSheet.show(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(9),
+                        decoration: BoxDecoration(
+                          color: SangakColors.surface,
+                          shape: BoxShape.circle,
+                          boxShadow: SangakDimens.shadowLow,
+                        ),
+                        child: const Icon(Icons.settings_outlined, color: SangakColors.ink, size: 20),
+                      ),
                     ),
                   ],
                 ),
@@ -112,7 +117,7 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: SangakDimens.spacing32),
 
                   // Categories
-                  Text(l10n.categories, style: SangakTypography.h3),
+                  Text(l10n.categories, style: SangakTypography.h3(context)),
                   const SizedBox(height: SangakDimens.spacing16),
                   categoriesAsync.when(
                     data: (categories) => SizedBox(
@@ -131,7 +136,7 @@ class HomeScreen extends ConsumerWidget {
                           }
                           final category = categories[index - 1];
                           return CategoryChip(
-                            label: category.name,
+                            label: category.localizedName(lang),
                             isSelected: selectedCategoryId == category.id,
                             onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category.id,
                           );
@@ -139,7 +144,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                     loading: () => const SizedBox(height: 50, child: Center(child: CircularProgressIndicator())),
-                    error: (error, stack) => Text('${l10n.errorLoadingCategories}: $error'),
+                    error: (error, stack) => Text(l10n.errorLoadingCategories),
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
 
@@ -147,10 +152,10 @@ class HomeScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.popularToday, style: SangakTypography.h3),
+                      Text(l10n.popularToday, style: SangakTypography.h3(context)),
                       TextButton(
                         onPressed: () => ref.read(tabProvider.notifier).state = 1,
-                        child: Text(l10n.seeAll, style: SangakTypography.bodySmall.copyWith(color: SangakColors.primary)),
+                        child: Text(l10n.seeAll, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
                       ),
                     ],
                   ),
@@ -163,7 +168,7 @@ class HomeScreen extends ConsumerWidget {
           // Bread Horizontal List
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 380,
+              height: 400,
               child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
@@ -172,10 +177,11 @@ class HomeScreen extends ConsumerWidget {
                   separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
                   itemBuilder: (context, index) {
                     final bread = breads[index];
+                    final displayName = bread.localizedName(lang);
                     return ProductCard(
                       bread: bread,
-                      name: bread.name,
-                      description: bread.description,
+                      name: displayName,
+                      description: bread.localizedDescription(lang),
                       price: bread.price,
                       imageUrl: bread.imageUrl,
                       freshness: bread.freshness,
@@ -190,13 +196,13 @@ class HomeScreen extends ConsumerWidget {
                           message: l10n.saveFavoritesMessage,
                         );
                       },
-                      onAddToCart: () {
+                      onAddToBasket: () {
                         AuthGate.run(
                           context,
                           ref,
                           action: () {
-                            ref.read(cartProvider.notifier).addItem(bread);
-                            SangakToast.show(context, l10n.addedToBasket(bread.name));
+                            ref.read(basketProvider.notifier).addItem(bread);
+                            SangakToast.show(context, l10n.addedToBasket(displayName));
                           },
                         );
                       },
@@ -210,7 +216,7 @@ class HomeScreen extends ConsumerWidget {
                   separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
                   itemBuilder: (context, index) => const ProductCardSkeleton(),
                 ),
-                error: (error, stack) => Center(child: Text('${l10n.errorLoadingBreads}: $error')),
+                error: (error, stack) => Center(child: Text(l10n.errorLoadingBreads)),
               ),
             ),
           ),
@@ -224,7 +230,7 @@ class HomeScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.traditionalFavorites, style: SangakTypography.h3),
+                  Text(l10n.traditionalFavorites, style: SangakTypography.h3(context)),
                   const SizedBox(height: SangakDimens.spacing16),
                 ],
               ),
@@ -238,6 +244,7 @@ class HomeScreen extends ConsumerWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final bread = breads[index];
+                    final displayName = bread.localizedName(lang);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
                       child: GestureDetector(
@@ -286,19 +293,19 @@ class HomeScreen extends ConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      bread.name,
-                                      style: SangakTypography.title,
+                                      displayName,
+                                      style: SangakTypography.title(context),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
-                                      bread.description,
-                                      style: SangakTypography.bodySmall,
+                                      bread.localizedDescription(lang),
+                                      style: SangakTypography.bodySmall(context),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 8),
-                                    Text('₺${bread.price.toStringAsFixed(0)}', style: SangakTypography.price.copyWith(fontSize: 16)),
+                                    Text('₺${bread.price.toStringAsFixed(0)}', style: SangakTypography.price(context).copyWith(fontSize: 16)),
                                   ],
                                 ),
                               ),
@@ -325,19 +332,33 @@ class HomeScreen extends ConsumerWidget {
                                       ),
                                     );
                                   }),
-                                  IconButton(
-                                    onPressed: () {
-                                      AuthGate.run(
-                                        context,
-                                        ref,
-                                        action: () {
-                                          ref.read(cartProvider.notifier).addItem(bread);
-                                          SangakToast.show(context, l10n.addedToBasket(bread.name));
-                                        },
+                                  Consumer(builder: (context, ref, child) {
+                                    final basket = ref.watch(basketProvider);
+                                    final item = basket.where((item) => item.bread.id == bread.id).firstOrNull;
+                                    final quantity = item?.quantity ?? 0;
+                                    if (quantity > 0) {
+                                      return QuantitySelector(
+                                        quantity: quantity,
+                                        compact: true,
+                                        onIncrement: () => ref.read(basketProvider.notifier).addItem(bread),
+                                        onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(bread.id, -1),
+                                        onDelete: () => ref.read(basketProvider.notifier).removeItem(bread.id),
                                       );
-                                    },
-                                    icon: const Icon(Icons.add_circle, color: SangakColors.primary, size: 32),
-                                  ),
+                                    }
+                                    return IconButton(
+                                      onPressed: () {
+                                        AuthGate.run(
+                                          context,
+                                          ref,
+                                          action: () {
+                                            ref.read(basketProvider.notifier).addItem(bread);
+                                            SangakToast.show(context, l10n.addedToBasket(displayName));
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(Icons.add_circle, color: SangakColors.primary, size: 32),
+                                    );
+                                  }),
                                 ],
                               ),
                             ],
@@ -351,7 +372,7 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
-            error: (error, stack) => SliverToBoxAdapter(child: Center(child: Text('${l10n.errorLoadingBreads}: $error'))),
+            error: (error, stack) => SliverToBoxAdapter(child: Center(child: Text(l10n.errorLoadingBreads))),
           ),
           
           const SliverToBoxAdapter(child: SizedBox(height: SangakDimens.spacing64)),

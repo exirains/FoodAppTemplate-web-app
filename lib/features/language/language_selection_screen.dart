@@ -41,21 +41,25 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20), // Reduced from 40
+              const SizedBox(height: 40),
               const AppLogo.large(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               Text(
                 l10n.chooseLanguage,
-                style: SangakTypography.h2.copyWith(fontSize: 24, fontWeight: FontWeight.w800),
+                style: SangakTypography.h2(context).copyWith(fontSize: 24, fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              const Text(
-                "Lütfen bir dil seçin / Please choose a language / لطفا یک زبان را انتخاب کنید",
+              Text(
+                _selectedCode == 'tr' 
+                  ? "Ayarlardan dilediğiniz zaman değiştirebilirsiniz."
+                  : _selectedCode == 'fa'
+                    ? "می‌توانید این را هر زمان در تنظیمات تغییر دهید."
+                    : "You can change this anytime in Settings.",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 13),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
               ),
-              const SizedBox(height: 32), // Reduced from 48
+              const SizedBox(height: 40),
               ..._languages.map((lang) => LanguageCard(
                     label: lang['label']!,
                     flag: lang['flag']!,
@@ -65,13 +69,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                       ref.read(localeProvider.notifier).setLocale(lang['code']!);
                     },
                   )),
-              const SizedBox(height: 48), // Replaced Spacer
-              const Text(
-                "You can change this anytime in settings\nBu seçeneği dilediğiniz zaman ayarlardan değiştirebilirsiniz\nمی‌توانید این را هر زمان در تنظیمات تغییر دهید",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               SangakButton.primary(
                 label: l10n.continueButton,
                 width: double.infinity,

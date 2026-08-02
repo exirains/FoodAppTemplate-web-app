@@ -32,13 +32,14 @@ class BreadAdapter extends TypeAdapter<Bread> {
       updatedAt: fields[12] as DateTime?,
       rating: fields[13] as double,
       reviews: fields[14] as int,
+      translations: (fields[15] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Bread obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -68,7 +69,9 @@ class BreadAdapter extends TypeAdapter<Bread> {
       ..writeByte(13)
       ..write(obj.rating)
       ..writeByte(14)
-      ..write(obj.reviews);
+      ..write(obj.reviews)
+      ..writeByte(15)
+      ..write(obj.translations);
   }
 
   @override

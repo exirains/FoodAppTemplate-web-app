@@ -8,7 +8,8 @@ import '../../shared/widgets/product_card.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../home/home_provider.dart';
-import '../cart/cart_provider.dart';
+import '../basket/basket_provider.dart';
+import '../../core/localization/locale_provider.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   final String? initialCategoryId;
@@ -44,6 +45,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     final categoriesAsync = ref.watch(categoriesProvider);
     final breadsAsync = ref.watch(filteredBreadsProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -104,8 +107,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          isAll ? l10n.all : category!.name,
-                          style: SangakTypography.title.copyWith(
+                          isAll ? l10n.all : category!.localizedName(lang),
+                          style: SangakTypography.title(context).copyWith(
                             fontSize: 13,
                             color: isSelected ? Colors.white : SangakColors.inkLight,
                           ),
@@ -123,31 +126,34 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
           Expanded(
             child: breadsAsync.when(
               data: (breads) {
-                final filtered = breads.where((b) => 
-                  b.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                  b.description.toLowerCase().contains(_searchQuery.toLowerCase())
-                ).toList();
+                final filtered = breads.where((b) {
+                  final name = b.localizedName(lang).toLowerCase();
+                  final desc = b.localizedDescription(lang).toLowerCase();
+                  final query = _searchQuery.toLowerCase();
+                  return name.contains(query) || desc.contains(query);
+                }).toList();
 
                 if (filtered.isEmpty) {
                   return Center(
                     child: Text(
-                      'No products found',
-                      style: SangakTypography.bodyLarge.copyWith(color: SangakColors.inkLight),
+                      l10n.noProductsFound,
+                      style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
                     ),
                   );
                 }
 
                 return GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 120), // More bottom padding
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 80),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 24,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.54, // More height for cards
+                    childAspectRatio: 0.52,
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {
                     final bread = filtered[index];
+                    final displayName = bread.localizedName(lang);
                     return ProductCard(
                       bread: bread,
                       name: bread.name,
@@ -165,13 +171,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                           message: l10n.saveFavoritesMessage,
                         );
                       },
-                      onAddToCart: () {
+                      onAddToBasket: () {
                         AuthGate.run(
                           context,
                           ref,
                           action: () {
-                            ref.read(cartProvider.notifier).addItem(bread);
-                            SangakToast.show(context, l10n.addedToBasket(bread.name));
+                            ref.read(basketProvider.notifier).addItem(bread);
+                            SangakToast.show(context, l10n.addedToBasket(displayName));
                           },
                         );
                       },
@@ -180,7 +186,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error: $error')),
+              error: (error, stack) => Center(child: Text(l10n.errorLoadingBreads)),
             ),
           ),
         ],

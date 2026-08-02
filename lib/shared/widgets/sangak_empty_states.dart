@@ -37,11 +37,11 @@ class SangakEmptyState extends StatelessWidget {
             child: Icon(icon, size: 64, color: SangakColors.primary),
           ),
           const SizedBox(height: SangakDimens.spacing24),
-          Text(title, style: SangakTypography.h2, textAlign: TextAlign.center),
+          Text(title, style: SangakTypography.h2(context), textAlign: TextAlign.center),
           const SizedBox(height: SangakDimens.spacing8),
           Text(
             message,
-            style: SangakTypography.bodyMedium.copyWith(color: SangakColors.inkLight),
+            style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
             textAlign: TextAlign.center,
           ),
           if (actionLabel != null && onAction != null) ...[

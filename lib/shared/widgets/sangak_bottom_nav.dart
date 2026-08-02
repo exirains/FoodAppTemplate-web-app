@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Sangak Design System Bottom Navigation (v1.0.0)
 class SangakBottomNav extends StatelessWidget {
@@ -16,6 +17,8 @@ class SangakBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return Container(
       decoration: BoxDecoration(
         color: SangakColors.surface,
@@ -28,28 +31,28 @@ class SangakBottomNav extends StatelessWidget {
         backgroundColor: SangakColors.surface,
         selectedItemColor: SangakColors.primary,
         unselectedItemColor: SangakColors.inkLight,
-        selectedLabelStyle: SangakTypography.caption.copyWith(fontWeight: FontWeight.w700),
-        unselectedLabelStyle: SangakTypography.caption,
-        items: const [
+        selectedLabelStyle: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.w700),
+        unselectedLabelStyle: SangakTypography.caption(context),
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.breakfast_dining_outlined),
-            activeIcon: Icon(Icons.breakfast_dining),
-            label: 'Home',
+            icon: const Icon(Icons.breakfast_dining_outlined),
+            activeIcon: const Icon(Icons.breakfast_dining),
+            label: l10n.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search_outlined),
-            activeIcon: Icon(Icons.search),
-            label: 'Explore',
+            icon: const Icon(Icons.search_outlined),
+            activeIcon: const Icon(Icons.search),
+            label: l10n.explore,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket_outlined),
-            activeIcon: Icon(Icons.shopping_basket),
-            label: 'Cart',
+            icon: const Icon(Icons.shopping_basket_outlined),
+            activeIcon: const Icon(Icons.shopping_basket),
+            label: l10n.basket,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profile',
+            icon: const Icon(Icons.person_outline),
+            activeIcon: const Icon(Icons.person),
+            label: l10n.profile,
           ),
         ],
       ),

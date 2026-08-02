@@ -20,7 +20,7 @@ class SangakAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: title != null ? Text(title!, style: SangakTypography.h3) : null,
+      title: title != null ? Text(title!, style: SangakTypography.h3(context)) : null,
       leading: leading ?? (showBackButton && Navigator.canPop(context)
           ? IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),

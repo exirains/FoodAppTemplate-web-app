@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sangak/l10n/app_localizations.dart';
@@ -9,6 +11,7 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../models/address.dart';
+import '../../main.dart';
 import 'checkout_provider.dart';
 
 class AddressSelectionScreen extends ConsumerStatefulWidget {
@@ -45,8 +48,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   }
 
   Future<void> _getCurrentLocation() async {
-    setState(() => _isLoadingLocation = true);
     final l10n = AppLocalizations.of(context);
+    setState(() => _isLoadingLocation = true);
 
     try {
       final locationService = ref.read(locationServiceProvider);
@@ -59,17 +62,19 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         );
 
         if (placemark != null) {
+          if (!mounted) return;
           setState(() {
             _cityController.text = placemark.administrativeArea ?? '';
             _districtController.text = placemark.subAdministrativeArea ?? '';
             _streetController.text = placemark.street ?? '';
             _addressController.text = '${placemark.street}, ${placemark.subLocality}, ${placemark.locality}';
           });
-          SangakToast.show(context, 'Location captured successfully');
+          SangakToast.show(context, l10n.locationCaptured);
         }
       }
     } catch (e) {
-      SangakToast.show(context, 'Could not get location. Please enter manually.');
+      if (!mounted) return;
+      SangakToast.show(context, l10n.locationError);
     } finally {
       if (mounted) setState(() => _isLoadingLocation = false);
     }
@@ -79,7 +84,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
     if (!_formKey.currentState!.validate()) return;
 
     final address = Address(
-      title: 'Delivery Address',
+      title: AppLocalizations.of(context).deliveryAddress,
       fullAddress: _addressController.text,
       city: _cityController.text,
       district: _districtController.text,
@@ -90,13 +95,45 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       deliveryNote: _noteController.text,
     );
 
+    final storage = ref.read(storageServiceProvider);
+    final saved = storage.addresses;
+    final addresses = saved == null
+        ? <Map<String, dynamic>>[]
+        : (jsonDecode(saved) as List).cast<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+    
+    // Avoid duplicates by simple fullAddress check
+    if (!addresses.any((a) => a['full_address'] == address.fullAddress)) {
+      addresses.add(address.toJson());
+      storage.saveAddresses(jsonEncode(addresses));
+    }
+
     ref.read(checkoutProvider.notifier).selectAddress(address);
     context.push('/payment-selection');
+  }
+
+  void _selectSavedAddress(Address address) {
+    setState(() {
+      _addressController.text = address.fullAddress;
+      _cityController.text = address.city ?? '';
+      _districtController.text = address.district ?? '';
+      _streetController.text = address.street ?? '';
+      _buildingController.text = address.building ?? '';
+      _floorController.text = address.floor ?? '';
+      _doorController.text = address.door ?? '';
+      _noteController.text = address.deliveryNote ?? '';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final storage = ref.watch(storageServiceProvider);
+    final savedJson = storage.addresses;
+    final List<Address> savedAddresses = savedJson == null
+        ? []
+        : (jsonDecode(savedJson) as List)
+            .map((e) => Address.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -114,6 +151,53 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (savedAddresses.isNotEmpty) ...[
+                Text(l10n.favorites, style: SangakTypography.h3(context)),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 100,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: savedAddresses.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final addr = savedAddresses[index];
+                      return GestureDetector(
+                        onTap: () => _selectSavedAddress(addr),
+                        child: Container(
+                          width: 200,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: SangakColors.surface,
+                            borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                            border: Border.all(color: SangakColors.border),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                addr.street ?? addr.title,
+                                style: SangakTypography.title(context).copyWith(fontSize: 14),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                addr.fullAddress,
+                                style: SangakTypography.bodySmall(context),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
               SangakButton.outlined(
                 label: l10n.useCurrentLocation,
                 width: double.infinity,
@@ -126,9 +210,10 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
               const SizedBox(height: 16),
               SangakTextField(
                 label: l10n.address,
-                hintText: 'Full address description',
+                hintText: l10n.address,
                 controller: _addressController,
-                validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                inputFormatters: [LengthLimitingTextInputFormatter(160)],
+                validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 16),
               Row(
@@ -137,7 +222,11 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     child: SangakTextField(
                       label: l10n.city,
                       controller: _cityController,
-                      validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
+                        LengthLimitingTextInputFormatter(40),
+                      ],
+                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -145,7 +234,11 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     child: SangakTextField(
                       label: l10n.district,
                       controller: _districtController,
-                      validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
+                        LengthLimitingTextInputFormatter(40),
+                      ],
+                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                     ),
                   ),
                 ],
@@ -154,7 +247,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
               SangakTextField(
                 label: l10n.street,
                 controller: _streetController,
-                validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                inputFormatters: [LengthLimitingTextInputFormatter(80)],
+                validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 16),
               Row(
@@ -163,6 +257,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     child: SangakTextField(
                       label: l10n.building,
                       controller: _buildingController,
+                      inputFormatters: [LengthLimitingTextInputFormatter(12)],
+                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -170,6 +266,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     child: SangakTextField(
                       label: l10n.floor,
                       controller: _floorController,
+                      inputFormatters: [LengthLimitingTextInputFormatter(8)],
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -177,6 +274,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     child: SangakTextField(
                       label: l10n.door,
                       controller: _doorController,
+                      inputFormatters: [LengthLimitingTextInputFormatter(12)],
+                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                     ),
                   ),
                 ],
@@ -184,8 +283,9 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
               const SizedBox(height: 16),
               SangakTextField(
                 label: l10n.addDeliveryNote,
-                hintText: 'e.g. Leave at the door',
+                hintText: l10n.addDeliveryNote,
                 controller: _noteController,
+                inputFormatters: [LengthLimitingTextInputFormatter(120)],
               ),
               const SizedBox(height: 120),
             ],

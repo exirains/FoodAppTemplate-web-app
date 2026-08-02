@@ -16,6 +16,9 @@ class OrderConfirmationScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final checkoutState = ref.watch(checkoutProvider);
     final orderNumber = 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+    final prepMinutes = checkoutState.estimatedPrepMinutes == 0
+        ? 25
+        : checkoutState.estimatedPrepMinutes;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -42,14 +45,16 @@ class OrderConfirmationScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Thank you for choosing Sangak! Your fresh artisan bread is being prepared.',
+                l10n.thankYouSangak,
                 style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
               _buildInfoRow(l10n.orderNumber, orderNumber, context),
               const Divider(height: 32),
-              _buildInfoRow(l10n.estimatedTime, '25-35 min', context),
+              _buildInfoRow(l10n.estimatedTime, l10n.mins(prepMinutes), context),
+              const Divider(height: 32),
+              _buildInfoRow(l10n.estimatedDeliveryTime, '${l10n.mins(10)} - ${l10n.mins(15)}', context),
               const Divider(height: 32),
               _buildInfoRow(l10n.deliveryAddress, checkoutState.selectedAddress?.fullAddress ?? '-', context),
               const Divider(height: 32),

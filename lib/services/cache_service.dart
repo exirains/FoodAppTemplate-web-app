@@ -4,36 +4,33 @@ import '../models/category.dart';
 
 class CacheService {
   static const String boxName = 'cache';
-  static const String categoriesKey = 'categories';
-  static const String allBreadsKey = 'all_breads';
-  static const String popularTodayKey = 'popular_today';
-
+  
   final Box<List> _box = Hive.box<List>(boxName);
 
-  Future<void> saveCategories(List<Category> categories) async {
-    await _box.put(categoriesKey, categories);
+  Future<void> saveCategories(List<Category> categories, String languageCode) async {
+    await _box.put('categories_$languageCode', categories);
   }
 
-  List<Category>? getCategories() {
-    final list = _box.get(categoriesKey);
+  List<Category>? getCategories(String languageCode) {
+    final list = _box.get('categories_$languageCode');
     return list?.cast<Category>();
   }
 
-  Future<void> saveBreads(List<Bread> breads) async {
-    await _box.put(allBreadsKey, breads);
+  Future<void> saveBreads(List<Bread> breads, String languageCode) async {
+    await _box.put('all_breads_$languageCode', breads);
   }
 
-  List<Bread>? getBreads() {
-    final list = _box.get(allBreadsKey);
+  List<Bread>? getBreads(String languageCode) {
+    final list = _box.get('all_breads_$languageCode');
     return list?.cast<Bread>();
   }
 
-  Future<void> savePopularToday(List<Bread> breads) async {
-    await _box.put(popularTodayKey, breads);
+  Future<void> savePopularToday(List<Bread> breads, String languageCode) async {
+    await _box.put('popular_today_$languageCode', breads);
   }
 
-  List<Bread>? getPopularToday() {
-    final list = _box.get(popularTodayKey);
+  List<Bread>? getPopularToday(String languageCode) {
+    final list = _box.get('popular_today_$languageCode');
     return list?.cast<Bread>();
   }
 

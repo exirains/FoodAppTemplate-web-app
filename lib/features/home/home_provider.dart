@@ -3,6 +3,7 @@ import '../../main.dart';
 import '../../models/bread.dart';
 import '../../models/category.dart';
 import '../../services/bread_repository.dart';
+import '../../core/localization/locale_provider.dart';
 import '../auth/auth_provider.dart';
 
 final breadRepositoryProvider = Provider((ref) => BreadRepository());
@@ -10,17 +11,23 @@ final breadRepositoryProvider = Provider((ref) => BreadRepository());
 final categoriesProvider = FutureProvider<List<Category>>((ref) async {
   final repo = ref.read(breadRepositoryProvider);
   final cache = ref.read(cacheServiceProvider);
+  final locale = ref.watch(localeProvider);
+  final lang = locale.languageCode;
   
-  final cached = cache.getCategories();
+  final cached = cache.getCategories(lang);
   if (cached != null && cached.isNotEmpty) {
     repo.getCategories().then((value) {
-      if (value.isNotEmpty) cache.saveCategories(value);
-    });
+      if (value.isNotEmpty) cache.saveCategories(value, lang);
+    }).catchError((_) {});
     return cached;
   }
   
   final live = await repo.getCategories();
-  if (live.isNotEmpty) await cache.saveCategories(live);
+  if (live.isNotEmpty) {
+    try {
+      await cache.saveCategories(live, lang);
+    } catch (_) {}
+  }
   return live;
 });
 
@@ -82,19 +89,25 @@ final breadsProvider = FutureProvider<List<Bread>>((ref) async {
   final selectedId = ref.watch(selectedCategoryIdProvider);
   final repo = ref.read(breadRepositoryProvider);
   final cache = ref.read(cacheServiceProvider);
+  final locale = ref.watch(localeProvider);
+  final lang = locale.languageCode;
 
   if (selectedId == null) {
-    final cached = cache.getBreads();
+    final cached = cache.getBreads(lang);
     if (cached != null && cached.isNotEmpty) {
       repo.getBreads().then((value) {
-        if (value.isNotEmpty) cache.saveBreads(value);
-      });
+        if (value.isNotEmpty) cache.saveBreads(value, lang);
+      }).catchError((_) {});
       return cached;
     }
   }
   
   final live = await repo.getBreads(categoryId: selectedId);
-  if (selectedId == null && live.isNotEmpty) await cache.saveBreads(live);
+  if (selectedId == null && live.isNotEmpty) {
+    try {
+      await cache.saveBreads(live, lang);
+    } catch (_) {}
+  }
   return live;
 });
 
@@ -107,16 +120,22 @@ final filteredBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
 final popularBreadsProvider = FutureProvider<List<Bread>>((ref) async {
   final repo = ref.read(breadRepositoryProvider);
   final cache = ref.read(cacheServiceProvider);
+  final locale = ref.watch(localeProvider);
+  final lang = locale.languageCode;
   
-  final cached = cache.getPopularToday();
+  final cached = cache.getPopularToday(lang);
   if (cached != null && cached.isNotEmpty) {
     repo.getPopularToday().then((value) {
-      if (value.isNotEmpty) cache.savePopularToday(value);
-    });
+      if (value.isNotEmpty) cache.savePopularToday(value, lang);
+    }).catchError((_) {});
     return cached;
   }
   
   final live = await repo.getPopularToday();
-  if (live.isNotEmpty) await cache.savePopularToday(live);
+  if (live.isNotEmpty) {
+    try {
+      await cache.savePopularToday(live, lang);
+    } catch (_) {}
+  }
   return live;
 });

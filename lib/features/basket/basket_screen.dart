@@ -10,24 +10,27 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_empty_states.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../home/tab_provider.dart';
-import 'cart_provider.dart';
+import '../../core/localization/locale_provider.dart';
+import 'basket_provider.dart';
 
-class CartScreen extends ConsumerWidget {
-  const CartScreen({super.key});
+class BasketScreen extends ConsumerWidget {
+  const BasketScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cart = ref.watch(cartProvider);
-    final total = ref.watch(cartTotalProvider);
+    final basket = ref.watch(basketProvider);
+    final total = ref.watch(basketTotalProvider);
     final l10n = AppLocalizations.of(context);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
-    if (cart.isEmpty) {
+    if (basket.isEmpty) {
       return Scaffold(
         backgroundColor: SangakColors.background,
-        appBar: AppBar(title: Text(l10n.cart)),
+        appBar: AppBar(title: Text(l10n.basket)),
         body: SangakEmptyState(
           title: l10n.yourBasketIsWaiting,
-          message: l10n.cartGuestMessage,
+          message: l10n.basketGuestMessage,
           icon: Icons.shopping_basket_outlined,
           actionLabel: l10n.explore,
           onAction: () => ref.read(tabProvider.notifier).state = 0,
@@ -38,10 +41,10 @@ class CartScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: SangakColors.background,
       appBar: AppBar(
-        title: Text(l10n.cart),
+        title: Text(l10n.basket),
         actions: [
           IconButton(
-            onPressed: () => ref.read(cartProvider.notifier).clear(),
+            onPressed: () => ref.read(basketProvider.notifier).clear(),
             icon: const Icon(Icons.delete_outline, color: SangakColors.error),
           ),
         ],
@@ -51,10 +54,10 @@ class CartScreen extends ConsumerWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.all(SangakDimens.spacing24),
-              itemCount: cart.length,
+              itemCount: basket.length,
               separatorBuilder: (context, index) => const SizedBox(height: SangakDimens.spacing16),
               itemBuilder: (context, index) {
-                final item = cart[index];
+                final item = basket[index];
                 return Container(
                   padding: const EdgeInsets.all(SangakDimens.spacing12),
                   decoration: BoxDecoration(
@@ -96,22 +99,23 @@ class CartScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(item.bread.name, style: SangakTypography.title),
+                            Text(item.bread.localizedName(lang), style: SangakTypography.title(context)),
                             const SizedBox(height: 4),
-                            Text('₺${item.bread.price.toStringAsFixed(0)}', style: SangakTypography.price.copyWith(fontSize: 14)),
+                            Text('₺${item.bread.price.toStringAsFixed(0)}', style: SangakTypography.price(context).copyWith(fontSize: 14)),
                           ],
                         ),
                       ),
                       QuantitySelector(
                         quantity: item.quantity,
-                        onIncrement: () => ref.read(cartProvider.notifier).updateQuantity(item.bread.id, 1),
+                        onIncrement: () => ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1),
                         onDecrement: () {
                           if (item.quantity == 1) {
-                            ref.read(cartProvider.notifier).removeItem(item.bread.id);
+                            ref.read(basketProvider.notifier).removeItem(item.bread.id);
                           } else {
-                            ref.read(cartProvider.notifier).updateQuantity(item.bread.id, -1);
+                            ref.read(basketProvider.notifier).updateQuantity(item.bread.id, -1);
                           }
                         },
+                        onDelete: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
                       ),
                     ],
                   ),
@@ -142,16 +146,16 @@ class CartScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.subtotal, style: SangakTypography.bodyMedium),
-              Text('₺${total.toStringAsFixed(0)}', style: SangakTypography.title),
+              Text(l10n.subtotal, style: SangakTypography.bodyMedium(context)),
+              Text('₺${total.toStringAsFixed(0)}', style: SangakTypography.title(context)),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.deliveryFee, style: SangakTypography.bodyMedium),
-              Text('₺${deliveryFee.toStringAsFixed(0)}', style: SangakTypography.title),
+              Text(l10n.deliveryFee, style: SangakTypography.bodyMedium(context)),
+              Text('₺${deliveryFee.toStringAsFixed(0)}', style: SangakTypography.title(context)),
             ],
           ),
           const Padding(
@@ -161,15 +165,15 @@ class CartScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.total, style: SangakTypography.h3),
-              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2.copyWith(color: SangakColors.primary)),
+              Text(l10n.total, style: SangakTypography.h3(context)),
+              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2(context).copyWith(color: SangakColors.primary)),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
-            onPressed: () => context.push('/checkout'),
+            onPressed: () => context.push('/address-selection'),
           ),
         ],
       ),

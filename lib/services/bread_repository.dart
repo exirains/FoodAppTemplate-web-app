@@ -11,63 +11,83 @@ class BreadRepository {
   Future<List<Category>> getCategories() async {
     try {
       debugPrint('Fetching categories...');
-      final response = await _client.from('categories')
-          .select('id, name, image_url') // Optimized select
-          .order('name');
-      final list = (response as List).map((json) => Category(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        imageUrl: json['image_url'] as String? ?? '',
-      )).toList();
-      debugPrint('Parsed ${list.length} Category objects');
+      final response = await _client.from('categories').select().order('name');
+      final rawList = response as List;
+      
+      final categoryIds = rawList
+          .map((json) => (json as Map)['id']?.toString())
+          .whereType<String>()
+          .toList();
+          
+      final translations = await _getCategoryTranslations(categoryIds);
+      debugPrint('Found ${translations.length} category translation sets');
+
+      final list = rawList.map((json) {
+        final map = Map<String, dynamic>.from(json as Map);
+        final id = map['id']?.toString();
+        // Crucial: assign the list of translation maps to the expected key
+        map['category_translations'] = id != null ? (translations[id] ?? []) : [];
+        return Category.fromJson(map);
+      }).toList();
+      
       return list;
     } catch (e, stack) {
       debugPrint('Error fetching categories: $e');
-      debugPrint(stack.toString());
-      rethrow;
+      if (kDebugMode) debugPrint(stack.toString());
+      return [];
     }
   }
 
   Future<List<Bread>> getBreads({String? categoryId}) async {
     try {
       debugPrint('Fetching breads (category: $categoryId)...');
-      var query = _client.from('products').select(); // Select all fields to ensure nothing is missed
+      var query = _client.from('products').select();
       if (categoryId != null) {
         query = query.eq('category_id', categoryId);
       }
       
       final response = await query.order('created_at', ascending: false);
-      final List<Bread> list = [];
       final rawList = response as List;
-      debugPrint('Received ${rawList.length} products from Supabase');
       
-      for (var json in rawList) {
+      final productIds = rawList
+          .map((json) => (json as Map)['id']?.toString())
+          .whereType<String>()
+          .toList();
+          
+      final translations = await _getProductTranslations(productIds);
+      debugPrint('Found ${translations.length} product translation sets');
+
+      final List<Bread> list = [];
+      for (final json in rawList) {
+        final map = Map<String, dynamic>.from(json as Map);
+        final id = map['id']?.toString();
+        // Crucial: assign the list of translation maps to the expected key
+        map['product_translations'] = id != null ? (translations[id] ?? []) : [];
         try {
-          list.add(Bread.fromJson(json));
+          list.add(Bread.fromJson(map));
         } catch (e) {
-          debugPrint('Error parsing product ${json['id']}: $e');
+          debugPrint('Error parsing bread ${map['id']}: $e');
         }
       }
       
-      debugPrint('Parsed ${list.length} Bread objects');
       return list;
     } catch (e, stack) {
-      debugPrint('CRITICAL: Error fetching breads: $e');
-      debugPrint(stack.toString());
+      debugPrint('Error fetching breads: $e');
+      if (kDebugMode) debugPrint(stack.toString());
       return [];
     }
   }
 
   Future<Bread?> getBreadDetails(String id) async {
     try {
-      debugPrint('Fetching bread details (id: $id)...');
       final response = await _client.from('products').select().eq('id', id).single();
-      final bread = Bread.fromJson(response);
-      debugPrint('Parsed details for ${bread.name}');
-      return bread;
-    } catch (e, stack) {
+      final translations = await _getProductTranslations([id]);
+      
+      final map = Map<String, dynamic>.from(response);
+      map['product_translations'] = translations[id] ?? [];
+      return Bread.fromJson(map);
+    } catch (e) {
       debugPrint('Error fetching bread details: $e');
-      debugPrint(stack.toString());
       return null;
     }
   }
@@ -76,72 +96,40 @@ class BreadRepository {
     try {
       final today = DateTime.now();
       final dateString = DateFormat('yyyy-MM-dd').format(today);
-      debugPrint('Requesting popular_today date: $dateString');
       
       final response = await _client.from('popular_today')
-          .select('products(*)')
+          .select('product_id')
           .eq('display_date', dateString);
       
-      debugPrint('Popular today raw response: $response');
-      
       if ((response as List).isNotEmpty) {
-        final rawList = response as List;
-        debugPrint('Found ${rawList.length} records in popular_today before parsing');
-        
-        final List<Bread> list = [];
-        for (var item in rawList) {
-          try {
-            if (item['products'] != null) {
-              list.add(Bread.fromJson(item['products']));
-            } else {
-              debugPrint('Warning: popular_today record has null products join');
-            }
-          } catch (e) {
-            debugPrint('Error parsing nested popular bread: $e');
-          }
-        }
-        
-        debugPrint('Parsed ${list.length} Bread objects for popular today');
-        return list;
+        final ids = (response as List)
+            .map((item) => (item as Map)['product_id']?.toString())
+            .whereType<String>()
+            .toList();
+        return getBreadsByIds(ids);
       }
       
-      debugPrint('No popular products for today in DB. Picking fallback...');
-      // Fallback: Pick 3 random available products and save them for today
-      final allAvailableResponse = await _client.from('products')
-          .select('id')
-          .eq('available', true);
+      final allAvailableResponse = await _client.from('products').select('id').eq('available', true);
+      if ((allAvailableResponse as List).isEmpty) return [];
       
-      if ((allAvailableResponse as List).isEmpty) {
-        debugPrint('No available products found for fallback.');
-        return [];
-      }
-      
-      final availableIds = (allAvailableResponse as List).map((p) => p['id'] as String).toList();
-      debugPrint('Found ${availableIds.length} available products for fallback selection');
-      
+      final availableIds = (allAvailableResponse as List)
+          .map((p) => (p as Map)['id']?.toString())
+          .whereType<String>()
+          .toList();
+          
       availableIds.shuffle();
       final selection = availableIds.take(3).toList();
-      debugPrint('Selected IDs for today: $selection');
       
-      final insertData = selection.map((id) => {
-        'product_id': id,
-        'display_date': dateString,
-      }).toList();
-      
+      final insertData = selection.map((id) => {'product_id': id, 'display_date': dateString}).toList();
       final breads = await getBreadsByIds(selection);
-      debugPrint('Fetched ${breads.length} full Bread objects for fallback');
       
       try {
-        await _client.from('popular_today').upsert(insertData, onConflict: 'product_id, display_date');
-        debugPrint('Saved fallback selection to DB for $dateString');
-      } catch (e) {
-        debugPrint('Note: Failed to cache popular today in DB, but returning selection. $e');
-      }
+        await _client.from('popular_today').upsert(insertData);
+      } catch (_) {}
       
       return breads;
-    } catch (e, stack) {
-      debugPrint('CRITICAL: Error getting popular today: $e');
-      debugPrint(stack.toString());
+    } catch (e) {
+      debugPrint('Error in getPopularToday: $e');
       return [];
     }
   }
@@ -149,15 +137,58 @@ class BreadRepository {
   Future<List<Bread>> getBreadsByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     try {
-      debugPrint('Fetching breads by IDs: $ids');
-      final response = await _client.from('products').select().filter('id', 'in', ids);
-      final list = (response as List).map((json) => Bread.fromJson(json)).toList();
-      debugPrint('Parsed ${list.length} Bread objects by ID');
+      final response = await _client.from('products').select().inFilter('id', ids);
+      final translations = await _getProductTranslations(ids);
+      
+      final list = (response as List).map((json) {
+        final map = Map<String, dynamic>.from(json as Map);
+        final id = map['id']?.toString();
+        map['product_translations'] = id != null ? (translations[id] ?? []) : [];
+        return Bread.fromJson(map);
+      }).toList();
+      
       return list;
-    } catch (e, stack) {
-      debugPrint('Error fetching breads by IDs: $e');
-      debugPrint(stack.toString());
+    } catch (e) {
+      debugPrint('Error in getBreadsByIds: $e');
       return [];
+    }
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>> _getProductTranslations(List<String> productIds) async {
+    if (productIds.isEmpty) return {};
+    try {
+      final response = await _client.from('product_translations').select().inFilter('product_id', productIds);
+      final result = <String, List<Map<String, dynamic>>>{};
+      for (final row in response as List) {
+        final map = Map<String, dynamic>.from(row as Map);
+        final pid = map['product_id']?.toString();
+        if (pid != null) {
+          result.putIfAbsent(pid, () => []).add(map);
+        }
+      }
+      return result;
+    } catch (e) {
+      debugPrint('Error in _getProductTranslations: $e');
+      return {};
+    }
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>> _getCategoryTranslations(List<String> categoryIds) async {
+    if (categoryIds.isEmpty) return {};
+    try {
+      final response = await _client.from('category_translations').select().inFilter('category_id', categoryIds);
+      final result = <String, List<Map<String, dynamic>>>{};
+      for (final row in response as List) {
+        final map = Map<String, dynamic>.from(row as Map);
+        final cid = map['category_id']?.toString();
+        if (cid != null) {
+          result.putIfAbsent(cid, () => []).add(map);
+        }
+      }
+      return result;
+    } catch (e) {
+      debugPrint('Error in _getCategoryTranslations: $e');
+      return {};
     }
   }
 }
