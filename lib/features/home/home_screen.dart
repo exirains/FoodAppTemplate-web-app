@@ -20,6 +20,7 @@ import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/widgets/sangak_skeletons.dart';
+import '../../core/localization/sangak_number_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -168,7 +169,7 @@ class HomeScreen extends ConsumerWidget {
           // Bread Horizontal List
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 400,
+              height: 350,
               child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
@@ -305,7 +306,10 @@ class HomeScreen extends ConsumerWidget {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 8),
-                                    Text('₺${bread.price.toStringAsFixed(0)}', style: SangakTypography.price(context).copyWith(fontSize: 16)),
+                                    Text(
+                                      SangakNumberFormatter.formatCurrency(bread.price, lang),
+                                      style: SangakTypography.price(context).copyWith(fontSize: 16),
+                                    ),
                                   ],
                                 ),
                               ),

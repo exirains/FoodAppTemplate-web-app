@@ -15,8 +15,13 @@ class SupabaseService {
     await Supabase.initialize(
       url: supabaseUrl,
       publishableKey: supabaseKey,
+      authOptions: FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+      ),
     );
   }
 
   static SupabaseClient get client => Supabase.instance.client;
+  
+  static String? get googleWebClientId => dotenv.env['GOOGLE_WEB_CLIENT_ID'];
 }

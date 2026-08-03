@@ -716,7 +716,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'({count} reviews)'**
-  String reviewsCount(int count);
+  String reviewsCount(num count);
 
   /// No description provided for @mins.
   ///
@@ -728,7 +728,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{count} kcal'**
-  String kcal(int count);
+  String kcal(num count);
 
   /// No description provided for @organic.
   ///
@@ -1066,6 +1066,12 @@ abstract class AppLocalizations {
   /// **'Remove'**
   String get remove;
 
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -1089,6 +1095,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch Role'**
   String get roleSwitch;
+
+  /// No description provided for @lastUsedAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Last used addresses'**
+  String get lastUsedAddresses;
 
   /// No description provided for @customerApp.
   ///

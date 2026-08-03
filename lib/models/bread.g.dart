@@ -1,10 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'bread.dart';
 
-// **************************************************************************
+
 // TypeAdapterGenerator
-// **************************************************************************
+
 
 class BreadAdapter extends TypeAdapter<Bread> {
   @override

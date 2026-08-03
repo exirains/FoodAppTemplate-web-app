@@ -94,6 +94,8 @@ flutter:
   assets:
     - lib/assets/branding/
     - lib/assets/icon/
+    - lib/assets/fonts/Peyda/
+    - lib/assets/fonts/IranYekan/
     - .env
 
   # To add assets to your application, add an assets section, like this:
@@ -108,7 +110,15 @@ flutter:
   # https://flutter.dev/to/asset-from-package
 
   fonts:
-    - family: IRANYekanX
+    - family: Peyda
+      fonts:
+        - asset: lib/assets/fonts/Peyda/Peyda Med.ttf
+          weight: 500
+        - asset: lib/assets/fonts/Peyda/Peyda SemBd.ttf
+          weight: 600
+        - asset: lib/assets/fonts/Peyda/Peyda ExtBd.ttf
+          weight: 800
+    - family: IranYekan
       fonts:
         - asset: lib/assets/fonts/IranYekan/fonnts.com-Qs_Iranyekan-thin.ttf
           weight: 100
@@ -122,5 +132,5 @@ flutter:
           weight: 700
         - asset: lib/assets/fonts/IranYekan/fonnts.com-Qs_Iranyekan-extrabold.ttf
           weight: 800
-        - asset: lib/assets/fonts/IranYekan/fonnts.com-Qs_Iranyekan-black.ttf
+        - asset: lib/assets/fonts/IranYekan/fonnts.com-Qs_Iranyekan-extrablack.ttf
           weight: 900

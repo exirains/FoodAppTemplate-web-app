@@ -113,7 +113,7 @@
   "@reviewsCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -121,7 +121,7 @@
   "@mins": {
     "placeholders": {
       "count": {
-        "format": "compact"
+        "type": "num"
       }
     }
   },
@@ -129,7 +129,7 @@
   "@kcal": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -189,10 +189,12 @@
   "profileUpdated": "Profile updated successfully",
   "saveChanges": "Save Changes",
   "remove": "Remove",
+  "clear": "Clear",
   "cancel": "Cancel",
   "removeItemFromBasket": "Are you sure you want to remove this item from your basket?",
   "comingSoon": "Coming Soon",
   "roleSwitch": "Switch Role",
+  "lastUsedAddresses": "Last used addresses",
   "customerApp": "Customer App",
   "adminPanel": "Admin Panel",
   "deliveryPanel": "Delivery Panel",

@@ -323,7 +323,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get passwordsDoNotMatch => 'Şifreler eşleşmiyor';
 
   @override
-  String reviewsCount(int count) {
+  String reviewsCount(num count) {
     return '($count değerlendirme)';
   }
 
@@ -333,7 +333,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String kcal(int count) {
+  String kcal(num count) {
     return '$count kcal';
   }
 
@@ -511,6 +511,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remove => 'Kaldır';
 
   @override
+  String get clear => 'Temizle';
+
+  @override
   String get cancel => 'İptal';
 
   @override
@@ -522,6 +525,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get roleSwitch => 'Rol Değiştir';
+
+  @override
+  String get lastUsedAddresses => 'Son kullanılan adresler';
 
   @override
   String get customerApp => 'Müşteri Uygulaması';

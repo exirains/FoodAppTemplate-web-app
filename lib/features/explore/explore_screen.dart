@@ -143,12 +143,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                 }
 
                 return GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 80),
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 64),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 24,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.52,
+                    childAspectRatio: 0.58,
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {

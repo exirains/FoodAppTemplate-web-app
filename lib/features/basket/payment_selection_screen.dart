@@ -6,10 +6,12 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
+import '../../shared/utils/sangak_toast.dart';
 import 'checkout_provider.dart';
 
 class PaymentSelectionScreen extends ConsumerWidget {
-  const PaymentSelectionScreen({super.key});
+  final bool fromCheckout;
+  const PaymentSelectionScreen({super.key, this.fromCheckout = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,7 +67,14 @@ class PaymentSelectionScreen extends ConsumerWidget {
         child: SangakButton.primary(
           label: l10n.continueButton,
           width: double.infinity,
-          onPressed: () => context.push('/checkout'),
+          onPressed: () {
+            if (fromCheckout) {
+              context.push('/checkout');
+            } else {
+              SangakToast.show(context, l10n.profileUpdated);
+              context.pop();
+            }
+          },
         ),
       ),
     );

@@ -12,6 +12,7 @@ import '../../features/basket/checkout_screen.dart';
 import '../../features/basket/address_selection_screen.dart';
 import '../../features/basket/payment_selection_screen.dart';
 import '../../features/basket/order_confirmation_screen.dart';
+import '../../features/orders/order_history_screen.dart';
 import '../../models/bread.dart';
 
 // Helper for silky smooth transitions
@@ -101,19 +102,25 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/address-selection',
-      pageBuilder: (context, state) => _buildPageWithTransition(
-        context: context,
-        state: state,
-        child: const AddressSelectionScreen(),
-      ),
+      pageBuilder: (context, state) {
+        final fromCheckout = state.uri.queryParameters['from'] == 'checkout';
+        return _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: AddressSelectionScreen(fromCheckout: fromCheckout),
+        );
+      },
     ),
     GoRoute(
       path: '/payment-selection',
-      pageBuilder: (context, state) => _buildPageWithTransition(
-        context: context,
-        state: state,
-        child: const PaymentSelectionScreen(),
-      ),
+      pageBuilder: (context, state) {
+        final fromCheckout = state.uri.queryParameters['from'] == 'checkout';
+        return _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: PaymentSelectionScreen(fromCheckout: fromCheckout),
+        );
+      },
     ),
     GoRoute(
       path: '/order-confirmation',
@@ -121,6 +128,14 @@ final appRouter = GoRouter(
         context: context,
         state: state,
         child: const OrderConfirmationScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/orders',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const OrderHistoryScreen(),
       ),
     ),
     GoRoute(

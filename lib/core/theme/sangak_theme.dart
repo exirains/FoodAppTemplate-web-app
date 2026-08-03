@@ -10,15 +10,15 @@ class SangakTheme {
     final isPersian = locale.languageCode == 'fa';
     
     // Choose font families based on locale
-    final String baseFont = isPersian ? 'IRANYekanX' : GoogleFonts.plusJakartaSans().fontFamily!;
-    final String headingFont = isPersian ? 'IRANYekanX' : GoogleFonts.fraunces().fontFamily!;
+    final String baseFont = isPersian ? 'IranYekan' : GoogleFonts.plusJakartaSans().fontFamily!;
+    final String headingFont = isPersian ? 'Peyda' : GoogleFonts.fraunces().fontFamily!;
 
     final textTheme = TextTheme(
-      displayLarge: TextStyle(fontFamily: headingFont, fontSize: 48, fontWeight: FontWeight.w700, color: SangakColors.ink, height: 1.1),
-      headlineLarge: TextStyle(fontFamily: headingFont, fontSize: 32, fontWeight: FontWeight.w700, color: SangakColors.ink, height: 1.2),
-      headlineMedium: TextStyle(fontFamily: headingFont, fontSize: 24, fontWeight: FontWeight.w600, color: SangakColors.ink, height: 1.2),
-      headlineSmall: TextStyle(fontFamily: headingFont, fontSize: 20, fontWeight: FontWeight.w600, color: SangakColors.ink, height: 1.3),
-      titleLarge: TextStyle(fontFamily: baseFont, fontSize: 18, fontWeight: FontWeight.w600, color: SangakColors.ink),
+      displayLarge: TextStyle(fontFamily: headingFont, fontSize: 48, fontWeight: isPersian ? FontWeight.w800 : FontWeight.w700, color: SangakColors.ink, height: 1.1),
+      headlineLarge: TextStyle(fontFamily: headingFont, fontSize: 32, fontWeight: isPersian ? FontWeight.w800 : FontWeight.w700, color: SangakColors.ink, height: 1.2),
+      headlineMedium: TextStyle(fontFamily: headingFont, fontSize: 24, fontWeight: isPersian ? FontWeight.w600 : FontWeight.w600, color: SangakColors.ink, height: 1.2),
+      headlineSmall: TextStyle(fontFamily: headingFont, fontSize: 20, fontWeight: isPersian ? FontWeight.w600 : FontWeight.w600, color: SangakColors.ink, height: 1.3),
+      titleLarge: TextStyle(fontFamily: isPersian ? 'Peyda' : baseFont, fontSize: 18, fontWeight: isPersian ? FontWeight.w600 : FontWeight.w600, color: SangakColors.ink),
       titleMedium: TextStyle(fontFamily: baseFont, fontSize: 16, fontWeight: FontWeight.w500, color: SangakColors.inkLight),
       bodyLarge: TextStyle(fontFamily: baseFont, fontSize: 16, fontWeight: FontWeight.w400, color: SangakColors.ink, height: 1.5),
       bodyMedium: TextStyle(fontFamily: baseFont, fontSize: 14, fontWeight: FontWeight.w400, color: SangakColors.ink, height: 1.5),

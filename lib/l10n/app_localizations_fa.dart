@@ -323,7 +323,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get passwordsDoNotMatch => 'رمزهای عبور مطابقت ندارند';
 
   @override
-  String reviewsCount(int count) {
+  String reviewsCount(num count) {
     return '($count نظر)';
   }
 
@@ -333,7 +333,7 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String kcal(int count) {
+  String kcal(num count) {
     return '$count کالری';
   }
 
@@ -511,6 +511,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get remove => 'حذف';
 
   @override
+  String get clear => 'پاک کردن';
+
+  @override
   String get cancel => 'لغو';
 
   @override
@@ -522,6 +525,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get roleSwitch => 'تغییر نقش';
+
+  @override
+  String get lastUsedAddresses => 'آخرین آدرس‌های استفاده شده';
 
   @override
   String get customerApp => 'اپلیکیشن مشتری';

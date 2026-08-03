@@ -113,7 +113,7 @@
   "@reviewsCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -129,7 +129,7 @@
   "@kcal": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -189,10 +189,12 @@
   "profileUpdated": "Profil başarıyla güncellendi",
   "saveChanges": "Değişiklikleri Kaydet",
   "remove": "Kaldır",
+  "clear": "Temizle",
   "cancel": "İptal",
   "removeItemFromBasket": "Bu ürünü sepetinizden kaldırmak istediğinize emin misiniz?",
   "comingSoon": "Yakında",
   "roleSwitch": "Rol Değiştir",
+  "lastUsedAddresses": "Son kullanılan adresler",
   "customerApp": "Müşteri Uygulaması",
   "adminPanel": "Yönetici Paneli",
   "deliveryPanel": "Teslimat Paneli",

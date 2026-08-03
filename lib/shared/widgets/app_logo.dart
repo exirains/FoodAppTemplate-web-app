@@ -35,7 +35,7 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget logo = SvgPicture.asset(
-      'lib/assets/branding/favicon.svg',
+      'lib/assets/branding/logo.svg',
       width: size,
       height: size,
       fit: BoxFit.contain,

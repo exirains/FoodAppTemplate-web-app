@@ -7,6 +7,7 @@ import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
 import '../../../core/constants/version_config.dart';
 import '../../../core/localization/locale_provider.dart';
+import '../../../core/localization/sangak_number_formatter.dart';
 import '../../../shared/widgets/language_card.dart';
 
 class SettingsBottomSheet extends ConsumerWidget {
@@ -86,12 +87,13 @@ class SettingsBottomSheet extends ConsumerWidget {
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {
               final version = snapshot.data?.version ?? VersionConfig.version;
+              final formattedVersion = SangakNumberFormatter.format(version, currentLocale.languageCode);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(l10n.appVersion, style: SangakTypography.bodyMedium(context)),
                   Text(
-                    'Sangak Version $version',
+                    'Sangak v$formattedVersion',
                     style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
                   ),
                 ],

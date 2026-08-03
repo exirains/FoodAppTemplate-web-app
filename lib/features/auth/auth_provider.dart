@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/supabase_service.dart';
 import 'auth_error_handler.dart';
@@ -131,6 +132,13 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 
   Future<void> signOut() async {
     await SupabaseService.client.auth.signOut();
+    // Also sign out from Google if applicable
+    try {
+      final googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+    } catch (_) {}
   }
 
   Future<void> updateMetadata(Map<String, dynamic> data) async {
@@ -138,18 +146,40 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     // The session listener in _init will trigger a state update
   }
 
-  /// Sign in with Google OAuth
-  /// Includes error handling for cancellation and network failures
+  /// Sign in with Google OAuth (Web) or Native (Android)
   Future<void> signInWithGoogle() async {
-    final redirectUrl = kIsWeb
-        ? 'https://sangak.tr'
-        : 'com.sangak.app://login-callback';
-
     try {
-      await SupabaseService.client.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: redirectUrl,
-      );
+      if (kIsWeb) {
+        final redirectUrl = 'https://app.sangak.tr';
+        await SupabaseService.client.auth.signInWithOAuth(
+          OAuthProvider.google,
+          redirectTo: redirectUrl,
+        );
+      } else {
+        // Native Google Sign-In for Android/iOS
+        final googleWebClientId = SupabaseService.googleWebClientId;
+        
+        final GoogleSignIn googleSignIn = GoogleSignIn(
+          serverClientId: googleWebClientId,
+        );
+        
+        final googleUser = await googleSignIn.signIn();
+        if (googleUser == null) return; // User cancelled
+
+        final googleAuth = await googleUser.authentication;
+        final accessToken = googleAuth.accessToken;
+        final idToken = googleAuth.idToken;
+
+        if (idToken == null) {
+          throw AuthException(message: 'No ID Token found.');
+        }
+
+        await SupabaseService.client.auth.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: idToken,
+          accessToken: accessToken,
+        );
+      }
     } catch (e, stack) {
       // Check if it's a user cancellation vs real error
       final errorString = e.toString().toLowerCase();

@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/address.dart';
 import '../../services/location_service.dart';
+import '../../services/order_repository.dart';
+import 'basket_provider.dart';
+import '../auth/auth_provider.dart';
 
 enum PaymentMethod { cash, card, online }
 
@@ -33,7 +36,8 @@ class CheckoutState {
 }
 
 class CheckoutNotifier extends StateNotifier<CheckoutState> {
-  CheckoutNotifier() : super(CheckoutState());
+  final Ref _ref;
+  CheckoutNotifier(this._ref) : super(CheckoutState());
 
   void selectAddress(Address address) {
     state = state.copyWith(selectedAddress: address);
@@ -50,10 +54,38 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
   void setEstimatedPrepMinutes(int minutes) {
     state = state.copyWith(estimatedPrepMinutes: minutes);
   }
+
+  Future<void> placeOrder() async {
+    final user = _ref.read(authProvider).value;
+    if (user == null) throw Exception('User must be logged in to place order');
+    if (state.selectedAddress == null) throw Exception('No address selected');
+    
+    final basket = _ref.read(basketProvider);
+    final total = _ref.read(basketTotalProvider) + 15.0; // Including delivery fee
+
+    setSubmitting(true);
+    try {
+      await _ref.read(orderRepositoryProvider).createOrder(
+        userId: user.id,
+        items: basket,
+        address: state.selectedAddress!,
+        paymentMethod: state.paymentMethod.name,
+        totalPrice: total,
+        estimatedPrepTime: state.estimatedPrepMinutes,
+      );
+      
+      // Clear basket after successful order
+      _ref.read(basketProvider.notifier).clear();
+    } finally {
+      setSubmitting(false);
+    }
+  }
 }
 
+final orderRepositoryProvider = Provider((ref) => OrderRepository());
+
 final checkoutProvider = StateNotifierProvider<CheckoutNotifier, CheckoutState>((ref) {
-  return CheckoutNotifier();
+  return CheckoutNotifier(ref);
 });
 
 final locationServiceProvider = Provider((ref) => LocationService());

@@ -5,6 +5,8 @@ import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
+import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/sangak_button.dart';
 import 'checkout_provider.dart';
 
@@ -15,7 +17,12 @@ class OrderConfirmationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final checkoutState = ref.watch(checkoutProvider);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
+    
     final orderNumber = 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+    final formattedOrderNumber = SangakNumberFormatter.format(orderNumber, lang);
+    
     final prepMinutes = checkoutState.estimatedPrepMinutes == 0
         ? 25
         : checkoutState.estimatedPrepMinutes;
@@ -50,7 +57,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
-              _buildInfoRow(l10n.orderNumber, orderNumber, context),
+              _buildInfoRow(l10n.orderNumber, formattedOrderNumber, context),
               const Divider(height: 32),
               _buildInfoRow(l10n.estimatedTime, l10n.mins(prepMinutes), context),
               const Divider(height: 32),

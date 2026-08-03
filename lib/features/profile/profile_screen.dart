@@ -16,6 +16,7 @@ import '../../shared/utils/sangak_toast.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 import '../../features/home/home_provider.dart';
+import '../orders/orders_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -145,6 +146,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final user = authState.value;
     final l10n = AppLocalizations.of(context);
     final favoriteCount = ref.watch(favoriteCountProvider);
+    final ordersAsync = ref.watch(myOrdersProvider);
+    final orderCount = ordersAsync.value?.length ?? 0;
 
     if (user == null) return const SizedBox.shrink();
     
@@ -197,9 +200,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _buildActivityCard(Icons.favorite_rounded, l10n.favorites, '$favoriteCount', context)),
+                Expanded(child: _buildActivityCard(Icons.favorite_rounded, l10n.favorites, '$favoriteCount', context, onTap: () {})),
                 const SizedBox(width: 16),
-                Expanded(child: _buildActivityCard(Icons.shopping_bag_rounded, l10n.orders, '0', context)),
+                Expanded(child: _buildActivityCard(Icons.shopping_bag_rounded, l10n.orders, '$orderCount', context, onTap: () => context.push('/orders'))),
               ],
             ),
             
@@ -210,9 +213,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 16),
             _buildInfoTile(Icons.phone_outlined, l10n.phoneNumber, user.userMetadata?['phone'] ?? '-', context),
             const SizedBox(height: 12),
-            _buildActionTile(Icons.location_on_outlined, l10n.deliveryAddress, () => context.push('/address-selection'), context),
+            _buildActionTile(Icons.location_on_outlined, l10n.deliveryAddress, () => context.push('/address-selection?from=profile'), context),
             const SizedBox(height: 12),
-            _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () {}, context),
+            _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () => context.push('/payment-selection?from=profile'), context),
             
             const SizedBox(height: 48),
             SangakButton.outlined(
@@ -260,21 +263,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildActivityCard(IconData icon, String label, String value, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        boxShadow: SangakDimens.shadowLow,
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: SangakColors.primary),
-          const SizedBox(height: 8),
-          Text(value, style: SangakTypography.h3(context)),
-          Text(label, style: SangakTypography.caption(context)),
-        ],
+  Widget _buildActivityCard(IconData icon, String label, String value, BuildContext context, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: SangakColors.surface,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+          boxShadow: SangakDimens.shadowLow,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: SangakColors.primary),
+            const SizedBox(height: 8),
+            Text(value, style: SangakTypography.h3(context)),
+            Text(label, style: SangakTypography.caption(context)),
+          ],
+        ),
       ),
     );
   }

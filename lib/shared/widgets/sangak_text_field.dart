@@ -56,7 +56,6 @@ class SangakTextField extends StatefulWidget {
 
 class _SangakTextFieldState extends State<SangakTextField> {
   bool _obscureText = true;
-  bool _isFocused = false;
   late FocusNode _focusNode;
   late bool _ownsFocusNode;
 
@@ -90,13 +89,12 @@ class _SangakTextFieldState extends State<SangakTextField> {
   void _setFocusNode(FocusNode? focusNode) {
     _ownsFocusNode = focusNode == null;
     _focusNode = focusNode ?? FocusNode();
-    _isFocused = _focusNode.hasFocus;
     _focusNode.addListener(_handleFocusChange);
   }
 
   void _handleFocusChange() {
     if (mounted) {
-      setState(() => _isFocused = _focusNode.hasFocus);
+      setState(() {});
     }
   }
 

@@ -113,7 +113,7 @@
   "@reviewsCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -129,7 +129,7 @@
   "@kcal": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       }
     }
   },
@@ -189,10 +189,12 @@
   "profileUpdated": "پروفایل با موفقیت بروزرسانی شد",
   "saveChanges": "ذخیره تغییرات",
   "remove": "حذف",
+  "clear": "پاک کردن",
   "cancel": "لغو",
   "removeItemFromBasket": "آیا مطمئن هستید که می‌خواهید این مورد را از سبد خود حذف کنید؟",
   "comingSoon": "به زودی",
   "roleSwitch": "تغییر نقش",
+  "lastUsedAddresses": "آخرین آدرس‌های استفاده شده",
   "customerApp": "اپلیکیشن مشتری",
   "adminPanel": "پنل مدیریت",
   "deliveryPanel": "پنل پیک",

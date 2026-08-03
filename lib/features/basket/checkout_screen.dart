@@ -11,6 +11,7 @@ import '../../shared/utils/auth_gate.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../models/basket_item.dart';
 import '../../models/address.dart';
+import '../../core/localization/sangak_number_formatter.dart';
 import 'basket_provider.dart';
 import 'checkout_provider.dart';
 
@@ -55,7 +56,7 @@ class CheckoutScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomSheet: _buildBottomAction(context, total, l10n, ref),
+      bottomSheet: _buildBottomAction(context, total, l10n, ref, checkoutState),
     );
   }
 
@@ -108,8 +109,14 @@ class CheckoutScreen extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${item.quantity}x ${item.bread.localizedName(lang)}', style: SangakTypography.bodyMedium(context)),
-                  Text('₺${item.total.toStringAsFixed(0)}', style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                  Text(
+                    '${SangakNumberFormatter.format(item.quantity, lang)}x ${item.bread.localizedName(lang)}',
+                    style: SangakTypography.bodyMedium(context),
+                  ),
+                  Text(
+                    SangakNumberFormatter.formatCurrency(item.total, lang),
+                    style: SangakTypography.title(context).copyWith(fontSize: 14),
+                  ),
                 ],
               ),
             ),
@@ -141,10 +148,12 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomAction(BuildContext context, double total, AppLocalizations l10n, WidgetRef ref) {
+  Widget _buildBottomAction(BuildContext context, double total, AppLocalizations l10n, WidgetRef ref, CheckoutState checkoutState) {
     const deliveryFee = 15.0;
     final grandTotal = total + deliveryFee;
     final basket = ref.read(basketProvider);
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -160,26 +169,40 @@ class CheckoutScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.grandTotal, style: SangakTypography.h3(context)),
-              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2(context).copyWith(color: SangakColors.primary)),
+              Text(
+                SangakNumberFormatter.formatCurrency(grandTotal, lang),
+                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+              ),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
             label: l10n.confirmOrder,
             width: double.infinity,
+            isLoading: checkoutState.isSubmitting,
             onPressed: () {
               AuthGate.run(
                 context,
                 ref,
-                action: () {
-                  final prepMinutes = basket.fold<int>(
-                    0,
-                    (sum, item) => sum + (item.bread.prepTime * item.quantity),
-                  );
-                  ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
-                  ref.read(basketProvider.notifier).clear();
-                  SangakToast.show(context, l10n.orderPlacedSuccessfully);
-                  context.go('/order-confirmation');
+                action: () async {
+                  try {
+                    final prepMinutes = basket.fold<int>(
+                      0,
+                      (sum, item) => sum + (item.bread.prepTime * item.quantity),
+                    );
+                    ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
+                    
+                    await ref.read(checkoutProvider.notifier).placeOrder();
+                    
+                    if (context.mounted) {
+                      SangakToast.show(context, l10n.orderPlacedSuccessfully);
+                      context.go('/order-confirmation');
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      SangakToast.show(context, e.toString());
+                    }
+                  }
                 },
                 title: l10n.confirmOrder,
                 message: l10n.loginToPlaceOrder,

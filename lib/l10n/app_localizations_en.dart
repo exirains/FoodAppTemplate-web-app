@@ -323,28 +323,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordsDoNotMatch => 'Passwords do not match';
 
   @override
-  String reviewsCount(int count) {
+  String reviewsCount(num count) {
     return '($count reviews)';
   }
 
   @override
   String mins(num count) {
-    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
-      locale: localeName,
-    );
-    final String countString = countNumberFormat.format(count);
-
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString minutes',
+      other: '$count minutes',
       one: '1 minute',
     );
     return '$_temp0';
   }
 
   @override
-  String kcal(int count) {
+  String kcal(num count) {
     return '$count kcal';
   }
 
@@ -523,6 +518,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remove => 'Remove';
 
   @override
+  String get clear => 'Clear';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -534,6 +532,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roleSwitch => 'Switch Role';
+
+  @override
+  String get lastUsedAddresses => 'Last used addresses';
 
   @override
   String get customerApp => 'Customer App';

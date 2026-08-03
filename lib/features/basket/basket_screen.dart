@@ -11,6 +11,7 @@ import '../../shared/widgets/sangak_empty_states.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../home/tab_provider.dart';
 import '../../core/localization/locale_provider.dart';
+import '../../core/localization/sangak_number_formatter.dart';
 import 'basket_provider.dart';
 
 class BasketScreen extends ConsumerWidget {
@@ -101,7 +102,10 @@ class BasketScreen extends ConsumerWidget {
                           children: [
                             Text(item.bread.localizedName(lang), style: SangakTypography.title(context)),
                             const SizedBox(height: 4),
-                            Text('₺${item.bread.price.toStringAsFixed(0)}', style: SangakTypography.price(context).copyWith(fontSize: 14)),
+                            Text(
+                              SangakNumberFormatter.formatCurrency(item.bread.price, lang),
+                              style: SangakTypography.price(context).copyWith(fontSize: 14),
+                            ),
                           ],
                         ),
                       ),
@@ -123,15 +127,18 @@ class BasketScreen extends ConsumerWidget {
               },
             ),
           ),
-          _buildSummary(context, total, l10n),
+          _buildSummary(context, ref, total, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildSummary(BuildContext context, double total, AppLocalizations l10n) {
+  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n) {
     const deliveryFee = 15.0;
     final grandTotal = total + deliveryFee;
+
+    final locale = ref.watch(localeProvider);
+    final lang = locale.languageCode;
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -147,7 +154,10 @@ class BasketScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.subtotal, style: SangakTypography.bodyMedium(context)),
-              Text('₺${total.toStringAsFixed(0)}', style: SangakTypography.title(context)),
+              Text(
+                SangakNumberFormatter.formatCurrency(total, lang),
+                style: SangakTypography.title(context),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -155,7 +165,10 @@ class BasketScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.deliveryFee, style: SangakTypography.bodyMedium(context)),
-              Text('₺${deliveryFee.toStringAsFixed(0)}', style: SangakTypography.title(context)),
+              Text(
+                SangakNumberFormatter.formatCurrency(deliveryFee, lang),
+                style: SangakTypography.title(context),
+              ),
             ],
           ),
           const Padding(
@@ -166,14 +179,17 @@ class BasketScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.total, style: SangakTypography.h3(context)),
-              Text('₺${grandTotal.toStringAsFixed(0)}', style: SangakTypography.h2(context).copyWith(color: SangakColors.primary)),
+              Text(
+                SangakNumberFormatter.formatCurrency(grandTotal, lang),
+                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+              ),
             ],
           ),
           const SizedBox(height: SangakDimens.spacing24),
           SangakButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
-            onPressed: () => context.push('/address-selection'),
+            onPressed: () => context.push('/address-selection?from=checkout'),
           ),
         ],
       ),

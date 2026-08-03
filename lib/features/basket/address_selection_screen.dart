@@ -15,7 +15,8 @@ import '../../main.dart';
 import 'checkout_provider.dart';
 
 class AddressSelectionScreen extends ConsumerStatefulWidget {
-  const AddressSelectionScreen({super.key});
+  final bool fromCheckout;
+  const AddressSelectionScreen({super.key, this.fromCheckout = true});
 
   @override
   ConsumerState<AddressSelectionScreen> createState() => _AddressSelectionScreenState();
@@ -45,6 +46,18 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
     _doorController.dispose();
     _noteController.dispose();
     super.dispose();
+  }
+
+  void _clearForm() {
+    _addressController.clear();
+    _cityController.clear();
+    _districtController.clear();
+    _streetController.clear();
+    _buildingController.clear();
+    _floorController.clear();
+    _doorController.clear();
+    _noteController.clear();
+    setState(() {});
   }
 
   Future<void> _getCurrentLocation() async {
@@ -92,7 +105,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       building: _buildingController.text,
       floor: _floorController.text,
       door: _doorController.text,
-      deliveryNote: _noteController.text,
+      deliveryNote: '', // Do not save delivery note in the address object itself for history
     );
 
     final storage = ref.read(storageServiceProvider);
@@ -101,26 +114,36 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         ? <Map<String, dynamic>>[]
         : (jsonDecode(saved) as List).cast<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
     
-    // Avoid duplicates by simple fullAddress check
-    if (!addresses.any((a) => a['full_address'] == address.fullAddress)) {
-      addresses.add(address.toJson());
-      storage.saveAddresses(jsonEncode(addresses));
-    }
+    // Remove if exists to move to top
+    addresses.removeWhere((a) => a['full_address'] == address.fullAddress);
+    addresses.add(address.toJson());
+    
+    // Keep only last 5 addresses
+    if (addresses.length > 5) addresses.removeAt(0);
+    storage.saveAddresses(jsonEncode(addresses));
 
-    ref.read(checkoutProvider.notifier).selectAddress(address);
-    context.push('/payment-selection');
+    if (widget.fromCheckout) {
+      // If in checkout flow, we also care about the note for the current order
+      final currentAddressWithNote = address.copyWith(deliveryNote: _noteController.text);
+      ref.read(checkoutProvider.notifier).selectAddress(currentAddressWithNote);
+      context.push('/payment-selection?from=checkout');
+    } else {
+      SangakToast.show(context, AppLocalizations.of(context).profileUpdated);
+      context.pop();
+    }
   }
 
   void _selectSavedAddress(Address address) {
     setState(() {
       _addressController.text = address.fullAddress;
-      _cityController.text = address.city ?? '';
-      _districtController.text = address.district ?? '';
-      _streetController.text = address.street ?? '';
+      _cityController.text = address.city;
+      _districtController.text = address.district;
+      _streetController.text = address.street;
       _buildingController.text = address.building ?? '';
       _floorController.text = address.floor ?? '';
       _doorController.text = address.door ?? '';
-      _noteController.text = address.deliveryNote ?? '';
+      // We don't fill note from history as per user request to not save it
+      _noteController.clear();
     });
   }
 
@@ -133,6 +156,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         ? []
         : (jsonDecode(savedJson) as List)
             .map((e) => Address.fromJson(Map<String, dynamic>.from(e)))
+            .toList()
+            .reversed
             .toList();
 
     return Scaffold(
@@ -152,7 +177,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (savedAddresses.isNotEmpty) ...[
-                Text(l10n.favorites, style: SangakTypography.h3(context)),
+                Text(l10n.lastUsedAddresses, style: SangakTypography.h3(context)),
                 const SizedBox(height: 16),
                 SizedBox(
                   height: 100,
@@ -165,7 +190,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                       return GestureDetector(
                         onTap: () => _selectSavedAddress(addr),
                         child: Container(
-                          width: 200,
+                          width: 220,
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: SangakColors.surface,
@@ -177,7 +202,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                addr.street ?? addr.title,
+                                addr.street != null && addr.street!.isNotEmpty ? addr.street! : addr.city ?? '',
                                 style: SangakTypography.title(context).copyWith(fontSize: 14),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -185,7 +210,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                               const SizedBox(height: 4),
                               Text(
                                 addr.fullAddress,
-                                style: SangakTypography.bodySmall(context),
+                                style: SangakTypography.bodySmall(context).copyWith(fontSize: 11),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -206,7 +231,17 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 onPressed: _getCurrentLocation,
               ),
               const SizedBox(height: 32),
-              Text(l10n.address, style: SangakTypography.h3(context)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(l10n.address, style: SangakTypography.h3(context)),
+                  TextButton.icon(
+                    onPressed: _clearForm,
+                    icon: const Icon(Icons.refresh_rounded, size: 16),
+                    label: Text(l10n.clear, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               SangakTextField(
                 label: l10n.address,

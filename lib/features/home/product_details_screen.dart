@@ -9,9 +9,11 @@ import '../../models/bread.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/freshness_badge.dart';
 import '../../shared/widgets/quantity_selector.dart';
+import '../../shared/widgets/product_tag.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/locale_provider.dart';
+import '../../core/localization/sangak_number_formatter.dart';
 import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 
@@ -43,6 +45,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
 
     final displayName = widget.bread.localizedName(languageCode);
     final displayDescription = widget.bread.localizedDescription(languageCode);
+    final formattedPrice = SangakNumberFormatter.formatCurrency(widget.bread.price, languageCode);
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -109,9 +112,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     runSpacing: SangakDimens.spacing8,
                     children: [
                       if (widget.bread.isOrganic)
-                        _buildTag(context, l10n.organic.toUpperCase(), SangakColors.success, icon: Icons.eco_rounded),
+                        ProductTag(label: l10n.organic, type: ProductTagType.organic),
                       if (widget.bread.tag != null)
-                        _buildTag(context, widget.bread.tag!.toUpperCase(), _tagColor(widget.bread.tag!)),
+                        ProductTag.fromText(widget.bread.tag!),
                       if (widget.bread.freshness != null)
                         FreshnessBadge(token: widget.bread.freshness!),
                     ],
@@ -124,7 +127,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       Expanded(
                         child: Text(displayName, style: SangakTypography.h1(context)),
                       ),
-                      Text('₺${widget.bread.price.toStringAsFixed(0)}', style: SangakTypography.h1(context).copyWith(color: SangakColors.primary)),
+                      Text(formattedPrice, style: SangakTypography.h1(context).copyWith(color: SangakColors.primary)),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing8),
@@ -223,41 +226,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
           Icon(icon, size: 18, color: SangakColors.primary),
           const SizedBox(width: 8),
           Text(label, style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
-
-  Color _tagColor(String tag) {
-    final normalized = tag.toLowerCase();
-    if (normalized.contains('traditional')) return SangakColors.secondary;
-    if (normalized.contains('popular')) return SangakColors.primary;
-    if (normalized.contains('new')) return SangakColors.info;
-    return SangakColors.accent;
-  }
-
-  Widget _buildTag(BuildContext context, String label, Color color, {IconData? icon}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-        border: Border.all(color: color.withValues(alpha: 0.45)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 14, color: color),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            label,
-            style: SangakTypography.caption(context).copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ],
       ),
     );

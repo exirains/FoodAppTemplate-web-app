@@ -34,7 +34,7 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
       // Load from Supabase
       try {
         final response = await SupabaseService.client
-            .from('cart_items')
+            .from('basket_items')
             .select('quantity, products(*)')
             .eq('user_id', user.id);
         
@@ -65,90 +65,154 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
     }
   }
 
-  Future<void> _saveBasket() async {
-    final user = _ref.read(authProvider).value;
-    if (user != null) {
-      try {
-        debugPrint('Saving basket to Supabase for user ${user.id}...');
-        // First clear old items for this user
-        await SupabaseService.client.from('cart_items').delete().eq('user_id', user.id);
-        
-        if (state.isNotEmpty) {
-          final data = state.map((item) => {
-            'user_id': user.id,
-            'product_id': item.bread.id,
-            'quantity': item.quantity,
-          }).toList();
-          await SupabaseService.client.from('cart_items').insert(data);
-          debugPrint('Basket saved to Supabase: ${data.length} items');
-        }
-      } catch (e) {
-        debugPrint('CRITICAL: Error saving basket to Supabase: $e');
-      }
-    }
-    
-    // Always save locally as fallback/cache
+  Future<void> _saveLocal() async {
     final basketJson = jsonEncode(state.map((e) => e.toJson()).toList());
     await _ref.read(storageServiceProvider).saveBasket(basketJson);
   }
 
   Future<void> _syncToSupabase() async {
     final user = _ref.read(authProvider).value;
-    if (user == null || state.isEmpty) return;
-
-    final data = state.map((item) => {
-      'user_id': user.id,
-      'product_id': item.bread.id,
-      'quantity': item.quantity,
-    }).toList();
+    if (user == null) return;
 
     try {
-      // Upsert to handle existing items
-      await SupabaseService.client.from('cart_items').upsert(
-        data, 
-        onConflict: 'user_id, product_id'
-      );
-      _loadBasket(); // Refresh from DB to ensure state is server-driven
+      debugPrint('Starting basket merge after login...');
+      
+      // 1. Fetch existing cloud basket
+      final response = await SupabaseService.client
+          .from('basket_items')
+          .select('product_id, quantity, products(*)')
+          .eq('user_id', user.id);
+      
+      final cloudItems = (response as List).map((e) => BasketItem(
+        bread: Bread.fromJson(e['products']),
+        quantity: e['quantity'] as int,
+      )).toList();
+
+      // 2. Merge local (guest) basket into cloud basket
+      final merged = List<BasketItem>.from(cloudItems);
+      for (final guestItem in state) {
+        final existingIndex = merged.indexWhere((ci) => ci.bread.id == guestItem.bread.id);
+        if (existingIndex != -1) {
+          // Sum quantities: Guest x2 + Account x1 = Sangak x3
+          merged[existingIndex] = merged[existingIndex].copyWith(
+            quantity: merged[existingIndex].quantity + guestItem.quantity,
+          );
+        } else {
+          merged.add(guestItem);
+        }
+      }
+
+      // 3. Save merged basket back to Supabase
+      if (merged.isNotEmpty) {
+        final data = merged.map((item) => {
+          'user_id': user.id,
+          'product_id': item.bread.id,
+          'quantity': item.quantity,
+        }).toList();
+
+        await SupabaseService.client.from('basket_items').upsert(
+          data, 
+          onConflict: 'user_id, product_id'
+        );
+      }
+
+      // 4. Update local state to the final merged version
+      state = merged;
+      _saveLocal();
+      
+      debugPrint('Basket merge complete: ${state.length} products');
     } catch (e) {
-      debugPrint('Error syncing basket to Supabase: $e');
+      debugPrint('Error merging guest basket to Supabase: $e');
     }
   }
 
   void addItem(Bread bread, {int quantity = 1}) {
     final existingIndex = state.indexWhere((item) => item.bread.id == bread.id);
+    int newQuantity = quantity;
+
     if (existingIndex != -1) {
+      newQuantity = state[existingIndex].quantity + quantity;
       state = [
         for (int i = 0; i < state.length; i++)
           if (i == existingIndex)
-            state[i].copyWith(quantity: state[i].quantity + quantity)
+            state[i].copyWith(quantity: newQuantity)
           else
             state[i]
       ];
     } else {
       state = [...state, BasketItem(bread: bread, quantity: quantity)];
     }
-    _saveBasket();
+    
+    _saveLocal();
+    _syncItem(bread.id, newQuantity);
   }
 
   void removeItem(String breadId) {
     state = state.where((item) => item.bread.id != breadId).toList();
-    _saveBasket();
+    _saveLocal();
+    _deleteItem(breadId);
   }
 
   void updateQuantity(String breadId, int delta) {
-    state = [
-      for (final item in state)
-        if (item.bread.id == breadId)
-          item.copyWith(quantity: (item.quantity + delta).clamp(0, 99))
-        else
-          item
-    ].where((i) => i.quantity > 0).toList();
-    _saveBasket();
+    final index = state.indexWhere((item) => item.bread.id == breadId);
+    if (index == -1) return;
+    
+    final item = state[index];
+    final newQuantity = (item.quantity + delta).clamp(0, 99);
+    
+    if (newQuantity > 0) {
+      state = [
+        for (int i = 0; i < state.length; i++)
+          if (i == index) item.copyWith(quantity: newQuantity) else state[i]
+      ];
+      _saveLocal();
+      _syncItem(breadId, newQuantity);
+    } else {
+      removeItem(breadId);
+    }
   }
 
-  void clear() {
+  Future<void> _syncItem(String productId, int quantity) async {
+    final user = _ref.read(authProvider).value;
+    if (user == null) return;
+
+    try {
+      await SupabaseService.client.from('basket_items').upsert({
+        'user_id': user.id,
+        'product_id': productId,
+        'quantity': quantity,
+      }, onConflict: 'user_id, product_id');
+    } catch (e) {
+      debugPrint('Error background syncing basket item: $e');
+    }
+  }
+
+  Future<void> _deleteItem(String productId) async {
+    final user = _ref.read(authProvider).value;
+    if (user == null) return;
+
+    try {
+      await SupabaseService.client
+          .from('basket_items')
+          .delete()
+          .match({'user_id': user.id, 'product_id': productId});
+    } catch (e) {
+      debugPrint('Error background deleting basket item: $e');
+    }
+  }
+
+  void clear() async {
+    final user = _ref.read(authProvider).value;
     state = [];
-    _saveBasket();
+    _saveLocal();
+    
+    if (user != null) {
+      try {
+        await SupabaseService.client.from('basket_items').delete().eq('user_id', user.id);
+      } catch (e) {
+        debugPrint('Error clearing Supabase basket: $e');
+      }
+    }
   }
 }
 

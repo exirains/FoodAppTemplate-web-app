@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
+import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/locale_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Sangak Design System Quantity Selector (v1.1.0)
 ///
 /// Supports Trash icon for deletion when quantity is 1.
-class QuantitySelector extends StatelessWidget {
+class QuantitySelector extends ConsumerWidget {
   final int quantity;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
@@ -23,7 +26,10 @@ class QuantitySelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final languageCode = ref.watch(localeProvider).languageCode;
+    final formattedQuantity = SangakNumberFormatter.format(quantity, languageCode);
+
     return Container(
       height: compact ? 34 : 36,
       decoration: BoxDecoration(
@@ -41,9 +47,11 @@ class QuantitySelector extends StatelessWidget {
           Container(
             constraints: BoxConstraints(minWidth: compact ? 24 : 28),
             padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
-            child: Text(
-              '$quantity',
-              style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+            child: Center(
+              child: Text(
+                formattedQuantity,
+                style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+              ),
             ),
           ),
           _IconButton(icon: Icons.add, onPressed: onIncrement, compact: compact),

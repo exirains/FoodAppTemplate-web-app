@@ -11,9 +11,11 @@ import '../../models/bread.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../features/basket/basket_provider.dart';
 import '../../features/home/home_provider.dart';
+import '../../core/localization/sangak_number_formatter.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
 import 'sangak_dialogs.dart';
+import 'product_tag.dart';
 
 /// Sangak Design System Signature Product Card (v1.0.0)
 class ProductCard extends ConsumerStatefulWidget {
@@ -81,6 +83,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
 
     final displayName = widget.bread?.localizedName(languageCode) ?? widget.name;
     final displayDescription = widget.bread?.localizedDescription(languageCode) ?? widget.description;
+    final formattedPrice = SangakNumberFormatter.formatCurrency(widget.price, languageCode);
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
@@ -132,23 +135,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                     Positioned(
                       top: SangakDimens.spacing12,
                       left: SangakDimens.spacing12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: SangakColors.accent.withValues(alpha: 0.9),
-                          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-                          boxShadow: SangakDimens.shadowLow,
-                        ),
-                        child: Text(
-                          widget.bread!.tag!.toUpperCase(),
-                          style: SangakTypography.caption(context).copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ),
+                      child: ProductTag.fromText(widget.bread!.tag!),
                     ),
                   // Favorite Button
                   Positioned(
@@ -186,13 +173,13 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SangakDimens.spacing12,
-                  vertical: SangakDimens.spacing8,
+                  vertical: 6,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 20, // Strict height for title
+                      height: 20, // Increased from 18 to give more room
                       child: Text(
                         displayName,
                         style: SangakTypography.title(context).copyWith(fontSize: 14),
@@ -200,13 +187,13 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 4), // Increased from 2 to reduce "smushed" look
                     SizedBox(
-                      height: 32, // Strict height for description (2 lines)
+                      height: 30, // Increased from 28 to give more room
                       child: Text(
                         displayDescription,
                         style: SangakTypography.bodySmall(context).copyWith(
-                          fontSize: 11,
+                          fontSize: 10,
                           height: 1.1,
                           color: SangakColors.inkLight,
                         ),
@@ -214,14 +201,14 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10), // Increased from 8
                     SizedBox(
                       height: 36,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '₺${widget.price.toStringAsFixed(0)}',
+                            formattedPrice,
                             style: SangakTypography.price(context).copyWith(fontSize: 17),
                           ),
                           // Add to Basket / Quantity Morph
