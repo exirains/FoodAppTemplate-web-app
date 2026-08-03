@@ -11,7 +11,7 @@ class BreadRepository {
   Future<List<Category>> getCategories() async {
     try {
       debugPrint('Fetching categories...');
-      final response = await _client.from('categories').select().order('name');
+      final response = await _client.from('categories').select().order('priority', ascending: true);
       final rawList = response as List;
       
       final categoryIds = rawList
