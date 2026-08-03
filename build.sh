@@ -17,13 +17,7 @@ flutter --version
 echo "Installing dependencies..."
 flutter pub get
 
-# Ensure .env exists so Flutter asset bundling does not fail
-if [ ! -f ".env" ]; then
-  echo "Creating dummy .env file for build..."
-  touch .env
-fi
-
 echo "Building Sangak web..."
-flutter build web --release --pwa-strategy=none
+flutter build web --release
 
 echo "Build finished successfully!"
