@@ -25,8 +25,13 @@ flutter --version
 echo "Installing dependencies..."
 flutter pub get
 
+# 3.5. Generate .env from Cloudflare Pages environment variables
+echo "SUPABASE_URL=$SUPABASE_URL" > .env
+echo "SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY" >> .env
+echo "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID" >> .env
+echo "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY" >> .env
+
 echo "Building Sangak web..."
-# 4. Added -v (verbose) so if the build fails, the CI logs will tell you exactly why
 flutter build web --release -v
 
 echo "Build finished successfully!"
