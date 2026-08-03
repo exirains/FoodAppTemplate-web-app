@@ -42,7 +42,7 @@ class FavoritesNotifier extends StateNotifier<AsyncValue<List<String>>> {
   }
 
   void _init() async {
-    final user = _ref.watch(authProvider).value;
+    final user = _ref.watch(authProvider).asData?.value;
     if (user == null) {
       state = const AsyncValue.data([]);
       return;
@@ -50,16 +50,18 @@ class FavoritesNotifier extends StateNotifier<AsyncValue<List<String>>> {
     try {
       final favorites = await _ref.read(favoriteServiceProvider).getFavoriteProductIds();
       state = AsyncValue.data(favorites);
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+    } catch (e) {
+      // If auth is null (likely due to error elsewhere), don't set global error
+      // just default to empty favorites
+      state = const AsyncValue.data([]);
     }
   }
 
   Future<void> toggle(String productId) async {
-    final user = _ref.read(authProvider).value;
+    final user = _ref.read(authProvider).asData?.value;
     if (user == null) return;
 
-    final currentIds = state.value ?? [];
+    final currentIds = state.asData?.value ?? [];
     final isFavorite = currentIds.contains(productId);
 
     if (isFavorite) {
@@ -78,11 +80,11 @@ class FavoritesNotifier extends StateNotifier<AsyncValue<List<String>>> {
 
 final isFavoriteProvider = Provider.family<bool, String>((ref, productId) {
   final favoritesAsync = ref.watch(favoritesProvider);
-  return favoritesAsync.value?.contains(productId) ?? false;
+  return favoritesAsync.asData?.value.contains(productId) ?? false;
 });
 
 final favoriteCountProvider = Provider<int>((ref) {
-  return ref.watch(favoritesProvider).value?.length ?? 0;
+  return ref.watch(favoritesProvider).asData?.value.length ?? 0;
 });
 
 final breadsProvider = FutureProvider<List<Bread>>((ref) async {

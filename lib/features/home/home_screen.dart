@@ -19,6 +19,7 @@ import '../../shared/widgets/category_chip.dart';
 import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/quantity_selector.dart';
+import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/sangak_skeletons.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 
@@ -31,7 +32,7 @@ class HomeScreen extends ConsumerWidget {
     final breadsAsync = ref.watch(filteredBreadsProvider);
     final popularBreadsAsync = ref.watch(popularBreadsProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
-    final user = ref.watch(authProvider).value;
+    final user = ref.watch(authProvider).asData?.value;
     final isGuest = user == null;
     final l10n = AppLocalizations.of(context);
     final locale = ref.watch(localeProvider);
@@ -125,14 +126,18 @@ class HomeScreen extends ConsumerWidget {
                       height: 50,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.zero, // Reset padding
                         itemCount: categories.length + 1,
                         separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing12),
                         itemBuilder: (context, index) {
                           if (index == 0) {
-                            return CategoryChip(
-                              label: l10n.all,
-                              isSelected: selectedCategoryId == null,
-                              onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
+                            return Padding(
+                              padding: const EdgeInsetsDirectional.only(start: 0),
+                              child: CategoryChip(
+                                label: l10n.all,
+                                isSelected: selectedCategoryId == null,
+                                onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
+                              ),
                             );
                           }
                           final category = categories[index - 1];
@@ -166,13 +171,12 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
 
-          // Bread Horizontal List
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 350,
+              height: 345, // Optimized for 220px width cards
               child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+                  padding: const EdgeInsetsDirectional.symmetric(horizontal: SangakDimens.spacing24),
                   scrollDirection: Axis.horizontal,
                   itemCount: breads.length,
                   separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
@@ -345,8 +349,32 @@ class HomeScreen extends ConsumerWidget {
                                         quantity: quantity,
                                         compact: true,
                                         onIncrement: () => ref.read(basketProvider.notifier).addItem(bread),
-                                        onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(bread.id, -1),
-                                        onDelete: () => ref.read(basketProvider.notifier).removeItem(bread.id),
+                                        onDecrement: () {
+                                          if (quantity == 1) {
+                                            SangakConfirmDialog.show(
+                                              context,
+                                              title: l10n.remove,
+                                              message: l10n.removeItemFromBasket,
+                                              confirmLabel: l10n.remove,
+                                              cancelLabel: l10n.cancel,
+                                              onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
+                                              isDestructive: true,
+                                            );
+                                          } else {
+                                            ref.read(basketProvider.notifier).updateQuantity(bread.id, -1);
+                                          }
+                                        },
+                                        onDelete: () {
+                                          SangakConfirmDialog.show(
+                                            context,
+                                            title: l10n.remove,
+                                            message: l10n.removeItemFromBasket,
+                                            confirmLabel: l10n.remove,
+                                            cancelLabel: l10n.cancel,
+                                            onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
+                                            isDestructive: true,
+                                          );
+                                        },
                                       );
                                     }
                                     return IconButton(

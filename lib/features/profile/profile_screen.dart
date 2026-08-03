@@ -11,6 +11,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
+import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../services/supabase_service.dart';
@@ -81,57 +82,140 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> _showEditProfile(User user) async {
     final l10n = AppLocalizations.of(context);
     final nameController = TextEditingController(text: user.userMetadata?['full_name'] as String? ?? '');
-    final phoneController = TextEditingController(text: user.userMetadata?['phone'] as String? ?? '+90');
+    final phoneController = TextEditingController(text: user.userMetadata?['phone'] as String? ?? '+90 ');
+    final formKey = GlobalKey<FormState>();
+    bool isSaving = false;
 
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            MediaQuery.of(context).viewInsets.bottom + SangakDimens.spacing24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.editProfile, style: SangakTypography.h3(context)),
-              const SizedBox(height: SangakDimens.spacing24),
-              TextField(
-                controller: nameController,
-                textInputAction: TextInputAction.next,
-                maxLength: 100,
-                decoration: InputDecoration(labelText: l10n.fullName),
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) { // Use modalContext for the builder
+        return StatefulBuilder(
+          builder: (context, setModalState) { // context here is fine, but we should be careful with ref
+            final viewInsets = MediaQuery.of(context).viewInsets;
+            
+            return Container(
+              decoration: const BoxDecoration(
+                color: SangakColors.background,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-                  LengthLimitingTextInputFormatter(13),
-                ],
-                decoration: InputDecoration(labelText: l10n.phoneNumber),
+              padding: EdgeInsets.only(bottom: viewInsets.bottom),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.85,
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(SangakDimens.spacing32),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: SangakColors.border,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: SangakColors.primary.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.person_outline_rounded, color: SangakColors.primary, size: 24),
+                            ),
+                            const SizedBox(width: 16),
+                            Text(l10n.editProfile, style: SangakTypography.h2(context)),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        SangakTextField(
+                          label: l10n.fullName,
+                          hintText: l10n.enterFullName,
+                          controller: nameController,
+                          leadingIcon: Icons.badge_outlined,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) return l10n.requiredField;
+                            if (value.trim().length < 2) return l10n.nameTooShort;
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        SangakTextField(
+                          label: l10n.phoneNumber,
+                          hintText: '+90 5XX XXX XX XX',
+                          controller: phoneController,
+                          leadingIcon: Icons.phone_android_outlined,
+                          keyboardType: TextInputType.phone,
+                          inputFormatters: [_TurkeyPhoneInputFormatter()],
+                          validator: (value) {
+                            if (value == null || value.isEmpty || value == '+90 ') return l10n.requiredField;
+                            // Formatting should be: +90 5XX XXX XX XX (total 17 chars with spaces)
+                            if (value.replaceAll(' ', '').length < 13) return l10n.invalidPhoneNumber;
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 40),
+                        SangakButton.primary(
+                          label: l10n.saveChanges,
+                          width: double.infinity,
+                          isLoading: isSaving,
+                          onPressed: isSaving ? null : () async {
+                            if (!formKey.currentState!.validate()) return;
+                            
+                            setModalState(() => isSaving = true);
+                            
+                            try {
+                              final data = {
+                                'full_name': nameController.text.trim(),
+                                'phone': phoneController.text.trim(),
+                              };
+                              
+                              // 1. Update Supabase table
+                              await SupabaseService.client.from('profiles').upsert({
+                                'id': user.id,
+                                ...data,
+                              });
+                              
+                              // 2. Update Auth Metadata
+                              await ref.read(authProvider.notifier).updateMetadata(data);
+                              
+                              if (modalContext.mounted) {
+                                Navigator.of(modalContext).pop();
+                                if (mounted) {
+                                  SangakToast.show(context, l10n.profileUpdated);
+                                }
+                              }
+                            } catch (e) {
+                              debugPrint('Error updating profile: $e');
+                              if (modalContext.mounted) {
+                                SangakToast.show(modalContext, l10n.networkError);
+                              }
+                            } finally {
+                              if (modalContext.mounted) {
+                                setModalState(() => isSaving = false);
+                              }
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(height: SangakDimens.spacing24),
-              SangakButton.primary(
-                label: l10n.saveChanges,
-                width: double.infinity,
-                onPressed: () async {
-                  final data = {
-                    'full_name': nameController.text.trim(),
-                    'phone': phoneController.text.trim(),
-                  };
-                  await SupabaseService.client.from('profiles').update(data).eq('id', user.id);
-                  await ref.read(authProvider.notifier).updateMetadata(data);
-                  if (context.mounted) Navigator.pop(context);
-                  if (mounted) SangakToast.show(this.context, l10n.profileUpdated);
-                },
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -143,7 +227,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    final user = authState.value;
+    final user = authState.asData?.value;
     final l10n = AppLocalizations.of(context);
     final favoriteCount = ref.watch(favoriteCountProvider);
     final ordersAsync = ref.watch(myOrdersProvider);
@@ -211,18 +295,50 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // Account Section
             Text(l10n.account, style: SangakTypography.title(context)),
             const SizedBox(height: 16),
-            _buildInfoTile(Icons.phone_outlined, l10n.phoneNumber, user.userMetadata?['phone'] ?? '-', context),
+            if (user.userMetadata?['phone'] == null || (user.userMetadata?['phone'] as String).isEmpty || user.userMetadata?['phone'] == '+90')
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: SangakColors.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                    border: Border.all(color: SangakColors.error.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline_rounded, color: SangakColors.error, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.addPhoneToOrder,
+                          style: SangakTypography.bodySmall(context).copyWith(
+                            color: SangakColors.error,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            _buildActionTile(
+              Icons.phone_outlined, 
+              l10n.phoneNumber, 
+              () => _showEditProfile(user), 
+              context,
+              value: user.userMetadata?['phone'] ?? '-',
+            ),
             const SizedBox(height: 12),
             _buildActionTile(Icons.location_on_outlined, l10n.deliveryAddress, () => context.push('/address-selection?from=profile'), context),
             const SizedBox(height: 12),
             _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () => context.push('/payment-selection?from=profile'), context),
             
             const SizedBox(height: 48),
-            SangakButton.outlined(
+            SangakButton.primary(
               label: l10n.signOut,
               width: double.infinity,
-              foregroundColor: SangakColors.error,
-              borderColor: SangakColors.error,
+              backgroundColor: SangakColors.error,
               onPressed: _signOut,
             ),
             const SizedBox(height: 40),
@@ -285,7 +401,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildActionTile(IconData icon, String label, VoidCallback onTap, BuildContext context) {
+  Widget _buildActionTile(IconData icon, String label, VoidCallback onTap, BuildContext context, {String? value}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(SangakDimens.radiusM),
@@ -300,7 +416,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             Icon(icon, color: SangakColors.primary, size: 22),
             const SizedBox(width: 16),
-            Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                if (value != null)
+                  Text(
+                    value,
+                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                  ),
+              ],
+            ),
             const Spacer(),
             const Icon(Icons.chevron_right, color: SangakColors.inkLight, size: 20),
           ],
@@ -358,28 +484,43 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ),
     );
   }
+}
 
-  Widget _buildInfoTile(IconData icon, String label, String value, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: SangakColors.border),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: SangakColors.primary, size: 24),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: SangakTypography.caption(context)),
-              Text(value, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-            ],
-          ),
-        ],
-      ),
+class _TurkeyPhoneInputFormatter extends TextInputFormatter {
+  static const _prefix = '+90 ';
+  static const _maxNationalDigits = 10;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Only allow digits for the actual number part
+    var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    // Strip leading 90 or 0 if user manually typed them
+    if (digits.startsWith('90')) {
+      digits = digits.substring(2);
+    } else if (digits.startsWith('0')) {
+      digits = digits.substring(1);
+    }
+    
+    if (digits.length > _maxNationalDigits) {
+      digits = digits.substring(0, _maxNationalDigits);
+    }
+
+    // Format: +90 5XX XXX XX XX
+    var formatted = _prefix;
+    for (var i = 0; i < digits.length; i++) {
+      if (i == 3 || i == 6 || i == 8) {
+        formatted += ' ';
+      }
+      formatted += digits[i];
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

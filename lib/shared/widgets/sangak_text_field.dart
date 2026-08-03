@@ -120,6 +120,16 @@ class _SangakTextFieldState extends State<SangakTextField> {
           onChanged: widget.onChanged,
           onEditingComplete: widget.onEditingComplete,
           style: SangakTypography.bodyLarge(context),
+          textAlign: (widget.keyboardType == TextInputType.phone || 
+                      widget.keyboardType == TextInputType.emailAddress ||
+                      widget.isPassword) 
+              ? TextAlign.left 
+              : TextAlign.start,
+          textDirection: (widget.keyboardType == TextInputType.phone || 
+                          widget.keyboardType == TextInputType.emailAddress ||
+                          widget.isPassword) 
+              ? TextDirection.ltr 
+              : null,
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),

@@ -148,7 +148,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 24,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.58,
+                    childAspectRatio: 0.61, // Optimized for info density
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {

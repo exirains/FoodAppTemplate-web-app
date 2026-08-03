@@ -1,8 +1,9 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:flutter/foundation.dart';
+import '../core/location/geoapify_service.dart';
 
 class LocationService {
+  final _geoapify = GeoapifyService();
+
   Future<Position?> getCurrentPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -28,15 +29,8 @@ class LocationService {
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<Placemark?> getAddressFromLatLng(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        return placemarks[0];
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    return null;
+  /// Gets structured address data from coordinates using Geoapify
+  Future<AddressLocation?> getAddressFromLatLng(double latitude, double longitude) async {
+    return await _geoapify.reverseGeocode(latitude, longitude);
   }
 }

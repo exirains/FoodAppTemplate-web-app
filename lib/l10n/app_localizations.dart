@@ -337,14 +337,26 @@ abstract class AppLocalizations {
   /// No description provided for @loginSuccessful.
   ///
   /// In en, this message translates to:
-  /// **'Successfully logged in!'**
+  /// **'Welcome back! Successfully logged in.'**
   String get loginSuccessful;
 
   /// No description provided for @registeredSuccessfully.
   ///
   /// In en, this message translates to:
-  /// **'Account created successfully!'**
+  /// **'Welcome to the family! Account created successfully.'**
   String get registeredSuccessfully;
+
+  /// No description provided for @addPhoneToOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add your phone number to place orders.'**
+  String get addPhoneToOrder;
+
+  /// No description provided for @phoneNumberRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required for delivery.'**
+  String get phoneNumberRequired;
 
   /// No description provided for @saveYourFavorites.
   ///
@@ -735,6 +747,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Organic'**
   String get organic;
+
+  /// No description provided for @newItem.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newItem;
 
   /// No description provided for @add.
   ///

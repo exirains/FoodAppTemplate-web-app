@@ -8,11 +8,13 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_empty_states.dart';
+import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../home/tab_provider.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import 'basket_provider.dart';
+import '../auth/auth_provider.dart';
 
 class BasketScreen extends ConsumerWidget {
   const BasketScreen({super.key});
@@ -114,12 +116,30 @@ class BasketScreen extends ConsumerWidget {
                         onIncrement: () => ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1),
                         onDecrement: () {
                           if (item.quantity == 1) {
-                            ref.read(basketProvider.notifier).removeItem(item.bread.id);
+                            SangakConfirmDialog.show(
+                              context,
+                              title: l10n.remove,
+                              message: l10n.removeItemFromBasket,
+                              confirmLabel: l10n.remove,
+                              cancelLabel: l10n.cancel,
+                              onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                              isDestructive: true,
+                            );
                           } else {
                             ref.read(basketProvider.notifier).updateQuantity(item.bread.id, -1);
                           }
                         },
-                        onDelete: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                        onDelete: () {
+                          SangakConfirmDialog.show(
+                            context,
+                            title: l10n.remove,
+                            message: l10n.removeItemFromBasket,
+                            confirmLabel: l10n.remove,
+                            cancelLabel: l10n.cancel,
+                            onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                            isDestructive: true,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -139,6 +159,10 @@ class BasketScreen extends ConsumerWidget {
 
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
+    final user = ref.watch(authProvider).asData?.value;
+    final hasPhone = user?.userMetadata?['phone'] != null && 
+                    (user?.userMetadata?['phone'] as String).isNotEmpty && 
+                    user?.userMetadata?['phone'] != '+90';
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -150,6 +174,14 @@ class BasketScreen extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (!hasPhone)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                l10n.phoneNumberRequired,
+                style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.error, fontWeight: FontWeight.bold),
+              ),
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -189,7 +221,7 @@ class BasketScreen extends ConsumerWidget {
           SangakButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
-            onPressed: () => context.push('/address-selection?from=checkout'),
+            onPressed: hasPhone ? () => context.push('/address-selection?from=checkout') : null,
           ),
         ],
       ),

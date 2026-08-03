@@ -11,6 +11,8 @@
 .history
 .svn/
 .migrate_working_dir/
+Thumbs.db
+desktop.ini
 
 # =========================
 # IntelliJ / Android Studio
@@ -19,6 +21,8 @@
 *.ipr
 *.iws
 .idea/
+cmake-build-*/
+mkspecs/
 
 # Android Studio local files
 local.properties
@@ -38,10 +42,13 @@ local.properties
 .pub-cache/
 .pub/
 build/
+**/build/
 **/doc/api/
 
 # Flutter generated files
 **/ios/Flutter/.last_build_id
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
 
 # Coverage
 coverage/
@@ -52,9 +59,10 @@ coverage/
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# Gradle
 .gradle/
+**/android/build/
+**/android/captures/
+**/android/.gradle/
 
 # =========================
 # Android Signing (IMPORTANT)
@@ -63,13 +71,24 @@ coverage/
 *.keystore
 key.properties
 android/key.properties
+google-services.json
+**/android/app/google-services.json
 
 # =========================
-# Environment Variables
+# iOS Signing / Config
+# =========================
+GoogleService-Info.plist
+**/ios/Runner/GoogleService-Info.plist
+
+# =========================
+# Environment Variables (CRITICAL)
 # =========================
 .env
 .env.*
 *.env
+**/.env
+**/*.env
+!lib/assets/branding/*.env
 
 # =========================
 # Supabase / Secrets
@@ -85,13 +104,16 @@ __pycache__/
 *.pyd
 venv/
 .venv/
+env/
+.env/
 
 # =========================
-# AI Tools / Prompts
+# AI Tools / Prompts / Artifacts
 # =========================
 .ai/
 .ai-cache/
 .ai-artifacts/
+.artifacts/
 .prompts/
 .prompt-history/
 .llm/
@@ -100,11 +122,13 @@ venv/
 .copilot/
 
 # =========================
-# Release Artifacts
+# Assets / Binaries
 # =========================
 *.apk
 *.aab
 *.ipa
+Product images/
+**/Product images/
 
 # Mapping / Symbol Files
 app.*.symbols
@@ -116,10 +140,3 @@ app.*.map.json
 *.tmp
 *.temp
 *.bak
-
-# =========================
-# Flutter / Dart
-# =========================
-/flutter/
-.dart_tool/
-.flutter-plugins

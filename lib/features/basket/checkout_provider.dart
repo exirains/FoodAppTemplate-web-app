@@ -56,7 +56,7 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
   }
 
   Future<void> placeOrder() async {
-    final user = _ref.read(authProvider).value;
+    final user = _ref.read(authProvider).asData?.value;
     if (user == null) throw Exception('User must be logged in to place order');
     if (state.selectedAddress == null) throw Exception('No address selected');
     

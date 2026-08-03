@@ -135,7 +135,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                     Positioned(
                       top: SangakDimens.spacing12,
                       left: SangakDimens.spacing12,
-                      child: ProductTag.fromText(widget.bread!.tag!),
+                      child: ProductTag.fromText(widget.bread!.tag!, context: context),
                     ),
                   // Favorite Button
                   Positioned(

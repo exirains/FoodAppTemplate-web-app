@@ -63,6 +63,7 @@ class ProductCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 220,
+      height: 345, // Match ProductCard height
       decoration: BoxDecoration(
         color: SangakColors.surface,
         borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
@@ -71,24 +72,31 @@ class ProductCardSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SangakSkeleton(width: 220, height: 220, borderRadius: SangakDimens.radiusXL),
-          Padding(
-            padding: const EdgeInsets.all(SangakDimens.spacing16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SangakSkeleton(width: 120, height: 20),
-                const SizedBox(height: 8),
-                const SangakSkeleton(width: 180, height: 14),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SangakSkeleton(width: 60, height: 20),
-                    SangakSkeleton(width: 80, height: 36, borderRadius: SangakDimens.radiusM),
-                  ],
-                ),
-              ],
+          const SangakSkeleton(width: 220, height: 210, borderRadius: SangakDimens.radiusXL),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SangakSkeleton(width: 120, height: 18),
+                      const SizedBox(height: 6),
+                      const SangakSkeleton(width: 180, height: 12),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      SangakSkeleton(width: 60, height: 18),
+                      SangakSkeleton(width: 80, height: 32, borderRadius: SangakDimens.radiusM),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

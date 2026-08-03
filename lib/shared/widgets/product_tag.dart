@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 
@@ -22,27 +23,28 @@ class ProductTag extends StatelessWidget {
     this.icon,
   });
 
-  factory ProductTag.fromText(String tag, {BuildContext? context}) {
+  factory ProductTag.fromText(String tag, {required BuildContext context}) {
     final lower = tag.toLowerCase();
-    // Use the actual text from DB but normalized for checking
+    final l10n = AppLocalizations.of(context);
+
     if (lower.contains('traditional')) {
       return ProductTag(
-        label: 'Traditional',
+        label: l10n.traditionalFavorites,
         type: ProductTagType.traditional,
       );
     } else if (lower.contains('popular')) {
       return ProductTag(
-        label: 'Popular',
+        label: l10n.popularToday,
         type: ProductTagType.popular,
       );
     } else if (lower.contains('new')) {
       return ProductTag(
-        label: 'New',
+        label: l10n.newItem,
         type: ProductTagType.newItem,
       );
     } else if (lower.contains('organic')) {
       return ProductTag(
-        label: 'Organic',
+        label: l10n.organic,
         type: ProductTagType.organic,
       );
     }

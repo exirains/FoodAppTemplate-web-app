@@ -129,10 +129,19 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get loginSuccessful => 'با موفقیت وارد شدید!';
+  String get loginSuccessful => 'خوش آمدید! با موفقیت وارد شدید.';
 
   @override
-  String get registeredSuccessfully => 'حساب کاربری با موفقیت ایجاد شد!';
+  String get registeredSuccessfully =>
+      'به خانواده سنگک خوش آمدید! حساب کاربری با موفقیت ایجاد شد.';
+
+  @override
+  String get addPhoneToOrder =>
+      'برای ثبت سفارش باید شماره تلفن خود را وارد کنید.';
+
+  @override
+  String get phoneNumberRequired =>
+      'وارد کردن شماره تلفن برای تحویل سفارش الزامی است.';
 
   @override
   String get saveYourFavorites => 'علاقه‌مندی‌های خود را ذخیره کنید';
@@ -341,6 +350,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get organic => 'ارگانیک';
 
   @override
+  String get newItem => 'جدید';
+
+  @override
   String get add => 'افزودن';
 
   @override
@@ -464,7 +476,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editProfile => 'ویرایش پروفایل';
 
   @override
-  String get signOut => 'خروج';
+  String get signOut => 'خروج از حساب';
 
   @override
   String get signOutConfirmation =>

@@ -39,8 +39,10 @@
   "addToBasket": "Add to Basket",
   "updateBasket": "Update Basket",
   "addedToBasket": "{title} added to basket!",
-  "loginSuccessful": "Successfully logged in!",
-  "registeredSuccessfully": "Account created successfully!",
+  "loginSuccessful": "Welcome back! Successfully logged in.",
+  "registeredSuccessfully": "Welcome to the family! Account created successfully.",
+  "addPhoneToOrder": "Please add your phone number to place orders.",
+  "phoneNumberRequired": "Phone number is required for delivery.",
   "@addedToBasket": {
     "placeholders": {
       "title": {
@@ -134,6 +136,7 @@
     }
   },
   "organic": "Organic",
+  "newItem": "New",
   "add": "Add",
   "invalidEmail": "Please enter a valid email address",
   "passwordTooShort": "Password must be at least 8 characters long",

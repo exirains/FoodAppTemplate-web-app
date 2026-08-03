@@ -15,41 +15,68 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
   final Ref _ref;
 
   BasketNotifier(this._ref) : super([]) {
-    _loadBasket();
+    _init();
+  }
+
+  void _init() async {
+    final user = _ref.read(authProvider).asData?.value;
+    
+    if (user != null) {
+      // 1. Logged in user: Cloud is absolute source of truth on launch.
+      // This prevents the doubling bug where disk and cloud items were summed.
+      debugPrint('App launched for logged-in user: fetching fresh cloud basket.');
+      _loadBasket();
+    } else {
+      // 2. Guest user: Load from local storage (disk).
+      _loadLocalBasket();
+    }
+    
     _listenToAuth();
   }
 
   void _listenToAuth() {
     _ref.listen(authProvider, (previous, next) {
-      if (next.value != null && previous?.value == null) {
-        // Just logged in, sync local to remote
+      final user = next.asData?.value;
+      final prevUser = previous?.asData?.value;
+      
+      if (user != null && prevUser == null) {
+        debugPrint('Auth transition: Guest -> Logged In. Syncing...');
         _syncToSupabase();
       }
     });
   }
 
   void _loadBasket() async {
-    final user = _ref.read(authProvider).value;
-    if (user != null) {
-      // Load from Supabase
-      try {
-        final response = await SupabaseService.client
-            .from('basket_items')
-            .select('quantity, products(*)')
-            .eq('user_id', user.id);
-        
-        final List<BasketItem> items = (response as List).map((e) {
+    // This is now handled by _init and _listenToAuth
+    // But keeping it for manual refreshes if needed
+    final user = _ref.read(authProvider).asData?.value;
+    if (user == null) {
+      _loadLocalBasket();
+      return;
+    }
+
+    try {
+      final response = await SupabaseService.client
+          .from('basket_items')
+          .select('quantity, products(*, product_translations(*))')
+          .eq('user_id', user.id);
+      
+      final List<BasketItem> items = (response as List).map((e) {
+        try {
           return BasketItem(
             bread: Bread.fromJson(e['products']),
             quantity: e['quantity'] as int,
           );
-        }).toList();
-        state = items;
-      } catch (e) {
-        _loadLocalBasket();
-      }
-    } else {
-      _loadLocalBasket();
+        } catch (e) {
+          debugPrint('Error parsing cloud basket item: $e');
+          return null;
+        }
+      }).whereType<BasketItem>().toList();
+      
+      state = items;
+      _saveLocal();
+    } catch (e) {
+      debugPrint('Error loading basket from Supabase: $e');
     }
   }
 
@@ -71,40 +98,59 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
   }
 
   Future<void> _syncToSupabase() async {
-    final user = _ref.read(authProvider).value;
-    if (user == null) return;
+    final user = _ref.read(authProvider).asData?.value;
+    if (user == null) {
+      debugPrint('Sync skipped: No user');
+      return;
+    }
 
     try {
-      debugPrint('Starting basket merge after login...');
+      debugPrint('Syncing basket to Supabase for user: ${user.id}');
       
-      // 1. Fetch existing cloud basket
+      // 1. Fetch cloud items
       final response = await SupabaseService.client
           .from('basket_items')
           .select('product_id, quantity, products(*)')
           .eq('user_id', user.id);
       
-      final cloudItems = (response as List).map((e) => BasketItem(
-        bread: Bread.fromJson(e['products']),
-        quantity: e['quantity'] as int,
-      )).toList();
+      final cloudItems = (response as List).map((e) {
+        try {
+          return BasketItem(
+            bread: Bread.fromJson(e['products']),
+            quantity: e['quantity'] as int,
+          );
+        } catch (e) {
+          debugPrint('Error parsing cloud basket item: $e');
+          return null;
+        }
+      }).whereType<BasketItem>().toList();
 
-      // 2. Merge local (guest) basket into cloud basket
-      final merged = List<BasketItem>.from(cloudItems);
-      for (final guestItem in state) {
-        final existingIndex = merged.indexWhere((ci) => ci.bread.id == guestItem.bread.id);
-        if (existingIndex != -1) {
-          // Sum quantities: Guest x2 + Account x1 = Sangak x3
-          merged[existingIndex] = merged[existingIndex].copyWith(
-            quantity: merged[existingIndex].quantity + guestItem.quantity,
+      debugPrint('Cloud basket: ${cloudItems.length} items');
+
+      // 2. Merge local items into cloud items
+      final Map<String, BasketItem> mergedMap = {};
+      
+      // Add cloud items first
+      for (final item in cloudItems) {
+        mergedMap[item.bread.id] = item;
+      }
+      
+      // Merge local items (summing quantities)
+      for (final localItem in state) {
+        if (mergedMap.containsKey(localItem.bread.id)) {
+          mergedMap[localItem.bread.id] = mergedMap[localItem.bread.id]!.copyWith(
+            quantity: mergedMap[localItem.bread.id]!.quantity + localItem.quantity,
           );
         } else {
-          merged.add(guestItem);
+          mergedMap[localItem.bread.id] = localItem;
         }
       }
 
-      // 3. Save merged basket back to Supabase
-      if (merged.isNotEmpty) {
-        final data = merged.map((item) => {
+      final mergedList = mergedMap.values.toList();
+
+      // 3. Upsert merged back to cloud
+      if (mergedList.isNotEmpty) {
+        final data = mergedList.map((item) => {
           'user_id': user.id,
           'product_id': item.bread.id,
           'quantity': item.quantity,
@@ -112,17 +158,18 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
 
         await SupabaseService.client.from('basket_items').upsert(
           data, 
-          onConflict: 'user_id, product_id'
+          onConflict: 'user_id,product_id' // NO SPACE
         );
       }
 
-      // 4. Update local state to the final merged version
-      state = merged;
+      // 4. Update memory state
+      state = mergedList;
       _saveLocal();
       
-      debugPrint('Basket merge complete: ${state.length} products');
+      debugPrint('Basket sync complete. Final count: ${state.length}');
     } catch (e) {
-      debugPrint('Error merging guest basket to Supabase: $e');
+      debugPrint('CRITICAL: Error in _syncToSupabase: $e');
+      _loadBasket(); 
     }
   }
 
@@ -173,22 +220,24 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
   }
 
   Future<void> _syncItem(String productId, int quantity) async {
-    final user = _ref.read(authProvider).value;
+    final user = _ref.read(authProvider).asData?.value;
     if (user == null) return;
 
     try {
+      debugPrint('Background sync item: $productId (qty: $quantity) for user: ${user.id}');
       await SupabaseService.client.from('basket_items').upsert({
         'user_id': user.id,
         'product_id': productId,
         'quantity': quantity,
-      }, onConflict: 'user_id, product_id');
+      }, onConflict: 'user_id,product_id');
+      debugPrint('Sync successful');
     } catch (e) {
       debugPrint('Error background syncing basket item: $e');
     }
   }
 
   Future<void> _deleteItem(String productId) async {
-    final user = _ref.read(authProvider).value;
+    final user = _ref.read(authProvider).asData?.value;
     if (user == null) return;
 
     try {
@@ -202,7 +251,7 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
   }
 
   void clear() async {
-    final user = _ref.read(authProvider).value;
+    final user = _ref.read(authProvider).asData?.value;
     state = [];
     _saveLocal();
     

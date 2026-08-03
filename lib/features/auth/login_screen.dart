@@ -10,6 +10,8 @@ import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../shared/widgets/google_mark.dart';
 import '../../shared/utils/sangak_toast.dart';
+import '../../services/supabase_service.dart';
+import '../home/tab_provider.dart';
 import 'auth_provider.dart';
 import 'auth_validators.dart';
 import 'auth_error_handler.dart';
@@ -108,7 +110,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       
       if (user != null) {
+        // Ensure profile exists after login
+        try {
+          final profile = await SupabaseService.client.from('profiles').select().eq('id', user.id).maybeSingle();
+          if (profile == null) {
+            await SupabaseService.client.from('profiles').insert({
+              'id': user.id,
+              'full_name': user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
+              'email': user.email,
+              'role': 'customer',
+            });
+          }
+        } catch (e) {
+          debugPrint('Non-critical: Error verifying profile after login: $e');
+        }
+
+        if (!mounted) return;
         SangakToast.show(context, l10n.loginSuccessful);
+        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
         context.go('/home');
       }
     } catch (e) {
@@ -160,7 +179,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isSubmitting = true);
     
     try {
-      await ref.read(authProvider.notifier).signInWithGoogle();
+      final user = await ref.read(authProvider.notifier).signInWithGoogle();
+      
+      if (!mounted) return;
+      
+      if (user != null) {
+        final l10n = AppLocalizations.of(context);
+        SangakToast.show(context, l10n.loginSuccessful);
+        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
+        context.go('/home');
+      }
     } catch (e) {
       if (!mounted) return;
       

@@ -41,14 +41,14 @@ class HeroBanner extends StatelessWidget {
                 placeholder: (context, url) => Container(color: SangakColors.border),
                 errorWidget: (context, url, error) => Container(color: SangakColors.border),
               ),
-              // Scrim for readability
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
+                    stops: const [0.0, 0.6], // More controlled gradient
                     colors: [
-                      SangakColors.ink.withValues(alpha: 0.7),
+                      SangakColors.ink.withValues(alpha: 0.8),
                       Colors.transparent,
                     ],
                   ),
@@ -57,7 +57,7 @@ class HeroBanner extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(SangakDimens.spacing24),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // Center for symmetry
+                  mainAxisAlignment: MainAxisAlignment.end, // Align to bottom
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(

@@ -24,7 +24,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     super.initState();
     // Listen for auth changes to execute pending actions (Context Preservation)
     ref.listenManual(authProvider, (previous, next) {
-      if (next.value != null && previous?.value == null) {
+      final user = next.asData?.value;
+      final prevUser = previous?.asData?.value;
+      
+      if (user != null && prevUser == null) {
         // User just logged in, execute pending action if any
         ref.read(pendingActionProvider.notifier).execute();
       }
@@ -37,7 +40,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authProvider).value;
+    final user = ref.watch(authProvider).asData?.value;
     final currentIndex = ref.watch(tabProvider);
     final isGuest = user == null;
 

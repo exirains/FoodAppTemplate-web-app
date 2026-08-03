@@ -47,10 +47,12 @@ class QuantitySelector extends ConsumerWidget {
           Container(
             constraints: BoxConstraints(minWidth: compact ? 24 : 28),
             padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
-            child: Center(
-              child: Text(
-                formattedQuantity,
-                style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+            child: Text(
+              formattedQuantity,
+              textAlign: TextAlign.center,
+              style: SangakTypography.title(context).copyWith(
+                color: Colors.white,
+                fontSize: 14,
               ),
             ),
           ),

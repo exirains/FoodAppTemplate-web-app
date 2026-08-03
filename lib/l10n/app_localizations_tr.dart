@@ -129,10 +129,19 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get loginSuccessful => 'Başarıyla giriş yapıldı!';
+  String get loginSuccessful => 'Tekrar hoş geldiniz! Başarıyla giriş yapıldı.';
 
   @override
-  String get registeredSuccessfully => 'Hesap başarıyla oluşturuldu!';
+  String get registeredSuccessfully =>
+      'Ailemize hoş geldiniz! Hesap başarıyla oluşturuldu.';
+
+  @override
+  String get addPhoneToOrder =>
+      'Sipariş vermek için lütfen telefon numaranızı ekleyin.';
+
+  @override
+  String get phoneNumberRequired =>
+      'Teslimat için telefon numarası gereklidir.';
 
   @override
   String get saveYourFavorites => 'Favorilerinizi kaydedin';
@@ -339,6 +348,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get organic => 'Organik';
+
+  @override
+  String get newItem => 'Yeni';
 
   @override
   String get add => 'Ekle';

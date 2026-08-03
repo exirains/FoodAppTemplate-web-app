@@ -4,7 +4,7 @@ import '../auth/auth_provider.dart';
 import '../basket/checkout_provider.dart';
 
 final myOrdersProvider = FutureProvider<List<OrderModel>>((ref) async {
-  final user = ref.watch(authProvider).value;
+  final user = ref.watch(authProvider).asData?.value;
   if (user == null) return [];
   
   return ref.read(orderRepositoryProvider).getMyOrders(user.id);

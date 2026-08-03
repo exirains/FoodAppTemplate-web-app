@@ -129,10 +129,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get loginSuccessful => 'Successfully logged in!';
+  String get loginSuccessful => 'Welcome back! Successfully logged in.';
 
   @override
-  String get registeredSuccessfully => 'Account created successfully!';
+  String get registeredSuccessfully =>
+      'Welcome to the family! Account created successfully.';
+
+  @override
+  String get addPhoneToOrder => 'Please add your phone number to place orders.';
+
+  @override
+  String get phoneNumberRequired => 'Phone number is required for delivery.';
 
   @override
   String get saveYourFavorites => 'Save your favorites';
@@ -345,6 +352,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get organic => 'Organic';
+
+  @override
+  String get newItem => 'New';
 
   @override
   String get add => 'Add';

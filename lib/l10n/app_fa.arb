@@ -39,8 +39,10 @@
   "addToBasket": "افزودن به سبد",
   "updateBasket": "بروزرسانی سبد",
   "addedToBasket": "{title} به سبد خرید اضافه شد!",
-  "loginSuccessful": "با موفقیت وارد شدید!",
-  "registeredSuccessfully": "حساب کاربری با موفقیت ایجاد شد!",
+  "loginSuccessful": "خوش آمدید! با موفقیت وارد شدید.",
+  "registeredSuccessfully": "به خانواده سنگک خوش آمدید! حساب کاربری با موفقیت ایجاد شد.",
+  "addPhoneToOrder": "برای ثبت سفارش باید شماره تلفن خود را وارد کنید.",
+  "phoneNumberRequired": "وارد کردن شماره تلفن برای تحویل سفارش الزامی است.",
   "@addedToBasket": {
     "placeholders": {
       "title": {
@@ -134,6 +136,7 @@
     }
   },
   "organic": "ارگانیک",
+  "newItem": "جدید",
   "add": "افزودن",
   "invalidEmail": "لطفاً یک آدرس ایمیل معتبر وارد کنید",
   "passwordTooShort": "رمز عبور باید حداقل 8 کاراکتر باشد",
@@ -174,7 +177,7 @@
   "favorites": "علاقه‌مندی‌ها",
   "orders": "سفارش‌ها",
   "editProfile": "ویرایش پروفایل",
-  "signOut": "خروج",
+  "signOut": "خروج از حساب",
   "signOutConfirmation": "آیا مطمئن هستید که می‌خواهید از حساب کاربری سنگک خود خارج شوید؟",
   "profilePictureUpdated": "تصویر پروفایل با موفقیت بروزرسانی شد!",
   "failedToUpdateProfilePicture": "خطا در بروزرسانی تصویر پروفایل",

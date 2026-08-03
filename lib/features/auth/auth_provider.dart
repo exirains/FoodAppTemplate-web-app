@@ -23,7 +23,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     // Listen to auth changes
     SupabaseService.client.auth.onAuthStateChange.listen((data) {
       final user = data.session?.user;
+      // Ensure we don't accidentally preserve an error state if a session exists
       state = AsyncValue.data(user);
+    }, onError: (e) {
+      state = AsyncValue.error(e, StackTrace.current);
     });
   }
 
@@ -49,25 +52,29 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         password: password,
       );
       
+      if (response.user == null) {
+        throw AuthException(message: 'invalidCredentials', isLocalizedKey: true);
+      }
+      
       // Record successful attempt
       authRateLimiter.recordSuccess(email);
       
       state = AsyncValue.data(response.user);
       return response.user;
-    } catch (e, stack) {
+    } catch (e) {
       // Record failed attempt for rate limiting
       authRateLimiter.recordFailure(email);
       
-      // Convert to user-friendly error
       final (_, messageKey) = AuthErrorHandler.handleAuthError(e);
-      final error = AuthException(
+      final authError = AuthException(
         message: messageKey,
         originalError: e,
         isLocalizedKey: true,
       );
       
-      state = AsyncValue.error(error, stack);
-      rethrow;
+      // Keep previous state to avoid breaking the whole UI with an error state
+      state = AsyncValue.data(state.asData?.value);
+      throw authError;
     }
   }
 
@@ -113,20 +120,20 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
       
       state = AsyncValue.data(response.user);
       return response.user;
-    } catch (e, stack) {
+    } catch (e) {
       // Record failed attempt for rate limiting
       authRateLimiter.recordFailure(email);
       
-      // Convert to user-friendly error
       final (_, messageKey) = AuthErrorHandler.handleAuthError(e);
-      final error = AuthException(
+      final authError = AuthException(
         message: messageKey,
         originalError: e,
         isLocalizedKey: true,
       );
       
-      state = AsyncValue.error(error, stack);
-      rethrow;
+      // Keep previous state to avoid breaking the whole UI with an error state
+      state = AsyncValue.data(state.asData?.value);
+      throw authError;
     }
   }
 
@@ -147,7 +154,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   }
 
   /// Sign in with Google OAuth (Web) or Native (Android)
-  Future<void> signInWithGoogle() async {
+  Future<User?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
         final redirectUrl = 'https://app.sangak.tr';
@@ -155,16 +162,25 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
           OAuthProvider.google,
           redirectTo: redirectUrl,
         );
+        return null; // Redirect happens
       } else {
         // Native Google Sign-In for Android/iOS
         final googleWebClientId = SupabaseService.googleWebClientId;
+        
+        if (googleWebClientId == null || googleWebClientId.isEmpty) {
+          debugPrint('CRITICAL: GOOGLE_WEB_CLIENT_ID is missing in .env file!');
+          throw AuthException(
+            message: 'Configuration Error: Google Client ID not found. Please check your setup.',
+            isLocalizedKey: false,
+          );
+        }
         
         final GoogleSignIn googleSignIn = GoogleSignIn(
           serverClientId: googleWebClientId,
         );
         
         final googleUser = await googleSignIn.signIn();
-        if (googleUser == null) return; // User cancelled
+        if (googleUser == null) return null; // User cancelled
 
         final googleAuth = await googleUser.authentication;
         final accessToken = googleAuth.accessToken;
@@ -174,13 +190,29 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
           throw AuthException(message: 'No ID Token found.');
         }
 
-        await SupabaseService.client.auth.signInWithIdToken(
+        final response = await SupabaseService.client.auth.signInWithIdToken(
           provider: OAuthProvider.google,
           idToken: idToken,
           accessToken: accessToken,
         );
+
+        if (response.user != null) {
+          // Sync/Create profile after successful Google Login
+          try {
+            await SupabaseService.client.from('profiles').upsert({
+              'id': response.user!.id,
+              'full_name': response.user!.userMetadata?['full_name'] ?? response.user!.email?.split('@')[0] ?? 'User',
+              'email': response.user!.email,
+              'role': 'customer',
+            });
+          } catch (e) {
+            debugPrint('Non-critical: Error syncing profile after Google login: $e');
+          }
+          return response.user;
+        }
+        return null;
       }
-    } catch (e, stack) {
+    } catch (e) {
       // Check if it's a user cancellation vs real error
       final errorString = e.toString().toLowerCase();
       
@@ -188,19 +220,19 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
           errorString.contains('user_cancelled') ||
           errorString.contains('popup_closed')) {
         // User cancelled - don't show as error
-        return;
+        return null;
       }
       
-      // Convert to user-friendly error
       final (_, messageKey) = AuthErrorHandler.handleAuthError(e);
-      final error = AuthException(
+      final authError = AuthException(
         message: messageKey,
         originalError: e,
         isLocalizedKey: true,
       );
       
-      state = AsyncValue.error(error, stack);
-      rethrow;
+      // Keep previous state to avoid breaking the whole UI with an error state
+      state = AsyncValue.data(state.asData?.value);
+      throw authError;
     }
   }
 }

@@ -23,7 +23,7 @@ class CategoryChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: SangakTokens.animFast,
-        padding: const EdgeInsets.symmetric(
+        padding: const EdgeInsetsDirectional.symmetric(
           horizontal: SangakDimens.spacing24,
           vertical: SangakDimens.spacing12,
         ),

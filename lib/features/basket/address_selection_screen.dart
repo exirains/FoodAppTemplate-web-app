@@ -11,6 +11,7 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../models/address.dart';
+import '../../core/location/geoapify_service.dart';
 import '../../main.dart';
 import 'checkout_provider.dart';
 
@@ -69,18 +70,19 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       final position = await locationService.getCurrentPosition();
       
       if (position != null) {
-        final placemark = await locationService.getAddressFromLatLng(
+        final AddressLocation? locationData = await locationService.getAddressFromLatLng(
           position.latitude,
           position.longitude,
         );
 
-        if (placemark != null) {
+        if (locationData != null) {
           if (!mounted) return;
           setState(() {
-            _cityController.text = placemark.administrativeArea ?? '';
-            _districtController.text = placemark.subAdministrativeArea ?? '';
-            _streetController.text = placemark.street ?? '';
-            _addressController.text = '${placemark.street}, ${placemark.subLocality}, ${placemark.locality}';
+            _cityController.text = locationData.city ?? '';
+            _districtController.text = locationData.district ?? '';
+            _streetController.text = locationData.street ?? '';
+            _buildingController.text = locationData.buildingNumber ?? '';
+            _addressController.text = locationData.formattedAddress ?? '';
           });
           SangakToast.show(context, l10n.locationCaptured);
         }
@@ -184,7 +186,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: savedAddresses.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    separatorBuilder: (context, index) => const SizedBox(width: 12),
                     itemBuilder: (context, index) {
                       final addr = savedAddresses[index];
                       return GestureDetector(
@@ -202,7 +204,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                addr.street != null && addr.street!.isNotEmpty ? addr.street! : addr.city ?? '',
+                                addr.street.isNotEmpty ? addr.street : addr.city,
                                 style: SangakTypography.title(context).copyWith(fontSize: 14),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

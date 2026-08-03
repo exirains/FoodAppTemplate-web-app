@@ -60,6 +60,9 @@ class AuthErrorHandler {
       return (false, 'passwordTooShort');
     }
 
+    // Diagnostic log for unexpected errors
+    // debugPrint('DEBUG AUTH ERROR: $error');
+
     // Generic auth error fallback
     return (false, 'invalidCredentials');
   }

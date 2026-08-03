@@ -10,6 +10,8 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/google_mark.dart';
 import '../../shared/utils/sangak_toast.dart';
+import '../../services/supabase_service.dart';
+import '../home/tab_provider.dart';
 import 'auth_provider.dart';
 import 'auth_validators.dart';
 import 'auth_error_handler.dart';
@@ -199,11 +201,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!mounted) return;
 
       if (user != null) {
+        // Create profile in Supabase to avoid crashes in other screens
+        try {
+          await SupabaseService.client.from('profiles').upsert({
+            'id': user.id,
+            'full_name': name,
+            'email': email,
+            'phone': phone,
+            'role': 'customer',
+          });
+        } catch (e) {
+          debugPrint('Non-critical: Error creating initial profile record: $e');
+          // We continue because the user is registered in Auth
+        }
+
         // Clear guest data after successful registration
         await GuestModeService.exitGuestMode();
         if (!mounted) return;
 
         SangakToast.show(context, l10n.registeredSuccessfully);
+        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
         context.go('/home');
       }
     } catch (e) {
@@ -255,7 +272,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      await ref.read(authProvider.notifier).signInWithGoogle();
+      final user = await ref.read(authProvider.notifier).signInWithGoogle();
+      
+      if (!mounted) return;
+      
+      if (user != null) {
+        final l10n = AppLocalizations.of(context);
+        SangakToast.show(context, l10n.registeredSuccessfully);
+        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
+        context.go('/home');
+      }
     } catch (e) {
       if (!mounted) return;
 
@@ -484,7 +510,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 }
 
 class _TurkeyPhoneInputFormatter extends TextInputFormatter {
-  static const _prefix = '+90';
+  static const _prefix = '+90 ';
   static const _maxNationalDigits = 10;
 
   @override
@@ -492,22 +518,32 @@ class _TurkeyPhoneInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    // Only allow digits for the actual number part
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
 
+    // Strip leading 90 or 0 if user manually typed them
     if (digits.startsWith('90')) {
       digits = digits.substring(2);
-    }
-    if (digits.startsWith('0')) {
+    } else if (digits.startsWith('0')) {
       digits = digits.substring(1);
     }
+    
     if (digits.length > _maxNationalDigits) {
       digits = digits.substring(0, _maxNationalDigits);
     }
 
-    final text = '$_prefix$digits';
+    // Format: +90 5XX XXX XX XX
+    var formatted = _prefix;
+    for (var i = 0; i < digits.length; i++) {
+      if (i == 3 || i == 6 || i == 8) {
+        formatted += ' ';
+      }
+      formatted += digits[i];
+    }
+
     return TextEditingValue(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

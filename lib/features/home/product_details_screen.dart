@@ -114,7 +114,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       if (widget.bread.isOrganic)
                         ProductTag(label: l10n.organic, type: ProductTagType.organic),
                       if (widget.bread.tag != null)
-                        ProductTag.fromText(widget.bread.tag!),
+                        ProductTag.fromText(widget.bread.tag!, context: context),
                       if (widget.bread.freshness != null)
                         FreshnessBadge(token: widget.bread.freshness!),
                     ],
