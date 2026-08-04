@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -45,11 +45,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final user = SupabaseService.client.auth.currentUser;
       if (user == null) return;
 
-      final fileFile = File(image.path);
       final fileName = '${user.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final path = '${user.id}/$fileName';
 
-      await SupabaseService.client.storage.from('avatars').upload(path, fileFile);
+      // Read as bytes to be compatible with both Web and Mobile
+      final bytes = await image.readAsBytes();
+
+      await SupabaseService.client.storage.from('avatars').uploadBinary(
+        path, 
+        bytes,
+        fileOptions: const FileOptions(contentType: 'image/jpeg'),
+      );
+      
       final avatarUrl = SupabaseService.client.storage.from('avatars').getPublicUrl(path);
 
       await SupabaseService.client.from('profiles').update({'avatar_url': avatarUrl}).eq('id', user.id);

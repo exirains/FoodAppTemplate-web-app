@@ -10,8 +10,14 @@ class UpdateService {
   final UpdateRepository _repository = UpdateRepository();
 
   Future<UpdateModel?> checkForUpdates() async {
-    // Only Android should check for APK updates
-    if (kIsWeb || !Platform.isAndroid) return null;
+    // Only Android should check for APK updates. Avoid Platform.isAndroid on Web.
+    if (kIsWeb) return null;
+    
+    try {
+      if (!Platform.isAndroid) return null;
+    } catch (_) {
+      return null;
+    }
 
     final updateInfo = await _repository.fetchUpdateInfo();
     if (updateInfo == null) return null;

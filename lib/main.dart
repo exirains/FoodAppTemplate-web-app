@@ -34,30 +34,54 @@ final cacheServiceProvider = Provider<CacheService>((ref) {
 });
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Hive
-  await Hive.initFlutter();
-  Hive.registerAdapter(BreadAdapter());
-  Hive.registerAdapter(CategoryAdapter());
-  Hive.registerAdapter(AddressAdapter());
-  final cacheBox = await Hive.openBox<List>('cache');
-  await cacheBox.clear(); // Clear cache to ensure fresh schema data with descriptions
-  
-  // Initialize Supabase
-  await SupabaseService.initialize();
-  
-  // Initialize SharedPreferences
-  final prefs = await SharedPreferences.getInstance();
-  
-  runApp(
-    ProviderScope(
-      overrides: [
-        storageServiceProvider.overrideWithValue(StorageService(prefs)),
-      ],
-      child: const SangakApp(),
-    ),
-  );
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    debugPrint('SANGAK: Initializing app...');
+    
+    // Initialize Hive
+    await Hive.initFlutter();
+    debugPrint('SANGAK: Hive initialized.');
+    
+    Hive.registerAdapter(BreadAdapter());
+    Hive.registerAdapter(CategoryAdapter());
+    Hive.registerAdapter(AddressAdapter());
+    
+    final cacheBox = await Hive.openBox<List>('cache');
+    await cacheBox.clear(); 
+    debugPrint('SANGAK: Hive box opened and cleared.');
+    
+    // Initialize Supabase
+    try {
+      await SupabaseService.initialize();
+      debugPrint('SANGAK: Supabase initialized.');
+    } catch (e) {
+      debugPrint('SANGAK ERROR: Supabase init failed: $e');
+      // On web, this might be due to .env issues
+    }
+    
+    // Initialize SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    debugPrint('SANGAK: SharedPrefs initialized.');
+    
+    runApp(
+      ProviderScope(
+        overrides: [
+          storageServiceProvider.overrideWithValue(StorageService(prefs)),
+        ],
+        child: const SangakApp(),
+      ),
+    );
+  } catch (e, stack) {
+    debugPrint('SANGAK CRITICAL ERROR: $e');
+    debugPrint('STACK TRACE: $stack');
+    
+    // Fallback to minimal app to show error if possible
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text('App failed to start: $e')),
+      ),
+    ));
+  }
 }
 
 class SangakApp extends ConsumerWidget {

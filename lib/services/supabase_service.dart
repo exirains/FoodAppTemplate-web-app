@@ -3,7 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
   static Future<void> initialize() async {
-    await dotenv.load();
+    try {
+      await dotenv.load();
+    } catch (e) {
+      // ignore: avoid_print
+      print('SupabaseService: .env load failed, checking fallback: $e');
+    }
     
     final supabaseUrl = dotenv.env['SUPABASE_URL'];
     final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'];
