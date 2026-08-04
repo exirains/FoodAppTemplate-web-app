@@ -16,6 +16,7 @@ import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
+import '../auth/profile_provider.dart';
 import '../../features/home/home_provider.dart';
 import '../orders/orders_provider.dart';
 
@@ -228,6 +229,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final user = authState.asData?.value;
+    final profileAsync = ref.watch(userProfileProvider);
+    final profile = profileAsync.value;
+    
     final l10n = AppLocalizations.of(context);
     final favoriteCount = ref.watch(favoriteCountProvider);
     final ordersAsync = ref.watch(myOrdersProvider);
@@ -235,8 +239,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     if (user == null) return const SizedBox.shrink();
     
-    // Role check for switcher
-    final role = user.userMetadata?['role'] as String? ?? 'customer';
+    // Role check for switcher - prioritizes DB role from profile provider
+    final role = profile?.role ?? user.userMetadata?['role'] as String? ?? 'customer';
     final canSwitchRole = role != 'customer';
 
     return Scaffold(
@@ -246,7 +250,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         actions: [
           if (canSwitchRole)
             IconButton(
-              onPressed: () => _showRoleSwitcher(context),
+              onPressed: () => _showRoleSwitcher(context, role),
               icon: const Icon(Icons.swap_horiz_rounded),
               tooltip: l10n.roleSwitch,
             ),
@@ -348,7 +352,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  void _showRoleSwitcher(BuildContext context) {
+  void _showRoleSwitcher(BuildContext context, String currentRole) {
     final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
@@ -360,9 +364,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             Text(l10n.roleSwitch, style: SangakTypography.h3(context)),
             const SizedBox(height: 24),
-            _buildRoleItem(context, l10n.customerApp, Icons.person_outline, true),
-            _buildRoleItem(context, l10n.adminPanel, Icons.admin_panel_settings_outlined, false),
-            _buildRoleItem(context, l10n.deliveryPanel, Icons.delivery_dining_outlined, false),
+            _buildRoleItem(context, l10n.customerApp, Icons.person_outline, currentRole == 'customer'),
+            _buildRoleItem(context, l10n.adminPanel, Icons.admin_panel_settings_outlined, currentRole == 'admin'),
+            _buildRoleItem(context, l10n.deliveryPanel, Icons.delivery_dining_outlined, currentRole == 'delivery'),
             const SizedBox(height: 24),
           ],
         ),

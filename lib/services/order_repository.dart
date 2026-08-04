@@ -28,7 +28,6 @@ class OrderRepository {
       }).toList();
 
       final response = await _client.rpc('place_order_atomic', params: {
-        'p_user_id': userId,
         'p_address_snapshot': address.toJson(),
         'p_payment_method': paymentMethod,
         'p_total_price': totalPrice,

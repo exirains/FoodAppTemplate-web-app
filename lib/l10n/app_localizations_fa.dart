@@ -320,10 +320,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get errorLoadingBreads => 'خطا در بارگذاری محصولات';
 
   @override
-  String get freshlyBakedSangak => 'سنگک تازه پخته شده';
+  String get freshlyBakedSangak => 'سنگک تازه';
 
   @override
-  String get heroSubtitle => 'مستقیم از تنور سنگی به درب منزل شما.';
+  String get heroSubtitle => 'مستقیم از تنور به درب منزل شما.';
 
   @override
   String get pleaseAgreeToTerms => 'لطفاً با شرایط موافقت کنید';

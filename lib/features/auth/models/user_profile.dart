@@ -6,6 +6,7 @@ class UserProfile {
   final String email;
   final String? fullName;
   final String? phoneNumber;
+  final String role;
   final bool phoneVerified;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -15,6 +16,7 @@ class UserProfile {
     required this.email,
     this.fullName,
     this.phoneNumber,
+    this.role = 'customer',
     this.phoneVerified = false,
     required this.createdAt,
     this.updatedAt,
@@ -37,6 +39,7 @@ class UserProfile {
     String? email,
     String? fullName,
     String? phoneNumber,
+    String? role,
     bool? phoneVerified,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -46,6 +49,7 @@ class UserProfile {
       email: email ?? this.email,
       fullName: fullName ?? this.fullName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      role: role ?? this.role,
       phoneVerified: phoneVerified ?? this.phoneVerified,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -59,6 +63,7 @@ class UserProfile {
       'email': email,
       'full_name': fullName,
       'phone_number': phoneNumber,
+      'role': role,
       'phone_verified': phoneVerified,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
@@ -72,6 +77,7 @@ class UserProfile {
       email: json['email'] as String,
       fullName: json['full_name'] as String?,
       phoneNumber: json['phone_number'] as String?,
+      role: json['role'] as String? ?? 'customer',
       phoneVerified: (json['phone_verified'] as bool?) ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: json['updated_at'] != null
