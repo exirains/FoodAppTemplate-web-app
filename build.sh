@@ -34,4 +34,21 @@ echo "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY" >> .env
 echo "Building Sangak web..."
 flutter build web --release -v
 
+# 4. Kill-switch: unregister any previously installed service worker for existing users
+cat > build/web/flutter_service_worker.js << 'EOF'
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+      .then(() => self.registration.unregister())
+      .then(() => self.clients.matchAll())
+      .then((clients) => clients.forEach((c) => c.navigate(c.url))))
+  );
+});
+EOF
+
+# 5. Remove potential PWA artifacts to ensure clean browser behavior
+rm -f build/web/manifest.json
+
 echo "Build finished successfully!"
