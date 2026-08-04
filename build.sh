@@ -26,10 +26,22 @@ echo "Installing dependencies..."
 flutter pub get
 
 # 3.5. Generate .env from Cloudflare Pages environment variables
-echo "SUPABASE_URL=$SUPABASE_URL" > .env
-echo "SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY" >> .env
-echo "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID" >> .env
-echo "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY" >> .env
+# Smartly handle if variables already contain "KEY="
+write_env_var() {
+  local var_name=$1
+  local var_val=$2
+  if [[ "$var_val" == "$var_name="* ]]; then
+    echo "$var_val" >> .env
+  else
+    echo "$var_name=$var_val" >> .env
+  fi
+}
+
+printf "" > .env
+write_env_var "SUPABASE_URL" "$SUPABASE_URL"
+write_env_var "SUPABASE_PUBLISHABLE_KEY" "$SUPABASE_PUBLISHABLE_KEY"
+write_env_var "GOOGLE_WEB_CLIENT_ID" "$GOOGLE_WEB_CLIENT_ID"
+write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
 
 echo "Building Sangak web..."
 flutter build web --release -v
