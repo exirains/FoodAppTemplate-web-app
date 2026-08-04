@@ -73,6 +73,7 @@ class SangakConfirmDialog extends StatelessWidget {
                 Expanded(
                   child: SangakButton.ghost(
                     label: cancelLabel,
+                    padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing12),
                     onPressed: () => Navigator.pop(context, false),
                   ),
                 ),
@@ -80,6 +81,7 @@ class SangakConfirmDialog extends StatelessWidget {
                 Expanded(
                   child: SangakButton.primary(
                     label: confirmLabel,
+                    padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing12),
                     backgroundColor: isDestructive ? SangakColors.error : null,
                     onPressed: () {
                       onConfirm();

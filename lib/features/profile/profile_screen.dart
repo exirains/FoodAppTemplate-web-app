@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -295,7 +294,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _buildActivityCard(Icons.favorite_rounded, l10n.favorites, '$favoriteCount', context, onTap: () {})),
+                Expanded(child: _buildActivityCard(Icons.favorite_rounded, l10n.favorites, '$favoriteCount', context, onTap: () => context.push('/favorites'))),
                 const SizedBox(width: 16),
                 Expanded(child: _buildActivityCard(Icons.shopping_bag_rounded, l10n.orders, '$orderCount', context, onTap: () => context.push('/orders'))),
               ],
@@ -339,6 +338,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               () => _showEditProfile(user), 
               context,
               value: user.userMetadata?['phone'] ?? '-',
+              isPhone: true,
             ),
             const SizedBox(height: 12),
             _buildActionTile(Icons.location_on_outlined, l10n.deliveryAddress, () => context.push('/address-selection?from=profile'), context),
@@ -412,7 +412,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildActionTile(IconData icon, String label, VoidCallback onTap, BuildContext context, {String? value}) {
+  Widget _buildActionTile(IconData icon, String label, VoidCallback onTap, BuildContext context, {String? value, bool isPhone = false}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(SangakDimens.radiusM),
@@ -434,12 +434,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 if (value != null)
                   Text(
                     value,
+                    textDirection: isPhone ? TextDirection.ltr : null,
                     style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
                   ),
               ],
             ),
             const Spacer(),
-            const Icon(Icons.chevron_right, color: SangakColors.inkLight, size: 20),
+            Icon(
+              Directionality.of(context) == TextDirection.rtl 
+                  ? Icons.chevron_left 
+                  : Icons.chevron_right, 
+              color: SangakColors.inkLight, 
+              size: 20,
+            ),
           ],
         ),
       ),

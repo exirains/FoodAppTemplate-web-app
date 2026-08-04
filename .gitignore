@@ -127,7 +127,7 @@ env/
 *.apk
 *.aab
 *.ipa
-Product images/
+lib/assets/images/products/
 **/Product images/
 
 # Mapping / Symbol Files

@@ -141,3 +141,14 @@ final popularBreadsProvider = FutureProvider<List<Bread>>((ref) async {
   }
   return live;
 });
+
+final filteredPopularBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
+  final popularAsync = ref.watch(popularBreadsProvider);
+  final selectedId = ref.watch(selectedCategoryIdProvider);
+
+  if (selectedId == null) return popularAsync;
+
+  return popularAsync.whenData((breads) {
+    return breads.where((bread) => bread.categoryId == selectedId).toList();
+  });
+});

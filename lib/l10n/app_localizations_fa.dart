@@ -553,4 +553,19 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get changeSettingAnytime =>
       'می‌توانید این را هر زمان در تنظیمات تغییر دهید.';
+
+  @override
+  String get addressName => 'نام آدرس';
+
+  @override
+  String get work => 'محل کار';
+
+  @override
+  String get school => 'مدرسه/دانشگاه';
+
+  @override
+  String get other => 'سایر';
+
+  @override
+  String get customName => 'نام دلخواه';
 }

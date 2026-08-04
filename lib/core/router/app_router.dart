@@ -13,6 +13,7 @@ import '../../features/basket/address_selection_screen.dart';
 import '../../features/basket/payment_selection_screen.dart';
 import '../../features/basket/order_confirmation_screen.dart';
 import '../../features/orders/order_history_screen.dart';
+import '../../features/favorites/favorites_screen.dart';
 import '../../models/bread.dart';
 
 // Helper for silky smooth transitions
@@ -136,6 +137,14 @@ final appRouter = GoRouter(
         context: context,
         state: state,
         child: const OrderHistoryScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/favorites',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context: context,
+        state: state,
+        child: const FavoritesScreen(),
       ),
     ),
     GoRoute(

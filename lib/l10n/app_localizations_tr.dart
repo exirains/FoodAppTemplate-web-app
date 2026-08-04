@@ -168,7 +168,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get signInRegister => 'Giriş Yap / Kayıt Ol';
 
   @override
-  String get home => 'Ana Sayfa';
+  String get home => 'Ev';
 
   @override
   String get explore => 'Keşfet';
@@ -553,4 +553,19 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get changeSettingAnytime =>
       'Bunu dilediğiniz zaman Ayarlar\'dan değiştirebilirsiniz.';
+
+  @override
+  String get addressName => 'Adres Adı';
+
+  @override
+  String get work => 'İş';
+
+  @override
+  String get school => 'Okul';
+
+  @override
+  String get other => 'Diğer';
+
+  @override
+  String get customName => 'Özel Ad';
 }

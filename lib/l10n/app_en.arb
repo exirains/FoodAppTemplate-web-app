@@ -201,5 +201,11 @@
   "customerApp": "Customer App",
   "adminPanel": "Admin Panel",
   "deliveryPanel": "Delivery Panel",
-  "changeSettingAnytime": "You can change this anytime in Settings."
+  "changeSettingAnytime": "You can change this anytime in Settings.",
+  "addressName": "Address Name",
+  "home": "Home",
+  "work": "Work",
+  "school": "School",
+  "other": "Other",
+  "customName": "Custom Name"
 }

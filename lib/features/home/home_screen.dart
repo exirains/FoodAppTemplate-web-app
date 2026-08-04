@@ -30,7 +30,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
     final breadsAsync = ref.watch(filteredBreadsProvider);
-    final popularBreadsAsync = ref.watch(popularBreadsProvider);
+    final popularBreadsAsync = ref.watch(filteredPopularBreadsProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final user = ref.watch(authProvider).asData?.value;
     final isGuest = user == null;
@@ -114,7 +114,7 @@ class HomeScreen extends ConsumerWidget {
                   HeroBanner(
                     title: l10n.freshlyBakedSangak,
                     subtitle: l10n.heroSubtitle,
-                    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800',
+                    imageUrl: 'https://obealvlqkffozfigtobc.supabase.co/storage/v1/object/public/branding/top_banner_dark.jpg',
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
 
@@ -155,26 +155,30 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: SangakDimens.spacing32),
 
                   // Popular Today
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(l10n.popularToday, style: SangakTypography.h3(context)),
-                      TextButton(
-                        onPressed: () => ref.read(tabProvider.notifier).state = 1,
-                        child: Text(l10n.seeAll, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: SangakDimens.spacing16),
+                  if (popularBreadsAsync.value?.isNotEmpty ?? true)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(l10n.popularToday, style: SangakTypography.h3(context)),
+                        TextButton(
+                          onPressed: () => ref.read(tabProvider.notifier).state = 1,
+                          child: Text(l10n.seeAll, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                        ),
+                      ],
+                    ),
+                  if (popularBreadsAsync.value?.isNotEmpty ?? true)
+                    const SizedBox(height: SangakDimens.spacing16),
                 ],
               ),
             ),
           ),
 
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 345, // Optimized for 220px width cards
-              child: popularBreadsAsync.when(
+          // Bread Horizontal List
+          if (popularBreadsAsync.value?.isNotEmpty ?? true)
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 345, // Optimized for 220px width cards
+                child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
                   padding: const EdgeInsetsDirectional.symmetric(horizontal: SangakDimens.spacing24),
                   scrollDirection: Axis.horizontal,

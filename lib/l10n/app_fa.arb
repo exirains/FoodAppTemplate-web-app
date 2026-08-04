@@ -201,5 +201,11 @@
   "customerApp": "اپلیکیشن مشتری",
   "adminPanel": "پنل مدیریت",
   "deliveryPanel": "پنل پیک",
-  "changeSettingAnytime": "می‌توانید این را هر زمان در تنظیمات تغییر دهید."
+  "changeSettingAnytime": "می‌توانید این را هر زمان در تنظیمات تغییر دهید.",
+  "addressName": "نام آدرس",
+  "home": "خانه",
+  "work": "محل کار",
+  "school": "مدرسه/دانشگاه",
+  "other": "سایر",
+  "customName": "نام دلخواه"
 }

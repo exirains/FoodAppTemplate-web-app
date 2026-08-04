@@ -1143,6 +1143,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can change this anytime in Settings.'**
   String get changeSettingAnytime;
+
+  /// No description provided for @addressName.
+  ///
+  /// In en, this message translates to:
+  /// **'Address Name'**
+  String get addressName;
+
+  /// No description provided for @work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get work;
+
+  /// No description provided for @school.
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get school;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @customName.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Name'**
+  String get customName;
 }
 
 class _AppLocalizationsDelegate

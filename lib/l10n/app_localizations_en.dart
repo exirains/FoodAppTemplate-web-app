@@ -557,4 +557,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeSettingAnytime => 'You can change this anytime in Settings.';
+
+  @override
+  String get addressName => 'Address Name';
+
+  @override
+  String get work => 'Work';
+
+  @override
+  String get school => 'School';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get customName => 'Custom Name';
 }

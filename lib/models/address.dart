@@ -9,9 +9,9 @@ class Address {
   @HiveField(1)
   final String? userId;
   @HiveField(2)
-  final String title;
+  final String title; // This maps to 'label' in the database naming system
   @HiveField(3)
-  final String fullAddress;
+  final String fullAddress; // Maps to 'address'
   @HiveField(4)
   final String city;
   @HiveField(5)
@@ -19,11 +19,11 @@ class Address {
   @HiveField(6)
   final String street;
   @HiveField(7)
-  final String? building;
+  final String? building; // Maps to 'building_number'
   @HiveField(8)
   final String? floor;
   @HiveField(9)
-  final String? door;
+  final String? door; // Maps to 'door_number'
   @HiveField(10)
   final double? latitude;
   @HiveField(11)
@@ -51,17 +51,17 @@ class Address {
     return {
       if (id != null) 'id': id,
       if (userId != null) 'user_id': userId,
-      'title': title,
-      'full_address': fullAddress,
+      'label': title,
+      'address': fullAddress,
       'city': city,
       'district': district,
       'street': street,
-      if (building != null) 'building': building,
-      if (floor != null) 'floor': floor,
-      if (door != null) 'door': door,
-      if (latitude != null) 'latitude': latitude,
-      if (longitude != null) 'longitude': longitude,
-      if (deliveryNote != null) 'delivery_note': deliveryNote,
+      'building_number': building,
+      'floor': floor,
+      'door_number': door,
+      'latitude': latitude,
+      'longitude': longitude,
+      'delivery_note': deliveryNote,
     };
   }
 
@@ -69,14 +69,14 @@ class Address {
     return Address(
       id: json['id'] as String?,
       userId: json['user_id'] as String?,
-      title: json['title'] as String? ?? 'Address',
-      fullAddress: json['full_address'] as String? ?? '',
+      title: (json['label'] ?? json['title'] ?? 'Home') as String,
+      fullAddress: (json['address'] ?? json['full_address'] ?? '') as String,
       city: json['city'] as String? ?? '',
       district: json['district'] as String? ?? '',
       street: json['street'] as String? ?? '',
-      building: json['building'] as String?,
+      building: json['building_number'] as String? ?? json['building'] as String?,
       floor: json['floor'] as String?,
-      door: json['door'] as String?,
+      door: json['door_number'] as String? ?? json['door'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       deliveryNote: json['delivery_note'] as String?,

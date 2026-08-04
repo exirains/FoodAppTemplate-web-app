@@ -201,5 +201,11 @@
   "customerApp": "Müşteri Uygulaması",
   "adminPanel": "Yönetici Paneli",
   "deliveryPanel": "Teslimat Paneli",
-  "changeSettingAnytime": "Bunu dilediğiniz zaman Ayarlar'dan değiştirebilirsiniz."
+  "changeSettingAnytime": "Bunu dilediğiniz zaman Ayarlar'dan değiştirebilirsiniz.",
+  "addressName": "Adres Adı",
+  "home": "Ev",
+  "work": "İş",
+  "school": "Okul",
+  "other": "Diğer",
+  "customName": "Özel Ad"
 }

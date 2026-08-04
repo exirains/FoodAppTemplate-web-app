@@ -1,15 +1,17 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.2.1",
-  "build_number": 6,
+  "version": "1.2.2",
+  "build_number": 7,
   "force_update": false,
   "notes": [
-    "Fixed major bugs",
-    "Fixed Google authentication issue",
-    "Added new features",
-    "Improved performance and stability",
-    "Updated the app icon and splash screen"
+    "Overhauled location system with Geoapify (auto-fills city, district, and street)",
+    "Redesigned Profile experience with a premium Edit Profile sheet",
+    "Added new Favorites screen to manage your saved collection",
+    "Fixed basket doubling bug on app launch",
+    "Improved Persian RTL support for phone numbers and navigation",
+    "Enhanced UI stability and fixed framework assertion crashes",
+    "Updated branding with new SVG logo and refined launcher icons"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.2.1.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.2.2.apk"
 }

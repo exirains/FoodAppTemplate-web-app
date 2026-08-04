@@ -27,11 +27,22 @@ class AddressLocation {
   factory AddressLocation.fromJson(Map<String, dynamic> json) {
     final properties = json['properties'] as Map<String, dynamic>? ?? {};
     
+    final city = properties['city'] ?? properties['state'] ?? properties['province'] ?? '';
+    
+    // For Turkey, the Ilçe (District) is often in 'county' or 'city_district'
+    String? district = properties['county'] ?? properties['city_district'] ?? properties['suburb'] ?? properties['district'];
+    
+    // If district is the same as city, it's not specific enough.
+    // Try to get the suburb or neighborhood which often maps to the Ilçe/Mahalle in Turkey.
+    if (district == city || district == null) {
+      district = properties['neighborhood'] ?? properties['quarter'] ?? properties['suburb'] ?? properties['district'];
+    }
+
     return AddressLocation(
-      neighborhood: properties['suburb'] ?? properties['neighborhood'] ?? properties['quarter'] ?? properties['district'],
+      neighborhood: properties['neighborhood'] ?? properties['suburb'] ?? properties['quarter'],
       street: properties['street'],
-      district: properties['city_district'] ?? properties['county'] ?? properties['district'] ?? properties['suburb'] ?? properties['state_district'],
-      city: properties['city'] ?? properties['state'] ?? properties['province'],
+      district: district,
+      city: city,
       postalCode: properties['postcode'],
       country: properties['country'],
       buildingNumber: properties['housenumber'],

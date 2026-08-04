@@ -17,6 +17,7 @@ class SangakButton extends StatefulWidget {
   final IconData? icon;
   final Widget? leading;
   final double? width;
+  final EdgeInsets? padding;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final Color? borderColor;
@@ -29,6 +30,7 @@ class SangakButton extends StatefulWidget {
     this.icon,
     this.leading,
     this.width,
+    this.padding,
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
@@ -42,6 +44,7 @@ class SangakButton extends StatefulWidget {
     this.icon,
     this.leading,
     this.width,
+    this.padding,
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
@@ -55,6 +58,7 @@ class SangakButton extends StatefulWidget {
     this.icon,
     this.leading,
     this.width,
+    this.padding,
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
@@ -124,7 +128,7 @@ class _SangakButtonState extends State<SangakButton> {
             duration: SangakTokens.animFast,
             width: widget.width,
             height: 54, // Fixed height for consistency
-            padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
             decoration: BoxDecoration(
               color: _getBackgroundColor(),
               borderRadius: BorderRadius.circular(SangakDimens.radiusM),

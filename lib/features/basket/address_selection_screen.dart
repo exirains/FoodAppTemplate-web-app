@@ -14,6 +14,7 @@ import '../../models/address.dart';
 import '../../core/location/geoapify_service.dart';
 import '../../main.dart';
 import 'checkout_provider.dart';
+import 'address_provider.dart';
 
 class AddressSelectionScreen extends ConsumerStatefulWidget {
   final bool fromCheckout;
@@ -25,6 +26,7 @@ class AddressSelectionScreen extends ConsumerStatefulWidget {
 
 class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _labelController = TextEditingController();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
   final _districtController = TextEditingController();
@@ -35,9 +37,19 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   final _noteController = TextEditingController();
 
   bool _isLoadingLocation = false;
+  String _selectedLabelKey = 'home'; // 'home', 'work', 'school', 'other'
+  double? _latitude;
+  double? _longitude;
+
+  @override
+  void initState() {
+    super.initState();
+    _labelController.text = 'Home'; // Default visible label
+  }
 
   @override
   void dispose() {
+    _labelController.dispose();
     _addressController.dispose();
     _cityController.dispose();
     _districtController.dispose();
@@ -50,6 +62,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   }
 
   void _clearForm() {
+    _labelController.text = 'Home';
+    _selectedLabelKey = 'home';
     _addressController.clear();
     _cityController.clear();
     _districtController.clear();
@@ -58,6 +72,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
     _floorController.clear();
     _doorController.clear();
     _noteController.clear();
+    _latitude = null;
+    _longitude = null;
     setState(() {});
   }
 
@@ -78,6 +94,8 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         if (locationData != null) {
           if (!mounted) return;
           setState(() {
+            _latitude = position.latitude;
+            _longitude = position.longitude;
             _cityController.text = locationData.city ?? '';
             _districtController.text = locationData.district ?? '';
             _streetController.text = locationData.street ?? '';
@@ -95,11 +113,11 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
     }
   }
 
-  void _onSave() {
+  void _onSave() async {
     if (!_formKey.currentState!.validate()) return;
 
     final address = Address(
-      title: AppLocalizations.of(context).deliveryAddress,
+      title: _labelController.text.trim(),
       fullAddress: _addressController.text,
       city: _cityController.text,
       district: _districtController.text,
@@ -107,25 +125,33 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       building: _buildingController.text,
       floor: _floorController.text,
       door: _doorController.text,
-      deliveryNote: '', // Do not save delivery note in the address object itself for history
+      latitude: _latitude,
+      longitude: _longitude,
+      deliveryNote: '', 
     );
 
+    // 1. Save to Local Cache (Fast access/History)
     final storage = ref.read(storageServiceProvider);
     final saved = storage.addresses;
-    final addresses = saved == null
+    final List<Map<String, dynamic>> addresses = saved == null
         ? <Map<String, dynamic>>[]
-        : (jsonDecode(saved) as List).cast<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+        : (jsonDecode(saved) as List).map((e) => Map<String, dynamic>.from(e)).toList();
     
-    // Remove if exists to move to top
-    addresses.removeWhere((a) => a['full_address'] == address.fullAddress);
+    // Move to top/Update
+    addresses.removeWhere((a) => a['address'] == address.fullAddress && a['label'] == address.title);
     addresses.add(address.toJson());
     
-    // Keep only last 5 addresses
-    if (addresses.length > 5) addresses.removeAt(0);
+    if (addresses.length > 10) addresses.removeAt(0);
     storage.saveAddresses(jsonEncode(addresses));
 
+    // 2. Save to Supabase (Cloud Sync)
+    // We await this to ensure we have the ID for the next screen if needed
+    // and to catch errors early.
+    await ref.read(addressListProvider.notifier).saveAddress(address);
+
+    if (!mounted) return;
+
     if (widget.fromCheckout) {
-      // If in checkout flow, we also care about the note for the current order
       final currentAddressWithNote = address.copyWith(deliveryNote: _noteController.text);
       ref.read(checkoutProvider.notifier).selectAddress(currentAddressWithNote);
       context.push('/payment-selection?from=checkout');
@@ -137,6 +163,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
 
   void _selectSavedAddress(Address address) {
     setState(() {
+      _labelController.text = address.title;
       _addressController.text = address.fullAddress;
       _cityController.text = address.city;
       _districtController.text = address.district;
@@ -144,8 +171,22 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       _buildingController.text = address.building ?? '';
       _floorController.text = address.floor ?? '';
       _doorController.text = address.door ?? '';
-      // We don't fill note from history as per user request to not save it
       _noteController.clear();
+      
+      _latitude = address.latitude;
+      _longitude = address.longitude;
+      
+      // Attempt to map back to a label key for UI selection
+      final titleLower = address.title.toLowerCase();
+      if (titleLower.contains('home') || titleLower.contains('ev')) {
+        _selectedLabelKey = 'home';
+      } else if (titleLower.contains('work') || titleLower.contains('iş')) {
+        _selectedLabelKey = 'work';
+      } else if (titleLower.contains('school') || titleLower.contains('okul')) {
+        _selectedLabelKey = 'school';
+      } else {
+        _selectedLabelKey = 'other';
+      }
     });
   }
 
@@ -153,14 +194,29 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final storage = ref.watch(storageServiceProvider);
+    
+    // 1. Get Local Addresses (History)
     final savedJson = storage.addresses;
-    final List<Address> savedAddresses = savedJson == null
+    final List<Address> localAddresses = savedJson == null
         ? []
         : (jsonDecode(savedJson) as List)
             .map((e) => Address.fromJson(Map<String, dynamic>.from(e)))
-            .toList()
-            .reversed
             .toList();
+
+    // 2. Get Cloud Addresses (Synced)
+    final cloudAddresses = ref.watch(addressListProvider).value ?? [];
+    
+    // 3. Merge: Prioritize Cloud, fill with Local History
+    // We deduplicate by fullAddress to keep the list clean
+    final Map<String, Address> mergedMap = {};
+    for (final addr in localAddresses) {
+      mergedMap[addr.fullAddress] = addr;
+    }
+    for (final addr in cloudAddresses) {
+      mergedMap[addr.fullAddress] = addr;
+    }
+
+    final savedAddresses = mergedMap.values.toList().reversed.toList();
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -182,7 +238,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 Text(l10n.lastUsedAddresses, style: SangakTypography.h3(context)),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 100,
+                  height: 110,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: savedAddresses.length,
@@ -193,26 +249,35 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                         onTap: () => _selectSavedAddress(addr),
                         child: Container(
                           width: 220,
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: SangakColors.surface,
-                            borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
                             border: Border.all(color: SangakColors.border),
+                            boxShadow: SangakDimens.shadowLow,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                addr.street.isNotEmpty ? addr.street : addr.city,
-                                style: SangakTypography.title(context).copyWith(fontSize: 14),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+                                  Icon(_getIconForLabel(addr.title), size: 16, color: SangakColors.primary),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      addr.title,
+                                      style: SangakTypography.title(context).copyWith(fontSize: 15),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 6),
                               Text(
                                 addr.fullAddress,
-                                style: SangakTypography.bodySmall(context).copyWith(fontSize: 11),
+                                style: SangakTypography.bodySmall(context).copyWith(fontSize: 12, color: SangakColors.inkLight),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -225,6 +290,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 ),
                 const SizedBox(height: 32),
               ],
+              
               SangakButton.outlined(
                 label: l10n.useCurrentLocation,
                 width: double.infinity,
@@ -232,11 +298,14 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 isLoading: _isLoadingLocation,
                 onPressed: _getCurrentLocation,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
+              
+              // Label selection title
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(l10n.address, style: SangakTypography.h3(context)),
+                  Expanded(
+                    child: Text(l10n.addressName, style: SangakTypography.h3(context)),
+                  ),
                   TextButton.icon(
                     onPressed: _clearForm,
                     icon: const Icon(Icons.refresh_rounded, size: 16),
@@ -244,6 +313,65 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              
+              // Label selection chips
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  _LabelChip(
+                    icon: Icons.home_outlined,
+                    label: l10n.home,
+                    isSelected: _selectedLabelKey == 'home',
+                    onTap: () => setState(() {
+                      _selectedLabelKey = 'home';
+                      _labelController.text = l10n.home;
+                    }),
+                  ),
+                  _LabelChip(
+                    icon: Icons.work_outline,
+                    label: l10n.work,
+                    isSelected: _selectedLabelKey == 'work',
+                    onTap: () => setState(() {
+                      _selectedLabelKey = 'work';
+                      _labelController.text = l10n.work;
+                    }),
+                  ),
+                  _LabelChip(
+                    icon: Icons.school_outlined,
+                    label: l10n.school,
+                    isSelected: _selectedLabelKey == 'school',
+                    onTap: () => setState(() {
+                      _selectedLabelKey = 'school';
+                      _labelController.text = l10n.school;
+                    }),
+                  ),
+                  _LabelChip(
+                    icon: Icons.location_on_outlined,
+                    label: l10n.other,
+                    isSelected: _selectedLabelKey == 'other',
+                    onTap: () => setState(() {
+                      _selectedLabelKey = 'other';
+                      if (_labelController.text == l10n.home || 
+                          _labelController.text == l10n.work || 
+                          _labelController.text == l10n.school) {
+                        _labelController.clear();
+                      }
+                    }),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SangakTextField(
+                label: l10n.customName,
+                hintText: l10n.customName,
+                controller: _labelController,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
+              ),
+              
+              const SizedBox(height: 32),
+              Text(l10n.address, style: SangakTypography.h3(context)),
               const SizedBox(height: 16),
               SangakTextField(
                 label: l10n.address,
@@ -340,6 +468,61 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
           label: l10n.continueButton,
           width: double.infinity,
           onPressed: _onSave,
+        ),
+      ),
+    );
+  }
+
+  IconData _getIconForLabel(String label) {
+    final l = label.toLowerCase();
+    if (l.contains('home') || l.contains('ev')) return Icons.home_rounded;
+    if (l.contains('work') || l.contains('iş')) return Icons.work_rounded;
+    if (l.contains('school') || l.contains('okul')) return Icons.school_rounded;
+    return Icons.location_on_rounded;
+  }
+}
+
+class _LabelChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LabelChip({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? SangakColors.primary : SangakColors.surface,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+          border: Border.all(
+            color: isSelected ? SangakColors.primary : SangakColors.border,
+          ),
+          boxShadow: isSelected ? SangakDimens.shadowLow : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: isSelected ? Colors.white : SangakColors.inkLight),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: SangakTypography.bodySmall(context).copyWith(
+                color: isSelected ? Colors.white : SangakColors.inkLight,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
         ),
       ),
     );
