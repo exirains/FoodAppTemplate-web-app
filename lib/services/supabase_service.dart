@@ -6,21 +6,25 @@ class SupabaseService {
     try {
       await dotenv.load();
     } catch (e) {
-      // ignore: avoid_print
-      print('SupabaseService: .env load failed, checking fallback: $e');
+      debugPrint('SupabaseService: .env load failed, using hardcoded fallback for Web.');
     }
     
-    final supabaseUrl = dotenv.env['SUPABASE_URL'];
-    final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'];
+    // Prioritize .env, then fallback to your specific project values
+    final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? 'https://obealvlqkffozfigtobc.supabase.co';
+    final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'] ?? 'sb_publishable_TNlYa89a1LyOQ4Z3janYFQ_1lc5gkSk';
 
-    if (supabaseUrl == null || supabaseKey == null) {
-      throw Exception('Missing Supabase configuration. Check your .env file.');
+    if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
+      throw Exception('Missing Supabase configuration.');
     }
 
+    // CRITICAL: Ensure we don't pass the key name as part of the URL
+    final cleanUrl = supabaseUrl.contains('=') ? supabaseUrl.split('=').last.trim() : supabaseUrl;
+    final cleanKey = supabaseKey.contains('=') ? supabaseKey.split('=').last.trim() : supabaseKey;
+
     await Supabase.initialize(
-      url: supabaseUrl,
-      publishableKey: supabaseKey,
-      authOptions: FlutterAuthClientOptions(
+      url: cleanUrl,
+      publishableKey: cleanKey,
+      authOptions: const FlutterAuthClientOptions(
         authFlowType: AuthFlowType.pkce,
       ),
     );

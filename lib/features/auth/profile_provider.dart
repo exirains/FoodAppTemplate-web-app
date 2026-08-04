@@ -13,12 +13,16 @@ final userProfileProvider = StreamProvider<UserProfile?>((ref) {
     return Stream.value(null);
   }
 
-  return SupabaseService.client
-      .from('profiles')
-      .stream(primaryKey: ['id'])
-      .eq('id', user.id)
-      .map((data) {
-        if (data.isEmpty) return null;
-        return UserProfile.fromJson(data.first);
-      });
+  try {
+    return SupabaseService.client
+        .from('profiles')
+        .stream(primaryKey: ['id'])
+        .eq('id', user.id)
+        .map((data) {
+          if (data.isEmpty) return null;
+          return UserProfile.fromJson(data.first);
+        });
+  } catch (e) {
+    return Stream.value(null);
+  }
 });

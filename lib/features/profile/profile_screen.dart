@@ -247,7 +247,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (user == null) return const SizedBox.shrink();
     
     // Role check for switcher - prioritizes DB role from profile provider
-    final role = profile?.role ?? user.userMetadata?['role'] as String? ?? 'customer';
+    final role = profile?.role ?? 'customer';
     final canSwitchRole = role != 'customer';
 
     return Scaffold(
