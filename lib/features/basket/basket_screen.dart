@@ -13,8 +13,10 @@ import '../../shared/widgets/quantity_selector.dart';
 import '../home/tab_provider.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
+import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/action_guard.dart';
 import 'basket_provider.dart';
-import '../auth/auth_provider.dart';
+import '../auth/profile_provider.dart';
 
 class BasketScreen extends ConsumerWidget {
   const BasketScreen({super.key});
@@ -26,6 +28,7 @@ class BasketScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
+    final profileAsync = ref.watch(userProfileProvider);
 
     if (basket.isEmpty) {
       return Scaffold(
@@ -47,7 +50,18 @@ class BasketScreen extends ConsumerWidget {
         title: Text(l10n.basket),
         actions: [
           IconButton(
-            onPressed: () => ref.read(basketProvider.notifier).clear(),
+            onPressed: () {
+              if (!ActionGuard.check(context, ref)) return;
+              SangakConfirmDialog.show(
+                context,
+                title: l10n.clearBasket,
+                message: l10n.confirmClearBasket,
+                confirmLabel: l10n.clear,
+                cancelLabel: l10n.cancel,
+                onConfirm: () => ref.read(basketProvider.notifier).clear(),
+                isDestructive: true,
+              );
+            },
             icon: const Icon(Icons.delete_outline, color: SangakColors.error),
           ),
         ],
@@ -113,8 +127,12 @@ class BasketScreen extends ConsumerWidget {
                       ),
                       QuantitySelector(
                         quantity: item.quantity,
-                        onIncrement: () => ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1),
+                        onIncrement: () {
+                          if (!ActionGuard.check(context, ref)) return;
+                          ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1);
+                        },
                         onDecrement: () {
+                          if (!ActionGuard.check(context, ref)) return;
                           if (item.quantity == 1) {
                             SangakConfirmDialog.show(
                               context,
@@ -130,6 +148,7 @@ class BasketScreen extends ConsumerWidget {
                           }
                         },
                         onDelete: () {
+                          if (!ActionGuard.check(context, ref)) return;
                           SangakConfirmDialog.show(
                             context,
                             title: l10n.remove,
@@ -147,22 +166,21 @@ class BasketScreen extends ConsumerWidget {
               },
             ),
           ),
-          _buildSummary(context, ref, total, l10n),
+          _buildSummary(context, ref, total, l10n, profileAsync.value),
         ],
       ),
     );
   }
 
-  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n) {
+  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n, dynamic profile) {
     const deliveryFee = 15.0;
     final grandTotal = total + deliveryFee;
 
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
-    final user = ref.watch(authProvider).asData?.value;
-    final hasPhone = user?.userMetadata?['phone'] != null && 
-                    (user?.userMetadata?['phone'] as String).isNotEmpty && 
-                    user?.userMetadata?['phone'] != '+90';
+    
+    final phone = profile?.phoneNumber ?? '';
+    final hasPhone = phone.isNotEmpty && phone != '+90';
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -221,7 +239,16 @@ class BasketScreen extends ConsumerWidget {
           SangakButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
-            onPressed: hasPhone ? () => context.push('/address-selection?from=checkout') : null,
+            onPressed: () {
+              if (!ActionGuard.check(context, ref)) return;
+              
+              if (hasPhone) {
+                context.push('/address-selection?from=checkout');
+              } else {
+                SangakToast.show(context, l10n.addPhoneToOrder);
+                ref.read(tabProvider.notifier).state = 3;
+              }
+            },
           ),
         ],
       ),

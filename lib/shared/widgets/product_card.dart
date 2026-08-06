@@ -12,6 +12,7 @@ import '../../core/localization/locale_provider.dart';
 import '../../features/basket/basket_provider.dart';
 import '../../features/home/home_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
+import '../utils/action_guard.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
 import 'sangak_dialogs.dart';
@@ -93,7 +94,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          width: widget.width, // Use configurable width
+          width: widget.width,
           decoration: BoxDecoration(
             color: SangakColors.surface,
             borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
@@ -102,7 +103,6 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Photography-first section
               Stack(
                 children: [
                   ClipRRect(
@@ -112,7 +112,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       child: CachedNetworkImage(
                         imageUrl: widget.imageUrl,
                         fit: BoxFit.cover,
-                        memCacheHeight: 400, // Image performance improvement
+                        memCacheHeight: 400,
                         placeholder: (context, url) => Container(
                           color: SangakColors.border,
                           child: const Center(
@@ -130,19 +130,20 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       ),
                     ),
                   ),
-                  // Tag Badge (Top Left)
                   if (widget.bread?.tag != null)
                     Positioned(
                       top: SangakDimens.spacing12,
                       left: SangakDimens.spacing12,
                       child: ProductTag.fromText(widget.bread!.tag!, context: context),
                     ),
-                  // Favorite Button
                   Positioned(
                     top: SangakDimens.spacing12,
                     right: SangakDimens.spacing12,
                     child: GestureDetector(
-                      onTap: widget.onFavoriteToggle,
+                      onTap: () {
+                        if (!ActionGuard.check(context, ref)) return;
+                        widget.onFavoriteToggle();
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
@@ -161,7 +162,6 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       ),
                     ),
                   ),
-                  // Freshness Badge
                   if (widget.freshness != null)
                     Positioned(
                       bottom: SangakDimens.spacing12,
@@ -179,7 +179,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 20, // Increased from 18 to give more room
+                      height: 20,
                       child: Text(
                         displayName,
                         style: SangakTypography.title(context).copyWith(fontSize: 14),
@@ -187,9 +187,9 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 4), // Increased from 2 to reduce "smushed" look
+                    const SizedBox(height: 4),
                     SizedBox(
-                      height: 30, // Increased from 28 to give more room
+                      height: 30,
                       child: Text(
                         displayDescription,
                         style: SangakTypography.bodySmall(context).copyWith(
@@ -201,7 +201,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 10), // Increased from 8
+                    const SizedBox(height: 10),
                     SizedBox(
                       height: 36,
                       child: Row(
@@ -211,9 +211,8 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                             formattedPrice,
                             style: SangakTypography.price(context).copyWith(fontSize: 17),
                           ),
-                          // Add to Basket / Quantity Morph
                           SizedBox(
-                            height: 36, // Strict height to avoid jump
+                            height: 36,
                             child: AnimatedSwitcher(
                               duration: SangakTokens.animMedium,
                               layoutBuilder: (currentChild, previousChildren) {
@@ -235,9 +234,16 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                   ? QuantitySelector(
                                       key: const ValueKey('quantity'),
                                       quantity: quantity,
-                                      onIncrement: () => ref.read(basketProvider.notifier).addItem(widget.bread!),
-                                      onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(widget.bread!.id, -1),
+                                      onIncrement: () {
+                                        if (!ActionGuard.check(context, ref)) return;
+                                        ref.read(basketProvider.notifier).addItem(widget.bread!);
+                                      },
+                                      onDecrement: () {
+                                        if (!ActionGuard.check(context, ref)) return;
+                                        ref.read(basketProvider.notifier).updateQuantity(widget.bread!.id, -1);
+                                      },
                                       onDelete: () {
+                                        if (!ActionGuard.check(context, ref)) return;
                                         SangakConfirmDialog.show(
                                           context,
                                           title: l10n.remove,
@@ -251,7 +257,10 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                     )
                                   : ElevatedButton(
                                       key: const ValueKey('add'),
-                                      onPressed: widget.onAddToBasket,
+                                      onPressed: () {
+                                        if (!ActionGuard.check(context, ref)) return;
+                                        widget.onAddToBasket();
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: SangakColors.primary,
                                         foregroundColor: Colors.white,

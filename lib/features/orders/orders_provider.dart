@@ -3,11 +3,11 @@ import '../../models/order.dart';
 import '../auth/auth_provider.dart';
 import '../basket/checkout_provider.dart';
 
-final myOrdersProvider = FutureProvider<List<OrderModel>>((ref) async {
+final myOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
   final user = ref.watch(authProvider).asData?.value;
-  if (user == null) return [];
+  if (user == null) return Stream.value([]);
   
-  return ref.read(orderRepositoryProvider).getMyOrders(user.id);
+  return ref.read(orderRepositoryProvider).watchMyOrders(user.id);
 });
 
 final orderStatusProvider = StreamProvider.family<OrderModel?, String>((ref, orderId) {

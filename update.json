@@ -1,17 +1,17 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.2.2",
-  "build_number": 7,
+  "version": "1.3.0",
+  "build_number": 8,
   "force_update": false,
   "notes": [
-    "Overhauled location system with Geoapify (auto-fills city, district, and street)",
-    "Redesigned Profile experience with a premium Edit Profile sheet",
-    "Added new Favorites screen to manage your saved collection",
-    "Fixed basket doubling bug on app launch",
-    "Improved Persian RTL support for phone numbers and navigation",
-    "Enhanced UI stability and fixed framework assertion crashes",
-    "Updated branding with new SVG logo and refined launcher icons"
+    "Management Overhaul: Completely reworked Product Management with direct gallery image uploads",
+    "Security & Moderation: Added ability for Admins to enable/disable user accounts with 'View Only' restrictions",
+    "Pro Delivery Workflow: Enhanced Delivery UI with status banners, total-to-collect indicators, and one-tap navigation",
+    "Admin Shortcuts: Added quick-jump navigation from dashboard stats to specific order categories",
+    "Bug Fixes: Resolved critical 'Mark as Delivered' database errors and role switching persistence issues",
+    "Language Polish: Full English, Turkish, and Persian localization for all management features",
+    "UI Resilience: Fixed RenderFlex overflows and improved button scaling for small devices"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.2.2.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.3.0.apk"
 }

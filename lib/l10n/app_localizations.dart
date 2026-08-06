@@ -1132,6 +1132,12 @@ abstract class AppLocalizations {
   /// **'Admin Panel'**
   String get adminPanel;
 
+  /// No description provided for @kitchenPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen Panel'**
+  String get kitchenPanel;
+
   /// No description provided for @deliveryPanel.
   ///
   /// In en, this message translates to:
@@ -1173,6 +1179,372 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom Name'**
   String get customName;
+
+  /// No description provided for @outForDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for Delivery'**
+  String get outForDelivery;
+
+  /// No description provided for @confirmPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Pickup'**
+  String get confirmPickup;
+
+  /// No description provided for @openDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Details'**
+  String get openDetails;
+
+  /// No description provided for @markDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Delivered'**
+  String get markDelivered;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// No description provided for @editPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Price'**
+  String get editPrice;
+
+  /// No description provided for @userManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'User Management'**
+  String get userManagement;
+
+  /// No description provided for @productManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Management'**
+  String get productManagement;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @todaysRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Revenue'**
+  String get todaysRevenue;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @manageOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Orders'**
+  String get manageOrders;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing'**
+  String get statusPreparing;
+
+  /// No description provided for @statusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get statusReady;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @statusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get statusConfirmed;
+
+  /// No description provided for @statusShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping'**
+  String get statusShipping;
+
+  /// No description provided for @statusDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get statusDone;
+
+  /// No description provided for @orderNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Number'**
+  String get orderNumberLabel;
+
+  /// No description provided for @customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customer;
+
+  /// No description provided for @deliveryAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Address'**
+  String get deliveryAddressLabel;
+
+  /// No description provided for @orderItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Items'**
+  String get orderItemsLabel;
+
+  /// No description provided for @placedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed at'**
+  String get placedAtLabel;
+
+  /// No description provided for @deliveryDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Details'**
+  String get deliveryDetails;
+
+  /// No description provided for @noOrdersInStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders in this status'**
+  String get noOrdersInStatus;
+
+  /// No description provided for @pickupOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Up Order'**
+  String get pickupOrder;
+
+  /// No description provided for @confirmPickupMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to pick up this order and start delivery?'**
+  String get confirmPickupMessage;
+
+  /// No description provided for @acceptAndConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept & Confirm'**
+  String get acceptAndConfirm;
+
+  /// No description provided for @startPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Preparing'**
+  String get startPreparing;
+
+  /// No description provided for @markAsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Ready'**
+  String get markAsReady;
+
+  /// No description provided for @allCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'All caught up!'**
+  String get allCaughtUp;
+
+  /// No description provided for @noOrdersToPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders to prepare right now.'**
+  String get noOrdersToPrepare;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get editProduct;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get addProduct;
+
+  /// No description provided for @productActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Activated'**
+  String get productActivated;
+
+  /// No description provided for @productDeactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Deactivated'**
+  String get productDeactivated;
+
+  /// No description provided for @productName.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Name'**
+  String get productName;
+
+  /// No description provided for @newPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'New Price'**
+  String get newPrice;
+
+  /// No description provided for @myTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'My Tasks'**
+  String get myTasks;
+
+  /// No description provided for @assignToDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to Delivery'**
+  String get assignToDelivery;
+
+  /// No description provided for @originalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Original Name (Default)'**
+  String get originalName;
+
+  /// No description provided for @originalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Original Description'**
+  String get originalDescription;
+
+  /// No description provided for @imageUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Image URL'**
+  String get imageUrl;
+
+  /// No description provided for @turkishTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkish Translations'**
+  String get turkishTranslations;
+
+  /// No description provided for @persianTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Persian Translations'**
+  String get persianTranslations;
+
+  /// No description provided for @nameTR.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (TR)'**
+  String get nameTR;
+
+  /// No description provided for @descriptionTR.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (TR)'**
+  String get descriptionTR;
+
+  /// No description provided for @nameFA.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (FA)'**
+  String get nameFA;
+
+  /// No description provided for @descriptionFA.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (FA)'**
+  String get descriptionFA;
+
+  /// No description provided for @openMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Map'**
+  String get openMap;
+
+  /// No description provided for @noOrdersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get noOrdersYet;
+
+  /// No description provided for @changeRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Role'**
+  String get changeRole;
+
+  /// No description provided for @roleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Role updated successfully'**
+  String get roleUpdated;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @deleteProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Product'**
+  String get deleteProduct;
+
+  /// No description provided for @confirmDeleteProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this product?'**
+  String get confirmDeleteProduct;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @clearBasket.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Basket'**
+  String get clearBasket;
+
+  /// No description provided for @confirmClearBasket.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear your entire basket?'**
+  String get confirmClearBasket;
 }
 
 class _AppLocalizationsDelegate

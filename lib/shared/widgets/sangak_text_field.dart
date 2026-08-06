@@ -4,14 +4,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 
-/// Sangak Design System TextField (v2.0.0)
-///
-/// Enhanced version supporting:
-/// - Label, Hint, Error, Leading/Trailing Icons
-/// - Password visibility toggle
-/// - Focus node management
-/// - Text input actions
-/// - Custom trailing icon handlers
+/// Sangak Design System TextField (v2.1.0)
 class SangakTextField extends StatefulWidget {
   final String label;
   final String? hintText;
@@ -29,6 +22,7 @@ class SangakTextField extends StatefulWidget {
   final Function(String)? onChanged;
   final VoidCallback? onEditingComplete;
   final bool enabled;
+  final int maxLines;
 
   const SangakTextField({
     super.key,
@@ -48,6 +42,7 @@ class SangakTextField extends StatefulWidget {
     this.onChanged,
     this.onEditingComplete,
     this.enabled = true,
+    this.maxLines = 1,
   });
 
   @override
@@ -119,6 +114,7 @@ class _SangakTextFieldState extends State<SangakTextField> {
           validator: widget.validator,
           onChanged: widget.onChanged,
           onEditingComplete: widget.onEditingComplete,
+          maxLines: widget.maxLines,
           style: SangakTypography.bodyLarge(context),
           textAlign: (widget.keyboardType == TextInputType.phone || 
                       widget.keyboardType == TextInputType.emailAddress ||
@@ -176,7 +172,6 @@ class _SangakTextFieldState extends State<SangakTextField> {
     );
   }
 
-  /// Build the suffix icon (password toggle or custom icon)
   Widget? _buildSuffixIcon() {
     if (widget.isPassword) {
       return IconButton(

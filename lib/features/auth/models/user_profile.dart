@@ -8,6 +8,7 @@ class UserProfile {
   final String? phoneNumber;
   final String role;
   final bool phoneVerified;
+  final bool isActive;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -18,6 +19,7 @@ class UserProfile {
     this.phoneNumber,
     this.role = 'customer',
     this.phoneVerified = false,
+    this.isActive = true,
     required this.createdAt,
     this.updatedAt,
   });
@@ -41,6 +43,7 @@ class UserProfile {
     String? phoneNumber,
     String? role,
     bool? phoneVerified,
+    bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -51,6 +54,7 @@ class UserProfile {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       role: role ?? this.role,
       phoneVerified: phoneVerified ?? this.phoneVerified,
+      isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -65,6 +69,7 @@ class UserProfile {
       'phone_number': phoneNumber,
       'role': role,
       'phone_verified': phoneVerified,
+      'is_active': isActive,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -79,6 +84,7 @@ class UserProfile {
       phoneNumber: json['phone_number'] as String?,
       role: json['role'] as String? ?? 'customer',
       phoneVerified: (json['phone_verified'] as bool?) ?? false,
+      isActive: (json['is_active'] as bool?) ?? true,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)

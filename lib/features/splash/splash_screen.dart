@@ -9,6 +9,7 @@ import '../../main.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../core/update/update_dialog.dart';
+import '../auth/profile_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -91,8 +92,31 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       return;
     }
 
-    // Guest flow: Always go home
-    if (mounted) context.go('/home');
+    // Role-based initial redirect for logged-in users
+    try {
+      final profile = await ref.read(userProfileProvider.future).timeout(const Duration(seconds: 3));
+      if (mounted) {
+        if (profile != null) {
+          switch (profile.role) {
+            case 'admin':
+              context.go('/admin');
+              break;
+            case 'staff':
+              context.go('/staff');
+              break;
+            case 'delivery':
+              context.go('/delivery');
+              break;
+            default:
+              context.go('/home');
+          }
+        } else {
+          context.go('/home');
+        }
+      }
+    } catch (_) {
+      if (mounted) context.go('/home');
+    }
   }
 
   @override

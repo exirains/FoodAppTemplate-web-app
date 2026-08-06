@@ -553,6 +553,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminPanel => 'Admin Panel';
 
   @override
+  String get kitchenPanel => 'Kitchen Panel';
+
+  @override
   String get deliveryPanel => 'Delivery Panel';
 
   @override
@@ -572,4 +575,190 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customName => 'Custom Name';
+
+  @override
+  String get outForDelivery => 'Out for Delivery';
+
+  @override
+  String get confirmPickup => 'Confirm Pickup';
+
+  @override
+  String get openDetails => 'Open Details';
+
+  @override
+  String get markDelivered => 'Mark as Delivered';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get editPrice => 'Edit Price';
+
+  @override
+  String get userManagement => 'User Management';
+
+  @override
+  String get productManagement => 'Product Management';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get todaysRevenue => 'Today\'s Revenue';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get manageOrders => 'Manage Orders';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusPreparing => 'Preparing';
+
+  @override
+  String get statusReady => 'Ready';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get statusConfirmed => 'Confirmed';
+
+  @override
+  String get statusShipping => 'Shipping';
+
+  @override
+  String get statusDone => 'Done';
+
+  @override
+  String get orderNumberLabel => 'Order Number';
+
+  @override
+  String get customer => 'Customer';
+
+  @override
+  String get deliveryAddressLabel => 'Delivery Address';
+
+  @override
+  String get orderItemsLabel => 'Order Items';
+
+  @override
+  String get placedAtLabel => 'Placed at';
+
+  @override
+  String get deliveryDetails => 'Delivery Details';
+
+  @override
+  String get noOrdersInStatus => 'No orders in this status';
+
+  @override
+  String get pickupOrder => 'Pick Up Order';
+
+  @override
+  String get confirmPickupMessage =>
+      'Are you sure you want to pick up this order and start delivery?';
+
+  @override
+  String get acceptAndConfirm => 'Accept & Confirm';
+
+  @override
+  String get startPreparing => 'Start Preparing';
+
+  @override
+  String get markAsReady => 'Mark as Ready';
+
+  @override
+  String get allCaughtUp => 'All caught up!';
+
+  @override
+  String get noOrdersToPrepare => 'No orders to prepare right now.';
+
+  @override
+  String get editProduct => 'Edit Product';
+
+  @override
+  String get addProduct => 'Add Product';
+
+  @override
+  String get productActivated => 'Product Activated';
+
+  @override
+  String get productDeactivated => 'Product Deactivated';
+
+  @override
+  String get productName => 'Product Name';
+
+  @override
+  String get newPrice => 'New Price';
+
+  @override
+  String get myTasks => 'My Tasks';
+
+  @override
+  String get assignToDelivery => 'Assign to Delivery';
+
+  @override
+  String get originalName => 'Original Name (Default)';
+
+  @override
+  String get originalDescription => 'Original Description';
+
+  @override
+  String get imageUrl => 'Image URL';
+
+  @override
+  String get turkishTranslations => 'Turkish Translations';
+
+  @override
+  String get persianTranslations => 'Persian Translations';
+
+  @override
+  String get nameTR => 'Name (TR)';
+
+  @override
+  String get descriptionTR => 'Description (TR)';
+
+  @override
+  String get nameFA => 'Name (FA)';
+
+  @override
+  String get descriptionFA => 'Description (FA)';
+
+  @override
+  String get openMap => 'Open Map';
+
+  @override
+  String get noOrdersYet => 'No orders yet';
+
+  @override
+  String get changeRole => 'Change Role';
+
+  @override
+  String get roleUpdated => 'Role updated successfully';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get deleteProduct => 'Delete Product';
+
+  @override
+  String get confirmDeleteProduct =>
+      'Are you sure you want to delete this product?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get clearBasket => 'Clear Basket';
+
+  @override
+  String get confirmClearBasket =>
+      'Are you sure you want to clear your entire basket?';
 }

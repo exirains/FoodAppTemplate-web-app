@@ -8,6 +8,7 @@ import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/auth_gate.dart';
+import '../../shared/utils/action_guard.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../models/basket_item.dart';
 import '../../models/address.dart';
@@ -94,6 +95,7 @@ class CheckoutScreen extends ConsumerWidget {
   }
 
   Widget _buildOrderSummary(List<BasketItem> basket, String lang, BuildContext context) {
+    const deliveryFee = 15.0;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -120,6 +122,20 @@ class CheckoutScreen extends ConsumerWidget {
                 ],
               ),
             ),
+          const Divider(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Delivery Fee',
+                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+              ),
+              Text(
+                SangakNumberFormatter.formatCurrency(deliveryFee, lang),
+                style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -168,46 +184,54 @@ class CheckoutScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.grandTotal, style: SangakTypography.h3(context)),
-              Text(
-                SangakNumberFormatter.formatCurrency(grandTotal, lang),
-                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.total, style: SangakTypography.caption(context)),
+                  Text(
+                    SangakNumberFormatter.formatCurrency(grandTotal, lang),
+                    style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: SangakButton.primary(
+                  label: l10n.confirmOrder,
+                  isLoading: checkoutState.isSubmitting,
+                  onPressed: () {
+                    if (!ActionGuard.check(context, ref)) return;
+                    
+                    AuthGate.run(
+                      context,
+                      ref,
+                      action: () async {
+                        try {
+                          final prepMinutes = basket.fold<int>(
+                            0,
+                            (sum, item) => sum + (item.bread.prepTime * item.quantity),
+                          );
+                          ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
+                          
+                          await ref.read(checkoutProvider.notifier).placeOrder();
+                          
+                          if (context.mounted) {
+                            SangakToast.show(context, l10n.orderPlacedSuccessfully);
+                            context.go('/home'); // Send to home page instead of empty basket
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            SangakToast.show(context, e.toString());
+                          }
+                        }
+                      },
+                      title: l10n.confirmOrder,
+                      message: l10n.loginToPlaceOrder,
+                    );
+                  },
+                ),
               ),
             ],
-          ),
-          const SizedBox(height: SangakDimens.spacing24),
-          SangakButton.primary(
-            label: l10n.confirmOrder,
-            width: double.infinity,
-            isLoading: checkoutState.isSubmitting,
-            onPressed: () {
-              AuthGate.run(
-                context,
-                ref,
-                action: () async {
-                  try {
-                    final prepMinutes = basket.fold<int>(
-                      0,
-                      (sum, item) => sum + (item.bread.prepTime * item.quantity),
-                    );
-                    ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
-                    
-                    await ref.read(checkoutProvider.notifier).placeOrder();
-                    
-                    if (context.mounted) {
-                      SangakToast.show(context, l10n.orderPlacedSuccessfully);
-                      context.go('/order-confirmation');
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      SangakToast.show(context, e.toString());
-                    }
-                  }
-                },
-                title: l10n.confirmOrder,
-                message: l10n.loginToPlaceOrder,
-              );
-            },
           ),
         ],
       ),

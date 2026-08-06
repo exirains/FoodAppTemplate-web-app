@@ -90,6 +90,7 @@ class SangakApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final router = ref.watch(routerProvider);
 
     return Container(
       color: const Color(0xFFFDFCF8), // Natural Paper background to avoid black flash
@@ -97,7 +98,7 @@ class SangakApp extends ConsumerWidget {
         title: 'Sangak',
         debugShowCheckedModeBanner: false,
         theme: SangakTheme.light(locale),
-        routerConfig: appRouter,
+        routerConfig: router,
         locale: locale,
         localizationsDelegates: [
           AppLocalizations.delegate,

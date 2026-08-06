@@ -7,6 +7,7 @@ import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/auth_gate.dart';
+import '../../shared/utils/action_guard.dart';
 import '../home/home_provider.dart';
 import '../basket/basket_provider.dart';
 import '../../core/localization/locale_provider.dart';
@@ -163,6 +164,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                       freshness: bread.freshness,
                       isFavorite: bread.isFavorite,
                       onFavoriteToggle: () {
+                        if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
                           context,
                           ref,
@@ -172,6 +174,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                         );
                       },
                       onAddToBasket: () {
+                        if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
                           context,
                           ref,

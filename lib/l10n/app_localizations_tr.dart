@@ -548,6 +548,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adminPanel => 'Yönetici Paneli';
 
   @override
+  String get kitchenPanel => 'Mutfak Paneli';
+
+  @override
   String get deliveryPanel => 'Teslimat Paneli';
 
   @override
@@ -568,4 +571,190 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get customName => 'Özel Ad';
+
+  @override
+  String get outForDelivery => 'Yolda';
+
+  @override
+  String get confirmPickup => 'Teslim Almayı Onayla';
+
+  @override
+  String get openDetails => 'Detayları Aç';
+
+  @override
+  String get markDelivered => 'Teslim Edildi';
+
+  @override
+  String get available => 'Mevcut';
+
+  @override
+  String get editPrice => 'Fiyatı Düzenle';
+
+  @override
+  String get userManagement => 'Kullanıcı Yönetimi';
+
+  @override
+  String get productManagement => 'Ürün Yönetimi';
+
+  @override
+  String get status => 'Durum';
+
+  @override
+  String get todaysRevenue => 'Bugünkü Kazanç';
+
+  @override
+  String get quickActions => 'Hızlı İşlemler';
+
+  @override
+  String get manageOrders => 'Siparişleri Yönet';
+
+  @override
+  String get statusPending => 'Beklemede';
+
+  @override
+  String get statusPreparing => 'Hazırlanıyor';
+
+  @override
+  String get statusReady => 'Hazır';
+
+  @override
+  String get statusDelivered => 'Teslim Edildi';
+
+  @override
+  String get statusCancelled => 'İptal Edildi';
+
+  @override
+  String get statusConfirmed => 'Onaylandı';
+
+  @override
+  String get statusShipping => 'Gönderimde';
+
+  @override
+  String get statusDone => 'Tamamlandı';
+
+  @override
+  String get orderNumberLabel => 'Sipariş Numarası';
+
+  @override
+  String get customer => 'Müşteri';
+
+  @override
+  String get deliveryAddressLabel => 'Teslimat Adresi';
+
+  @override
+  String get orderItemsLabel => 'Sipariş Ürünleri';
+
+  @override
+  String get placedAtLabel => 'Sipariş Zamanı';
+
+  @override
+  String get deliveryDetails => 'Teslimat Detayları';
+
+  @override
+  String get noOrdersInStatus => 'Bu durumda sipariş yok';
+
+  @override
+  String get pickupOrder => 'Siparişi Teslim Al';
+
+  @override
+  String get confirmPickupMessage =>
+      'Bu siparişi teslim alıp dağıtıma başlamak istediğinizden emin misiniz?';
+
+  @override
+  String get acceptAndConfirm => 'Kabul Et ve Onayla';
+
+  @override
+  String get startPreparing => 'Hazırlamaya Başla';
+
+  @override
+  String get markAsReady => 'Hazır Olarak İşaretle';
+
+  @override
+  String get allCaughtUp => 'Her şey tamam!';
+
+  @override
+  String get noOrdersToPrepare => 'Şu anda hazırlanacak sipariş yok.';
+
+  @override
+  String get editProduct => 'Ürünü Düzenle';
+
+  @override
+  String get addProduct => 'Ürün Ekle';
+
+  @override
+  String get productActivated => 'Ürün Aktifleştirildi';
+
+  @override
+  String get productDeactivated => 'Ürün Devre Dışı Bırakıldı';
+
+  @override
+  String get productName => 'Ürün Adı';
+
+  @override
+  String get newPrice => 'Yeni Fiyat';
+
+  @override
+  String get myTasks => 'Görevlerim';
+
+  @override
+  String get assignToDelivery => 'Teslimat Atayın';
+
+  @override
+  String get originalName => 'Orijinal Ad (Varsayılan)';
+
+  @override
+  String get originalDescription => 'Orijinal Açıklama';
+
+  @override
+  String get imageUrl => 'Görsel URL';
+
+  @override
+  String get turkishTranslations => 'Türkçe Çeviriler';
+
+  @override
+  String get persianTranslations => 'Farsça Çeviriler';
+
+  @override
+  String get nameTR => 'Ad (TR)';
+
+  @override
+  String get descriptionTR => 'Açıklama (TR)';
+
+  @override
+  String get nameFA => 'Ad (FA)';
+
+  @override
+  String get descriptionFA => 'Açıklama (FA)';
+
+  @override
+  String get openMap => 'Haritada Aç';
+
+  @override
+  String get noOrdersYet => 'Henüz sipariş yok';
+
+  @override
+  String get changeRole => 'Rol Değiştir';
+
+  @override
+  String get roleUpdated => 'Rol başarıyla güncellendi';
+
+  @override
+  String get category => 'Kategori';
+
+  @override
+  String get deleteProduct => 'Ürünü Sil';
+
+  @override
+  String get confirmDeleteProduct =>
+      'Bu ürünü silmek istediğinizden emin misiniz?';
+
+  @override
+  String get delete => 'Sil';
+
+  @override
+  String get clearBasket => 'Sepeti Temizle';
+
+  @override
+  String get confirmClearBasket =>
+      'Tüm sepetinizi temizlemek istediğinizden emin misiniz?';
 }

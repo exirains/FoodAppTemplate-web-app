@@ -208,7 +208,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get language => 'زبان';
 
   @override
-  String get appVersion => 'نسخه اپلیکیشن';
+  String get appVersion => 'اپلیکیشن';
 
   @override
   String get checkout => 'تسویه حساب';
@@ -244,26 +244,26 @@ class AppLocalizationsFa extends AppLocalizations {
   String get proceedToCheckout => 'ادامه به تسویه حساب';
 
   @override
-  String get useCurrentLocation => 'استفاده از موقعیت فعلی';
+  String get useCurrentLocation => 'موقعیت فعلی';
 
   @override
   String get address => 'آدرس';
 
   @override
-  String get noAddressSelected => 'آدرسی انتخاب نشده است';
+  String get noAddressSelected => 'آدرسی انتخاب نشده';
 
   @override
-  String get cashOnDelivery => 'پرداخت نقدی در محل';
+  String get cashOnDelivery => 'پرداخت نقدی';
 
   @override
   String get cashOnDeliveryDescription =>
-      'هزینه را هنگام تحویل سفارش به صورت نقدی پرداخت کنید.';
+      'هزینه را هنگام تحویل نقداً پرداخت کنید.';
 
   @override
-  String get confirmOrder => 'تأیید نهایی سفارش';
+  String get confirmOrder => 'تأیید سفارش';
 
   @override
-  String get addDeliveryNote => 'یادداشت برای پیک';
+  String get addDeliveryNote => 'یادداشت پیک';
 
   @override
   String get street => 'خیابان';
@@ -272,10 +272,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get city => 'شهر';
 
   @override
-  String get district => 'منطقه/محله';
+  String get district => 'محله';
 
   @override
-  String get building => 'ساختمان/پلاک';
+  String get building => 'پلاک';
 
   @override
   String get floor => 'طبقه';
@@ -287,16 +287,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get saveAddress => 'ذخیره آدرس';
 
   @override
-  String get orderReceived => 'سفارش شما دریافت شد';
+  String get orderReceived => 'سفارش دریافت شد';
 
   @override
   String get orderNumber => 'شماره سفارش';
 
   @override
-  String get estimatedTime => 'زمان تقریبی آماده‌سازی';
+  String get estimatedTime => 'زمان آماده‌سازی';
 
   @override
-  String get estimatedDeliveryTime => 'زمان تقریبی تحویل';
+  String get estimatedDeliveryTime => 'زمان تحویل';
 
   @override
   String get backToHome => 'بازگشت به خانه';
@@ -314,10 +314,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get all => 'همه';
 
   @override
-  String get errorLoadingCategories => 'خطا در بارگذاری دسته‌بندی‌ها';
+  String get errorLoadingCategories => 'خطا در دسته‌بندی';
 
   @override
-  String get errorLoadingBreads => 'خطا در بارگذاری محصولات';
+  String get errorLoadingBreads => 'خطا در بارگذاری';
 
   @override
   String get freshlyBakedSangak => 'سنگک تازه';
@@ -329,7 +329,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pleaseAgreeToTerms => 'لطفاً با شرایط موافقت کنید';
 
   @override
-  String get passwordsDoNotMatch => 'رمزهای عبور مطابقت ندارند';
+  String get passwordsDoNotMatch => 'رمزها مطابقت ندارند';
 
   @override
   String reviewsCount(num count) {
@@ -356,39 +356,37 @@ class AppLocalizationsFa extends AppLocalizations {
   String get add => 'افزودن';
 
   @override
-  String get invalidEmail => 'لطفاً یک آدرس ایمیل معتبر وارد کنید';
+  String get invalidEmail => 'ایمیل نامعتبر';
 
   @override
-  String get passwordTooShort => 'رمز عبور باید حداقل 8 کاراکتر باشد';
+  String get passwordTooShort => 'رمز کوتاه است';
 
   @override
-  String get passwordRequirements =>
-      'رمز عبور باید شامل حداقل یک حرف بزرگ، یک حرف کوچک و یک عدد باشد';
+  String get passwordRequirements => 'رمز باید شامل حرف و عدد باشد';
 
   @override
-  String get requiredField => 'این فیلد الزامی است';
+  String get requiredField => 'الزامی است';
 
   @override
-  String get invalidCredentials => 'ایمیل یا رمز عبور نادرست است';
+  String get invalidCredentials => 'ایمیل یا رمز نادرست';
 
   @override
-  String get networkError => 'مشکل اتصال. لطفاً دوباره تلاش کنید.';
+  String get networkError => 'مشکل اتصال';
 
   @override
-  String get tooManyAttempts =>
-      'تلاش‌های ورود بیش از حد. لطفاً بعداً دوباره تلاش کنید.';
+  String get tooManyAttempts => 'تلاش بیش از حد';
 
   @override
-  String get emailAlreadyInUse => 'این ایمیل قبلاً ثبت‌نام شده است';
+  String get emailAlreadyInUse => 'ایمیل قبلاً ثبت شده';
 
   @override
-  String get emailNotVerified => 'لطفاً ایمیل خود را تأیید کنید';
+  String get emailNotVerified => 'ایمیل تأیید نشده';
 
   @override
-  String get invalidPhoneNumber => 'شماره تلفن نامعتبر';
+  String get invalidPhoneNumber => 'شماره نامعتبر';
 
   @override
-  String get passwordStrength => 'قوت رمز عبور';
+  String get passwordStrength => 'قوت رمز';
 
   @override
   String get weak => 'ضعیف';
@@ -410,7 +408,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get saveYourFavoritesDescription =>
-      'برای ذخیره علاقه‌مندی‌های خود در کل دستگاه‌ها، یک حساب کاربری بسازید.';
+      'برای ذخیره علاقه‌مندی‌ها حساب بسازید.';
 
   @override
   String get continueWithEmailOrGoogle => 'ادامه با ایمیل یا گوگل';
@@ -419,10 +417,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get maybeLater => 'شاید بعداً';
 
   @override
-  String get completeYourProfile => 'تکمیل پروفایل خود';
+  String get completeYourProfile => 'تکمیل پروفایل';
 
   @override
-  String get addPhoneNumber => 'افزودن شماره تلفن';
+  String get addPhoneNumber => 'افزودن شماره';
 
   @override
   String get optional => 'اختیاری';
@@ -434,37 +432,37 @@ class AppLocalizationsFa extends AppLocalizations {
   String get next => 'بعدی';
 
   @override
-  String get alreadyHaveAccount => 'قبلاً حساب کاربری دارید؟ ';
+  String get alreadyHaveAccount => 'حساب دارید؟ ';
 
   @override
   String get profileCompletion => 'تکمیل پروفایل';
 
   @override
-  String get syncBasket => 'همگام‌سازی سبد';
+  String get syncBasket => 'همگام‌سازی';
 
   @override
-  String get syncingBasket => 'همگام‌سازی اقلام شما...';
+  String get syncingBasket => 'در حال همگام‌سازی...';
 
   @override
-  String get basketSynced => 'سبد شما ذخیره شد!';
+  String get basketSynced => 'سبد ذخیره شد!';
 
   @override
-  String get loginToContinue => 'برای ادامه تسویه، وارد شوید';
+  String get loginToContinue => 'وارد شوید';
 
   @override
-  String get loginToPlaceOrder => 'برای ثبت سفارش وارد شوید.';
+  String get loginToPlaceOrder => 'برای سفارش وارد شوید.';
 
   @override
-  String get nameTooShort => 'نام باید حداقل 2 کاراکتر باشد';
+  String get nameTooShort => 'نام کوتاه است';
 
   @override
-  String get nameTooLong => 'نام باید کمتر از 100 کاراکتر باشد';
+  String get nameTooLong => 'نام طولانی است';
 
   @override
-  String get activity => 'فعالیت';
+  String get activity => 'activity';
 
   @override
-  String get account => 'حساب کاربری';
+  String get account => 'حساب';
 
   @override
   String get favorites => 'علاقه‌مندی‌ها';
@@ -476,48 +474,46 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editProfile => 'ویرایش پروفایل';
 
   @override
-  String get signOut => 'خروج از حساب';
+  String get signOut => 'خروج';
 
   @override
-  String get signOutConfirmation =>
-      'آیا مطمئن هستید که می‌خواهید از حساب کاربری سنگک خود خارج شوید؟';
+  String get signOutConfirmation => 'خارج می‌شوید؟';
 
   @override
-  String get profilePictureUpdated => 'تصویر پروفایل با موفقیت بروزرسانی شد!';
+  String get profilePictureUpdated => 'تصویر بروز شد!';
 
   @override
-  String get failedToUpdateProfilePicture => 'خطا در بروزرسانی تصویر پروفایل';
+  String get failedToUpdateProfilePicture => 'خطای بروزرسانی تصویر';
 
   @override
-  String get locationCaptured => 'موقعیت با موفقیت ثبت شد';
+  String get locationCaptured => 'موقعیت ثبت شد';
 
   @override
-  String get locationError => 'خطا در دریافت موقعیت. لطفاً دستی وارد کنید.';
+  String get locationError => 'خطای موقعیت یابی';
 
   @override
-  String get selectPaymentMethod => 'انتخاب روش پرداخت';
+  String get selectPaymentMethod => 'روش پرداخت';
 
   @override
-  String get creditCard => 'کارت اعتباری / بانکی';
+  String get creditCard => 'کارت بانکی';
 
   @override
-  String get payWithCardOnDelivery => 'پرداخت با کارت هنگام تحویل (به زودی)';
+  String get payWithCardOnDelivery => 'پرداخت با کارت (بزودی)';
 
   @override
-  String get thankYouSangak =>
-      'ممنون که سنگک را انتخاب کردید! نان تازه شما در حال آماده‌سازی است.';
+  String get thankYouSangak => 'ممنون از خرید شما!';
 
   @override
-  String get no => 'نه';
+  String get no => 'خیر';
 
   @override
   String get paymentInfo => 'اطلاعات پرداخت';
 
   @override
-  String get profileUpdated => 'پروفایل با موفقیت بروزرسانی شد';
+  String get profileUpdated => 'بروزرسانی شد';
 
   @override
-  String get saveChanges => 'ذخیره تغییرات';
+  String get saveChanges => 'ذخیره';
 
   @override
   String get remove => 'حذف';
@@ -529,30 +525,31 @@ class AppLocalizationsFa extends AppLocalizations {
   String get cancel => 'لغو';
 
   @override
-  String get removeItemFromBasket =>
-      'آیا مطمئن هستید که می‌خواهید این مورد را از سبد خود حذف کنید؟';
+  String get removeItemFromBasket => 'حذف از سبد؟';
 
   @override
-  String get comingSoon => 'به زودی';
+  String get comingSoon => 'بزودی';
 
   @override
   String get roleSwitch => 'تغییر نقش';
 
   @override
-  String get lastUsedAddresses => 'آخرین آدرس‌های استفاده شده';
+  String get lastUsedAddresses => 'آخرین آدرس‌ها';
 
   @override
-  String get customerApp => 'اپلیکیشن مشتری';
+  String get customerApp => 'پنل مشتری';
 
   @override
   String get adminPanel => 'پنل مدیریت';
 
   @override
+  String get kitchenPanel => 'پنل آشپزخانه';
+
+  @override
   String get deliveryPanel => 'پنل پیک';
 
   @override
-  String get changeSettingAnytime =>
-      'می‌توانید این را هر زمان در تنظیمات تغییر دهید.';
+  String get changeSettingAnytime => 'قابل تغییر در تنظیمات.';
 
   @override
   String get addressName => 'نام آدرس';
@@ -561,11 +558,195 @@ class AppLocalizationsFa extends AppLocalizations {
   String get work => 'محل کار';
 
   @override
-  String get school => 'مدرسه/دانشگاه';
+  String get school => 'مدرسه';
 
   @override
   String get other => 'سایر';
 
   @override
   String get customName => 'نام دلخواه';
+
+  @override
+  String get outForDelivery => 'در حال ارسال';
+
+  @override
+  String get confirmPickup => 'تایید تحویل گرفتن';
+
+  @override
+  String get openDetails => 'مشاهده جزئیات';
+
+  @override
+  String get markDelivered => 'تایید تحویل به مشتری';
+
+  @override
+  String get available => 'موجود';
+
+  @override
+  String get editPrice => 'ویرایش قیمت';
+
+  @override
+  String get userManagement => 'مدیریت کاربران';
+
+  @override
+  String get productManagement => 'مدیریت محصولات';
+
+  @override
+  String get status => 'وضعیت';
+
+  @override
+  String get todaysRevenue => 'درآمد امروز';
+
+  @override
+  String get quickActions => 'دسترسی سریع';
+
+  @override
+  String get manageOrders => 'مدیریت سفارشات';
+
+  @override
+  String get statusPending => 'در انتظار';
+
+  @override
+  String get statusPreparing => 'در حال پخت';
+
+  @override
+  String get statusReady => 'آماده ارسال';
+
+  @override
+  String get statusDelivered => 'تحویل شده';
+
+  @override
+  String get statusCancelled => 'لغو شده';
+
+  @override
+  String get statusConfirmed => 'تایید شده';
+
+  @override
+  String get statusShipping => 'در راه';
+
+  @override
+  String get statusDone => 'انجام شده';
+
+  @override
+  String get orderNumberLabel => 'شماره سفارش';
+
+  @override
+  String get customer => 'مشتری';
+
+  @override
+  String get deliveryAddressLabel => 'آدرس تحویل';
+
+  @override
+  String get orderItemsLabel => 'اقلام سفارش';
+
+  @override
+  String get placedAtLabel => 'زمان ثبت';
+
+  @override
+  String get deliveryDetails => 'جزئیات ارسال';
+
+  @override
+  String get noOrdersInStatus => 'سفارشی وجود ندارد';
+
+  @override
+  String get pickupOrder => 'تحویل گرفتن';
+
+  @override
+  String get confirmPickupMessage => 'سفارش را تحویل می‌می‌گیرید؟';
+
+  @override
+  String get acceptAndConfirm => 'پذیرش و تایید';
+
+  @override
+  String get startPreparing => 'شروع پخت';
+
+  @override
+  String get markAsReady => 'آماده شد';
+
+  @override
+  String get allCaughtUp => 'همه کارها انجام شده!';
+
+  @override
+  String get noOrdersToPrepare => 'سفارشی برای پخت نیست.';
+
+  @override
+  String get editProduct => 'ویرایش محصول';
+
+  @override
+  String get addProduct => 'افزودن محصول';
+
+  @override
+  String get productActivated => 'محصول فعال شد';
+
+  @override
+  String get productDeactivated => 'محصول غیرفعال شد';
+
+  @override
+  String get productName => 'نام محصول';
+
+  @override
+  String get newPrice => 'قیمت جدید';
+
+  @override
+  String get myTasks => 'کارهای من';
+
+  @override
+  String get assignToDelivery => 'تخصیص به پیک';
+
+  @override
+  String get originalName => 'نام اصلی (پیش‌فرض)';
+
+  @override
+  String get originalDescription => 'توضیحات اصلی';
+
+  @override
+  String get imageUrl => 'آدرس تصویر';
+
+  @override
+  String get turkishTranslations => 'ترجمه ترکی';
+
+  @override
+  String get persianTranslations => 'ترجمه فارسی';
+
+  @override
+  String get nameTR => 'نام (TR)';
+
+  @override
+  String get descriptionTR => 'توضیحات (TR)';
+
+  @override
+  String get nameFA => 'نام (FA)';
+
+  @override
+  String get descriptionFA => 'توضیحات (FA)';
+
+  @override
+  String get openMap => 'مشاهده روی نقشه';
+
+  @override
+  String get noOrdersYet => 'هنوز سفارشی ثبت نشده است';
+
+  @override
+  String get changeRole => 'تغییر نقش';
+
+  @override
+  String get roleUpdated => 'نقش با موفقیت تغییر کرد';
+
+  @override
+  String get category => 'دسته‌بندی';
+
+  @override
+  String get deleteProduct => 'حذف محصول';
+
+  @override
+  String get confirmDeleteProduct => 'آیا از حذف این محصول اطمینان دارید؟';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get clearBasket => 'خالی کردن سبد';
+
+  @override
+  String get confirmClearBasket =>
+      'آیا از خالی کردن کل سبد خرید اطمینان دارید؟';
 }

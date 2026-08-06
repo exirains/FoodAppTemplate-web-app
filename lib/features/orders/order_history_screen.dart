@@ -37,7 +37,7 @@ class OrderHistoryScreen extends ConsumerWidget {
                   const Icon(Icons.receipt_long_outlined, size: 64, color: SangakColors.inkLight),
                   const SizedBox(height: 16),
                   Text(
-                    'No orders yet',
+                    l10n.noOrdersYet,
                     style: SangakTypography.title(context),
                   ),
                 ],
@@ -153,9 +153,17 @@ class _StatusBadge extends StatelessWidget {
         color = Colors.orange;
         label = 'Pending';
         break;
+      case OrderStatus.confirmed:
+        color = Colors.cyan;
+        label = 'Confirmed';
+        break;
       case OrderStatus.preparing:
         color = Colors.blue;
         label = 'Preparing';
+        break;
+      case OrderStatus.ready:
+        color = Colors.teal;
+        label = 'Ready';
         break;
       case OrderStatus.outForDelivery:
         color = Colors.purple;

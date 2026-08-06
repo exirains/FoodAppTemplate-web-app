@@ -191,4 +191,57 @@ class BreadRepository {
       return {};
     }
   }
+
+  /// Admin: Add new product
+  Future<void> addProduct(Map<String, dynamic> data) async {
+    await _client.from('products').insert(data);
+  }
+
+  /// Admin: Update product details
+  Future<void> updateProduct(String id, Map<String, dynamic> data) async {
+    await _client.from('products').update(data).eq('id', id);
+  }
+
+  /// Admin: Upload product image
+  Future<String> uploadImage(String productId, Uint8List bytes, String extension) async {
+    final fileName = '$productId.$extension';
+    final path = 'product_images/$fileName';
+    
+    await _client.storage.from('products').uploadBinary(
+      path,
+      bytes,
+      fileOptions: const FileOptions(upsert: true, contentType: 'image/jpeg'),
+    );
+    
+    return _client.storage.from('products').getPublicUrl(path);
+  }
+
+  /// Admin: Update product availability
+  Future<void> updateAvailability(String id, bool available) async {
+    await _client.from('products').update({'available': available}).eq('id', id);
+  }
+
+  /// Admin: Delete product
+  Future<void> deleteProduct(String id) async {
+    await _client.from('products').delete().eq('id', id);
+  }
+
+  /// Admin: Update product price
+  Future<void> updatePrice(String id, double price) async {
+    await _client.from('products').update({'price': price}).eq('id', id);
+  }
+
+  /// Admin: Update product translations
+  Future<void> updateTranslations(String id, Map<String, Map<String, String>> translations) async {
+    for (final entry in translations.entries) {
+      final lang = entry.key;
+      final data = entry.value;
+      await _client.from('product_translations').upsert({
+        'product_id': id,
+        'language_code': lang,
+        'name': data['name'],
+        'description': data['description'],
+      }, onConflict: 'product_id,language_code');
+    }
+  }
 }

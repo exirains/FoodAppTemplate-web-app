@@ -4,6 +4,7 @@ import '../../services/location_service.dart';
 import '../../services/order_repository.dart';
 import 'basket_provider.dart';
 import '../auth/auth_provider.dart';
+import '../orders/orders_provider.dart';
 
 enum PaymentMethod { cash, card, online }
 
@@ -74,8 +75,9 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
         estimatedPrepTime: state.estimatedPrepMinutes,
       );
       
-      // Clear basket after successful order
+      // Clear basket and refresh orders list
       _ref.read(basketProvider.notifier).clear();
+      _ref.invalidate(myOrdersProvider);
     } finally {
       setSubmitting(false);
     }

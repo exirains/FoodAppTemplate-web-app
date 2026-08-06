@@ -12,6 +12,7 @@ import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/widgets/product_tag.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/action_guard.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../basket/basket_provider.dart';
@@ -78,6 +79,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       color: isFavorite ? SangakColors.error : SangakColors.ink,
                     ),
                     onPressed: () {
+                      if (!ActionGuard.check(context, ref)) return;
                       AuthGate.run(
                         context,
                         ref,
@@ -178,9 +180,18 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 child: QuantitySelector(
                   quantity: inBasketQuantity,
                   compact: true,
-                  onIncrement: () => ref.read(basketProvider.notifier).addItem(widget.bread),
-                  onDecrement: () => ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1),
-                  onDelete: () => ref.read(basketProvider.notifier).removeItem(widget.bread.id),
+                  onIncrement: () {
+                    if (!ActionGuard.check(context, ref)) return;
+                    ref.read(basketProvider.notifier).addItem(widget.bread);
+                  },
+                  onDecrement: () {
+                    if (!ActionGuard.check(context, ref)) return;
+                    ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1);
+                  },
+                  onDelete: () {
+                    if (!ActionGuard.check(context, ref)) return;
+                    ref.read(basketProvider.notifier).removeItem(widget.bread.id);
+                  },
                 ),
               )
             : Row(
@@ -196,6 +207,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     child: SangakButton.primary(
                       label: l10n.addToBasket,
                       onPressed: () {
+                        if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
                           context,
                           ref,

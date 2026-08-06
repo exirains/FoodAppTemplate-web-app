@@ -46,24 +46,114 @@ class OrderRepository {
 
   Future<List<OrderModel>> getMyOrders(String userId) async {
     try {
-      debugPrint('Fetching orders for user $userId...');
       final response = await _client
           .from('orders')
-          .select('*, order_items(*)')
+          .select('*, customer:profiles(*), order_items(*)')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
-      final List<OrderModel> orders = (response as List).map((json) {
-        return OrderModel.fromJson(json as Map<String, dynamic>);
-      }).toList();
-
-      debugPrint('Fetched ${orders.length} orders');
-      return orders;
-    } catch (e, stack) {
-      debugPrint('Error fetching orders: $e');
-      debugPrint(stack.toString());
+      return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+    } catch (e) {
+      debugPrint('Error fetching my orders: $e');
       return [];
     }
+  }
+
+  /// Admin/Staff: Fetch all orders with customer info
+  Future<List<OrderModel>> getAllOrders() async {
+    try {
+      final response = await _client
+          .from('orders')
+          .select('*, customer:profiles(*), order_items(*)')
+          .order('created_at', ascending: false);
+
+      return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+    } catch (e) {
+      debugPrint('Error fetching all orders: $e');
+      return [];
+    }
+  }
+
+  /// Delivery: Fetch assigned orders
+  Future<List<OrderModel>> getAssignedOrders(String driverId) async {
+    try {
+      final response = await _client
+          .from('orders')
+          .select('*, customer:profiles(*), order_items(*)')
+          .eq('assigned_delivery_person', driverId)
+          .order('created_at', ascending: false);
+
+      return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+    } catch (e) {
+      debugPrint('Error fetching assigned orders: $e');
+      return [];
+    }
+  }
+
+  /// Update order status and record history
+  Future<void> updateOrderStatus({
+    required String orderId,
+    required OrderStatus status,
+    required String changedBy,
+  }) async {
+    try {
+      // 1. Update order status
+      await _client.from('orders').update({
+        'status': status.toString(),
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', orderId);
+
+      // 2. Record history
+      await _client.from('order_status_history').insert({
+        'order_id': orderId,
+        'status': status.toString(),
+        'changed_by': changedBy,
+      });
+    } catch (e) {
+      debugPrint('Error updating order status: $e');
+      rethrow;
+    }
+  }
+
+  /// Admin: Assign delivery person
+  Future<void> assignDeliveryPerson(String orderId, String driverId) async {
+    try {
+      await _client.from('orders').update({
+        'assigned_delivery_person': driverId,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', orderId);
+    } catch (e) {
+      debugPrint('Error assigning delivery person: $e');
+      rethrow;
+    }
+  }
+
+  /// Admin: Get all staff with delivery role
+  Future<List<Map<String, dynamic>>> getDeliveryStaff() async {
+    try {
+      final response = await _client
+          .from('profiles')
+          .select('id, full_name, email')
+          .eq('role', 'delivery');
+      
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      debugPrint('Error fetching delivery staff: $e');
+      return [];
+    }
+  }
+
+  /// Customer: Watch own orders in real-time
+  Stream<List<OrderModel>> watchMyOrders(String userId) {
+    return _client
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .order('created_at', ascending: false)
+        .asyncMap((list) async {
+          // Stream join is limited, so we fetch full data on every change signal
+          return await getMyOrders(userId);
+        });
   }
 
   Stream<List<Map<String, dynamic>>> watchOrderStatus(String orderId) {
@@ -72,5 +162,13 @@ class OrderRepository {
         .stream(primaryKey: ['id'])
         .eq('id', orderId)
         .limit(1);
+  }
+
+  /// Stream all orders for real-time dashboard
+  Stream<List<Map<String, dynamic>>> watchAllOrders() {
+    return _client
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .order('created_at', ascending: false);
   }
 }

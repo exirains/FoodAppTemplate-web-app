@@ -13,6 +13,8 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/role_switcher.dart';
+import '../../shared/utils/action_guard.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
@@ -30,6 +32,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _isUploading = false;
 
   Future<void> _pickAndUploadAvatar() async {
+    if (!ActionGuard.check(context, ref)) return;
+
     final picker = ImagePicker();
     final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
@@ -47,7 +51,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final fileName = '${user.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final path = '${user.id}/$fileName';
 
-      // Read as bytes to be compatible with both Web and Mobile
       final bytes = await image.readAsBytes();
 
       await SupabaseService.client.storage.from('avatars').uploadBinary(
@@ -97,9 +100,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (modalContext) { // Use modalContext for the builder
+      builder: (modalContext) {
         return StatefulBuilder(
-          builder: (context, setModalState) { // context here is fine, but we should be careful with ref
+          builder: (context, setModalState) {
             final viewInsets = MediaQuery.of(context).viewInsets;
             
             return Container(
@@ -167,7 +170,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           inputFormatters: [_TurkeyPhoneInputFormatter()],
                           validator: (value) {
                             if (value == null || value.isEmpty || value == '+90 ') return l10n.requiredField;
-                            // Formatting should be: +90 5XX XXX XX XX (total 17 chars with spaces)
                             if (value.replaceAll(' ', '').length < 13) return l10n.invalidPhoneNumber;
                             return null;
                           },
@@ -178,6 +180,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           width: double.infinity,
                           isLoading: isSaving,
                           onPressed: isSaving ? null : () async {
+                            if (!ActionGuard.check(context, ref)) return;
                             if (!formKey.currentState!.validate()) return;
                             
                             setModalState(() => isSaving = true);
@@ -188,13 +191,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 'phone': phoneController.text.trim(),
                               };
                               
-                              // 1. Update Supabase table
                               await SupabaseService.client.from('profiles').upsert({
                                 'id': user.id,
                                 ...data,
                               });
                               
-                              // 2. Update Auth Metadata
                               await ref.read(authProvider.notifier).updateMetadata(data);
                               
                               if (modalContext.mounted) {
@@ -245,7 +246,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     if (user == null) return const SizedBox.shrink();
     
-    // Role check for switcher - prioritizes DB role from profile provider
     final role = profile?.role ?? 'customer';
     final canSwitchRole = role != 'customer';
 
@@ -256,7 +256,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         actions: [
           if (canSwitchRole)
             IconButton(
-              onPressed: () => _showRoleSwitcher(context, role),
+              onPressed: () => RoleSwitcher.show(context, role),
               icon: const Icon(Icons.swap_horiz_rounded),
               tooltip: l10n.roleSwitch,
             ),
@@ -289,7 +289,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             const SizedBox(height: 48),
             
-            // Activity Section
             Text(l10n.activity, style: SangakTypography.title(context)),
             const SizedBox(height: 16),
             Row(
@@ -302,7 +301,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             
             const SizedBox(height: 32),
             
-            // Account Section
             Text(l10n.account, style: SangakTypography.title(context)),
             const SizedBox(height: 16),
             if (user.userMetadata?['phone'] == null || (user.userMetadata?['phone'] as String).isEmpty || user.userMetadata?['phone'] == '+90')
@@ -356,37 +354,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showRoleSwitcher(BuildContext context, String currentRole) {
-    final l10n = AppLocalizations.of(context);
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.roleSwitch, style: SangakTypography.h3(context)),
-            const SizedBox(height: 24),
-            _buildRoleItem(context, l10n.customerApp, Icons.person_outline, currentRole == 'customer'),
-            _buildRoleItem(context, l10n.adminPanel, Icons.admin_panel_settings_outlined, currentRole == 'admin'),
-            _buildRoleItem(context, l10n.deliveryPanel, Icons.delivery_dining_outlined, currentRole == 'delivery'),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRoleItem(BuildContext context, String label, IconData icon, bool isActive) {
-    return ListTile(
-      leading: Icon(icon, color: isActive ? SangakColors.primary : SangakColors.inkLight),
-      title: Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-      trailing: isActive ? const Icon(Icons.check_circle, color: SangakColors.primary) : null,
-      onTap: () => Navigator.pop(context),
     );
   }
 
@@ -513,10 +480,8 @@ class _TurkeyPhoneInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Only allow digits for the actual number part
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
 
-    // Strip leading 90 or 0 if user manually typed them
     if (digits.startsWith('90')) {
       digits = digits.substring(2);
     } else if (digits.startsWith('0')) {
@@ -527,7 +492,6 @@ class _TurkeyPhoneInputFormatter extends TextInputFormatter {
       digits = digits.substring(0, _maxNationalDigits);
     }
 
-    // Format: +90 5XX XXX XX XX
     var formatted = _prefix;
     for (var i = 0; i < digits.length; i++) {
       if (i == 3 || i == 6 || i == 8) {

@@ -15,6 +15,7 @@ import '../../core/localization/locale_provider.dart';
 import '../../services/greeting_service.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/action_guard.dart';
 import '../../shared/widgets/category_chip.dart';
 import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
@@ -197,6 +198,7 @@ class HomeScreen extends ConsumerWidget {
                       isFavorite: bread.isFavorite,
                       width: 220, // Pass fixed width for horizontal scrolling
                       onFavoriteToggle: () {
+                        if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
                           context,
                           ref,
@@ -206,6 +208,7 @@ class HomeScreen extends ConsumerWidget {
                         );
                       },
                       onAddToBasket: () {
+                        if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
                           context,
                           ref,
@@ -329,6 +332,7 @@ class HomeScreen extends ConsumerWidget {
                                     final isFavorite = ref.watch(isFavoriteProvider(bread.id));
                                     return IconButton(
                                       onPressed: () {
+                                        if (!ActionGuard.check(context, ref)) return;
                                         AuthGate.run(
                                           context,
                                           ref,
@@ -352,8 +356,12 @@ class HomeScreen extends ConsumerWidget {
                                       return QuantitySelector(
                                         quantity: quantity,
                                         compact: true,
-                                        onIncrement: () => ref.read(basketProvider.notifier).addItem(bread),
+                                        onIncrement: () {
+                                          if (!ActionGuard.check(context, ref)) return;
+                                          ref.read(basketProvider.notifier).addItem(bread);
+                                        },
                                         onDecrement: () {
+                                          if (!ActionGuard.check(context, ref)) return;
                                           if (quantity == 1) {
                                             SangakConfirmDialog.show(
                                               context,
@@ -369,6 +377,7 @@ class HomeScreen extends ConsumerWidget {
                                           }
                                         },
                                         onDelete: () {
+                                          if (!ActionGuard.check(context, ref)) return;
                                           SangakConfirmDialog.show(
                                             context,
                                             title: l10n.remove,
@@ -383,6 +392,7 @@ class HomeScreen extends ConsumerWidget {
                                     }
                                     return IconButton(
                                       onPressed: () {
+                                        if (!ActionGuard.check(context, ref)) return;
                                         AuthGate.run(
                                           context,
                                           ref,

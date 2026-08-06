@@ -147,27 +147,32 @@ class _SangakButtonState extends State<SangakButton> {
                         valueColor: AlwaysStoppedAnimation<Color>(_getForegroundColor()),
                       ),
                     )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.leading != null) ...[
-                          widget.leading!,
-                          const SizedBox(width: SangakDimens.spacing8),
-                        ],
-                        if (widget.icon != null) ...[
-                          Icon(widget.icon, size: 20, color: _getForegroundColor()),
-                          const SizedBox(width: SangakDimens.spacing8),
-                        ],
-                        FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          widget.label,
-                          style: SangakTypography.button(context).copyWith(
-                            color: _getForegroundColor(),
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (widget.leading != null) ...[
+                            widget.leading!,
+                            const SizedBox(width: SangakDimens.spacing8),
+                          ],
+                          if (widget.icon != null) ...[
+                            Icon(widget.icon, size: 20, color: _getForegroundColor()),
+                            const SizedBox(width: SangakDimens.spacing8),
+                          ],
+                          Flexible(
+                            child: Text(
+                              widget.label,
+                              style: SangakTypography.button(context).copyWith(
+                                color: _getForegroundColor(),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      ],
                     ),
             ),
           ),
