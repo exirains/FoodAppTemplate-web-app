@@ -390,7 +390,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                   onChanged: (v) => setState(() => _selectedCategoryId = v),
                 ),
                 loading: () => const LinearProgressIndicator(),
-                error: (_, __) => const Text('Error loading categories'),
+                error: (error, stack) => const Text('Error loading categories'),
               ),
               
               const SizedBox(height: 12),

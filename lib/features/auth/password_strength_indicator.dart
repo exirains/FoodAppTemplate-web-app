@@ -53,11 +53,11 @@ class PasswordStrengthIndicator extends StatelessWidget {
       children: [
         // Strength indicator bar
         ClipRRect(
-          borderRadius: BorderRadius.circular(SangakDimens.spacing8),
+          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
           child: LinearProgressIndicator(
             value: strength,
             minHeight: 6,
-            backgroundColor: Colors.grey.shade300,
+            backgroundColor: Colors.grey.shade200,
             valueColor: AlwaysStoppedAnimation<Color>(barColor),
           ),
         ),
@@ -76,7 +76,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
                 _getLabelText(strengthLabel, l10n),
                 style: SangakTypography.bodySmall(context).copyWith(
                   color: barColor,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -129,27 +129,27 @@ class _RequirementsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _RequirementItem(
-          text: '${l10n.passwordTooShort} (8+ characters)',
+          text: l10n.passwordRequirementLength,
           isMet: hasMinLength,
         ),
         const SizedBox(height: SangakDimens.spacing8),
         _RequirementItem(
-          text: 'At least one uppercase letter (A-Z)',
+          text: l10n.passwordRequirementUppercase,
           isMet: hasUpperCase,
         ),
         const SizedBox(height: SangakDimens.spacing8),
         _RequirementItem(
-          text: 'At least one lowercase letter (a-z)',
+          text: l10n.passwordRequirementLowercase,
           isMet: hasLowerCase,
         ),
         const SizedBox(height: SangakDimens.spacing8),
         _RequirementItem(
-          text: 'At least one number (0-9)',
+          text: l10n.passwordRequirementNumber,
           isMet: hasNumber,
         ),
         const SizedBox(height: SangakDimens.spacing8),
         _RequirementItem(
-          text: 'Special characters (!@#\$%^&*) - Recommended',
+          text: l10n.passwordRequirementSpecial,
           isMet: hasSpecialChar,
           isOptional: true,
         ),
@@ -172,23 +172,27 @@ class _RequirementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = isMet ? const Color(0xFF2ECC71) : Colors.grey.shade400;
+    
     return Row(
       children: [
-        Container(
-          width: 20,
-          height: 20,
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 18,
+          height: 18,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
+            color: isMet ? color.withValues(alpha: 0.1) : Colors.transparent,
             border: Border.all(
-              color: isMet ? const Color(0xFF2ECC71) : Colors.grey.shade300,
-              width: 2,
+              color: isMet ? color : Colors.grey.shade300,
+              width: 1.5,
             ),
           ),
           child: isMet
-              ? const Icon(
+              ? Icon(
                   Icons.check,
-                  size: 14,
-                  color: Color(0xFF2ECC71),
+                  size: 12,
+                  color: color,
                 )
               : null,
         ),
@@ -197,8 +201,8 @@ class _RequirementItem extends StatelessWidget {
           child: Text(
             text,
             style: SangakTypography.bodySmall(context).copyWith(
-              color: isMet ? Colors.grey.shade600 : Colors.grey.shade400,
-              decoration: isOptional ? TextDecoration.none : null,
+              color: isMet ? Colors.grey.shade700 : Colors.grey.shade400,
+              fontWeight: isMet ? FontWeight.w500 : FontWeight.normal,
             ),
           ),
         ),

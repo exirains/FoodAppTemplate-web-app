@@ -153,32 +153,37 @@ class AuthValidators {
     return name.trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 
-  /// Validates phone number for Turkey.
+  /// Validates phone number.
   /// - Required
-  /// - Must start with +90
-  /// - Must contain exactly 10 national digits after the country code
-  /// Returns null if valid, error message otherwise
+  /// - Removes all non-digit characters for validation
+  /// - Must be between 7 and 15 digits (International Standard)
   static String? validatePhoneNumber(String? phone) {
-    if (phone == null || phone.isEmpty) {
+    if (phone == null || phone.trim().isEmpty || isDefaultPrefixOnly(phone)) {
       return 'required_field'; // Key for localization
     }
 
-    phone = phone.trim();
+    // Remove all non-digits (including spaces and +)
+    final digits = phone.replaceAll(RegExp(r'\D'), '');
 
-    if (!phone.startsWith('+90')) {
-      return 'invalid_phone_number'; // Key for localization
-    }
-
-    final digitsOnly = phone.substring(1);
-    if (!RegExp(r'^\d+$').hasMatch(digitsOnly)) {
-      return 'invalid_phone_number'; // Key for localization
-    }
-
-    if (digitsOnly.length != 12) {
+    if (digits.length < 7 || digits.length > 15) {
       return 'invalid_phone_number'; // Key for localization
     }
 
     return null;
+  }
+
+  /// Checks if the phone number string only contains the default prefix (+90)
+  static bool isDefaultPrefixOnly(String phone) {
+    final sanitized = phone.trim().replaceAll(' ', '');
+    return sanitized == '+90' || sanitized == '90' || sanitized == '+90 ' || sanitized == '0';
+  }
+
+  /// Checks if a profile has a valid phone number linked
+  static bool hasValidPhoneNumber(String? phone) {
+    if (phone == null || phone.isEmpty) return false;
+    // Basic check: must have more than just the prefix digits (Turkey = 2 digits '90')
+    final digits = phone.replaceAll(RegExp(r'\D'), '');
+    return digits.length >= 10; // Standard Turkish mobile is 12 digits (90 + 10)
   }
 
   /// Sanitizes phone number by trimming whitespace

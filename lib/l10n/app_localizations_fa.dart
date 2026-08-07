@@ -749,4 +749,20 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get confirmClearBasket =>
       'آیا از خالی کردن کل سبد خرید اطمینان دارید؟';
+
+  @override
+  String get passwordRequirementLength => 'حداقل ۸ کاراکتر';
+
+  @override
+  String get passwordRequirementUppercase => 'حداقل یک حرف بزرگ (A-Z)';
+
+  @override
+  String get passwordRequirementLowercase => 'حداقل یک حرف کوچک (a-z)';
+
+  @override
+  String get passwordRequirementNumber => 'حداقل یک عدد (0-9)';
+
+  @override
+  String get passwordRequirementSpecial =>
+      'کاراکترهای خاص (!@#\$%^&*) - پیشنهادی';
 }

@@ -761,4 +761,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get confirmClearBasket =>
       'Are you sure you want to clear your entire basket?';
+
+  @override
+  String get passwordRequirementLength => 'At least 8 characters';
+
+  @override
+  String get passwordRequirementUppercase =>
+      'At least one uppercase letter (A-Z)';
+
+  @override
+  String get passwordRequirementLowercase =>
+      'At least one lowercase letter (a-z)';
+
+  @override
+  String get passwordRequirementNumber => 'At least one number (0-9)';
+
+  @override
+  String get passwordRequirementSpecial =>
+      'Special characters (!@#\$%^&*) - Recommended';
 }

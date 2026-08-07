@@ -757,4 +757,20 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get confirmClearBasket =>
       'Tüm sepetinizi temizlemek istediğinizden emin misiniz?';
+
+  @override
+  String get passwordRequirementLength => 'En az 8 karakter';
+
+  @override
+  String get passwordRequirementUppercase => 'En az bir büyük harf (A-Z)';
+
+  @override
+  String get passwordRequirementLowercase => 'En az bir küçük harf (a-z)';
+
+  @override
+  String get passwordRequirementNumber => 'En az bir rakam (0-9)';
+
+  @override
+  String get passwordRequirementSpecial =>
+      'Özel karakterler (!@#\$%^&*) - Önerilir';
 }

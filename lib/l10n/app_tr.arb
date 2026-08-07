@@ -270,5 +270,10 @@
   "confirmDeleteProduct": "Bu ürünü silmek istediğinizden emin misiniz?",
   "delete": "Sil",
   "clearBasket": "Sepeti Temizle",
-  "confirmClearBasket": "Tüm sepetinizi temizlemek istediğinizden emin misiniz?"
+  "confirmClearBasket": "Tüm sepetinizi temizlemek istediğinizden emin misiniz?",
+  "passwordRequirementLength": "En az 8 karakter",
+  "passwordRequirementUppercase": "En az bir büyük harf (A-Z)",
+  "passwordRequirementLowercase": "En az bir küçük harf (a-z)",
+  "passwordRequirementNumber": "En az bir rakam (0-9)",
+  "passwordRequirementSpecial": "Özel karakterler (!@#$%^&*) - Önerilir"
 }

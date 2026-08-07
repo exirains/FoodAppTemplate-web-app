@@ -16,6 +16,7 @@ import '../../core/localization/sangak_number_formatter.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import 'basket_provider.dart';
+import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 
 class BasketScreen extends ConsumerWidget {
@@ -179,8 +180,7 @@ class BasketScreen extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     
-    final phone = profile?.phoneNumber ?? '';
-    final hasPhone = phone.isNotEmpty && phone != '+90';
+    final hasPhone = AuthValidators.hasValidPhoneNumber(profile?.phoneNumber);
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),

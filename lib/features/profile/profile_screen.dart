@@ -15,6 +15,7 @@ import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/utils/action_guard.dart';
+import '../auth/auth_validators.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
@@ -169,8 +170,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           keyboardType: TextInputType.phone,
                           inputFormatters: [_TurkeyPhoneInputFormatter()],
                           validator: (value) {
-                            if (value == null || value.isEmpty || value == '+90 ') return l10n.requiredField;
-                            if (value.replaceAll(' ', '').length < 13) return l10n.invalidPhoneNumber;
+                            if (value == null || value.trim().isEmpty || AuthValidators.isDefaultPrefixOnly(value)) return l10n.requiredField;
+                            final error = AuthValidators.validatePhoneNumber(value);
+                            if (error != null) return l10n.invalidPhoneNumber;
                             return null;
                           },
                         ),
@@ -303,7 +305,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             
             Text(l10n.account, style: SangakTypography.title(context)),
             const SizedBox(height: 16),
-            if (user.userMetadata?['phone'] == null || (user.userMetadata?['phone'] as String).isEmpty || user.userMetadata?['phone'] == '+90')
+            if (!AuthValidators.hasValidPhoneNumber(user.userMetadata?['phone'] as String?))
               Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: Container(

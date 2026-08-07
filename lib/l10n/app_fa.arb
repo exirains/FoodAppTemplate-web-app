@@ -249,5 +249,10 @@
   "confirmDeleteProduct": "آیا از حذف این محصول اطمینان دارید؟",
   "delete": "حذف",
   "clearBasket": "خالی کردن سبد",
-  "confirmClearBasket": "آیا از خالی کردن کل سبد خرید اطمینان دارید؟"
+  "confirmClearBasket": "آیا از خالی کردن کل سبد خرید اطمینان دارید؟",
+  "passwordRequirementLength": "حداقل ۸ کاراکتر",
+  "passwordRequirementUppercase": "حداقل یک حرف بزرگ (A-Z)",
+  "passwordRequirementLowercase": "حداقل یک حرف کوچک (a-z)",
+  "passwordRequirementNumber": "حداقل یک عدد (0-9)",
+  "passwordRequirementSpecial": "کاراکترهای خاص (!@#$%^&*) - پیشنهادی"
 }

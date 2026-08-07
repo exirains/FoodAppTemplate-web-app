@@ -66,7 +66,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   /// Validate name field
   String? _validateName(String? value) {
-    if (value == null || value.isEmpty || value == '+90') {
+    if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context).requiredField;
     }
 
@@ -413,6 +413,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   PasswordStrengthIndicator(
                     password: _passwordController.text,
                     showLabel: true,
+                    showRequirements: true,
                   ),
                 ],
                 const SizedBox(height: SangakDimens.spacing16),

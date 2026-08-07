@@ -66,7 +66,7 @@ class UserProfile {
       'id': id,
       'email': email,
       'full_name': fullName,
-      'phone_number': phoneNumber,
+      'phone': phoneNumber, // Standardized to 'phone' for DB
       'role': role,
       'phone_verified': phoneVerified,
       'is_active': isActive,
@@ -81,7 +81,8 @@ class UserProfile {
       id: json['id'] as String,
       email: json['email'] as String,
       fullName: json['full_name'] as String?,
-      phoneNumber: json['phone_number'] as String?,
+      // Map both 'phone' and 'phone_number' for backwards compatibility, prioritize 'phone'
+      phoneNumber: (json['phone'] ?? json['phone_number']) as String?,
       role: json['role'] as String? ?? 'customer',
       phoneVerified: (json['phone_verified'] as bool?) ?? false,
       isActive: (json['is_active'] as bool?) ?? true,
