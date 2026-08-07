@@ -12,6 +12,7 @@ import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
+import '../../shared/widgets/reject_order_dialog.dart';
 import '../auth/auth_provider.dart';
 import 'admin_provider.dart';
 
@@ -40,7 +41,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, '${l10n.status}: ${newStatus.name}');
+        SangakToast.show(context, '${l10n.status}: ${newStatus.label}');
       }
     } catch (e) {
       if (mounted) {
@@ -362,10 +363,31 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     Widget action;
     switch (order.status) {
       case OrderStatus.pending:
-        action = SangakButton.primary(
-          label: l10n.acceptAndConfirm,
-          onPressed: () => _updateStatus(OrderStatus.confirmed),
-          isLoading: _isUpdating,
+        action = Row(
+          children: [
+            // 30% REJECT
+            SizedBox(
+              width: 100,
+              child: SangakButton.outlined(
+                label: l10n.reject,
+                foregroundColor: SangakColors.error,
+                borderColor: SangakColors.error.withValues(alpha: 0.3),
+                onPressed: () => RejectOrderDialog.show(
+                  context, 
+                  onConfirm: () => _updateStatus(OrderStatus.cancelled),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // 70% ACCEPT
+            Expanded(
+              child: SangakButton.primary(
+                label: l10n.acceptAndConfirm,
+                onPressed: () => _updateStatus(OrderStatus.confirmed),
+                isLoading: _isUpdating,
+              ),
+            ),
+          ],
         );
         break;
       case OrderStatus.confirmed:

@@ -61,7 +61,7 @@ class ProductManagementScreen extends ConsumerWidget {
   void _showEditProductDialog(BuildContext context, WidgetRef ref, dynamic bread) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Force use of cancel/save
+      barrierDismissible: false,
       builder: (context) => _EditProductDialog(bread: bread),
     );
   }
@@ -212,7 +212,9 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
   
   String? _imageUrl;
   String? _selectedCategoryId;
+  String? _selectedTag;
   bool _available = true;
+  bool _isOrganic = false;
   bool _isSaving = false;
   
   Uint8List? _previewBytes;
@@ -234,7 +236,9 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     
     _imageUrl = isEditing ? b.imageUrl : null;
     _selectedCategoryId = isEditing ? b.categoryId : null;
+    _selectedTag = isEditing ? b.tag : null;
     _available = isEditing ? b.available : true;
+    _isOrganic = isEditing ? b.isOrganic : false;
   }
 
   @override
@@ -266,8 +270,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     SangakConfirmDialog.show(
       context,
       title: l10n.cancel,
-      message: 'Discard all unsaved changes?',
-      confirmLabel: 'Discard',
+      message: l10n.discardChanges,
+      confirmLabel: l10n.discard,
       cancelLabel: l10n.cancel,
       onConfirm: () => Navigator.pop(context),
       isDestructive: true,
@@ -280,47 +284,51 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     final l10n = AppLocalizations.of(context);
     SangakConfirmDialog.show(
       context,
-      title: l10n.saveChanges,
-      message: 'Are you sure you want to save this product?',
-      confirmLabel: 'Save',
+      title: widget.bread != null ? l10n.saveChanges : l10n.addProduct,
+      message: l10n.confirmSaveProduct,
+      confirmLabel: widget.bread != null ? l10n.save : l10n.add, 
       cancelLabel: l10n.cancel,
       onConfirm: () => _executeSave(),
     );
   }
 
   Future<void> _executeSave() async {
+    final l10n = AppLocalizations.of(context);
     final repo = ref.read(breadRepositoryProvider);
     
     setState(() => _isSaving = true);
     
     try {
-      final id = widget.bread?.id ?? 'PRD_${DateTime.now().millisecondsSinceEpoch}';
       String finalImageUrl = _imageUrl ?? '';
 
       if (_previewBytes != null && _imageExt != null) {
-        finalImageUrl = await repo.uploadImage(id, _previewBytes!, _imageExt!);
+        final storageId = widget.bread?.id ?? 'new_${DateTime.now().millisecondsSinceEpoch}';
+        finalImageUrl = await repo.uploadImage(storageId, _previewBytes!, _imageExt!);
       }
 
       final price = double.tryParse(_priceController.text) ?? 0.0;
       
       final productData = {
-        'id': id,
         'name': _nameEnController.text.trim(),
         'description': _descEnController.text.trim(),
         'price': price,
         'image_url': finalImageUrl,
         'category_id': _selectedCategoryId ?? '8906660b-8d18-4720-bc2d-520e50e1ef00',
         'available': _available,
+        'is_organic': _isOrganic,
+        'tag': (_selectedTag == 'none' || _selectedTag == null) ? null : _selectedTag,
       };
 
+      String productId;
       if (widget.bread != null) {
-        await repo.updateProduct(id, productData);
+        productId = widget.bread.id;
+        await repo.updateProduct(productId, productData);
       } else {
-        await repo.addProduct(productData);
+        final newProduct = await repo.addProduct(productData);
+        productId = newProduct['id'];
       }
 
-      // Update Translations
-      await repo.updateTranslations(id, {
+      await repo.updateTranslations(productId, {
         'en': {'name': _nameEnController.text.trim(), 'description': _descEnController.text.trim()},
         'tr': {'name': _nameTrController.text.trim(), 'description': _descTrController.text.trim()},
         'fa': {'name': _nameFaController.text.trim(), 'description': _descFaController.text.trim()},
@@ -328,9 +336,10 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
       await ref.read(cacheServiceProvider).clear();
       ref.invalidate(breadsProvider);
+      ref.invalidate(popularBreadsProvider);
       
       if (mounted) {
-        SangakToast.show(context, 'Product saved successfully');
+        SangakToast.show(context, l10n.productSavedSuccess);
         Navigator.pop(context);
       }
     } catch (e) {
@@ -344,6 +353,20 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final categoriesAsync = ref.watch(categoriesProvider);
+
+    final tags = [
+      {'value': 'none', 'label': l10n.productTagNone},
+      {'value': 'Bestseller', 'label': l10n.productTagBestseller},
+      {'value': 'Special', 'label': l10n.productTagSpecial},
+      {'value': 'New', 'label': l10n.productTagNew},
+      {'value': 'Limited', 'label': l10n.productTagLimited},
+      {'value': 'Traditional', 'label': 'Traditional'},
+    ];
+
+    final currentTagValue = _selectedTag ?? 'none';
+    if (!tags.any((t) => t['value'] == currentTagValue)) {
+      tags.add({'value': currentTagValue, 'label': currentTagValue});
+    }
 
     return AlertDialog(
       title: Text(widget.bread != null ? l10n.editProduct : l10n.addProduct),
@@ -367,12 +390,12 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                      ? Image.memory(_previewBytes!, fit: BoxFit.cover)
                      : _imageUrl != null 
                         ? CachedNetworkImage(imageUrl: _imageUrl!, fit: BoxFit.cover)
-                        : const Column(
+                        : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add_a_photo_outlined, size: 40, color: SangakColors.primary),
-                              SizedBox(height: 8),
-                              Text('Tap to select image'),
+                              const Icon(Icons.add_a_photo_outlined, size: 40, color: SangakColors.primary),
+                              const SizedBox(height: 8),
+                              Text(l10n.imageUrl),
                             ],
                           ),
                 ),
@@ -390,13 +413,13 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                   onChanged: (v) => setState(() => _selectedCategoryId = v),
                 ),
                 loading: () => const LinearProgressIndicator(),
-                error: (error, stack) => const Text('Error loading categories'),
+                error: (error, stack) => Text(l10n.errorLoadingCategories),
               ),
               
               const SizedBox(height: 12),
               Row(
                 children: [
-                  const Text('Available for Sale'),
+                  Text(l10n.available),
                   const Spacer(),
                   Switch(
                     value: _available,
@@ -407,26 +430,48 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               ),
 
               const Divider(height: 32),
-              SangakTextField(
-                label: l10n.newPrice, 
-                controller: _priceController, 
-                keyboardType: TextInputType.number,
-                validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
-              ),
+            Row(
+              children: [
+                Text(l10n.organic),
+                const Spacer(),
+                Switch(
+                  value: _isOrganic,
+                  onChanged: (v) => setState(() => _isOrganic = v),
+                  activeThumbColor: SangakColors.primary,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              initialValue: currentTagValue,
+              decoration: const InputDecoration(labelText: 'Tag'),
+              items: tags.map((t) => DropdownMenuItem(
+                value: t['value'],
+                child: Text(t['label']!),
+              )).toList(),
+              onChanged: (v) => setState(() => _selectedTag = v),
+            ),
+            const SizedBox(height: 12),
+            SangakTextField(
+              label: l10n.price, 
+              controller: _priceController, 
+              keyboardType: TextInputType.number,
+              validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+            ),
               
               const SizedBox(height: 24),
               _buildSectionTitle(l10n.originalName),
               SangakTextField(
                 label: 'Name (EN)', 
                 controller: _nameEnController,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (EN)', 
                 controller: _descEnController, 
                 maxLines: 2,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
 
               const SizedBox(height: 24),
@@ -434,14 +479,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               SangakTextField(
                 label: 'Name (TR)', 
                 controller: _nameTrController,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (TR)', 
                 controller: _descTrController, 
                 maxLines: 2,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
 
               const SizedBox(height: 24),
@@ -449,14 +494,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               SangakTextField(
                 label: 'Name (FA)', 
                 controller: _nameFaController,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (FA)', 
                 controller: _descFaController, 
                 maxLines: 2,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
             ],
           ),
@@ -465,8 +510,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
       actions: [
         TextButton(onPressed: _onCancel, child: Text(l10n.cancel)),
         SangakButton.primary(
-          label: 'Save', // Shorter label to avoid truncation
-          width: 100,
+          label: widget.bread != null ? l10n.save : l10n.add, 
+          width: 140, // Increased width to prevent Turkish Kaydet cut-off
           isLoading: _isSaving,
           onPressed: _isSaving ? null : _onSave,
         ),

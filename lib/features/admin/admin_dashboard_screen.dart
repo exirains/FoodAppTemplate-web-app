@@ -164,53 +164,63 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildStatItem(BuildContext context, String label, String value, IconData icon, Color color, {VoidCallback? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: SangakColors.surface,
+    return Container(
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+        boxShadow: SangakDimens.shadowLow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-          boxShadow: SangakDimens.shadowLow,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(icon, color: color, size: 24),
-            Column(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(value, style: SangakTypography.h3(context)),
-                Text(label, style: SangakTypography.caption(context)),
+                Icon(icon, color: color, size: 24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(value, style: SangakTypography.h3(context)),
+                    Text(label, style: SangakTypography.caption(context)),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildQuickAction(BuildContext context, String label, IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: SangakColors.surface,
+    return Container(
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        border: Border.all(color: SangakColors.border),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-          border: Border.all(color: SangakColors.border),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: SangakColors.ink, size: 24),
-            const SizedBox(width: 16),
-            Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-            const Spacer(),
-            const Icon(Icons.chevron_right_rounded, color: SangakColors.inkLight),
-          ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              children: [
+                Icon(icon, color: SangakColors.ink, size: 24),
+                const SizedBox(width: 16),
+                Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                const Spacer(),
+                const Icon(Icons.chevron_right_rounded, color: SangakColors.inkLight),
+              ],
+            ),
+          ),
         ),
       ),
     );

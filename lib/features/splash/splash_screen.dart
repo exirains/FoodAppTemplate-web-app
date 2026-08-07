@@ -54,12 +54,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   }
 
   Future<void> _init() async {
-    // Artificial delay for the "Signature Brand Moment"
+    // 1. Signature Brand Moment
     await Future.delayed(const Duration(seconds: 2));
     
     if (!mounted) return;
 
-    // Check for Updates
+    // 2. Check for Updates
     final updateService = ref.read(updateServiceProvider);
     final updateInfo = await updateService.checkForUpdates();
 
@@ -76,17 +76,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
           onDismiss: updateInfo.forceUpdate ? null : () => Navigator.pop(context),
         ),
       );
-      if (updateInfo.forceUpdate) return; // Halt if forced and not updated
+      if (updateInfo.forceUpdate) return; 
     }
 
     if (!mounted) return;
 
+    // 3. Logic Redirect
     final storage = ref.read(storageServiceProvider);
-    final language = storage.language;
-    final isFirstLaunch = storage.isFirstLaunch;
-
-    if (isFirstLaunch || language == null) {
-      // Mark first launch as done when they reach language selection
+    
+    if (storage.isFirstLaunch || storage.language == null) {
       await storage.setFirstLaunch(false);
       if (mounted) context.go('/language');
       return;
@@ -137,13 +135,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                   tag: 'app_logo',
                   child: AppLogo.large(),
                 ),
-                const SizedBox(height: 56), // More space
+                const SizedBox(height: 56), 
                 Text(
                   l10n.appName.toUpperCase(),
                   style: SangakTypography.display(context).copyWith(
-                    letterSpacing: 8, // Heroic spacing
+                    letterSpacing: 8, 
                     color: SangakColors.primary,
-                    fontSize: 48, // Flagship size
+                    fontSize: 48, 
                   ),
                 ),
                 const SizedBox(height: 12),

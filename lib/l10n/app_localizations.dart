@@ -1575,6 +1575,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Special characters (!@#\$%^&*) - Recommended'**
   String get passwordRequirementSpecial;
+
+  /// No description provided for @accountDisabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Disabled'**
+  String get accountDisabledTitle;
+
+  /// No description provided for @accountDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been disabled for violating the rules and guidelines. You are only permitted to use the app as a viewer. Actions such as placing orders, updating your profile, or adding favorites are restricted.'**
+  String get accountDisabledMessage;
+
+  /// No description provided for @iUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'I Understand'**
+  String get iUnderstand;
+
+  /// No description provided for @searchByPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or email...'**
+  String get searchByPlaceholder;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @filterAdmins.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins'**
+  String get filterAdmins;
+
+  /// No description provided for @filterStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get filterStaff;
+
+  /// No description provided for @filterDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get filterDelivery;
+
+  /// No description provided for @filterDisabledOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled Only'**
+  String get filterDisabledOnly;
+
+  /// No description provided for @editProfileButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileButton;
+
+  /// No description provided for @enableAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get enableAccount;
+
+  /// No description provided for @disableAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get disableAccount;
+
+  /// No description provided for @userStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'User status updated'**
+  String get userStatusUpdated;
+
+  /// No description provided for @noUsersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found'**
+  String get noUsersFound;
+
+  /// No description provided for @editUserProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User Profile'**
+  String get editUserProfile;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @discardChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard all unsaved changes?'**
+  String get discardChanges;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @confirmSaveProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to save this product?'**
+  String get confirmSaveProduct;
+
+  /// No description provided for @productSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Product saved successfully'**
+  String get productSavedSuccess;
+
+  /// No description provided for @productTagBestseller.
+  ///
+  /// In en, this message translates to:
+  /// **'Bestseller'**
+  String get productTagBestseller;
+
+  /// No description provided for @productTagSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'Special'**
+  String get productTagSpecial;
+
+  /// No description provided for @productTagNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get productTagNew;
+
+  /// No description provided for @productTagLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited'**
+  String get productTagLimited;
+
+  /// No description provided for @productTagNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No Tag'**
+  String get productTagNone;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @confirmStatusChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to {status} account for {name}?'**
+  String confirmStatusChange(String status, String name);
+
+  /// No description provided for @enable.
+  ///
+  /// In en, this message translates to:
+  /// **'enable'**
+  String get enable;
+
+  /// No description provided for @disable.
+  ///
+  /// In en, this message translates to:
+  /// **'disable'**
+  String get disable;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get statusDisabled;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @rejectOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject Order'**
+  String get rejectOrder;
+
+  /// No description provided for @confirmRejectMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide to confirm rejection of this order. This action cannot be undone.'**
+  String get confirmRejectMessage;
+
+  /// No description provided for @slidetoReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide to Reject'**
+  String get slidetoReject;
 }
 
 class _AppLocalizationsDelegate

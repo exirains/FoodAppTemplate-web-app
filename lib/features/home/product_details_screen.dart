@@ -124,12 +124,24 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   const SizedBox(height: SangakDimens.spacing12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: Text(displayName, style: SangakTypography.h1(context)),
+                        child: Text(
+                          displayName, 
+                          style: SangakTypography.h1(context).copyWith(fontSize: 24),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      Text(formattedPrice, style: SangakTypography.h1(context).copyWith(color: SangakColors.primary)),
+                      const SizedBox(width: 16),
+                      Text(
+                        formattedPrice, 
+                        style: SangakTypography.h1(context).copyWith(
+                          color: SangakColors.primary,
+                          fontSize: 24,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing8),
@@ -152,13 +164,19 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   const SizedBox(height: SangakDimens.spacing32),
                   
                   // Nutrition / Details Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildInfoItem(Icons.timer_outlined, l10n.mins(widget.bread.prepTime)),
-                      _buildInfoItem(Icons.local_fire_department_outlined, l10n.kcal(widget.bread.calories)),
-                      if (widget.bread.isOrganic) _buildInfoItem(Icons.eco_outlined, l10n.organic),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildInfoItem(Icons.timer_outlined, l10n.mins(widget.bread.prepTime)),
+                        const SizedBox(width: 12),
+                        _buildInfoItem(Icons.local_fire_department_outlined, l10n.kcal(widget.bread.calories)),
+                        if (widget.bread.isOrganic) ...[
+                          const SizedBox(width: 12),
+                          _buildInfoItem(Icons.eco_outlined, l10n.organic),
+                        ],
+                      ],
+                    ),
                   ),
                   
                   const SizedBox(height: 120), // Space for bottom button

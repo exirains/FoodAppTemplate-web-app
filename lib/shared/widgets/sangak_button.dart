@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
-import '../../core/design_system/sangak_tokens.dart';
 
 enum SangakButtonVariant { primary, outlined, ghost }
 
-/// Sangak Design System Button (v1.0.0)
+/// Sangak Design System Button (v1.1.0)
 ///
-/// Supports Primary, Outlined, and Ghost variants with Loading and Disabled states.
+/// Refined with Material/InkWell for superior gesture stability and reliability.
 class SangakButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -69,8 +68,6 @@ class SangakButton extends StatefulWidget {
 }
 
 class _SangakButtonState extends State<SangakButton> {
-  bool _isPressed = false;
-
   bool get _isEnabled => widget.onPressed != null && !widget.isLoading;
 
   Color _getBackgroundColor() {
@@ -80,10 +77,10 @@ class _SangakButtonState extends State<SangakButton> {
     
     switch (widget.variant) {
       case SangakButtonVariant.primary:
-        return widget.backgroundColor ?? (_isPressed ? SangakColors.secondary : SangakColors.primary);
+        return widget.backgroundColor ?? SangakColors.primary;
       case SangakButtonVariant.outlined:
       case SangakButtonVariant.ghost:
-        return _isPressed ? SangakColors.background : Colors.transparent;
+        return Colors.transparent;
     }
   }
 
@@ -112,28 +109,28 @@ class _SangakButtonState extends State<SangakButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      enabled: _isEnabled,
-      label: widget.label,
-      child: GestureDetector(
-        onTapDown: _isEnabled ? (_) => setState(() => _isPressed = true) : null,
-        onTapUp: _isEnabled ? (_) => setState(() => _isPressed = false) : null,
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: _isEnabled ? widget.onPressed : null,
-        child: AnimatedScale(
-          scale: _isPressed ? 0.98 : 1.0,
-          duration: SangakTokens.animFast,
-          child: AnimatedContainer(
-            duration: SangakTokens.animFast,
-            width: widget.width,
-            height: 54, // Fixed height for consistency
+    return Container(
+      width: widget.width,
+      height: 54, // Signature standard height
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: _getBackgroundColor(),
+        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: _isEnabled ? widget.onPressed : null,
+          splashColor: _isEnabled 
+              ? (widget.variant == SangakButtonVariant.primary 
+                  ? Colors.white10 
+                  : SangakColors.primary.withValues(alpha: 0.1))
+              : null,
+          highlightColor: Colors.transparent,
+          child: Container(
             padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
             decoration: BoxDecoration(
-              color: _getBackgroundColor(),
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
               border: _getBorder(),
-              boxShadow: widget.variant == SangakButtonVariant.primary && !_isPressed
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              boxShadow: widget.variant == SangakButtonVariant.primary && _isEnabled
                   ? SangakDimens.shadowLow
                   : null,
             ),
@@ -165,6 +162,7 @@ class _SangakButtonState extends State<SangakButton> {
                               widget.label,
                               style: SangakTypography.button(context).copyWith(
                                 color: _getForegroundColor(),
+                                fontWeight: FontWeight.w700,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,

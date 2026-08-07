@@ -7,6 +7,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../auth/auth_provider.dart';
+import '../auth/profile_provider.dart';
 import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 import 'tab_provider.dart';
@@ -22,6 +23,7 @@ import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/sangak_skeletons.dart';
+import '../../shared/widgets/user_role_tag.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -63,9 +65,15 @@ class HomeScreen extends ConsumerWidget {
                         Text(GreetingService.getGreeting(context), style: SangakTypography.bodySmall(context)),
                         const SizedBox(height: 1),
                         if (!isGuest)
-                          Text(
-                            user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                            style: SangakTypography.h3(context),
+                          Row(
+                            children: [
+                              Text(
+                                user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
+                                style: SangakTypography.h3(context),
+                              ),
+                              const SizedBox(width: 8),
+                              UserRoleTag(role: ref.watch(userProfileProvider).value?.role ?? 'customer'),
+                            ],
                           ),
                         if (isGuest)
                           Padding(

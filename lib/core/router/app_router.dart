@@ -26,6 +26,8 @@ import '../../features/delivery/delivery_order_detail_screen.dart';
 import '../../features/auth/profile_provider.dart';
 import '../../features/auth/auth_provider.dart';
 import '../../models/bread.dart';
+import '../../main.dart';
+import 'router_notifier.dart';
 
 // Helper for silky smooth transitions
 CustomTransitionPage _buildPageWithTransition<T>({
@@ -53,29 +55,50 @@ CustomTransitionPage _buildPageWithTransition<T>({
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-  final profileAsync = ref.watch(userProfileProvider);
+  final notifier = ref.watch(routerNotifierProvider);
 
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: notifier,
     redirect: (context, state) {
-      final user = authState.asData?.value;
-      final profile = profileAsync.value;
-      final isLoggingIn = state.uri.path == '/login' || state.uri.path == '/register';
+      final authState = ref.read(authProvider);
+      final profileAsync = ref.read(userProfileProvider);
+      final storage = ref.read(storageServiceProvider);
 
-      if (user != null && profile != null && isLoggingIn) {
-        // Redirect based on role after login
+      final user = authState.asData?.value;
+      final profile = profileAsync.asData?.value;
+      
+      final isSplash = state.uri.path == '/';
+      final isLanguage = state.uri.path == '/language';
+      final isAuth = state.uri.path == '/login' || state.uri.path == '/register';
+
+      // 1. Force Language Selection if never done
+      if (storage.isFirstLaunch || storage.language == null) {
+        if (!isLanguage && !isSplash) return '/language';
+        return null;
+      }
+
+      // 2. Redirect logged in users away from auth pages
+      if (user != null && profile != null && isAuth) {
         switch (profile.role) {
-          case 'admin':
-            return '/admin';
-          case 'staff':
-            return '/staff';
-          case 'delivery':
-            return '/delivery';
-          default:
-            return '/home';
+          case 'admin': return '/admin';
+          case 'staff': return '/staff';
+          case 'delivery': return '/delivery';
+          default: return '/home';
         }
       }
+
+      // 3. Handle Logout: Redirect users away from protected pages if no longer logged in
+      final isProtected = state.uri.path.startsWith('/admin') || 
+                         state.uri.path.startsWith('/staff') || 
+                         state.uri.path.startsWith('/delivery') ||
+                         state.uri.path == '/orders' ||
+                         state.uri.path == '/checkout';
+      
+      if (user == null && isProtected) {
+        return '/home';
+      }
+
       return null;
     },
     routes: [
@@ -266,7 +289,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/product-details',
         pageBuilder: (context, state) {
-          final bread = state.extra as Bread;
+          Bread? bread;
+          if (state.extra is Bread) {
+            bread = state.extra as Bread;
+          } else if (state.extra is Map<String, dynamic>) {
+            bread = Bread.fromJson(state.extra as Map<String, dynamic>);
+          }
+          
+          if (bread == null) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const MainScreen(), // Fallback
+            );
+          }
+
           return _buildPageWithTransition(
             context: context,
             state: state,

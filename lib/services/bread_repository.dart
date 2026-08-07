@@ -193,13 +193,16 @@ class BreadRepository {
   }
 
   /// Admin: Add new product
-  Future<void> addProduct(Map<String, dynamic> data) async {
-    await _client.from('products').insert(data);
+  Future<Map<String, dynamic>> addProduct(Map<String, dynamic> data) async {
+    return await _client.from('products').insert(data).select().single();
   }
 
   /// Admin: Update product details
   Future<void> updateProduct(String id, Map<String, dynamic> data) async {
-    await _client.from('products').update(data).eq('id', id);
+    final response = await _client.from('products').update(data).eq('id', id).select();
+    if ((response as List).isEmpty) {
+      throw Exception('Product not found or update failed');
+    }
   }
 
   /// Admin: Upload product image

@@ -773,4 +773,114 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get passwordRequirementSpecial =>
       'Özel karakterler (!@#\$%^&*) - Önerilir';
+
+  @override
+  String get accountDisabledTitle => 'Hesap Devre Dışı';
+
+  @override
+  String get accountDisabledMessage =>
+      'Hesabınız kuralları ve yönergeleri ihlal ettiğiniz için devre dışı bırakıldı. Uygulamayı yalnızca izleyici olarak kullanmanıza izin verilmektedir. Sipariş verme, profilinizi güncelleme veya favori ekleme gibi eylemler kısıtlanmıştır.';
+
+  @override
+  String get iUnderstand => 'Anladım';
+
+  @override
+  String get searchByPlaceholder => 'Ad veya e-posta ile ara...';
+
+  @override
+  String get filterAll => 'Hepsi';
+
+  @override
+  String get filterAdmins => 'Yöneticiler';
+
+  @override
+  String get filterStaff => 'Personel';
+
+  @override
+  String get filterDelivery => 'Kuryeler';
+
+  @override
+  String get filterDisabledOnly => 'Sadece Devre Dışı';
+
+  @override
+  String get editProfileButton => 'Profili Düzenle';
+
+  @override
+  String get enableAccount => 'Etkinleştir';
+
+  @override
+  String get disableAccount => 'Devre Dışı Bırak';
+
+  @override
+  String get userStatusUpdated => 'Kullanıcı durumu güncellendi';
+
+  @override
+  String get noUsersFound => 'Kullanıcı bulunamadı';
+
+  @override
+  String get editUserProfile => 'Kullanıcı Profilini Düzenle';
+
+  @override
+  String get price => 'Fiyat';
+
+  @override
+  String get discardChanges => 'Kaydedilmemiş tüm değişiklikleri iptal et?';
+
+  @override
+  String get discard => 'İptal Et';
+
+  @override
+  String get confirmSaveProduct =>
+      'Bu ürünü kaydetmek istediğinizden emin misiniz?';
+
+  @override
+  String get productSavedSuccess => 'Ürün başarıyla kaydedildi';
+
+  @override
+  String get productTagBestseller => 'En Çok Satan';
+
+  @override
+  String get productTagSpecial => 'Özel';
+
+  @override
+  String get productTagNew => 'Yeni';
+
+  @override
+  String get productTagLimited => 'Sınırlı';
+
+  @override
+  String get productTagNone => 'Etiket Yok';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String confirmStatusChange(String status, String name) {
+    return '$name kullanıcısını $status istediğinizden emin misiniz?';
+  }
+
+  @override
+  String get enable => 'etkinleştirmek';
+
+  @override
+  String get disable => 'devre dışı bırakmak';
+
+  @override
+  String get statusActive => 'Aktif';
+
+  @override
+  String get statusDisabled => 'Devre Dışı';
+
+  @override
+  String get reject => 'Reddet';
+
+  @override
+  String get rejectOrder => 'Siparişi Reddet';
+
+  @override
+  String get confirmRejectMessage =>
+      'Siparişi reddetmek için kaydırın. Bu işlem geri alınamaz.';
+
+  @override
+  String get slidetoReject => 'Reddetmek için Kaydır';
 }

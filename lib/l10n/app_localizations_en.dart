@@ -779,4 +779,114 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get passwordRequirementSpecial =>
       'Special characters (!@#\$%^&*) - Recommended';
+
+  @override
+  String get accountDisabledTitle => 'Account Disabled';
+
+  @override
+  String get accountDisabledMessage =>
+      'Your account has been disabled for violating the rules and guidelines. You are only permitted to use the app as a viewer. Actions such as placing orders, updating your profile, or adding favorites are restricted.';
+
+  @override
+  String get iUnderstand => 'I Understand';
+
+  @override
+  String get searchByPlaceholder => 'Search by name or email...';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterAdmins => 'Admins';
+
+  @override
+  String get filterStaff => 'Staff';
+
+  @override
+  String get filterDelivery => 'Delivery';
+
+  @override
+  String get filterDisabledOnly => 'Disabled Only';
+
+  @override
+  String get editProfileButton => 'Edit Profile';
+
+  @override
+  String get enableAccount => 'Enable';
+
+  @override
+  String get disableAccount => 'Disable';
+
+  @override
+  String get userStatusUpdated => 'User status updated';
+
+  @override
+  String get noUsersFound => 'No users found';
+
+  @override
+  String get editUserProfile => 'Edit User Profile';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get discardChanges => 'Discard all unsaved changes?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get confirmSaveProduct =>
+      'Are you sure you want to save this product?';
+
+  @override
+  String get productSavedSuccess => 'Product saved successfully';
+
+  @override
+  String get productTagBestseller => 'Bestseller';
+
+  @override
+  String get productTagSpecial => 'Special';
+
+  @override
+  String get productTagNew => 'New';
+
+  @override
+  String get productTagLimited => 'Limited';
+
+  @override
+  String get productTagNone => 'No Tag';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String confirmStatusChange(String status, String name) {
+    return 'Are you sure you want to $status account for $name?';
+  }
+
+  @override
+  String get enable => 'enable';
+
+  @override
+  String get disable => 'disable';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusDisabled => 'Disabled';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get rejectOrder => 'Reject Order';
+
+  @override
+  String get confirmRejectMessage =>
+      'Slide to confirm rejection of this order. This action cannot be undone.';
+
+  @override
+  String get slidetoReject => 'Slide to Reject';
 }

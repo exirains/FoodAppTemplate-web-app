@@ -15,6 +15,7 @@ import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/utils/action_guard.dart';
+import '../../shared/widgets/user_role_tag.dart';
 import '../auth/auth_validators.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
@@ -278,9 +279,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Center(
               child: Column(
                 children: [
-                  Text(
-                    user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                    style: SangakTypography.h2(context),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
+                        style: SangakTypography.h2(context),
+                      ),
+                      const SizedBox(width: 8),
+                      UserRoleTag(role: profile?.role ?? 'customer'),
+                    ],
                   ),
                   Text(
                     user.email ?? '',
@@ -346,10 +354,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () => context.push('/payment-selection?from=profile'), context),
             
             const SizedBox(height: 48),
-            SangakButton.primary(
+            SangakButton.outlined(
               label: l10n.signOut,
               width: double.infinity,
-              backgroundColor: SangakColors.error,
+              foregroundColor: SangakColors.error,
+              borderColor: SangakColors.error.withValues(alpha: 0.3),
               onPressed: _signOut,
             ),
             const SizedBox(height: 40),

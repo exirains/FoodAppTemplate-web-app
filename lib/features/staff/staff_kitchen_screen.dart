@@ -9,6 +9,7 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/widgets/role_guard.dart';
+import '../../shared/widgets/reject_order_dialog.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
 import '../admin/admin_provider.dart';
@@ -203,10 +204,31 @@ class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: widget.order.status == OrderStatus.pending
-                ? SangakButton.primary(
-                    label: widget.l10n.acceptAndConfirm,
-                    onPressed: () => _updateStatus(OrderStatus.confirmed),
-                    isLoading: _isUpdating,
+                ? Row(
+                    children: [
+                      // 30% REJECT
+                      SizedBox(
+                        width: 100,
+                        child: SangakButton.outlined(
+                          label: widget.l10n.reject,
+                          foregroundColor: SangakColors.error,
+                          borderColor: SangakColors.error.withValues(alpha: 0.3),
+                          onPressed: () => RejectOrderDialog.show(
+                            context, 
+                            onConfirm: () => _updateStatus(OrderStatus.cancelled),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // 70% ACCEPT
+                      Expanded(
+                        child: SangakButton.primary(
+                          label: widget.l10n.acceptAndConfirm,
+                          onPressed: () => _updateStatus(OrderStatus.confirmed),
+                          isLoading: _isUpdating,
+                        ),
+                      ),
+                    ],
                   )
                 : widget.order.status == OrderStatus.confirmed
                     ? SangakButton.primary(

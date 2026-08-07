@@ -371,7 +371,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get invalidCredentials => 'ایمیل یا رمز نادرست';
 
   @override
-  String get networkError => 'مشکل اتصال';
+  String get networkError => 'خطای اتصال';
 
   @override
   String get tooManyAttempts => 'تلاش بیش از حد';
@@ -432,7 +432,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get next => 'بعدی';
 
   @override
-  String get alreadyHaveAccount => 'حساب دارید؟ ';
+  String get alreadyHaveAccount => 'قبلاً حساب کاربری دارید؟ ';
 
   @override
   String get profileCompletion => 'تکمیل پروفایل';
@@ -459,10 +459,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get nameTooLong => 'نام طولانی است';
 
   @override
-  String get activity => 'activity';
+  String get activity => 'فعالیت‌ها';
 
   @override
-  String get account => 'حساب';
+  String get account => 'حساب کاربری';
 
   @override
   String get favorites => 'علاقه‌مندی‌ها';
@@ -474,7 +474,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editProfile => 'ویرایش پروفایل';
 
   @override
-  String get signOut => 'خروج';
+  String get signOut => 'خروج از حساب';
 
   @override
   String get signOutConfirmation => 'خارج می‌شوید؟';
@@ -651,7 +651,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pickupOrder => 'تحویل گرفتن';
 
   @override
-  String get confirmPickupMessage => 'سفارش را تحویل می‌می‌گیرید؟';
+  String get confirmPickupMessage => 'سفارش را تحویل می‌گیرید؟';
 
   @override
   String get acceptAndConfirm => 'پذیرش و تایید';
@@ -765,4 +765,113 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get passwordRequirementSpecial =>
       'کاراکترهای خاص (!@#\$%^&*) - پیشنهادی';
+
+  @override
+  String get accountDisabledTitle => 'حساب کاربری مسدود شد';
+
+  @override
+  String get accountDisabledMessage =>
+      'حساب کاربری شما به دلیل نقض قوانین و مقررات غیرفعال شده است. شما فقط مجاز هستید به عنوان مشاهده‌گر از برنامه استفاده کنید. اقداماتی مانند ثبت سفارش، به‌روزرسانی پروفایل یا افزودن به علاقه‌مندی‌ها محدود شده‌اند.';
+
+  @override
+  String get iUnderstand => 'متوجه شدم';
+
+  @override
+  String get searchByPlaceholder => 'جستجو با نام یا ایمیل...';
+
+  @override
+  String get filterAll => 'همه';
+
+  @override
+  String get filterAdmins => 'مدیران';
+
+  @override
+  String get filterStaff => 'کارکنان';
+
+  @override
+  String get filterDelivery => 'پیک‌ها';
+
+  @override
+  String get filterDisabledOnly => 'فقط غیرفعال';
+
+  @override
+  String get editProfileButton => 'ویرایش پروفایل';
+
+  @override
+  String get enableAccount => 'فعال سازی';
+
+  @override
+  String get disableAccount => 'غیرفعال سازی';
+
+  @override
+  String get userStatusUpdated => 'وضعیت کاربر بروزرسانی شد';
+
+  @override
+  String get noUsersFound => 'کاربری پیدا نشد';
+
+  @override
+  String get editUserProfile => 'ویرایش پروفایل کاربر';
+
+  @override
+  String get price => 'قیمت';
+
+  @override
+  String get discardChanges => 'تغییرات ذخیره نشده لغو شوند؟';
+
+  @override
+  String get discard => 'لغو تغییرات';
+
+  @override
+  String get confirmSaveProduct => 'آیا از ذخیره این محصول اطمینان دارید؟';
+
+  @override
+  String get productSavedSuccess => 'محصول با موفقیت ذخیره شد';
+
+  @override
+  String get productTagBestseller => 'پرفروش';
+
+  @override
+  String get productTagSpecial => 'ویژه';
+
+  @override
+  String get productTagNew => 'جدید';
+
+  @override
+  String get productTagLimited => 'محدود';
+
+  @override
+  String get productTagNone => 'بدون برچسب';
+
+  @override
+  String get save => 'ذخیره';
+
+  @override
+  String confirmStatusChange(String status, String name) {
+    return 'آیا از $status حساب کاربر $name اطمینان دارید؟';
+  }
+
+  @override
+  String get enable => 'فعال سازی';
+
+  @override
+  String get disable => 'غیرفعال سازی';
+
+  @override
+  String get statusActive => 'فعال';
+
+  @override
+  String get statusDisabled => 'مسدود شده';
+
+  @override
+  String get reject => 'رد کردن';
+
+  @override
+  String get rejectOrder => 'رد کردن سفارش';
+
+  @override
+  String get confirmRejectMessage =>
+      'برای رد کردن سفارش اسلایدر را بکشید. این عمل قابل بازگشت نیست.';
+
+  @override
+  String get slidetoReject => 'بکشید برای رد کردن';
 }
