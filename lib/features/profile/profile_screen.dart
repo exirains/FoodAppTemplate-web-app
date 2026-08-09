@@ -369,63 +369,75 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildActivityCard(IconData icon, String label, String value, BuildContext context, {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: SangakColors.surface,
+    return Container(
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+        boxShadow: SangakDimens.shadowLow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-          boxShadow: SangakDimens.shadowLow,
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: SangakColors.primary),
-            const SizedBox(height: 8),
-            Text(value, style: SangakTypography.h3(context)),
-            Text(label, style: SangakTypography.caption(context)),
-          ],
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Icon(icon, color: SangakColors.primary),
+                const SizedBox(height: 8),
+                Text(value, style: SangakTypography.h3(context)),
+                Text(label, style: SangakTypography.caption(context)),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildActionTile(IconData icon, String label, VoidCallback onTap, BuildContext context, {String? value, bool isPhone = false}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: SangakColors.surface,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-          border: Border.all(color: SangakColors.border),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: SangakColors.primary, size: 22),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Ink(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: SangakColors.surface,
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              border: Border.all(color: SangakColors.border),
+            ),
+            child: Row(
               children: [
-                Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-                if (value != null)
-                  Text(
-                    value,
-                    textDirection: isPhone ? TextDirection.ltr : null,
-                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
-                  ),
+                Icon(icon, color: SangakColors.primary, size: 22),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                    if (value != null)
+                      Text(
+                        value,
+                        textDirection: isPhone ? TextDirection.ltr : null,
+                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                      ),
+                  ],
+                ),
+                const Spacer(),
+                Icon(
+                  Directionality.of(context) == TextDirection.rtl 
+                      ? Icons.chevron_left 
+                      : Icons.chevron_right, 
+                  color: SangakColors.inkLight, 
+                  size: 20,
+                ),
               ],
             ),
-            const Spacer(),
-            Icon(
-              Directionality.of(context) == TextDirection.rtl 
-                  ? Icons.chevron_left 
-                  : Icons.chevron_right, 
-              color: SangakColors.inkLight, 
-              size: 20,
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -53,6 +53,7 @@ class OrderModel {
   final double totalPrice;
   final int? estimatedPrepTime;
   final String? assignedDeliveryPerson;
+  final String? deliveryCode;
   final DateTime createdAt;
   final List<OrderItem>? items;
   final Map<String, dynamic>? userProfile; // Joined customer info
@@ -67,6 +68,7 @@ class OrderModel {
     required this.totalPrice,
     this.estimatedPrepTime,
     this.assignedDeliveryPerson,
+    this.deliveryCode,
     required this.createdAt,
     this.items,
     this.userProfile,
@@ -93,6 +95,7 @@ class OrderModel {
       totalPrice: (json['total_price'] as num).toDouble(),
       estimatedPrepTime: json['estimated_prep_time'] as int?,
       assignedDeliveryPerson: json['assigned_delivery_person'] as String?,
+      deliveryCode: json['delivery_code']?.toString(),
       createdAt: DateTime.parse(json['created_at'] as String),
       items: json['order_items'] != null
           ? (json['order_items'] as List)

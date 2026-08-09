@@ -95,23 +95,28 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                     final category = isAll ? null : categories[index - 1];
                     final isSelected = isAll ? selectedCategoryId == null : selectedCategoryId == category?.id;
 
-                    return GestureDetector(
-                      onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category?.id,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: isSelected ? SangakColors.primary : Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: isSelected ? SangakColors.primary : SangakColors.border,
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category?.id,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Ink(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: isSelected ? SangakColors.primary : Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected ? SangakColors.primary : SangakColors.border,
+                            ),
                           ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          isAll ? l10n.all : category!.localizedName(lang),
-                          style: SangakTypography.title(context).copyWith(
-                            fontSize: 13,
-                            color: isSelected ? Colors.white : SangakColors.inkLight,
+                          child: Center(
+                            child: Text(
+                              isAll ? l10n.all : category!.localizedName(lang),
+                              style: SangakTypography.title(context).copyWith(
+                                fontSize: 13,
+                                color: isSelected ? Colors.white : SangakColors.inkLight,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -149,7 +154,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 24,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.64, // Matched with Popular Today to reduce padding
+                    childAspectRatio: 0.61, // Detached from home page sizing
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {
@@ -163,6 +168,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                       imageUrl: bread.imageUrl,
                       freshness: bread.freshness,
                       isFavorite: bread.isFavorite,
+                      imageAspectRatio: 1.0, // Square images for explore grid
                       onFavoriteToggle: () {
                         if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(

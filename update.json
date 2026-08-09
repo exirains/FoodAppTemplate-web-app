@@ -1,13 +1,13 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.3.1",
-  "build_number": 8,
+  "version": "1.3.2",
+  "build_number": 10,
   "force_update": false,
   "notes": [
-    "UI Enhancements: Improved user interface for better navigation and user experience",
-    "Bug Fixes: Resolved issues related to app crashes and performance glitches",
-    "Admin Panel: Added new features for admin users to manage content and users more effectively"
+    "UI bug fixes",
+    "Order History and tracking improvements",
+    "Order PIN system implementation"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.3.1.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/latest/download/Sangak_v1.3.2.apk"
 }

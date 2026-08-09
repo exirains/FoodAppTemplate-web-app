@@ -118,19 +118,49 @@ class _ProductCard extends ConsumerWidget {
                   style: SangakTypography.price(context),
                 ),
                 const SizedBox(height: 8),
-                _StatusChip(isActive: bread.available, l10n: l10n),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () async {
+                      try {
+                        await ref.read(breadRepositoryProvider).updateAvailability(bread.id, !bread.available);
+                        await ref.read(cacheServiceProvider).clear();
+                        ref.invalidate(breadsProvider);
+                        if (context.mounted) SangakToast.show(context, l10n.productStatusUpdated);
+                      } catch (e) {
+                        if (context.mounted) SangakToast.show(context, 'Error: $e');
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+                    child: _StatusChip(isActive: bread.available, l10n: l10n),
+                  ),
+                ),
               ],
             ),
           ),
           Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                onPressed: () => _showEditProductDialog(context, ref, bread),
-                icon: const Icon(Icons.edit_outlined, color: SangakColors.primary),
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: IconButton(
+                  onPressed: () => _showEditProductDialog(context, ref, bread),
+                  icon: const Icon(Icons.edit_outlined, color: SangakColors.primary, size: 20),
+                  padding: EdgeInsets.zero,
+                  splashRadius: 22,
+                ),
               ),
-              IconButton(
-                onPressed: () => _confirmDelete(context, ref, bread),
-                icon: const Icon(Icons.delete_outline_rounded, color: SangakColors.error),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: IconButton(
+                  onPressed: () => _confirmDelete(context, ref, bread),
+                  icon: const Icon(Icons.delete_outline_rounded, color: SangakColors.error, size: 20),
+                  padding: EdgeInsets.zero,
+                  splashRadius: 22,
+                ),
               ),
             ],
           ),
@@ -177,16 +207,21 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isActive ? SangakColors.success : SangakColors.error;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    return Ink(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         isActive ? l10n.available.toUpperCase() : 'DEACTIVATED',
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color, 
+          fontSize: 10, 
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }

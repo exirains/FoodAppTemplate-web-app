@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -8,6 +9,7 @@ import '../../shared/widgets/sangak_empty_states.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/locale_provider.dart';
 import '../home/home_provider.dart';
+import '../home/tab_provider.dart';
 import '../basket/basket_provider.dart';
 
 class FavoritesScreen extends ConsumerWidget {
@@ -37,7 +39,10 @@ class FavoritesScreen extends ConsumerWidget {
               message: l10n.saveYourFavoritesDescription,
               icon: Icons.favorite_border_rounded,
               actionLabel: l10n.explore,
-              onAction: () => Navigator.of(context).pop(),
+              onAction: () {
+                ref.read(tabProvider.notifier).state = 0;
+                context.go('/home');
+              },
             );
           }
 
@@ -65,6 +70,7 @@ class FavoritesScreen extends ConsumerWidget {
                     imageUrl: bread.imageUrl,
                     freshness: bread.freshness,
                     isFavorite: true,
+                    imageAspectRatio: 1.0, // Consistent with Explore grid
                     onFavoriteToggle: () {
                       ref.read(favoritesProvider.notifier).toggle(bread.id);
                     },

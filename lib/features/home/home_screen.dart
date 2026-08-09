@@ -186,7 +186,7 @@ class HomeScreen extends ConsumerWidget {
           if (popularBreadsAsync.value?.isNotEmpty ?? true)
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 345, // Optimized for 220px width cards
+                height: 292, // Further reduced to prevent excessive height
                 child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
                   padding: const EdgeInsetsDirectional.symmetric(horizontal: SangakDimens.spacing24),
@@ -204,7 +204,8 @@ class HomeScreen extends ConsumerWidget {
                       imageUrl: bread.imageUrl,
                       freshness: bread.freshness,
                       isFavorite: bread.isFavorite,
-                      width: 220, // Pass fixed width for horizontal scrolling
+                      width: 190, // Slightly narrower
+                      imageAspectRatio: 1, // Wider image (less tall)
                       onFavoriteToggle: () {
                         if (!ActionGuard.check(context, ref)) return;
                         AuthGate.run(
@@ -265,157 +266,198 @@ class HomeScreen extends ConsumerWidget {
                   (context, index) {
                     final bread = breads[index];
                     final displayName = bread.localizedName(lang);
+                    final bool isAvailable = bread.available;
+                    
                     return Padding(
                       padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
-                      child: GestureDetector(
-                        onTap: () => context.push('/product-details', extra: bread),
-                        child: Container(
-                          padding: const EdgeInsets.all(SangakDimens.spacing12),
-                          decoration: BoxDecoration(
-                            color: SangakColors.surface,
-                            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                            boxShadow: SangakDimens.shadowLow,
-                          ),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                                child: CachedNetworkImage(
-                                  imageUrl: bread.imageUrl,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                  memCacheHeight: 200,
-                                  placeholder: (context, url) => Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: SangakColors.border,
-                                    child: const Center(
-                                      child: SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
-                                      ),
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: SangakColors.border,
-                                    child: const Icon(Icons.breakfast_dining, color: SangakColors.inkLight),
-                                  ),
-                                ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: isAvailable ? () => context.push('/product-details', extra: bread) : null,
+                          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+                          child: Opacity(
+                            opacity: isAvailable ? 1.0 : 0.6,
+                            child: Ink(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: SangakColors.surface,
+                                borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+                                boxShadow: SangakDimens.shadowLow,
                               ),
-                              const SizedBox(width: SangakDimens.spacing16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      displayName,
-                                      style: SangakTypography.title(context),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      bread.localizedDescription(lang),
-                                      style: SangakTypography.bodySmall(context),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      SangakNumberFormatter.formatCurrency(bread.price, lang),
-                                      style: SangakTypography.price(context).copyWith(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
+                              child: Row(
                                 children: [
-                                  Consumer(builder: (context, ref, child) {
-                                    final isFavorite = ref.watch(isFavoriteProvider(bread.id));
-                                    return IconButton(
-                                      onPressed: () {
-                                        if (!ActionGuard.check(context, ref)) return;
-                                        AuthGate.run(
-                                          context,
-                                          ref,
-                                          action: () => ref.read(favoritesProvider.notifier).toggle(bread.id),
-                                          title: l10n.saveYourFavorites,
-                                          message: l10n.saveFavoritesMessage,
-                                        );
-                                      },
-                                      icon: Icon(
-                                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                                        color: isFavorite ? SangakColors.error : SangakColors.inkLight,
-                                        size: 20,
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                    child: ColorFiltered(
+                                      colorFilter: isAvailable 
+                                          ? const ColorFilter.mode(Colors.transparent, BlendMode.multiply)
+                                          : const ColorFilter.mode(Colors.grey, BlendMode.saturation),
+                                      child: CachedNetworkImage(
+                                        imageUrl: bread.imageUrl,
+                                        width: 72,
+                                        height: 72,
+                                        fit: BoxFit.cover,
+                                        memCacheHeight: 200,
+                                        placeholder: (context, url) => Container(
+                                          width: 80,
+                                          height: 80,
+                                          color: SangakColors.border,
+                                          child: const Center(
+                                            child: SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) => Container(
+                                          width: 80,
+                                          height: 80,
+                                          color: SangakColors.border,
+                                          child: const Icon(Icons.breakfast_dining, color: SangakColors.inkLight),
+                                        ),
                                       ),
-                                    );
-                                  }),
-                                  Consumer(builder: (context, ref, child) {
-                                    final basket = ref.watch(basketProvider);
-                                    final item = basket.where((item) => item.bread.id == bread.id).firstOrNull;
-                                    final quantity = item?.quantity ?? 0;
-                                    if (quantity > 0) {
-                                      return QuantitySelector(
-                                        quantity: quantity,
-                                        compact: true,
-                                        onIncrement: () {
-                                          if (!ActionGuard.check(context, ref)) return;
-                                          ref.read(basketProvider.notifier).addItem(bread);
-                                        },
-                                        onDecrement: () {
-                                          if (!ActionGuard.check(context, ref)) return;
-                                          if (quantity == 1) {
-                                            SangakConfirmDialog.show(
-                                              context,
-                                              title: l10n.remove,
-                                              message: l10n.removeItemFromBasket,
-                                              confirmLabel: l10n.remove,
-                                              cancelLabel: l10n.cancel,
-                                              onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
-                                              isDestructive: true,
-                                            );
-                                          } else {
-                                            ref.read(basketProvider.notifier).updateQuantity(bread.id, -1);
-                                          }
-                                        },
-                                        onDelete: () {
-                                          if (!ActionGuard.check(context, ref)) return;
-                                          SangakConfirmDialog.show(
-                                            context,
-                                            title: l10n.remove,
-                                            message: l10n.removeItemFromBasket,
-                                            confirmLabel: l10n.remove,
-                                            cancelLabel: l10n.cancel,
-                                            onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
-                                            isDestructive: true,
-                                          );
-                                        },
-                                      );
-                                    }
-                                    return IconButton(
-                                      onPressed: () {
-                                        if (!ActionGuard.check(context, ref)) return;
-                                        AuthGate.run(
-                                          context,
-                                          ref,
-                                          action: () {
-                                            ref.read(basketProvider.notifier).addItem(bread);
-                                            SangakToast.show(context, l10n.addedToBasket(displayName));
-                                          },
+                                    ),
+                                  ),
+                                  const SizedBox(width: SangakDimens.spacing16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          displayName,
+                                          style: SangakTypography.title(context).copyWith(
+                                            fontSize: 16,
+                                            color: isAvailable ? SangakColors.ink : SangakColors.inkLight,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          bread.localizedDescription(lang),
+                                          style: SangakTypography.bodySmall(context).copyWith(
+                                            color: SangakColors.inkLight,
+                                            height: 1.2,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          SangakNumberFormatter.formatCurrency(bread.price, lang),
+                                          style: SangakTypography.price(context).copyWith(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w800,
+                                            color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Consumer(builder: (context, ref, child) {
+                                        final isFavorite = ref.watch(isFavoriteProvider(bread.id));
+                                        return SizedBox(
+                                          height: 32,
+                                          width: 32,
+                                          child: IconButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              if (!ActionGuard.check(context, ref)) return;
+                                              AuthGate.run(
+                                                context,
+                                                ref,
+                                                action: () => ref.read(favoritesProvider.notifier).toggle(bread.id),
+                                                title: l10n.saveYourFavorites,
+                                                message: l10n.saveFavoritesMessage,
+                                              );
+                                            },
+                                            icon: Icon(
+                                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                                              color: isFavorite ? SangakColors.error : SangakColors.inkLight,
+                                              size: 20,
+                                            ),
+                                          ),
                                         );
-                                      },
-                                      icon: const Icon(Icons.add_circle, color: SangakColors.primary, size: 32),
-                                    );
-                                  }),
+                                      }),
+                                      const SizedBox(height: 8),
+                                      Consumer(builder: (context, ref, child) {
+                                        final basket = ref.watch(basketProvider);
+                                        final item = basket.where((item) => item.bread.id == bread.id).firstOrNull;
+                                        final quantity = item?.quantity ?? 0;
+                                        if (quantity > 0) {
+                                          return QuantitySelector(
+                                            quantity: quantity,
+                                            compact: true,
+                                            onIncrement: isAvailable ? () {
+                                              if (!ActionGuard.check(context, ref)) return;
+                                              ref.read(basketProvider.notifier).addItem(bread);
+                                            } : () {},
+                                            onDecrement: () {
+                                              if (!ActionGuard.check(context, ref)) return;
+                                              if (quantity == 1) {
+                                                SangakConfirmDialog.show(
+                                                  context,
+                                                  title: l10n.remove,
+                                                  message: l10n.removeItemFromBasket,
+                                                  confirmLabel: l10n.remove,
+                                                  cancelLabel: l10n.cancel,
+                                                  onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
+                                                  isDestructive: true,
+                                                );
+                                              } else {
+                                                ref.read(basketProvider.notifier).updateQuantity(bread.id, -1);
+                                              }
+                                            },
+                                            onDelete: () {
+                                              if (!ActionGuard.check(context, ref)) return;
+                                              SangakConfirmDialog.show(
+                                                context,
+                                                title: l10n.remove,
+                                                message: l10n.removeItemFromBasket,
+                                                confirmLabel: l10n.remove,
+                                                cancelLabel: l10n.cancel,
+                                                onConfirm: () => ref.read(basketProvider.notifier).removeItem(bread.id),
+                                                isDestructive: true,
+                                              );
+                                            },
+                                          );
+                                        }
+                                        return SizedBox(
+                                          height: 32,
+                                          width: 32,
+                                          child: IconButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed: isAvailable ? () {
+                                              if (!ActionGuard.check(context, ref)) return;
+                                              AuthGate.run(
+                                                context,
+                                                ref,
+                                                action: () {
+                                                  ref.read(basketProvider.notifier).addItem(bread);
+                                                  SangakToast.show(context, l10n.addedToBasket(displayName));
+                                                },
+                                              );
+                                            } : null,
+                                            icon: Icon(
+                                              Icons.add_circle, 
+                                              color: isAvailable ? SangakColors.primary : SangakColors.border, 
+                                              size: 28,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),

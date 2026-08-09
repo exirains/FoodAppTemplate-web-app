@@ -11,7 +11,8 @@ import '../../shared/widgets/sangak_button.dart';
 import 'checkout_provider.dart';
 
 class OrderConfirmationScreen extends ConsumerWidget {
-  const OrderConfirmationScreen({super.key});
+  final String? orderId;
+  const OrderConfirmationScreen({super.key, this.orderId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +21,13 @@ class OrderConfirmationScreen extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     
-    final orderNumber = 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+    // If orderId is provided, we can fetch real details if needed, 
+    // but for now we use state from checkout
+    
+    final orderNumber = orderId != null 
+        ? 'SNK-${orderId!.substring(0, 8).toUpperCase()}'
+        : 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+        
     final formattedOrderNumber = SangakNumberFormatter.format(orderNumber, lang);
     
     final prepMinutes = checkoutState.estimatedPrepMinutes == 0
@@ -30,49 +37,63 @@ class OrderConfirmationScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: SangakColors.background,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(SangakDimens.spacing24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  color: SangakColors.primary,
-                  shape: BoxShape.circle,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(SangakDimens.spacing24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 48),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: const BoxDecoration(
+                    color: SangakColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check_rounded, size: 64, color: Colors.white),
                 ),
-                child: const Icon(Icons.check_rounded, size: 64, color: Colors.white),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                l10n.orderReceived,
-                style: SangakTypography.h1(context),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.thankYouSangak,
-                style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
-              _buildInfoRow(l10n.orderNumber, formattedOrderNumber, context),
-              const Divider(height: 32),
-              _buildInfoRow(l10n.estimatedTime, l10n.mins(prepMinutes), context),
-              const Divider(height: 32),
-              _buildInfoRow(l10n.estimatedDeliveryTime, '${l10n.mins(10)} - ${l10n.mins(15)}', context),
-              const Divider(height: 32),
-              _buildInfoRow(l10n.deliveryAddress, checkoutState.selectedAddress?.fullAddress ?? '-', context),
-              const Divider(height: 32),
-              _buildInfoRow(l10n.paymentMethod, l10n.cashOnDelivery, context),
-              const Spacer(),
-              SangakButton.primary(
-                label: l10n.backToHome,
-                width: double.infinity,
-                onPressed: () => context.go('/home'),
-              ),
-            ],
+                const SizedBox(height: 32),
+                Text(
+                  l10n.orderReceived,
+                  style: SangakTypography.h1(context),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.thankYouSangak,
+                  style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 48),
+                _buildInfoRow(l10n.orderNumber, formattedOrderNumber, context),
+                const Divider(height: 32),
+                _buildInfoRow(l10n.estimatedTime, l10n.mins(prepMinutes), context),
+                const Divider(height: 32),
+                _buildInfoRow(l10n.estimatedDeliveryTime, '${l10n.mins(10)} - ${l10n.mins(15)}', context),
+                const Divider(height: 32),
+                _buildInfoRow(l10n.deliveryAddress, checkoutState.selectedAddress?.fullAddress ?? '-', context),
+                const Divider(height: 32),
+                _buildInfoRow(l10n.paymentMethod, l10n.cashOnDelivery, context),
+                
+                const SizedBox(height: 48),
+                
+                if (orderId != null) ...[
+                  SangakButton.primary(
+                    label: l10n.trackOrder,
+                    icon: Icons.map_outlined,
+                    width: double.infinity,
+                    onPressed: () => context.pushReplacement('/tracking/$orderId'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                
+                SangakButton.outlined(
+                  label: l10n.backToHome,
+                  width: double.infinity,
+                  onPressed: () => context.go('/home'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

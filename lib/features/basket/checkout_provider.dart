@@ -1,7 +1,9 @@
+import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/address.dart';
 import '../../services/location_service.dart';
 import '../../services/order_repository.dart';
+import '../../services/options_repository.dart';
 import 'basket_provider.dart';
 import '../auth/auth_provider.dart';
 import '../orders/orders_provider.dart';
@@ -56,28 +58,42 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
     state = state.copyWith(estimatedPrepMinutes: minutes);
   }
 
-  Future<void> placeOrder() async {
+  Future<String?> placeOrder() async {
     final user = _ref.read(authProvider).asData?.value;
     if (user == null) throw Exception('User must be logged in to place order');
     if (state.selectedAddress == null) throw Exception('No address selected');
     
     final basket = _ref.read(basketProvider);
-    final total = _ref.read(basketTotalProvider) + 15.0; // Including delivery fee
+    final basketTotal = _ref.read(basketTotalProvider);
+
+    // Minimum Order Limit Check
+    final options = _ref.read(appOptionsProvider).value ?? {};
+    final minLimit = int.tryParse(options['min_order_limit']?.toString() ?? '0') ?? 0;
+    if (basketTotal < minLimit) {
+      throw Exception('Minimum order amount is $minLimit TL');
+    }
+
+    final total = basketTotal + 15.0; // Including delivery fee
+
+    // Generate 2-digit PIN (10-99)
+    final deliveryCode = (Random().nextInt(90) + 10).toString();
 
     setSubmitting(true);
     try {
-      await _ref.read(orderRepositoryProvider).createOrder(
+      final order = await _ref.read(orderRepositoryProvider).createOrder(
         userId: user.id,
         items: basket,
         address: state.selectedAddress!,
         paymentMethod: state.paymentMethod.name,
         totalPrice: total,
+        deliveryCode: deliveryCode,
         estimatedPrepTime: state.estimatedPrepMinutes,
       );
       
       // Clear basket and refresh orders list
       _ref.read(basketProvider.notifier).clear();
       _ref.invalidate(myOrdersProvider);
+      return order.id;
     } finally {
       setSubmitting(false);
     }

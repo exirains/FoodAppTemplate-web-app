@@ -113,7 +113,7 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
             controller: _tabController,
             tabs: [
               Tab(text: l10n.available),
-              const Tab(text: 'My Tasks'), // TODO ARB
+              Tab(text: l10n.myTasks),
             ],
           ),
         ),
@@ -243,9 +243,9 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final addr = widget.order.addressSnapshot;
-    final profile = widget.order.userProfile;
-    final customerName = profile?['full_name'] ?? profile?['fullName'] ?? 'Customer';
+    final itemsCount = widget.order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
 
     return Container(
       decoration: BoxDecoration(
@@ -253,105 +253,115 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
         borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
         boxShadow: SangakDimens.shadowMedium,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.itemsCount(itemsCount),
+                          style: SangakTypography.title(context).copyWith(
+                            color: SangakColors.primary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _openNavigation,
+                    icon: const Icon(Icons.directions_outlined, color: SangakColors.info, size: 32),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
-                      Text(
-                        customerName, 
-                        style: SangakTypography.title(context).copyWith(fontSize: 16, color: SangakColors.primary),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      const Icon(Icons.location_on_outlined, size: 18, color: SangakColors.inkLight),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '${addr['district']}, ${addr['city']}',
+                          style: SangakTypography.title(context).copyWith(fontSize: 14),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                IconButton(
-                  onPressed: _openNavigation,
-                  icon: const Icon(Icons.directions_outlined, color: SangakColors.info, size: 32),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.location_on_outlined, size: 18, color: SangakColors.inkLight),
-                    const SizedBox(width: 8),
-                    Expanded(
+                  const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 26),
+                    child: Text(
+                      '${addr['street']}, No:${addr['building_number']}',
+                      style: SangakTypography.bodySmall(context),
+                    ),
+                  ),
+                  if (addr['delivery_note'] != null && addr['delivery_note'].toString().isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: SangakColors.warning.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Text(
-                        '${addr['district']}, ${addr['city']}',
-                        style: SangakTypography.title(context).copyWith(fontSize: 14),
+                        'Note: ${addr['delivery_note']}',
+                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.secondary),
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.only(left: 26),
-                  child: Text(
-                    '${addr['street']}, No:${addr['building_number']}',
-                    style: SangakTypography.bodySmall(context),
-                  ),
-                ),
-                if (addr['delivery_note'] != null && addr['delivery_note'].toString().isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: SangakColors.warning.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      'Note: ${addr['delivery_note']}',
-                      style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.secondary),
-                    ),
-                  ),
                 ],
-              ],
+              ),
             ),
-          ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            child: widget.isPool 
-                ? SangakButton.primary(
-                    label: AppLocalizations.of(context).pickupOrder,
-                    backgroundColor: SangakColors.primary,
-                    onPressed: () {
-                      final l10n = AppLocalizations.of(context);
-                      SangakConfirmDialog.show(
-                        context,
-                        title: l10n.confirmPickup,
-                        message: l10n.confirmPickupMessage,
-                        confirmLabel: 'Pick Up',
-                        cancelLabel: l10n.cancel,
-                        onConfirm: () => _updateStatus(OrderStatus.outForDelivery),
-                      );
-                    },
-                    isLoading: _isUpdating,
-                  )
-                : SangakButton.outlined(
-                    label: AppLocalizations.of(context).openDetails,
-                    onPressed: () => context.push('/delivery/${widget.order.id}'),
-                  ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: widget.isPool 
+                  ? SangakButton.primary(
+                      label: AppLocalizations.of(context).pickupOrder,
+                      backgroundColor: SangakColors.primary,
+                      onPressed: () {
+                        final l10n = AppLocalizations.of(context);
+                        SangakConfirmDialog.show(
+                          context,
+                          title: l10n.confirmPickup,
+                          message: l10n.confirmPickupMessage,
+                          confirmLabel: 'Pick Up',
+                          cancelLabel: l10n.cancel,
+                          onConfirm: () => _updateStatus(OrderStatus.outForDelivery),
+                        );
+                      },
+                      isLoading: _isUpdating,
+                    )
+                  : SangakButton.outlined(
+                      label: AppLocalizations.of(context).openDetails,
+                      onPressed: () => context.push('/delivery/${widget.order.id}'),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

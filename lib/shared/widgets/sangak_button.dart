@@ -5,9 +5,8 @@ import '../../core/design_system/sangak_dimens.dart';
 
 enum SangakButtonVariant { primary, outlined, ghost }
 
-/// Sangak Design System Button (v1.1.0)
-///
-/// Refined with Material/InkWell for superior gesture stability and reliability.
+/// Sangak Design System Buttons
+
 class SangakButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -80,7 +79,8 @@ class _SangakButtonState extends State<SangakButton> {
         return widget.backgroundColor ?? SangakColors.primary;
       case SangakButtonVariant.outlined:
       case SangakButtonVariant.ghost:
-        return Colors.transparent;
+        // Use a color that is almost transparent but catches hits
+        return Colors.white.withValues(alpha: 0.01);
     }
   }
 
@@ -110,24 +110,26 @@ class _SangakButtonState extends State<SangakButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: widget.width,
+      width: widget.width ?? double.infinity,
       height: 54, // Signature standard height
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Material(
-        color: _getBackgroundColor(),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        clipBehavior: Clip.antiAlias,
+        color: Colors.transparent, // Let Ink handle the color
         child: InkWell(
           onTap: _isEnabled ? widget.onPressed : null,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
           splashColor: _isEnabled 
               ? (widget.variant == SangakButtonVariant.primary 
                   ? Colors.white10 
                   : SangakColors.primary.withValues(alpha: 0.1))
               : null,
-          highlightColor: Colors.transparent,
-          child: Container(
-            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+          child: Ink(
+            padding: widget.padding ?? 
+                (widget.label.isEmpty 
+                    ? EdgeInsets.zero 
+                    : const EdgeInsets.symmetric(horizontal: SangakDimens.spacing16)),
             decoration: BoxDecoration(
+              color: _getBackgroundColor(),
               border: _getBorder(),
               borderRadius: BorderRadius.circular(SangakDimens.radiusM),
               boxShadow: widget.variant == SangakButtonVariant.primary && _isEnabled
@@ -148,6 +150,7 @@ class _SangakButtonState extends State<SangakButton> {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min, // Fix: Prevent unnecessary expansion/overflow
                         children: [
                           if (widget.leading != null) ...[
                             widget.leading!,
@@ -155,20 +158,21 @@ class _SangakButtonState extends State<SangakButton> {
                           ],
                           if (widget.icon != null) ...[
                             Icon(widget.icon, size: 20, color: _getForegroundColor()),
-                            const SizedBox(width: SangakDimens.spacing8),
+                            if (widget.label.isNotEmpty) const SizedBox(width: SangakDimens.spacing8),
                           ],
-                          Flexible(
-                            child: Text(
-                              widget.label,
-                              style: SangakTypography.button(context).copyWith(
-                                color: _getForegroundColor(),
-                                fontWeight: FontWeight.w700,
+                          if (widget.label.isNotEmpty)
+                            Flexible(
+                              child: Text(
+                                widget.label,
+                                style: SangakTypography.button(context).copyWith(
+                                  color: _getForegroundColor(),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
                             ),
-                          ),
                         ],
                       ),
                     ),

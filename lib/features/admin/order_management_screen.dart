@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -127,7 +128,8 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final customerName = order.userProfile?['full_name'] ?? 'User';
-    final itemsCount = order.items?.length ?? 0;
+    final itemsCount = order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
+    final l10n = AppLocalizations.of(context);
 
     return InkWell(
       onTap: () => context.push('/admin/orders/${order.id}'),
@@ -146,10 +148,32 @@ class _OrderCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    order.orderNumber, 
-                    style: SangakTypography.title(context).copyWith(fontSize: 14),
-                    overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          order.orderNumber, 
+                          style: SangakTypography.title(context).copyWith(fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: SangakColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          l10n.itemsCount(itemsCount),
+                          style: SangakTypography.caption(context).copyWith(
+                            color: SangakColors.primary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -160,8 +184,8 @@ class _OrderCard extends StatelessWidget {
             Text(customerName, style: SangakTypography.h3(context).copyWith(fontSize: 16)),
             const SizedBox(height: 4),
             Text(
-              '$itemsCount items • ${SangakNumberFormatter.formatCurrency(order.totalPrice, lang)}',
-              style: SangakTypography.bodySmall(context),
+              SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
+              style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             const Divider(),

@@ -229,7 +229,7 @@
   "productDeactivated": "محصول غیرفعال شد",
   "productName": "نام محصول",
   "newPrice": "قیمت جدید",
-  "myTasks": "کارهای من",
+  "myTasks": "وظایف",
   "assignToDelivery": "تخصیص به پیک",
   "originalName": "نام اصلی (پیش‌فرض)",
   "originalDescription": "توضیحات اصلی",
@@ -286,8 +286,48 @@
   "disable": "غیرفعال سازی",
   "statusActive": "فعال",
   "statusDisabled": "مسدود شده",
+  "minOrderLimitError": "حداقل مبلغ سفارش {limit} تومان می‌باشد",
+  "deliveryVerification": "تأیید تحویل",
+  "enterVerificationCode": "کد ۲ رقمی را وارد کنید",
+  "invalidVerificationCode": "کد اشتباه است، لطفاً از مشتری بپرسید",
+  "cancelOrder": "لغو سفارش",
+  "cancellationReason": "علت لغو سفارش",
+  "orderCancelled": "سفارش با موفقیت لغو شد",
+  "deliveryFeeLabel": "هزینه ارسال",
+  "itemsCount": "{count} قلم نان",
   "reject": "رد کردن",
   "rejectOrder": "رد کردن سفارش",
   "confirmRejectMessage": "برای رد کردن سفارش اسلایدر را بکشید. این عمل قابل بازگشت نیست.",
-  "slidetoReject": "بکشید برای رد کردن"
+  "slidetoReject": "بکشید برای رد کردن",
+  "orderTracking": "پیگیری سفارش",
+  "orderConfirmedStep": "سفارش تأیید شد",
+  "orderConfirmedDesc": "فروشگاه سفارش را دریافت کرد",
+  "preparingStep": "در حال آماده‌سازی",
+  "preparingDesc": "آشپزخانه در حال پخت است",
+  "readyStep": "آماده تحویل",
+  "readyDesc": "در انتظار تخصیص پیک",
+  "outForDeliveryStep": "در راه ارسال",
+  "outForDeliveryDesc": "پیک در راه است",
+  "deliveredStep": "تحویل شد",
+  "deliveredDesc": "سفارش تکمیل شد",
+  "givePinToDriver": "این کد را به پیک بدهید:",
+  "trackOrder": "پیگیری",
+  "confirmButton": "تأیید",
+  "noDeliveryPersonFound": "پیک یافت نشد",
+  "totalToCollect": "مبلغ قابل دریافت",
+  "outOfStock": "ناموجود",
+  "productStatusUpdated": "وضعیت با موفقیت بروز شد",
+  "successfullySelected": "آدرس {name} با موفقیت انتخاب شد!",
+  "@successfullySelected": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  }
 }

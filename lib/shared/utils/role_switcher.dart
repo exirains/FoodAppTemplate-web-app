@@ -85,20 +85,43 @@ class RoleSwitcher {
   }
 
   static Widget _buildRoleItem(BuildContext context, String label, IconData icon, bool isActive, String route) {
-    return Material(
-      color: Colors.transparent,
-      child: ListTile(
-        leading: Icon(icon, color: isActive ? SangakColors.primary : SangakColors.inkLight),
-        title: Text(label, style: SangakTypography.title(context).copyWith(
-          fontSize: 16,
-          color: isActive ? SangakColors.ink : SangakColors.inkLight,
-          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-        )),
-        trailing: isActive ? const Icon(Icons.check_circle, color: SangakColors.primary) : null,
-        onTap: isActive ? null : () {
-          Navigator.pop(context);
-          context.go(route);
-        },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isActive ? null : () {
+            Navigator.pop(context);
+            context.go(route);
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Ink(
+            height: 64,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: isActive ? SangakColors.primary.withValues(alpha: 0.05) : SangakColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isActive ? SangakColors.primary.withValues(alpha: 0.2) : SangakColors.border,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: isActive ? SangakColors.primary : SangakColors.inkLight),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(label, style: SangakTypography.title(context).copyWith(
+                    fontSize: 16,
+                    color: isActive ? SangakColors.ink : SangakColors.inkLight,
+                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  )),
+                ),
+                if (isActive) 
+                  const Icon(Icons.check_circle, color: SangakColors.primary, size: 20),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

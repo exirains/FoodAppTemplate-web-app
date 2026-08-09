@@ -311,8 +311,53 @@
   "disable": "disable",
   "statusActive": "Active",
   "statusDisabled": "Disabled",
+  "minOrderLimitError": "Minimum order amount is {limit} TL",
+  "@minOrderLimitError": {
+    "placeholders": {
+      "limit": { "type": "num" }
+    }
+  },
+  "deliveryVerification": "Delivery Verification",
+  "enterVerificationCode": "Enter 2-digit verification code",
+  "invalidVerificationCode": "Incorrect PIN, please verify with customer",
+  "cancelOrder": "Cancel Order",
+  "cancellationReason": "Reason for cancellation",
+  "orderCancelled": "Order cancelled successfully",
+  "deliveryFeeLabel": "Delivery Fee",
+  "itemsCount": "{count}x items",
   "reject": "Reject",
   "rejectOrder": "Reject Order",
   "confirmRejectMessage": "Slide to confirm rejection of this order. This action cannot be undone.",
-  "slidetoReject": "Slide to Reject"
+  "slidetoReject": "Slide to Reject",
+  "orderTracking": "Order Tracking",
+  "orderConfirmedStep": "Order Confirmed",
+  "orderConfirmedDesc": "Store received the order",
+  "preparingStep": "Preparing Order",
+  "preparingDesc": "Kitchen is preparing items",
+  "readyStep": "Ready for Pick-Up",
+  "readyDesc": "Waiting for courier allocation",
+  "outForDeliveryStep": "Out for Delivery",
+  "outForDeliveryDesc": "Courier is on the way",
+  "deliveredStep": "Delivered",
+  "deliveredDesc": "Order completed",
+  "givePinToDriver": "Give this PIN to your driver:",
+  "trackOrder": "Track Order",
+  "confirmButton": "Confirm",
+  "noDeliveryPersonFound": "No delivery person found",
+  "totalToCollect": "Total to Collect",
+  "outOfStock": "Out of Stock",
+  "productStatusUpdated": "Status updated successfully",
+  "successfullySelected": "Successfully selected {name}!",
+  "@successfullySelected": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  }
 }

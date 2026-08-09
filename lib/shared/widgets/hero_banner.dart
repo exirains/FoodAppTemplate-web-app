@@ -23,6 +23,7 @@ class HeroBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
         height: 200,
         width: double.infinity,

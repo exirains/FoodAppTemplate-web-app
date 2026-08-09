@@ -188,6 +188,14 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         _selectedLabelKey = 'other';
       }
     });
+    
+    // Show success message
+    final l10n = AppLocalizations.of(context);
+    final localizedSelected = _selectedLabelKey == 'home' ? l10n.home :
+                            _selectedLabelKey == 'work' ? l10n.work :
+                            _selectedLabelKey == 'school' ? l10n.school : address.title;
+                            
+    SangakToast.show(context, l10n.successfullySelected(localizedSelected));
   }
 
   @override
@@ -247,6 +255,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                       final addr = savedAddresses[index];
                       return GestureDetector(
                         onTap: () => _selectSavedAddress(addr),
+                        behavior: HitTestBehavior.opaque,
                         child: Container(
                           width: 220,
                           padding: const EdgeInsets.all(16),
@@ -499,6 +508,7 @@ class _LabelChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

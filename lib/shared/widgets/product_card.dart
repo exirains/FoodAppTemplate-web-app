@@ -30,6 +30,8 @@ class ProductCard extends ConsumerStatefulWidget {
   final VoidCallback onFavoriteToggle;
   final Bread? bread;
   final double? width;
+  final double imageAspectRatio;
+  final bool compact;
 
   const ProductCard({
     super.key,
@@ -43,6 +45,8 @@ class ProductCard extends ConsumerStatefulWidget {
     required this.onFavoriteToggle,
     this.bread,
     this.width,
+    this.imageAspectRatio = 1.1,
+    this.compact = false,
   });
 
   @override
@@ -85,182 +89,238 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
     final displayName = widget.bread?.localizedName(languageCode) ?? widget.name;
     final displayDescription = widget.bread?.localizedDescription(languageCode) ?? widget.description;
     final formattedPrice = SangakNumberFormatter.formatCurrency(widget.price, languageCode);
+    
+    final bool isAvailable = widget.bread?.available ?? true;
 
     return GestureDetector(
-      onTapDown: (_) => _controller.forward(),
-      onTapUp: (_) => _controller.reverse(),
-      onTapCancel: () => _controller.reverse(),
-      onTap: widget.bread != null ? () => context.push('/product-details', extra: widget.bread) : null,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Container(
-          width: widget.width,
-          decoration: BoxDecoration(
-            color: SangakColors.surface,
-            borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-            boxShadow: SangakDimens.shadowMedium,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Fix vertical overflow
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
-                    child: AspectRatio(
-                      aspectRatio: 1.1, // Adjusted for more content room
-                      child: CachedNetworkImage(
-                        imageUrl: widget.imageUrl,
-                        fit: BoxFit.cover,
-                        memCacheHeight: 400,
-                        placeholder: (context, url) => Container(
-                          color: SangakColors.border,
-                          child: const Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: SangakColors.border,
-                          child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (widget.bread?.tag != null)
-                    Positioned(
-                      top: SangakDimens.spacing12,
-                      left: SangakDimens.spacing12,
-                      child: ProductTag.fromText(widget.bread!.tag!, context: context),
-                    ),
-                  Positioned(
-                    top: SangakDimens.spacing8,
-                    right: SangakDimens.spacing8,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (!ActionGuard.check(context, ref)) return;
-                        widget.onFavoriteToggle();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: AnimatedSwitcher(
-                          duration: SangakTokens.animMedium,
-                          child: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            key: ValueKey(isFavorite),
-                            size: 18,
-                            color: isFavorite ? SangakColors.error : SangakColors.inkLight,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (widget.freshness != null)
-                    Positioned(
-                      bottom: SangakDimens.spacing8,
-                      left: SangakDimens.spacing8,
-                      child: FreshnessBadge(token: widget.freshness!),
-                    ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      behavior: HitTestBehavior.opaque,
+      onTapDown: isAvailable ? (_) => _controller.forward() : null,
+      onTapUp: isAvailable ? (_) => _controller.reverse() : null,
+      onTapCancel: isAvailable ? () => _controller.reverse() : null,
+      onTap: (widget.bread != null && isAvailable) ? () => context.push('/product-details', extra: widget.bread) : null,
+      child: Opacity(
+        opacity: isAvailable ? 1.0 : 0.6,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: Container(
+            width: widget.width,
+            decoration: BoxDecoration(
+              color: SangakColors.surface,
+              borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+              boxShadow: SangakDimens.shadowMedium,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Fix vertical overflow
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
                   children: [
-                    Text(
-                      displayName,
-                      style: SangakTypography.title(context).copyWith(fontSize: 14),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      displayDescription,
-                      style: SangakTypography.bodySmall(context).copyWith(
-                        fontSize: 10,
-                        height: 1.1,
-                        color: SangakColors.inkLight,
-                      ),
-                      maxLines: 1, // Reduced from 2 to save space
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              formattedPrice,
-                              style: SangakTypography.price(context).copyWith(fontSize: 15),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+                      child: ColorFiltered(
+                        colorFilter: isAvailable 
+                            ? const ColorFilter.mode(Colors.transparent, BlendMode.multiply)
+                            : const ColorFilter.mode(Colors.grey, BlendMode.saturation),
+                        child: AspectRatio(
+                          aspectRatio: widget.imageAspectRatio,
+                          child: CachedNetworkImage(
+                            imageUrl: widget.imageUrl,
+                            fit: BoxFit.cover,
+                            memCacheHeight: 400,
+                            placeholder: (context, url) => Container(
+                              color: SangakColors.border,
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: SangakColors.border,
+                              child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        AnimatedSwitcher(
-                          duration: SangakTokens.animMedium,
-                          child: quantity > 0
-                              ? QuantitySelector(
-                                  key: const ValueKey('quantity'),
-                                  quantity: quantity,
-                                  compact: true, // Use compact mode
-                                  onIncrement: () {
-                                    if (!ActionGuard.check(context, ref)) return;
-                                    ref.read(basketProvider.notifier).addItem(widget.bread!);
-                                  },
-                                  onDecrement: () {
-                                    if (!ActionGuard.check(context, ref)) return;
-                                    ref.read(basketProvider.notifier).updateQuantity(widget.bread!.id, -1);
-                                  },
-                                  onDelete: () {
-                                    if (!ActionGuard.check(context, ref)) return;
-                                    SangakConfirmDialog.show(
-                                      context,
-                                      title: l10n.remove,
-                                      message: l10n.removeItemFromBasket,
-                                      confirmLabel: l10n.remove,
-                                      cancelLabel: l10n.cancel,
-                                      onConfirm: () => ref.read(basketProvider.notifier).removeItem(widget.bread!.id),
-                                      isDestructive: true,
-                                    );
-                                  },
-                                )
-                              : ElevatedButton(
-                                  key: const ValueKey('add'),
-                                  onPressed: () {
-                                    if (!ActionGuard.check(context, ref)) return;
-                                    widget.onAddToBasket();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: SangakColors.primary,
-                                    foregroundColor: Colors.white,
-                                    elevation: 0,
-                                    minimumSize: const Size(60, 30), // Smaller size
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                                    ),
-                                  ),
-                                  child: Text(l10n.add, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                ),
-                        ),
-                      ],
+                      ),
                     ),
+                    if (!isAvailable)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.4),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+                          ),
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: SangakColors.ink.withValues(alpha: 0.8),
+                                borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                boxShadow: SangakDimens.shadowLow,
+                              ),
+                              child: Text(
+                                l10n.outOfStock.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white, 
+                                  fontSize: 10, 
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (widget.bread?.tag != null)
+                      Positioned(
+                        top: SangakDimens.spacing12,
+                        left: SangakDimens.spacing12,
+                        child: ProductTag.fromText(widget.bread!.tag!, context: context),
+                      ),
+                    Positioned(
+                      top: SangakDimens.spacing8,
+                      right: SangakDimens.spacing8,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (!ActionGuard.check(context, ref)) return;
+                          widget.onFavoriteToggle();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: AnimatedSwitcher(
+                            duration: SangakTokens.animMedium,
+                            child: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              key: ValueKey(isFavorite),
+                              size: 18,
+                              color: isFavorite ? SangakColors.error : SangakColors.inkLight,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (widget.freshness != null)
+                      Positioned(
+                        bottom: SangakDimens.spacing8,
+                        left: SangakDimens.spacing8,
+                        child: FreshnessBadge(token: widget.freshness!),
+                      ),
                   ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.fromLTRB(12, widget.compact ? 6 : 8, 12, widget.compact ? 8 : 12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 18,
+                        child: Text(
+                          displayName,
+                          style: SangakTypography.title(context).copyWith(
+                            fontSize: 14,
+                            color: isAvailable ? SangakColors.ink : SangakColors.inkLight,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      SizedBox(
+                        height: widget.compact ? 0 : 14, // Hide description in super compact mode if needed
+                        child: widget.compact ? null : Text(
+                          displayDescription,
+                          style: SangakTypography.bodySmall(context).copyWith(
+                            fontSize: 10,
+                            height: 1.1,
+                            color: SangakColors.inkLight,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: widget.compact ? 4 : 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: FittedBox(
+                              alignment: Alignment.centerLeft,
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                formattedPrice,
+                                style: SangakTypography.price(context).copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          AnimatedSwitcher(
+                            duration: SangakTokens.animMedium,
+                            child: quantity > 0
+                                ? QuantitySelector(
+                                    key: const ValueKey('quantity'),
+                                    quantity: quantity,
+                                    compact: true,
+                                    onIncrement: isAvailable ? () {
+                                      if (!ActionGuard.check(context, ref)) return;
+                                      ref.read(basketProvider.notifier).addItem(widget.bread!);
+                                    } : () {},
+                                    onDecrement: () {
+                                      if (!ActionGuard.check(context, ref)) return;
+                                      ref.read(basketProvider.notifier).updateQuantity(widget.bread!.id, -1);
+                                    },
+                                    onDelete: () {
+                                      if (!ActionGuard.check(context, ref)) return;
+                                      SangakConfirmDialog.show(
+                                        context,
+                                        title: l10n.remove,
+                                        message: l10n.removeItemFromBasket,
+                                        confirmLabel: l10n.remove,
+                                        cancelLabel: l10n.cancel,
+                                        onConfirm: () => ref.read(basketProvider.notifier).removeItem(widget.bread!.id),
+                                        isDestructive: true,
+                                      );
+                                    },
+                                  )
+                                : SizedBox(
+                                    height: 34,
+                                    child: ElevatedButton(
+                                      key: const ValueKey('add'),
+                                      onPressed: isAvailable ? () {
+                                        if (!ActionGuard.check(context, ref)) return;
+                                        widget.onAddToBasket();
+                                      } : null,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: isAvailable ? SangakColors.primary : SangakColors.border,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                        ),
+                                      ),
+                                      child: Text(l10n.add, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

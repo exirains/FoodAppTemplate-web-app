@@ -9,7 +9,7 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/widgets/reject_order_dialog.dart';
+import '../../shared/widgets/cancel_order_dialog.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
 import '../admin/admin_provider.dart';
@@ -145,106 +145,111 @@ class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
           width: 2,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
-                Text(
-                  _formatTime(widget.order.createdAt),
-                  style: SangakTypography.title(context).copyWith(color: SangakColors.primary),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          
-          // Items
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...items.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: SangakColors.ink.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${item.quantity}x',
-                          style: SangakTypography.title(context).copyWith(fontSize: 18, color: SangakColors.ink),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          item.nameSnapshot,
-                          style: SangakTypography.h3(context).copyWith(fontSize: 18),
-                        ),
-                      ),
-                    ],
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
+                  Text(
+                    _formatTime(widget.order.createdAt),
+                    style: SangakTypography.title(context).copyWith(color: SangakColors.primary),
                   ),
-                )),
-              ],
+                ],
+              ),
             ),
-          ),
-          
-          // Actions
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            child: widget.order.status == OrderStatus.pending
-                ? Row(
-                    children: [
-                      // 30% REJECT
-                      SizedBox(
-                        width: 100,
-                        child: SangakButton.outlined(
-                          label: widget.l10n.reject,
-                          foregroundColor: SangakColors.error,
-                          borderColor: SangakColors.error.withValues(alpha: 0.3),
-                          onPressed: () => RejectOrderDialog.show(
-                            context, 
-                            onConfirm: () => _updateStatus(OrderStatus.cancelled),
+            const Divider(height: 1),
+            
+            // Items
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...items.map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: SangakColors.ink.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${item.quantity}x',
+                            style: SangakTypography.title(context).copyWith(fontSize: 18, color: SangakColors.ink),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      // 70% ACCEPT
-                      Expanded(
-                        child: SangakButton.primary(
-                          label: widget.l10n.acceptAndConfirm,
-                          onPressed: () => _updateStatus(OrderStatus.confirmed),
-                          isLoading: _isUpdating,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            item.nameSnapshot,
+                            style: SangakTypography.h3(context).copyWith(fontSize: 18),
+                          ),
                         ),
+                      ],
+                    ),
+                  )),
+                ],
+              ),
+            ),
+            
+            // Actions
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Row(
+                children: [
+                  // ALWAYS SHOW CANCEL ON LEFT
+                  SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: SangakButton.outlined(
+                      label: '',
+                      icon: Icons.cancel_outlined,
+                      foregroundColor: SangakColors.error,
+                      borderColor: SangakColors.error,
+                      onPressed: () => CancelOrderDialog.show(
+                        context, 
+                        onConfirm: (reason) => _updateStatus(OrderStatus.cancelled),
                       ),
-                    ],
-                  )
-                : widget.order.status == OrderStatus.confirmed
-                    ? SangakButton.primary(
-                        label: widget.l10n.startPreparing,
-                        backgroundColor: SangakColors.info,
-                        onPressed: () => _updateStatus(OrderStatus.preparing),
-                        isLoading: _isUpdating,
-                      )
-                    : SangakButton.primary(
-                        label: widget.l10n.markAsReady,
-                        backgroundColor: SangakColors.success,
-                        onPressed: () => _updateStatus(OrderStatus.ready),
-                        isLoading: _isUpdating,
-                      ),
-          ),
-        ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // MAIN ACTION ON RIGHT
+                  Expanded(
+                    child: widget.order.status == OrderStatus.pending
+                        ? SangakButton.primary(
+                            label: widget.l10n.acceptAndConfirm,
+                            onPressed: () => _updateStatus(OrderStatus.confirmed),
+                            isLoading: _isUpdating,
+                          )
+                        : widget.order.status == OrderStatus.confirmed
+                            ? SangakButton.primary(
+                                label: widget.l10n.startPreparing,
+                                backgroundColor: SangakColors.info,
+                                onPressed: () => _updateStatus(OrderStatus.preparing),
+                                isLoading: _isUpdating,
+                              )
+                            : SangakButton.primary(
+                                label: widget.l10n.markAsReady,
+                                backgroundColor: SangakColors.success,
+                                onPressed: () => _updateStatus(OrderStatus.ready),
+                                isLoading: _isUpdating,
+                              ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

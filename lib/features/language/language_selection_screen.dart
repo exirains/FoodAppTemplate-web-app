@@ -7,6 +7,7 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/language_card.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../core/localization/locale_provider.dart';
+import '../../main.dart';
 
 class LanguageSelectionScreen extends ConsumerStatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -27,16 +28,19 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
   @override
   void initState() {
     super.initState();
-    _selectedCode = ref.read(localeProvider).languageCode;
+    final storedLang = ref.read(storageServiceProvider).language;
+    _selectedCode = storedLang; // Only pre-select if already chosen
   }
 
   @override
   Widget build(BuildContext context) {
+    // Determine language based on current locale OR selection
+    final currentLang = _selectedCode ?? ref.watch(localeProvider).languageCode;
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView( // Added scrolling to prevent overflow
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,9 +55,9 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
               ),
               const SizedBox(height: 8),
               Text(
-                _selectedCode == 'tr' 
+                currentLang == 'tr' 
                   ? "Ayarlardan dilediğiniz zaman değiştirebilirsiniz."
-                  : _selectedCode == 'fa'
+                  : currentLang == 'fa'
                     ? "می‌توانید این را هر زمان در تنظیمات تغییر دهید."
                     : "You can change this anytime in Settings.",
                 textAlign: TextAlign.center,
@@ -64,9 +68,9 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                     label: lang['label']!,
                     flag: lang['flag']!,
                     isSelected: _selectedCode == lang['code'],
-                    onTap: () {
+                    onTap: () async {
                       setState(() => _selectedCode = lang['code']);
-                      ref.read(localeProvider.notifier).setLocale(lang['code']!);
+                      await ref.read(localeProvider.notifier).setLocale(lang['code']!);
                     },
                   )),
               const SizedBox(height: 32),

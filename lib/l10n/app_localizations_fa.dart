@@ -687,7 +687,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get newPrice => 'قیمت جدید';
 
   @override
-  String get myTasks => 'کارهای من';
+  String get myTasks => 'وظایف';
 
   @override
   String get assignToDelivery => 'تخصیص به پیک';
@@ -863,6 +863,37 @@ class AppLocalizationsFa extends AppLocalizations {
   String get statusDisabled => 'مسدود شده';
 
   @override
+  String minOrderLimitError(num limit) {
+    return 'حداقل مبلغ سفارش $limit تومان می‌باشد';
+  }
+
+  @override
+  String get deliveryVerification => 'تأیید تحویل';
+
+  @override
+  String get enterVerificationCode => 'کد ۲ رقمی را وارد کنید';
+
+  @override
+  String get invalidVerificationCode => 'کد اشتباه است، لطفاً از مشتری بپرسید';
+
+  @override
+  String get cancelOrder => 'لغو سفارش';
+
+  @override
+  String get cancellationReason => 'علت لغو سفارش';
+
+  @override
+  String get orderCancelled => 'سفارش با موفقیت لغو شد';
+
+  @override
+  String get deliveryFeeLabel => 'هزینه ارسال';
+
+  @override
+  String itemsCount(num count) {
+    return '$count قلم نان';
+  }
+
+  @override
   String get reject => 'رد کردن';
 
   @override
@@ -874,4 +905,63 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get slidetoReject => 'بکشید برای رد کردن';
+
+  @override
+  String get orderTracking => 'پیگیری سفارش';
+
+  @override
+  String get orderConfirmedStep => 'سفارش تأیید شد';
+
+  @override
+  String get orderConfirmedDesc => 'فروشگاه سفارش را دریافت کرد';
+
+  @override
+  String get preparingStep => 'در حال آماده‌سازی';
+
+  @override
+  String get preparingDesc => 'آشپزخانه در حال پخت است';
+
+  @override
+  String get readyStep => 'آماده تحویل';
+
+  @override
+  String get readyDesc => 'در انتظار تخصیص پیک';
+
+  @override
+  String get outForDeliveryStep => 'در راه ارسال';
+
+  @override
+  String get outForDeliveryDesc => 'پیک در راه است';
+
+  @override
+  String get deliveredStep => 'تحویل شد';
+
+  @override
+  String get deliveredDesc => 'سفارش تکمیل شد';
+
+  @override
+  String get givePinToDriver => 'این کد را به پیک بدهید:';
+
+  @override
+  String get trackOrder => 'پیگیری';
+
+  @override
+  String get confirmButton => 'تأیید';
+
+  @override
+  String get noDeliveryPersonFound => 'پیک یافت نشد';
+
+  @override
+  String get totalToCollect => 'مبلغ قابل دریافت';
+
+  @override
+  String get outOfStock => 'ناموجود';
+
+  @override
+  String get productStatusUpdated => 'وضعیت با موفقیت بروز شد';
+
+  @override
+  String successfullySelected(String name) {
+    return 'آدرس $name با موفقیت انتخاب شد!';
+  }
 }

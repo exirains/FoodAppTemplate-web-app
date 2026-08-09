@@ -164,33 +164,31 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildStatItem(BuildContext context, String label, String value, IconData icon, Color color, {VoidCallback? onTap}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: SangakColors.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        boxShadow: SangakDimens.shadowLow,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: color, size: 24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(value, style: SangakTypography.h3(context)),
-                    Text(label, style: SangakTypography.caption(context)),
-                  ],
-                ),
-              ],
-            ),
+        child: Ink(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: SangakColors.surface,
+            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+            boxShadow: SangakDimens.shadowLow,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: color, size: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(value, style: SangakTypography.h3(context)),
+                  Text(label, style: SangakTypography.caption(context)),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -198,25 +196,31 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildQuickAction(BuildContext context, String label, IconData icon, VoidCallback onTap) {
-    return Container(
-      decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        border: Border.all(color: SangakColors.border),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Ink(
+            height: 72,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: SangakColors.surface,
+              border: Border.all(color: SangakColors.border),
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+            ),
             child: Row(
               children: [
                 Icon(icon, color: SangakColors.ink, size: 24),
                 const SizedBox(width: 16),
-                Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-                const Spacer(),
+                Expanded(
+                  child: Text(
+                    label, 
+                    style: SangakTypography.title(context).copyWith(fontSize: 16),
+                  ),
+                ),
                 const Icon(Icons.chevron_right_rounded, color: SangakColors.inkLight),
               ],
             ),

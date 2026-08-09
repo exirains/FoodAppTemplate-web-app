@@ -307,8 +307,48 @@
   "disable": "devre dışı bırakmak",
   "statusActive": "Aktif",
   "statusDisabled": "Devre Dışı",
+  "minOrderLimitError": "Minimum sipariş tutarı {limit} TL\u0027dir",
+  "deliveryVerification": "Teslimat Doğrulama",
+  "enterVerificationCode": "2 haneli doğrulama kodunu girin",
+  "invalidVerificationCode": "Yanlış PIN, lütfen müşteri ile doğrulayın",
+  "cancelOrder": "Siparişi İptal Et",
+  "cancellationReason": "İptal nedeni",
+  "orderCancelled": "Sipariş başarıyla iptal edildi",
+  "deliveryFeeLabel": "Teslimat Ücreti",
+  "itemsCount": "{count} adet ürün",
   "reject": "Reddet",
   "rejectOrder": "Siparişi Reddet",
   "confirmRejectMessage": "Siparişi reddetmek için kaydırın. Bu işlem geri alınamaz.",
-  "slidetoReject": "Reddetmek için Kaydır"
+  "slidetoReject": "Reddetmek için Kaydır",
+  "orderTracking": "Sipariş Takibi",
+  "orderConfirmedStep": "Sipariş Onaylandı",
+  "orderConfirmedDesc": "Mağaza siparişi aldı",
+  "preparingStep": "Sipariş Hazırlanıyor",
+  "preparingDesc": "Mutfak ürünleri hazırlıyor",
+  "readyStep": "Teslimata Hazır",
+  "readyDesc": "Kurye ataması bekleniyor",
+  "outForDeliveryStep": "Teslimatta",
+  "outForDeliveryDesc": "Kurye yolda",
+  "deliveredStep": "Teslim Edildi",
+  "deliveredDesc": "Sipariş tamamlandı",
+  "givePinToDriver": "Bu PIN\u0027i kuryeye verin:",
+  "trackOrder": "Siparişi Takip Et",
+  "confirmButton": "Onayla",
+  "noDeliveryPersonFound": "Kurye bulunamadı",
+  "totalToCollect": "Tahsil Edilecek Toplam",
+  "outOfStock": "Tükendi",
+  "productStatusUpdated": "Durum başarıyla güncellendi",
+  "successfullySelected": "{name} başarıyla seçildi!",
+  "@successfullySelected": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  }
 }

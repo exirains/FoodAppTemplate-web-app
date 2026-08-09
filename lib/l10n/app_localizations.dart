@@ -1762,6 +1762,60 @@ abstract class AppLocalizations {
   /// **'Disabled'**
   String get statusDisabled;
 
+  /// No description provided for @minOrderLimitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order amount is {limit} TL'**
+  String minOrderLimitError(num limit);
+
+  /// No description provided for @deliveryVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Verification'**
+  String get deliveryVerification;
+
+  /// No description provided for @enterVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 2-digit verification code'**
+  String get enterVerificationCode;
+
+  /// No description provided for @invalidVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect PIN, please verify with customer'**
+  String get invalidVerificationCode;
+
+  /// No description provided for @cancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Order'**
+  String get cancelOrder;
+
+  /// No description provided for @cancellationReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for cancellation'**
+  String get cancellationReason;
+
+  /// No description provided for @orderCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Order cancelled successfully'**
+  String get orderCancelled;
+
+  /// No description provided for @deliveryFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Fee'**
+  String get deliveryFeeLabel;
+
+  /// No description provided for @itemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}x items'**
+  String itemsCount(num count);
+
   /// No description provided for @reject.
   ///
   /// In en, this message translates to:
@@ -1785,6 +1839,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Slide to Reject'**
   String get slidetoReject;
+
+  /// No description provided for @orderTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Tracking'**
+  String get orderTracking;
+
+  /// No description provided for @orderConfirmedStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Confirmed'**
+  String get orderConfirmedStep;
+
+  /// No description provided for @orderConfirmedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Store received the order'**
+  String get orderConfirmedDesc;
+
+  /// No description provided for @preparingStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing Order'**
+  String get preparingStep;
+
+  /// No description provided for @preparingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen is preparing items'**
+  String get preparingDesc;
+
+  /// No description provided for @readyStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for Pick-Up'**
+  String get readyStep;
+
+  /// No description provided for @readyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for courier allocation'**
+  String get readyDesc;
+
+  /// No description provided for @outForDeliveryStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for Delivery'**
+  String get outForDeliveryStep;
+
+  /// No description provided for @outForDeliveryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Courier is on the way'**
+  String get outForDeliveryDesc;
+
+  /// No description provided for @deliveredStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get deliveredStep;
+
+  /// No description provided for @deliveredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Order completed'**
+  String get deliveredDesc;
+
+  /// No description provided for @givePinToDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Give this PIN to your driver:'**
+  String get givePinToDriver;
+
+  /// No description provided for @trackOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Order'**
+  String get trackOrder;
+
+  /// No description provided for @confirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmButton;
+
+  /// No description provided for @noDeliveryPersonFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No delivery person found'**
+  String get noDeliveryPersonFound;
+
+  /// No description provided for @totalToCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'Total to Collect'**
+  String get totalToCollect;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get outOfStock;
+
+  /// No description provided for @productStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated successfully'**
+  String get productStatusUpdated;
+
+  /// No description provided for @successfullySelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully selected {name}!'**
+  String successfullySelected(String name);
 }
 
 class _AppLocalizationsDelegate

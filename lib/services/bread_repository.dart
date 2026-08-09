@@ -247,4 +247,12 @@ class BreadRepository {
       }, onConflict: 'product_id,language_code');
     }
   }
+
+  Stream<List<Map<String, dynamic>>> watchBreads({String? categoryId}) {
+    final query = _client.from('products').stream(primaryKey: ['id']);
+    if (categoryId != null) {
+      return query.eq('category_id', categoryId);
+    }
+    return query;
+  }
 }

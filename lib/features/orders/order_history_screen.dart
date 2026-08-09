@@ -8,6 +8,8 @@ import '../../core/design_system/sangak_dimens.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../models/order.dart';
+import 'package:go_router/go_router.dart';
+import '../../shared/widgets/sangak_button.dart';
 import 'orders_provider.dart';
 
 class OrderHistoryScreen extends ConsumerWidget {
@@ -121,6 +123,20 @@ class _OrderCard extends ConsumerWidget {
                 ),
               )).toList(),
             ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                l10n.deliveryFeeLabel,
+                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+              ),
+              Text(
+                SangakNumberFormatter.formatCurrency(15.0, lang),
+                style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
+              ),
+            ],
+          ),
           const Divider(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,6 +148,15 @@ class _OrderCard extends ConsumerWidget {
               ),
             ],
           ),
+          if (order.status != OrderStatus.delivered && order.status != OrderStatus.cancelled) ...[
+            const SizedBox(height: 16),
+            SangakButton.primary(
+              label: l10n.trackOrder,
+              icon: Icons.map_outlined,
+              width: double.infinity,
+              onPressed: () => context.push('/tracking/${order.id}'),
+            ),
+          ],
         ],
       ),
     );

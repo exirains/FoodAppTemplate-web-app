@@ -12,7 +12,7 @@ import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/widgets/reject_order_dialog.dart';
+import '../../shared/widgets/cancel_order_dialog.dart';
 import '../auth/auth_provider.dart';
 import 'admin_provider.dart';
 
@@ -39,6 +39,10 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         changedBy: user.id,
       );
       
+      // Refresh data
+      ref.invalidate(adminOrderDetailProvider(widget.orderId));
+      ref.invalidate(adminOrdersProvider);
+      
       if (mounted) {
         final l10n = AppLocalizations.of(context);
         SangakToast.show(context, '${l10n.status}: ${newStatus.label}');
@@ -52,23 +56,41 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     }
   }
 
+  Future<void> _cancelOrder(String reason) async {
+    final user = ref.read(authProvider).asData?.value;
+    if (user == null) return;
+
+    setState(() => _isUpdating = true);
+    try {
+      await ref.read(orderRepositoryProvider).updateOrderStatus(
+        orderId: widget.orderId,
+        status: OrderStatus.cancelled,
+        changedBy: user.id,
+      );
+      
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        SangakToast.show(context, l10n.orderCancelled);
+        ref.invalidate(adminOrderDetailProvider(widget.orderId));
+        ref.invalidate(adminOrdersProvider);
+      }
+    } catch (e) {
+      if (mounted) SangakToast.show(context, 'Error: $e');
+    } finally {
+      if (mounted) setState(() => _isUpdating = false);
+    }
+  }
+
   Future<void> _openMap(Map<String, dynamic> address) async {
     final double? lat = address['latitude'];
     final double? lon = address['longitude'];
 
     if (lat != null && lon != null) {
-      final url = Uri.parse('geo:$lat,$lon?q=$lat,$lon');
+      final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
       if (await canLaunchUrl(url)) {
-        await launchUrl(url);
+        await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
-        final webUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
-        if (await canLaunchUrl(webUrl)) {
-          await launchUrl(webUrl);
-        } else {
-          if (mounted) {
-            SangakToast.show(context, AppLocalizations.of(context).locationError);
-          }
-        }
+        if (mounted) SangakToast.show(context, AppLocalizations.of(context).locationError);
       }
     } else {
       if (mounted) {
@@ -82,17 +104,25 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       if (mounted) SangakToast.show(context, AppLocalizations.of(context).phoneNumberRequired);
       return;
     }
-    final url = Uri.parse('tel:$phone');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      if (mounted) SangakToast.show(context, 'Could not initiate call');
+    
+    // Preserve + and digits for international dialing
+    final sanitizedPhone = phone.replaceAll(RegExp(r'[^+\d]'), '');
+    final url = Uri.parse('tel:$sanitizedPhone');
+    
+    debugPrint('📱 Admin attempting call: $sanitizedPhone');
+    
+    try {
+      // Force launch to native dialer
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint('🚨 Admin call failed: $e');
+      if (mounted) SangakToast.show(context, 'Could not open phone dialer');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ordersAsync = ref.watch(adminOrdersProvider);
+    final orderAsync = ref.watch(adminOrderDetailProvider(widget.orderId));
     final l10n = AppLocalizations.of(context);
     final lang = ref.watch(localeProvider).languageCode;
 
@@ -101,9 +131,8 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       child: Scaffold(
         backgroundColor: SangakColors.background,
         appBar: AppBar(title: Text(l10n.orderSummary)),
-        body: ordersAsync.when(
-          data: (orders) {
-            final order = orders.where((o) => o.id == widget.orderId).firstOrNull;
+        body: orderAsync.when(
+          data: (order) {
             if (order == null) return Center(child: Text(l10n.noProductsFound));
   
             return SingleChildScrollView(
@@ -132,7 +161,11 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, s) => Center(child: Text('Error: $e')),
         ),
-        bottomSheet: _buildActions(context, l10n),
+        bottomSheet: orderAsync.when(
+          data: (order) => order != null ? _buildActions(context, order, l10n) : null,
+          loading: () => null,
+          error: (e, s) => null,
+        ),
       ),
     );
   }
@@ -158,9 +191,10 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
   Widget _buildCustomerSection(BuildContext context, OrderModel order, AppLocalizations l10n) {
     final profile = order.userProfile;
+    // Mirroring Delivery Panel Logic for Full Name
     final fullName = profile?['full_name'] ?? profile?['fullName'] ?? profile?['full_name_snapshot'] ?? l10n.guest;
     final email = profile?['email'] ?? order.userId;
-    final phone = profile?['phone_number'] ?? profile?['phone'] ?? profile?['phoneNumber'];
+    final phone = profile?['phone'] ?? profile?['phone_number'] ?? profile?['phoneNumber'];
     final avatarUrl = profile?['avatar_url'];
 
     return Column(
@@ -324,6 +358,17 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
             );
           },
         ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(l10n.deliveryFeeLabel, style: SangakTypography.bodySmall(context)),
+            Text(
+              SangakNumberFormatter.formatCurrency(15.0, lang),
+              style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -355,77 +400,67 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     );
   }
 
-  Widget _buildActions(BuildContext context, AppLocalizations l10n) {
-    final ordersAsync = ref.watch(adminOrdersProvider);
-    final order = ordersAsync.value?.where((o) => o.id == widget.orderId).firstOrNull;
-    if (order == null) return const SizedBox.shrink();
-
-    Widget action;
+  Widget _buildActions(BuildContext context, OrderModel order, AppLocalizations l10n) {
+    bool canCancel = order.status != OrderStatus.delivered && order.status != OrderStatus.cancelled;
+    
+    Widget? mainAction;
     switch (order.status) {
       case OrderStatus.pending:
-        action = Row(
-          children: [
-            // 30% REJECT
-            SizedBox(
-              width: 100,
-              child: SangakButton.outlined(
-                label: l10n.reject,
-                foregroundColor: SangakColors.error,
-                borderColor: SangakColors.error.withValues(alpha: 0.3),
-                onPressed: () => RejectOrderDialog.show(
-                  context, 
-                  onConfirm: () => _updateStatus(OrderStatus.cancelled),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // 70% ACCEPT
-            Expanded(
-              child: SangakButton.primary(
-                label: l10n.acceptAndConfirm,
-                onPressed: () => _updateStatus(OrderStatus.confirmed),
-                isLoading: _isUpdating,
-              ),
-            ),
-          ],
+        mainAction = Expanded(
+          child: SangakButton.primary(
+            label: l10n.acceptAndConfirm,
+            onPressed: () => _updateStatus(OrderStatus.confirmed),
+            isLoading: _isUpdating,
+          ),
         );
         break;
       case OrderStatus.confirmed:
-        action = SangakButton.primary(
-          label: l10n.startPreparing,
-          backgroundColor: SangakColors.info,
-          onPressed: () => _updateStatus(OrderStatus.preparing),
-          isLoading: _isUpdating,
+        mainAction = Expanded(
+          child: SangakButton.primary(
+            label: l10n.startPreparing,
+            backgroundColor: SangakColors.info,
+            onPressed: () => _updateStatus(OrderStatus.preparing),
+            isLoading: _isUpdating,
+          ),
         );
         break;
       case OrderStatus.preparing:
-        action = SangakButton.primary(
-          label: l10n.markAsReady,
-          backgroundColor: SangakColors.success,
-          onPressed: () => _updateStatus(OrderStatus.ready),
-          isLoading: _isUpdating,
+        mainAction = Expanded(
+          child: SangakButton.primary(
+            label: l10n.markAsReady,
+            backgroundColor: SangakColors.success,
+            onPressed: () => _updateStatus(OrderStatus.ready),
+            isLoading: _isUpdating,
+          ),
         );
         break;
       case OrderStatus.ready:
-        action = SangakButton.primary(
-          label: l10n.assignToDelivery,
-          backgroundColor: SangakColors.primary,
-          onPressed: () => _showDeliveryPicker(context, l10n),
-          isLoading: _isUpdating,
+        mainAction = Expanded(
+          child: SangakButton.primary(
+            label: l10n.assignToDelivery,
+            icon: Icons.person_search_rounded,
+            backgroundColor: SangakColors.primary,
+            onPressed: () => _showDeliveryPicker(context, l10n),
+            isLoading: _isUpdating,
+          ),
         );
         break;
       case OrderStatus.outForDelivery:
-        action = SangakButton.outlined(
-          label: l10n.outForDelivery,
-          onPressed: null,
-          foregroundColor: SangakColors.primary,
+        mainAction = Expanded(
+          child: SangakButton.outlined(
+            label: l10n.outForDelivery,
+            onPressed: null,
+            foregroundColor: SangakColors.primary,
+          ),
         );
         break;
       case OrderStatus.delivered:
-        action = SangakButton.outlined(
-          label: l10n.statusDelivered,
-          onPressed: null,
-          foregroundColor: SangakColors.success,
+        mainAction = Expanded(
+          child: SangakButton.outlined(
+            label: l10n.statusDelivered,
+            onPressed: null,
+            foregroundColor: SangakColors.success,
+          ),
         );
         break;
       default:
@@ -437,8 +472,32 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       decoration: BoxDecoration(
         color: SangakColors.surface,
         boxShadow: SangakDimens.shadowHigh,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
       ),
-      child: SafeArea(child: action),
+      child: SafeArea(
+        child: Row(
+          children: [
+            if (canCancel) ...[
+              SizedBox(
+                width: 56,
+                height: 56,
+                child: SangakButton.outlined(
+                  label: '',
+                  icon: Icons.cancel_outlined,
+                  foregroundColor: SangakColors.error,
+                  borderColor: SangakColors.error,
+                  onPressed: () => CancelOrderDialog.show(
+                    context, 
+                    onConfirm: (reason) => _cancelOrder(reason),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+            mainAction,
+          ],
+        ),
+      ),
     );
   }
 
@@ -456,35 +515,50 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
               Text(l10n.confirmPickup, style: SangakTypography.h3(context)),
               const SizedBox(height: 24),
               staffAsync.when(
-                data: (staff) => Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: staff.length,
-                    itemBuilder: (context, index) {
-                      final s = staff[index];
-                      return ListTile(
-                        leading: const Icon(Icons.delivery_dining_outlined),
-                        title: Text(s['full_name'] ?? 'Driver'),
-                        subtitle: Text(s['email'] ?? ''),
-                        onTap: () async {
-                          Navigator.pop(modalContext);
-                          setState(() => _isUpdating = true);
-                          try {
-                            await ref.read(orderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
-                            await ref.read(orderRepositoryProvider).updateOrderStatus(
-                              orderId: widget.orderId,
-                              status: OrderStatus.outForDelivery,
-                              changedBy: ref.read(authProvider).asData!.value!.id,
-                            );
-                            if (mounted) SangakToast.show(this.context, 'Assigned to ${s['full_name']}');
-                          } finally {
-                            if (mounted) setState(() => _isUpdating = false);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
+                data: (staff) {
+                   if (staff.isEmpty) {
+                     return Padding(
+                       padding: const EdgeInsets.symmetric(vertical: 32),
+                       child: Column(
+                         children: [
+                           const Icon(Icons.person_off_outlined, size: 48, color: SangakColors.inkLight),
+                           const SizedBox(height: 16),
+                           Text(l10n.noDeliveryPersonFound, style: SangakTypography.bodyMedium(context)),
+                         ],
+                       ),
+                     );
+                   }
+                   return Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: staff.length,
+                      itemBuilder: (context, index) {
+                        final s = staff[index];
+                        return ListTile(
+                          leading: const Icon(Icons.delivery_dining_outlined),
+                          title: Text(s['full_name'] ?? 'Driver'),
+                          subtitle: Text(s['email'] ?? ''),
+                          onTap: () async {
+                            Navigator.pop(modalContext);
+                            setState(() => _isUpdating = true);
+                            try {
+                              await ref.read(orderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
+                              await ref.read(orderRepositoryProvider).updateOrderStatus(
+                                orderId: widget.orderId,
+                                status: OrderStatus.outForDelivery,
+                                changedBy: ref.read(authProvider).asData!.value!.id,
+                              );
+                              if (mounted) SangakToast.show(this.context, 'Assigned to ${s['full_name']}');
+                              ref.invalidate(adminOrderDetailProvider(widget.orderId));
+                            } finally {
+                              if (mounted) setState(() => _isUpdating = false);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, s) => Text('Error loading staff'),
               ),

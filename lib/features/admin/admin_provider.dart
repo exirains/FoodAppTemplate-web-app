@@ -12,6 +12,11 @@ final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
   });
 });
 
+final adminOrderDetailProvider = FutureProvider.family<OrderModel?, String>((ref, orderId) async {
+  final response = await ref.read(orderRepositoryProvider).getOrderById(orderId);
+  return response;
+});
+
 final adminStatsProvider = Provider<AsyncValue<AdminStats>>((ref) {
   final ordersAsync = ref.watch(adminOrdersProvider);
   

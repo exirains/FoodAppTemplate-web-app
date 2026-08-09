@@ -18,6 +18,9 @@ import '../../shared/utils/action_guard.dart';
 import 'basket_provider.dart';
 import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
+import '../auth/models/user_profile.dart';
+
+import '../../services/options_repository.dart';
 
 class BasketScreen extends ConsumerWidget {
   const BasketScreen({super.key});
@@ -30,6 +33,7 @@ class BasketScreen extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     final profileAsync = ref.watch(userProfileProvider);
+    final optionsAsync = ref.watch(appOptionsProvider);
 
     if (basket.isEmpty) {
       return Scaffold(
@@ -77,7 +81,7 @@ class BasketScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final item = basket[index];
                 return Container(
-                  padding: const EdgeInsets.all(SangakDimens.spacing12),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: SangakColors.surface,
                     borderRadius: BorderRadius.circular(SangakDimens.radiusL),
@@ -89,12 +93,12 @@ class BasketScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
                         child: CachedNetworkImage(
                           imageUrl: item.bread.imageUrl,
-                          width: 70,
-                          height: 70,
+                          width: 64,
+                          height: 64,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            width: 70,
-                            height: 70,
+                            width: 64,
+                            height: 64,
                             color: SangakColors.border,
                             child: const Center(
                               child: SizedBox(
@@ -105,19 +109,24 @@ class BasketScreen extends ConsumerWidget {
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            width: 70,
-                            height: 70,
+                            width: 64,
+                            height: 64,
                             color: SangakColors.border,
                             child: const Icon(Icons.broken_image_outlined, color: SangakColors.inkLight),
                           ),
                         ),
                       ),
-                      const SizedBox(width: SangakDimens.spacing16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(item.bread.localizedName(lang), style: SangakTypography.title(context)),
+                            Text(
+                              item.bread.localizedName(lang), 
+                              style: SangakTypography.title(context).copyWith(fontSize: 15),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             const SizedBox(height: 4),
                             Text(
                               SangakNumberFormatter.formatCurrency(item.bread.price, lang),
@@ -126,15 +135,34 @@ class BasketScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      QuantitySelector(
-                        quantity: item.quantity,
-                        onIncrement: () {
-                          if (!ActionGuard.check(context, ref)) return;
-                          ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1);
-                        },
-                        onDecrement: () {
-                          if (!ActionGuard.check(context, ref)) return;
-                          if (item.quantity == 1) {
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {}, // Consume tap to prevent bubbling
+                        child: QuantitySelector(
+                          quantity: item.quantity,
+                          compact: true,
+                          onIncrement: () {
+                            if (!ActionGuard.check(context, ref)) return;
+                            ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1);
+                          },
+                          onDecrement: () {
+                            if (!ActionGuard.check(context, ref)) return;
+                            if (item.quantity == 1) {
+                              SangakConfirmDialog.show(
+                                context,
+                                title: l10n.remove,
+                                message: l10n.removeItemFromBasket,
+                                confirmLabel: l10n.remove,
+                                cancelLabel: l10n.cancel,
+                                onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                                isDestructive: true,
+                              );
+                            } else {
+                              ref.read(basketProvider.notifier).updateQuantity(item.bread.id, -1);
+                            }
+                          },
+                          onDelete: () {
+                            if (!ActionGuard.check(context, ref)) return;
                             SangakConfirmDialog.show(
                               context,
                               title: l10n.remove,
@@ -144,22 +172,8 @@ class BasketScreen extends ConsumerWidget {
                               onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
                               isDestructive: true,
                             );
-                          } else {
-                            ref.read(basketProvider.notifier).updateQuantity(item.bread.id, -1);
-                          }
-                        },
-                        onDelete: () {
-                          if (!ActionGuard.check(context, ref)) return;
-                          SangakConfirmDialog.show(
-                            context,
-                            title: l10n.remove,
-                            message: l10n.removeItemFromBasket,
-                            confirmLabel: l10n.remove,
-                            cancelLabel: l10n.cancel,
-                            onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
-                            isDestructive: true,
-                          );
-                        },
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -167,20 +181,36 @@ class BasketScreen extends ConsumerWidget {
               },
             ),
           ),
-          _buildSummary(context, ref, total, l10n, profileAsync.value),
+          _buildSummary(context, ref, total, l10n, profileAsync.value, optionsAsync),
         ],
       ),
     );
   }
 
-  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n, dynamic profile) {
-    const deliveryFee = 15.0;
+  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n, UserProfile? profile, AsyncValue<Map<String, dynamic>> optionsAsync) {
+    // Get values from DB. Use 0 fallback while loading to avoid "200" flickering.
+    // Once loaded, if key is missing, THEN we use the business fallback of 200.
+    final Map<String, dynamic> dbOptions = optionsAsync.value ?? {};
+    
+    final dynamic rawDeliveryFee = dbOptions['delivery_fee'];
+    final double deliveryFee = (rawDeliveryFee != null)
+        ? (double.tryParse(rawDeliveryFee.toString()) ?? 15.0)
+        : 15.0;
+
+    final dynamic rawLimit = dbOptions['min_order_limit'];
+    final int minLimit = (rawLimit != null) 
+        ? (int.tryParse(rawLimit.toString()) ?? 200) 
+        : (optionsAsync.isLoading ? 0 : 200);
+
     final grandTotal = total + deliveryFee;
 
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     
     final hasPhone = AuthValidators.hasValidPhoneNumber(profile?.phoneNumber);
+    final isAccountDisabled = profile != null && !profile.isActive;
+    
+    final bool isBelowLimit = total < minLimit;
 
     return Container(
       padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -192,14 +222,74 @@ class BasketScreen extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!hasPhone)
+          // 1. Account Disabled Check (Highest Priority)
+          if (isAccountDisabled)
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: SangakColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: SangakColors.error.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.lock_person_outlined, color: SangakColors.error, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.accountDisabledTitle,
+                        style: SangakTypography.bodySmall(context).copyWith(
+                          color: SangakColors.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          // 2. Minimum Order Limit Check (Show only if account is NOT disabled)
+          if (!isAccountDisabled && isBelowLimit && minLimit > 0)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: SangakColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: SangakColors.error.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline_rounded, color: SangakColors.error, size: 18),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.minOrderLimitError(minLimit),
+                        style: SangakTypography.caption(context).copyWith(
+                          color: SangakColors.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          // 3. Phone Number Check (Show only if above limit and not disabled)
+          if (!isAccountDisabled && !isBelowLimit && !hasPhone)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 l10n.phoneNumberRequired,
                 style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.error, fontWeight: FontWeight.bold),
               ),
             ),
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -214,7 +304,7 @@ class BasketScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.deliveryFee, style: SangakTypography.bodyMedium(context)),
+              Text(l10n.deliveryFeeLabel, style: SangakTypography.bodyMedium(context)),
               Text(
                 SangakNumberFormatter.formatCurrency(deliveryFee, lang),
                 style: SangakTypography.title(context),
@@ -239,9 +329,18 @@ class BasketScreen extends ConsumerWidget {
           SangakButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
-            onPressed: () {
+            isLoading: optionsAsync.isLoading,
+            onPressed: (optionsAsync.isLoading) ? null : () {
+              // Priority 1: Check Account Status
               if (!ActionGuard.check(context, ref)) return;
               
+              // Priority 2: Check Minimum Order Limit
+              if (isBelowLimit) {
+                SangakToast.show(context, l10n.minOrderLimitError(minLimit));
+                return;
+              }
+
+              // Priority 3: Check Phone Number
               if (hasPhone) {
                 context.push('/address-selection?from=checkout');
               } else {

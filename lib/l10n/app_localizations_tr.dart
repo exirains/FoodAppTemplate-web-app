@@ -872,6 +872,38 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statusDisabled => 'Devre Dışı';
 
   @override
+  String minOrderLimitError(num limit) {
+    return 'Minimum sipariş tutarı $limit TL\'dir';
+  }
+
+  @override
+  String get deliveryVerification => 'Teslimat Doğrulama';
+
+  @override
+  String get enterVerificationCode => '2 haneli doğrulama kodunu girin';
+
+  @override
+  String get invalidVerificationCode =>
+      'Yanlış PIN, lütfen müşteri ile doğrulayın';
+
+  @override
+  String get cancelOrder => 'Siparişi İptal Et';
+
+  @override
+  String get cancellationReason => 'İptal nedeni';
+
+  @override
+  String get orderCancelled => 'Sipariş başarıyla iptal edildi';
+
+  @override
+  String get deliveryFeeLabel => 'Teslimat Ücreti';
+
+  @override
+  String itemsCount(num count) {
+    return '$count adet ürün';
+  }
+
+  @override
   String get reject => 'Reddet';
 
   @override
@@ -883,4 +915,63 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get slidetoReject => 'Reddetmek için Kaydır';
+
+  @override
+  String get orderTracking => 'Sipariş Takibi';
+
+  @override
+  String get orderConfirmedStep => 'Sipariş Onaylandı';
+
+  @override
+  String get orderConfirmedDesc => 'Mağaza siparişi aldı';
+
+  @override
+  String get preparingStep => 'Sipariş Hazırlanıyor';
+
+  @override
+  String get preparingDesc => 'Mutfak ürünleri hazırlıyor';
+
+  @override
+  String get readyStep => 'Teslimata Hazır';
+
+  @override
+  String get readyDesc => 'Kurye ataması bekleniyor';
+
+  @override
+  String get outForDeliveryStep => 'Teslimatta';
+
+  @override
+  String get outForDeliveryDesc => 'Kurye yolda';
+
+  @override
+  String get deliveredStep => 'Teslim Edildi';
+
+  @override
+  String get deliveredDesc => 'Sipariş tamamlandı';
+
+  @override
+  String get givePinToDriver => 'Bu PIN\'i kuryeye verin:';
+
+  @override
+  String get trackOrder => 'Siparişi Takip Et';
+
+  @override
+  String get confirmButton => 'Onayla';
+
+  @override
+  String get noDeliveryPersonFound => 'Kurye bulunamadı';
+
+  @override
+  String get totalToCollect => 'Tahsil Edilecek Toplam';
+
+  @override
+  String get outOfStock => 'Tükendi';
+
+  @override
+  String get productStatusUpdated => 'Durum başarıyla güncellendi';
+
+  @override
+  String successfullySelected(String name) {
+    return '$name başarıyla seçildi!';
+  }
 }

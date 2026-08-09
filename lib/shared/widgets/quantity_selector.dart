@@ -30,34 +30,42 @@ class QuantitySelector extends ConsumerWidget {
     final languageCode = ref.watch(localeProvider).languageCode;
     final formattedQuantity = SangakNumberFormatter.format(quantity, languageCode);
 
-    return Container(
-      height: compact ? 34 : 36,
-      decoration: BoxDecoration(
-        color: SangakColors.primary,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _IconButton(
-            icon: quantity == 1 && onDelete != null ? Icons.delete_outline : Icons.remove,
-            onPressed: quantity == 1 && onDelete != null ? onDelete! : onDecrement,
-            compact: compact,
-          ),
-          Container(
-            constraints: BoxConstraints(minWidth: compact ? 24 : 28),
-            padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
-            child: Text(
-              formattedQuantity,
-              textAlign: TextAlign.center,
-              style: SangakTypography.title(context).copyWith(
-                color: Colors.white,
-                fontSize: 14,
+    return GestureDetector(
+      onTap: () {}, // CRITICAL: Consume tap to prevent parent navigation/glitches
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        height: compact ? 34 : 36,
+        decoration: BoxDecoration(
+          color: SangakColors.primary,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _IconButton(
+              icon: quantity == 1 && onDelete != null ? Icons.delete_outline : Icons.remove,
+              onPressed: quantity == 1 && onDelete != null ? onDelete! : onDecrement,
+              compact: compact,
+            ),
+            Container(
+              constraints: BoxConstraints(minWidth: compact ? 22 : 28),
+              padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  formattedQuantity,
+                  textAlign: TextAlign.center,
+                  style: SangakTypography.title(context).copyWith(
+                    color: Colors.white,
+                    fontSize: compact ? 13 : 14,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
             ),
-          ),
-          _IconButton(icon: Icons.add, onPressed: onIncrement, compact: compact),
-        ],
+            _IconButton(icon: Icons.add, onPressed: onIncrement, compact: compact),
+          ],
+        ),
       ),
     );
   }

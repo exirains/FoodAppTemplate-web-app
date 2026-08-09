@@ -7,6 +7,7 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../models/order.dart';
 import '../../shared/widgets/sangak_button.dart';
+import '../../shared/widgets/cancel_order_dialog.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
@@ -32,6 +33,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     setState(() => _isUpdating = true);
     try {
       if (order.assignedDeliveryPerson == null) {
+         debugPrint('Assigning order to driver: ${user.id}');
          await ref.read(orderRepositoryProvider).assignDeliveryPerson(order.id, user.id);
       }
 
@@ -41,9 +43,11 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         changedBy: user.id,
       );
       
+      // Force refresh of the order data to ensure UI knows about assignment
+      await ref.read(orderRepositoryProvider).getAllOrders();
+      ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
       ref.invalidate(availableOrdersProvider);
       ref.invalidate(myActiveDeliveriesProvider);
-      ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
       
       if (mounted) {
         final l10n = AppLocalizations.of(context);
@@ -51,6 +55,32 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         if (newStatus == OrderStatus.delivered) {
           Navigator.pop(context);
         }
+      }
+    } catch (e) {
+      if (mounted) SangakToast.show(context, 'Error: $e');
+    } finally {
+      if (mounted) setState(() => _isUpdating = false);
+    }
+  }
+
+  Future<void> _cancelOrder(String reason) async {
+    final user = ref.read(authProvider).asData?.value;
+    if (user == null) return;
+
+    setState(() => _isUpdating = true);
+    try {
+      await ref.read(orderRepositoryProvider).updateOrderStatus(
+        orderId: widget.orderId,
+        status: OrderStatus.cancelled,
+        changedBy: user.id,
+      );
+      
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        SangakToast.show(context, l10n.orderCancelled);
+        ref.invalidate(availableOrdersProvider);
+        ref.invalidate(myActiveDeliveriesProvider);
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) SangakToast.show(context, 'Error: $e');
@@ -76,10 +106,24 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   }
 
   Future<void> _callCustomer(String? phone) async {
-    if (phone == null || phone.isEmpty) return;
-    final url = Uri.parse('tel:$phone');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+    if (phone == null || phone.isEmpty) {
+      if (mounted) SangakToast.show(context, 'No phone number available');
+      return;
+    }
+    
+    // Remove spaces and keep +, digits
+    final sanitizedPhone = phone.replaceAll(RegExp(r'[^+\d]'), '');
+    final url = Uri.parse('tel:$sanitizedPhone');
+    
+    debugPrint('📱 Attempting to call: $sanitizedPhone');
+    
+    try {
+      // Force launch without pre-checking canLaunchUrl as system schemes
+      // like tel: are sometimes hidden from query checks but always available
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint('🚨 Call failed: $e');
+      if (mounted) SangakToast.show(context, 'Could not open phone dialer');
     }
   }
 
@@ -126,7 +170,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                         context,
                         title: l10n.orderItemsLabel,
                         icon: Icons.shopping_basket_outlined,
-                        child: _buildItemsCard(context, order, lang),
+                        child: _buildItemsCard(context, order, lang, l10n),
                       ),
                       const SizedBox(height: 100),
                     ],
@@ -328,7 +372,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     );
   }
 
-  Widget _buildItemsCard(BuildContext context, OrderModel order, String lang) {
+  Widget _buildItemsCard(BuildContext context, OrderModel order, String lang, AppLocalizations l10n) {
     final items = order.items ?? [];
     return Container(
       padding: const EdgeInsets.all(16),
@@ -356,6 +400,8 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(item.nameSnapshot, style: SangakTypography.bodyMedium(context))),
+                Text(SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang), 
+                  style: SangakTypography.bodySmall(context)),
               ],
             ),
           )),
@@ -363,9 +409,17 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Text(l10n.deliveryFeeLabel, style: SangakTypography.bodySmall(context)),
+              Text(SangakNumberFormatter.formatCurrency(15.0, lang), style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Text(
-                'TOTAL TO COLLECT', 
-                style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
+                l10n.totalToCollect.toUpperCase(), 
+                style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold, color: SangakColors.primary),
               ),
               Text(
                 SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
@@ -378,20 +432,139 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     );
   }
 
+  Future<void> _showVerificationDialog(OrderModel order) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        title: Column(
+          children: [
+            const Icon(Icons.verified_user_outlined, color: SangakColors.primary, size: 48),
+            const SizedBox(height: 16),
+            Text(l10n.deliveryVerification, textAlign: TextAlign.center),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.enterVerificationCode, textAlign: TextAlign.center),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: 150,
+              child: TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                autofocus: true,
+                maxLength: 2,
+                textAlign: TextAlign.center,
+                style: SangakTypography.h1(context).copyWith(
+                  fontSize: 48, 
+                  letterSpacing: 16,
+                  color: SangakColors.primary,
+                ),
+                decoration: InputDecoration(
+                  hintText: "00",
+                  hintStyle: TextStyle(color: SangakColors.border.withValues(alpha: 0.5)),
+                  counterText: "",
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: SangakColors.primary, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: SangakColors.primary, width: 3),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), 
+            child: Text(l10n.cancel, style: const TextStyle(color: SangakColors.inkLight)),
+          ),
+          SangakButton.primary(
+            label: l10n.confirmButton,
+            width: 120,
+            onPressed: () {
+              if (controller.text == (order.deliveryCode ?? "00")) {
+                Navigator.pop(context, true);
+              } else {
+                SangakToast.show(context, l10n.invalidVerificationCode);
+              }
+            },
+          ),
+        ],
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      ),
+    );
+
+    if (result == true) {
+      final pin = controller.text;
+      setState(() => _isUpdating = true);
+      try {
+        await ref.read(orderRepositoryProvider).confirmDelivery(
+          orderId: widget.orderId,
+          pin: pin,
+        );
+        
+        ref.invalidate(availableOrdersProvider);
+        ref.invalidate(myActiveDeliveriesProvider);
+        ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
+        
+        if (mounted) {
+          final l10n = AppLocalizations.of(context);
+          SangakToast.show(context, l10n.deliveredStep);
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          final errorStr = e.toString();
+          String message = 'Error: $e';
+          
+          if (errorStr.contains('Not authorized')) {
+            message = 'Order is not assigned to you in the database. Please try picking it up again.';
+          } else if (errorStr.contains('Incorrect PIN')) {
+            message = AppLocalizations.of(context).invalidVerificationCode;
+          }
+          
+          SangakToast.show(context, message);
+          // Force refresh to fix identity issue
+          ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
+        }
+      } finally {
+        if (mounted) setState(() => _isUpdating = false);
+      }
+    }
+  }
+
   Widget _buildActions(BuildContext context, OrderModel order, AppLocalizations l10n) {
-    Widget action;
+    final user = ref.read(authProvider).asData?.value;
+    final isAssignedToMe = order.assignedDeliveryPerson == user?.id;
+    final isUnassigned = order.assignedDeliveryPerson == null;
+
+    Widget? mainAction;
     if (order.status == OrderStatus.outForDelivery) {
-      action = SangakButton.primary(
-        label: l10n.markDelivered,
-        backgroundColor: SangakColors.success,
-        onPressed: () => _updateStatus(order, OrderStatus.delivered),
-        isLoading: _isUpdating,
+      mainAction = Expanded(
+        child: SangakButton.primary(
+          label: l10n.markDelivered,
+          backgroundColor: SangakColors.success,
+          onPressed: isAssignedToMe ? () => _showVerificationDialog(order) : null,
+          isLoading: _isUpdating,
+        ),
       );
     } else if (order.status == OrderStatus.ready) {
-      action = SangakButton.primary(
-        label: l10n.pickupOrder,
-        onPressed: () => _updateStatus(order, OrderStatus.outForDelivery),
-        isLoading: _isUpdating,
+      mainAction = Expanded(
+        child: SangakButton.primary(
+          label: l10n.pickupOrder,
+          onPressed: (isUnassigned || isAssignedToMe) ? () => _updateStatus(order, OrderStatus.outForDelivery) : null,
+          isLoading: _isUpdating,
+        ),
       );
     } else {
       return const SizedBox.shrink();
@@ -404,7 +577,28 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         boxShadow: SangakDimens.shadowHigh,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
       ),
-      child: SafeArea(child: action),
+      child: SafeArea(
+        child: Row(
+          children: [
+            SizedBox(
+              width: 56,
+              height: 56,
+              child: SangakButton.outlined(
+                label: '',
+                icon: Icons.cancel_outlined,
+                foregroundColor: SangakColors.error,
+                borderColor: SangakColors.error,
+                onPressed: () => CancelOrderDialog.show(
+                  context, 
+                  onConfirm: (reason) => _cancelOrder(reason),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            mainAction,
+          ],
+        ),
+      ),
     );
   }
 }

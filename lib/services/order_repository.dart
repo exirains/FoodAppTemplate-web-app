@@ -14,6 +14,7 @@ class OrderRepository {
     required Address address,
     required String paymentMethod,
     required double totalPrice,
+    String? deliveryCode,
     int? estimatedPrepTime,
   }) async {
     try {
@@ -31,6 +32,7 @@ class OrderRepository {
         'p_address_snapshot': address.toJson(),
         'p_payment_method': paymentMethod,
         'p_total_price': totalPrice,
+        'p_delivery_code': deliveryCode,
         'p_estimated_prep_time': estimatedPrepTime,
         'p_items': itemsData,
       });
@@ -74,6 +76,21 @@ class OrderRepository {
     }
   }
 
+  Future<OrderModel?> getOrderById(String orderId) async {
+    try {
+      final response = await _client
+          .from('orders')
+          .select('*, customer:profiles(*), order_items(*)')
+          .eq('id', orderId)
+          .single();
+      
+      return OrderModel.fromJson(response);
+    } catch (e) {
+      debugPrint('Error fetching order by ID: $e');
+      return null;
+    }
+  }
+
   /// Delivery: Fetch assigned orders
   Future<List<OrderModel>> getAssignedOrders(String driverId) async {
     try {
@@ -87,6 +104,24 @@ class OrderRepository {
     } catch (e) {
       debugPrint('Error fetching assigned orders: $e');
       return [];
+    }
+  }
+
+  /// Delivery: Confirm delivery using PIN via RPC
+  Future<void> confirmDelivery({
+    required String orderId,
+    required String pin,
+  }) async {
+    try {
+      await _client.rpc('confirm_delivery', params: {
+        'p_order_id': orderId,
+        'p_pin': pin,
+      });
+      // The RPC handles status update and history insertion
+      debugPrint('Delivery confirmed via RPC');
+    } catch (e) {
+      debugPrint('Error confirming delivery: $e');
+      rethrow;
     }
   }
 
@@ -139,6 +174,21 @@ class OrderRepository {
       return (response as List).cast<Map<String, dynamic>>();
     } catch (e) {
       debugPrint('Error fetching delivery staff: $e');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getOrderStatusHistory(String orderId) async {
+    try {
+      final response = await _client
+          .from('order_status_history')
+          .select()
+          .eq('order_id', orderId)
+          .order('created_at', ascending: true);
+      
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      debugPrint('Error fetching status history: $e');
       return [];
     }
   }

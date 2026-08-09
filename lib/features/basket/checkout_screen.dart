@@ -96,6 +96,7 @@ class CheckoutScreen extends ConsumerWidget {
 
   Widget _buildOrderSummary(List<BasketItem> basket, String lang, BuildContext context) {
     const deliveryFee = 15.0;
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -127,7 +128,7 @@ class CheckoutScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Delivery Fee',
+                l10n.deliveryFeeLabel,
                 style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
               ),
               Text(
@@ -213,11 +214,11 @@ class CheckoutScreen extends ConsumerWidget {
                           );
                           ref.read(checkoutProvider.notifier).setEstimatedPrepMinutes(prepMinutes + 15);
                           
-                          await ref.read(checkoutProvider.notifier).placeOrder();
+                          final orderId = await ref.read(checkoutProvider.notifier).placeOrder();
                           
                           if (context.mounted) {
                             SangakToast.show(context, l10n.orderPlacedSuccessfully);
-                            context.go('/home'); // Send to home page instead of empty basket
+                            context.push('/order-confirmation', extra: orderId);
                           }
                         } catch (e) {
                           if (context.mounted) {

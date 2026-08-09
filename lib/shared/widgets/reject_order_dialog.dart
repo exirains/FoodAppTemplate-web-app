@@ -69,7 +69,8 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
                   child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       trackHeight: 64,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 28),
+                      trackShape: _FullWidthTrackShape(),
+                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 28, elevation: 4),
                       overlayShape: SliderComponentShape.noOverlay,
                       activeTrackColor: SangakColors.error.withValues(alpha: 0.2),
                       inactiveTrackColor: Colors.transparent,
@@ -117,5 +118,22 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
         ),
       ],
     );
+  }
+}
+
+class _FullWidthTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight!;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

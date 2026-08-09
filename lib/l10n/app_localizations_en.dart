@@ -878,6 +878,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusDisabled => 'Disabled';
 
   @override
+  String minOrderLimitError(num limit) {
+    return 'Minimum order amount is $limit TL';
+  }
+
+  @override
+  String get deliveryVerification => 'Delivery Verification';
+
+  @override
+  String get enterVerificationCode => 'Enter 2-digit verification code';
+
+  @override
+  String get invalidVerificationCode =>
+      'Incorrect PIN, please verify with customer';
+
+  @override
+  String get cancelOrder => 'Cancel Order';
+
+  @override
+  String get cancellationReason => 'Reason for cancellation';
+
+  @override
+  String get orderCancelled => 'Order cancelled successfully';
+
+  @override
+  String get deliveryFeeLabel => 'Delivery Fee';
+
+  @override
+  String itemsCount(num count) {
+    return '${count}x items';
+  }
+
+  @override
   String get reject => 'Reject';
 
   @override
@@ -889,4 +921,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slidetoReject => 'Slide to Reject';
+
+  @override
+  String get orderTracking => 'Order Tracking';
+
+  @override
+  String get orderConfirmedStep => 'Order Confirmed';
+
+  @override
+  String get orderConfirmedDesc => 'Store received the order';
+
+  @override
+  String get preparingStep => 'Preparing Order';
+
+  @override
+  String get preparingDesc => 'Kitchen is preparing items';
+
+  @override
+  String get readyStep => 'Ready for Pick-Up';
+
+  @override
+  String get readyDesc => 'Waiting for courier allocation';
+
+  @override
+  String get outForDeliveryStep => 'Out for Delivery';
+
+  @override
+  String get outForDeliveryDesc => 'Courier is on the way';
+
+  @override
+  String get deliveredStep => 'Delivered';
+
+  @override
+  String get deliveredDesc => 'Order completed';
+
+  @override
+  String get givePinToDriver => 'Give this PIN to your driver:';
+
+  @override
+  String get trackOrder => 'Track Order';
+
+  @override
+  String get confirmButton => 'Confirm';
+
+  @override
+  String get noDeliveryPersonFound => 'No delivery person found';
+
+  @override
+  String get totalToCollect => 'Total to Collect';
+
+  @override
+  String get outOfStock => 'Out of Stock';
+
+  @override
+  String get productStatusUpdated => 'Status updated successfully';
+
+  @override
+  String successfullySelected(String name) {
+    return 'Successfully selected $name!';
+  }
 }

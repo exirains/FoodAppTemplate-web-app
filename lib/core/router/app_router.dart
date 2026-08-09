@@ -14,6 +14,7 @@ import '../../features/basket/address_selection_screen.dart';
 import '../../features/basket/payment_selection_screen.dart';
 import '../../features/basket/order_confirmation_screen.dart';
 import '../../features/orders/order_history_screen.dart';
+import '../../features/orders/order_tracking_screen.dart';
 import '../../features/favorites/favorites_screen.dart';
 import '../../features/admin/admin_dashboard_screen.dart';
 import '../../features/admin/order_management_screen.dart';
@@ -182,11 +183,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/order-confirmation',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const OrderConfirmationScreen(),
-        ),
+        pageBuilder: (context, state) {
+          final orderId = state.extra as String?;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: OrderConfirmationScreen(orderId: orderId),
+          );
+        },
       ),
       GoRoute(
         path: '/orders',
@@ -195,6 +199,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           state: state,
           child: const OrderHistoryScreen(),
         ),
+      ),
+      GoRoute(
+        path: '/tracking/:id',
+        pageBuilder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: OrderTrackingScreen(orderId: id),
+          );
+        },
       ),
       GoRoute(
         path: '/favorites',

@@ -87,30 +87,14 @@ final favoriteCountProvider = Provider<int>((ref) {
   return ref.watch(favoritesProvider).asData?.value.length ?? 0;
 });
 
-final breadsProvider = FutureProvider<List<Bread>>((ref) async {
+final breadsProvider = StreamProvider<List<Bread>>((ref) {
   final selectedId = ref.watch(selectedCategoryIdProvider);
   final repo = ref.read(breadRepositoryProvider);
-  final cache = ref.read(cacheServiceProvider);
-  final locale = ref.watch(localeProvider);
-  final lang = locale.languageCode;
-
-  if (selectedId == null) {
-    final cached = cache.getBreads(lang);
-    if (cached != null && cached.isNotEmpty) {
-      repo.getBreads().then((value) {
-        if (value.isNotEmpty) cache.saveBreads(value, lang);
-      }).catchError((_) {});
-      return cached;
-    }
-  }
   
-  final live = await repo.getBreads(categoryId: selectedId);
-  if (selectedId == null && live.isNotEmpty) {
-    try {
-      await cache.saveBreads(live, lang);
-    } catch (_) {}
-  }
-  return live;
+  // Realtime stream triggers a high-fidelity fetch with translations
+  return repo.watchBreads(categoryId: selectedId).asyncMap((_) async {
+    return await repo.getBreads(categoryId: selectedId);
+  });
 });
 
 final selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
@@ -119,27 +103,13 @@ final filteredBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
   return ref.watch(breadsProvider);
 });
 
-final popularBreadsProvider = FutureProvider<List<Bread>>((ref) async {
+final popularBreadsProvider = StreamProvider<List<Bread>>((ref) {
   final repo = ref.read(breadRepositoryProvider);
-  final cache = ref.read(cacheServiceProvider);
-  final locale = ref.watch(localeProvider);
-  final lang = locale.languageCode;
   
-  final cached = cache.getPopularToday(lang);
-  if (cached != null && cached.isNotEmpty) {
-    repo.getPopularToday().then((value) {
-      if (value.isNotEmpty) cache.savePopularToday(value, lang);
-    }).catchError((_) {});
-    return cached;
-  }
-  
-  final live = await repo.getPopularToday();
-  if (live.isNotEmpty) {
-    try {
-      await cache.savePopularToday(live, lang);
-    } catch (_) {}
-  }
-  return live;
+  // Realtime stream triggers a fetch for popular items
+  return repo.watchBreads().asyncMap((_) async {
+    return await repo.getPopularToday();
+  });
 });
 
 final filteredPopularBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
