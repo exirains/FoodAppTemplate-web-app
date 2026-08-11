@@ -183,6 +183,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       top: SangakDimens.spacing8,
                       right: SangakDimens.spacing8,
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque, // FIX: Ensure entire circle is clickable
                         onTap: () {
                           if (!ActionGuard.check(context, ref)) return;
                           widget.onFavoriteToggle();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -27,7 +26,7 @@ class OrderTrackingScreen extends ConsumerWidget {
         title: Text(l10n.orderTracking),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => context.go('/home'),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: orderAsync.when(
@@ -306,6 +305,7 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     Color color;
     switch (status) {
       case OrderStatus.delivered: color = SangakColors.success; break;
@@ -319,7 +319,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
       ),
       child: Text(
-        status.label,
+        status.localizedLabel(l10n),
         style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );

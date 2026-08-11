@@ -23,43 +23,47 @@ class LanguageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isSelected 
-                ? SangakColors.primary.withValues(alpha: 0.1) 
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
               color: isSelected 
-                  ? SangakColors.primary 
-                  : SangakColors.border.withValues(alpha: 0.5),
-              width: 2,
-            ),
-          ),
-          child: Row(
-            children: [
-              Text(flag, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 16),
-              Text(
-                label,
-                style: SangakTypography.title(context).copyWith(
-                  fontSize: 18,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                  color: isSelected ? SangakColors.primary : SangakColors.ink,
-                ),
+                  ? SangakColors.primary.withValues(alpha: 0.1) 
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isSelected 
+                    ? SangakColors.primary 
+                    : SangakColors.border.withValues(alpha: 0.5),
+                width: 2,
               ),
-              const Spacer(),
-              if (isSelected)
-                const Icon(
-                  Icons.check_circle_rounded,
-                  color: SangakColors.primary,
+            ),
+            child: Row(
+              children: [
+                Text(flag, style: const TextStyle(fontSize: 24)),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: SangakTypography.title(context).copyWith(
+                      fontSize: 18,
+                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                      color: isSelected ? SangakColors.primary : SangakColors.ink,
+                    ),
+                  ),
                 ),
-            ],
+                if (isSelected)
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: SangakColors.primary,
+                  ),
+              ],
+            ),
           ),
         ),
       ),

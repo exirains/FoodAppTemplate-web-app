@@ -964,4 +964,96 @@ class AppLocalizationsFa extends AppLocalizations {
   String successfullySelected(String name) {
     return 'آدرس $name با موفقیت انتخاب شد!';
   }
+
+  @override
+  String get noPhoneNumberAvailable => 'شماره تلفن موجود نیست';
+
+  @override
+  String get couldNotOpenPhoneDialer => 'امکان باز کردن شماره‌گیر وجود ندارد';
+
+  @override
+  String get orderNotAssignedError =>
+      'این سفارش در پایگاه داده به شما اختصاص داده نشده است. لطفاً دوباره امتحان کنید.';
+
+  @override
+  String get orderAlreadyAssigned =>
+      'متأسفانه این سفارش قبلاً به پیک دیگری اختصاص یافته است.';
+
+  @override
+  String get noOrdersForPickup => 'سفارشی برای تحویل موجود نیست';
+
+  @override
+  String get noActiveDeliveries => 'شما هیچ تحویل فعالی ندارید';
+
+  @override
+  String get syncingPermissions => 'در حال همگام‌سازی دسترسی‌ها...';
+
+  @override
+  String get noteLabel => 'یادداشت: ';
+
+  @override
+  String get justNow => 'جدید';
+
+  @override
+  String get locationServiceOffTitle => 'سرویس موقعیت‌یابی خاموش است';
+
+  @override
+  String get locationServiceOffMessage =>
+      'برای یافتن خودکار آدرس، به موقعیت مکانی شما نیاز داریم. لطفاً سرویس موقعیت‌یابی را در تنظیمات گوشی خود روشن کنید.';
+
+  @override
+  String get turnOn => 'روشن کردن';
+
+  @override
+  String get nevermind => 'بی‌خیال';
+
+  @override
+  String get locationServiceDisabled =>
+      'موقعیت یابی گوشی شما خاموش است. لطفاً آن را روشن کنید.';
+
+  @override
+  String get locationPermissionDenied => 'دسترسی به موقعیت یابی رد شد';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'دسترسی به موقعیت یابی برای همیشه رد شده است.';
+
+  @override
+  String get errorVerifyingProfile => 'خطا در تأیید پروفایل';
+
+  @override
+  String get errorCreatingInitialProfile => 'خطا در ایجاد پروفایل اولیه';
+
+  @override
+  String get ago => 'پیش';
+
+  @override
+  String get minutesShort => 'دقیقه';
+
+  @override
+  String get secondsShort => 'ثانیه';
+
+  @override
+  String get today => 'امروز';
+
+  @override
+  String get allTime => 'همه زمان‌ها';
+
+  @override
+  String get assigned => 'تخصیص داده شده';
+
+  @override
+  String get rejected => 'رد شد';
+
+  @override
+  String get freshToday => 'امروز پخته شده';
+
+  @override
+  String get outOfOven => 'تازه از تنور درآمده';
+
+  @override
+  String get limitedQuantity => 'تعداد محدود';
+
+  @override
+  String get pleaseFillFloorDoor => 'لطفاً این موارد را برای ادامه تکمیل کنید';
 }

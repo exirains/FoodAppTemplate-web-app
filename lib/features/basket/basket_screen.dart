@@ -137,7 +137,8 @@ class BasketScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       GestureDetector(
-                        onTap: () {}, // Consume tap to prevent bubbling
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {},
                         child: QuantitySelector(
                           quantity: item.quantity,
                           compact: true,

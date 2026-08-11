@@ -50,7 +50,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles(*), order_items(*)')
+          .select('*, customer:profiles!user_id(*), order_items(*)')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
@@ -66,7 +66,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles(*), order_items(*)')
+          .select('*, customer:profiles!user_id(*), order_items(*)')
           .order('created_at', ascending: false);
 
       return (response as List).map((json) => OrderModel.fromJson(json)).toList();
@@ -80,7 +80,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles(*), order_items(*)')
+          .select('*, customer:profiles!user_id(*), order_items(*)')
           .eq('id', orderId)
           .single();
       
@@ -96,7 +96,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles(*), order_items(*)')
+          .select('*, customer:profiles!user_id(*), order_items(*)')
           .eq('assigned_delivery_person', driverId)
           .order('created_at', ascending: false);
 
@@ -151,12 +151,23 @@ class OrderRepository {
   }
 
   /// Admin: Assign delivery person
-  Future<void> assignDeliveryPerson(String orderId, String driverId) async {
+  /// 
+  /// If [ifUnassigned] is true, the assignment will only succeed if the order 
+  /// currently has no assigned delivery person. Returns true if successful.
+  Future<bool> assignDeliveryPerson(String orderId, String driverId, {bool ifUnassigned = false}) async {
     try {
-      await _client.from('orders').update({
+      var query = _client.from('orders').update({
         'assigned_delivery_person': driverId,
         'updated_at': DateTime.now().toIso8601String(),
       }).eq('id', orderId);
+
+      if (ifUnassigned) {
+        query = query.isFilter('assigned_delivery_person', null);
+      }
+
+      final response = await query.select('id');
+      
+      return (response as List).isNotEmpty;
     } catch (e) {
       debugPrint('Error assigning delivery person: $e');
       rethrow;
@@ -191,6 +202,46 @@ class OrderRepository {
       debugPrint('Error fetching status history: $e');
       return [];
     }
+  }
+
+  /// Delivery: Stream available orders (status: ready, no driver assigned)
+  Stream<List<OrderModel>> watchAvailableOrders() {
+    return _client
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .eq('status', 'ready')
+        .order('created_at', ascending: false)
+        .asyncMap((list) async {
+          // Re-fetch joined data since stream doesn't support joins natively
+          final response = await _client
+              .from('orders')
+              .select('*, customer:profiles!user_id(*), order_items(*)')
+              .eq('status', 'ready')
+              .isFilter('assigned_delivery_person', null)
+              .order('created_at', ascending: false);
+          
+          return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+        });
+  }
+
+  /// Delivery: Stream my active deliveries
+  Stream<List<OrderModel>> watchDriverOrders(String driverId) {
+    return _client
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .eq('assigned_delivery_person', driverId)
+        .order('created_at', ascending: false)
+        .asyncMap((list) async {
+          final response = await _client
+              .from('orders')
+              .select('*, customer:profiles!user_id(*), order_items(*)')
+              .eq('assigned_delivery_person', driverId)
+              .not('status', 'eq', 'delivered')
+              .not('status', 'eq', 'cancelled')
+              .order('created_at', ascending: false);
+              
+          return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+        });
   }
 
   /// Customer: Watch own orders in real-time

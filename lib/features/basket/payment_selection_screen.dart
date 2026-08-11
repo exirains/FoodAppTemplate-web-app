@@ -93,6 +93,7 @@ class PaymentSelectionScreen extends ConsumerWidget {
     return Opacity(
       opacity: isEnabled ? 1.0 : 0.5,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: isEnabled ? () => ref.read(checkoutProvider.notifier).selectPaymentMethod(method) : null,
         child: Container(
           padding: const EdgeInsets.all(16),

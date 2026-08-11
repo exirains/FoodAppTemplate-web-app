@@ -43,6 +43,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final user = ref.watch(authProvider).asData?.value;
     final currentIndex = ref.watch(tabProvider);
     final isGuest = user == null;
+    final isHomeTab = currentIndex == 0;
 
     final List<Widget> screens = [
       const HomeScreen(),
@@ -51,29 +52,37 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       isGuest ? const ProfileGuestView() : const ProfileScreen(),
     ];
 
-    return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 400),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 0.01),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
-        child: KeyedSubtree(
-          key: ValueKey<int>(currentIndex),
-          child: screens[currentIndex],
+    return PopScope(
+      canPop: isHomeTab,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && !isHomeTab) {
+          ref.read(tabProvider.notifier).state = 0;
+        }
+      },
+      child: Scaffold(
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.01),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            );
+          },
+          child: KeyedSubtree(
+            key: ValueKey<int>(currentIndex),
+            child: screens[currentIndex],
+          ),
         ),
-      ),
-      bottomNavigationBar: SangakBottomNav(
-        currentIndex: currentIndex,
-        onTap: _onTabTapped,
+        bottomNavigationBar: SangakBottomNav(
+          currentIndex: currentIndex,
+          onTap: _onTabTapped,
+        ),
       ),
     );
   }

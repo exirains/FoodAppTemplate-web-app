@@ -29,12 +29,23 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   Future<void> _updateStatus(OrderModel order, OrderStatus newStatus) async {
     final user = ref.read(authProvider).asData?.value;
     if (user == null) return;
+    final l10n = AppLocalizations.of(context);
 
     setState(() => _isUpdating = true);
     try {
       if (order.assignedDeliveryPerson == null) {
          debugPrint('Assigning order to driver: ${user.id}');
-         await ref.read(orderRepositoryProvider).assignDeliveryPerson(order.id, user.id);
+         final success = await ref.read(orderRepositoryProvider).assignDeliveryPerson(
+           order.id, 
+           user.id, 
+           ifUnassigned: true,
+         );
+
+         if (!success) {
+           if (mounted) SangakToast.show(context, l10n.orderAlreadyAssigned);
+           ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
+           return;
+         }
       }
 
       await ref.read(orderRepositoryProvider).updateOrderStatus(
@@ -50,8 +61,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       ref.invalidate(myActiveDeliveriesProvider);
       
       if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, '${l10n.status}: ${newStatus.label}');
+        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
         if (newStatus == OrderStatus.delivered) {
           Navigator.pop(context);
         }
@@ -106,8 +116,9 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   }
 
   Future<void> _callCustomer(String? phone) async {
+    final l10n = AppLocalizations.of(context);
     if (phone == null || phone.isEmpty) {
-      if (mounted) SangakToast.show(context, 'No phone number available');
+      if (mounted) SangakToast.show(context, l10n.noPhoneNumberAvailable);
       return;
     }
     
@@ -123,7 +134,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
       debugPrint('🚨 Call failed: $e');
-      if (mounted) SangakToast.show(context, 'Could not open phone dialer');
+      if (mounted) SangakToast.show(context, l10n.couldNotOpenPhoneDialer);
     }
   }
 
@@ -192,30 +203,27 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   }
 
   Widget _buildStatusBanner(BuildContext context, OrderModel order) {
+    final l10n = AppLocalizations.of(context);
     Color bgColor;
     IconData icon;
-    String statusText;
+    String statusText = order.status.localizedLabel(l10n).toUpperCase();
     
     switch (order.status) {
       case OrderStatus.ready:
         bgColor = SangakColors.info;
         icon = Icons.inventory_2_outlined;
-        statusText = 'READY';
         break;
       case OrderStatus.outForDelivery:
         bgColor = SangakColors.primary;
         icon = Icons.delivery_dining;
-        statusText = 'OUT FOR DELIVERY';
         break;
       case OrderStatus.delivered:
         bgColor = SangakColors.success;
         icon = Icons.check_circle_outline;
-        statusText = 'DELIVERED';
         break;
       default:
         bgColor = SangakColors.inkLight;
         icon = Icons.help_outline;
-        statusText = order.status.name.toUpperCase();
     }
 
     return Container(
@@ -269,8 +277,9 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   }
 
   Widget _buildCustomerCard(BuildContext context, OrderModel order) {
+    final l10n = AppLocalizations.of(context);
     final profile = order.userProfile;
-    final fullName = profile?['full_name'] ?? profile?['fullName'] ?? profile?['full_name_snapshot'] ?? 'Guest';
+    final fullName = profile?['full_name'] ?? profile?['fullName'] ?? profile?['full_name_snapshot'] ?? l10n.guest;
     final phone = profile?['phone_number'] ?? profile?['phone'] ?? profile?['phoneNumber'];
 
     return Container(
@@ -332,7 +341,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           ),
           const SizedBox(height: 4),
           Text(
-            'Building: ${addr['building_number']} • Floor: ${addr['floor']} • Door: ${addr['door_number']}',
+            '${l10n.building}: ${addr['building_number']} • ${l10n.floor}: ${addr['floor']} • ${l10n.door}: ${addr['door_number']}',
             style: SangakTypography.bodySmall(context),
           ),
           if (deliveryNote != null && deliveryNote.isNotEmpty) ...[
@@ -524,13 +533,14 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           final errorStr = e.toString();
           String message = 'Error: $e';
           
           if (errorStr.contains('Not authorized')) {
-            message = 'Order is not assigned to you in the database. Please try picking it up again.';
+            message = l10n.orderNotAssignedError;
           } else if (errorStr.contains('Incorrect PIN')) {
-            message = AppLocalizations.of(context).invalidVerificationCode;
+            message = l10n.invalidVerificationCode;
           }
           
           SangakToast.show(context, message);
@@ -544,17 +554,13 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   }
 
   Widget _buildActions(BuildContext context, OrderModel order, AppLocalizations l10n) {
-    final user = ref.read(authProvider).asData?.value;
-    final isAssignedToMe = order.assignedDeliveryPerson == user?.id;
-    final isUnassigned = order.assignedDeliveryPerson == null;
-
     Widget? mainAction;
     if (order.status == OrderStatus.outForDelivery) {
       mainAction = Expanded(
         child: SangakButton.primary(
           label: l10n.markDelivered,
           backgroundColor: SangakColors.success,
-          onPressed: isAssignedToMe ? () => _showVerificationDialog(order) : null,
+          onPressed: () => _showVerificationDialog(order),
           isLoading: _isUpdating,
         ),
       );
@@ -562,7 +568,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       mainAction = Expanded(
         child: SangakButton.primary(
           label: l10n.pickupOrder,
-          onPressed: (isUnassigned || isAssignedToMe) ? () => _updateStatus(order, OrderStatus.outForDelivery) : null,
+          onPressed: () => _updateStatus(order, OrderStatus.outForDelivery),
           isLoading: _isUpdating,
         ),
       );

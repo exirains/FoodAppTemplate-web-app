@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'sangak_colors.dart';
 
-/// Sangak Design System Tokens (v1.0.0)
+/// Sangak Design System Tokens (v1.1.0)
 ///
 /// Semantic mappings for statuses and animations.
 class SangakTokens {
   // --- Freshness System ---
   
   static FreshnessToken get freshToday => const FreshnessToken(
-    label: 'Fresh Today',
+    type: FreshnessType.freshToday,
     color: SangakColors.freshToday,
     icon: Icons.eco_outlined,
   );
 
   static FreshnessToken get outOfOven => const FreshnessToken(
-    label: 'Just Out of Oven',
+    type: FreshnessType.outOfOven,
     color: SangakColors.outOfOven,
     icon: Icons.local_fire_department_outlined,
   );
 
   static FreshnessToken get limitedQuantity => const FreshnessToken(
-    label: 'Limited Quantity',
+    type: FreshnessType.limitedQuantity,
     color: SangakColors.limited,
     icon: Icons.alarm_outlined,
   );
@@ -37,14 +38,27 @@ class SangakTokens {
   static const Curve curveEmphasized = Curves.easeOutQuart;
 }
 
+enum FreshnessType { freshToday, outOfOven, limitedQuantity }
+
 class FreshnessToken {
-  final String label;
+  final FreshnessType type;
   final Color color;
   final IconData icon;
 
   const FreshnessToken({
-    required this.label,
+    required this.type,
     required this.color,
     required this.icon,
   });
+
+  String localizedLabel(AppLocalizations l10n) {
+    switch (type) {
+      case FreshnessType.freshToday:
+        return l10n.freshToday;
+      case FreshnessType.outOfOven:
+        return l10n.outOfOven;
+      case FreshnessType.limitedQuantity:
+        return l10n.limitedQuantity;
+    }
+  }
 }

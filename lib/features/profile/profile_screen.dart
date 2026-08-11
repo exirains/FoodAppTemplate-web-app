@@ -477,8 +477,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             bottom: 0,
             right: 0,
             child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: _isUploading ? null : _pickAndUploadAvatar,
-              child: Container(
+              child: Ink(
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
                   color: SangakColors.primary,

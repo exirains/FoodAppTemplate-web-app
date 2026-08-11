@@ -613,7 +613,7 @@ abstract class AppLocalizations {
   /// No description provided for @building.
   ///
   /// In en, this message translates to:
-  /// **'Building / No'**
+  /// **'Building'**
   String get building;
 
   /// No description provided for @floor.
@@ -625,7 +625,7 @@ abstract class AppLocalizations {
   /// No description provided for @door.
   ///
   /// In en, this message translates to:
-  /// **'Door No'**
+  /// **'Door'**
   String get door;
 
   /// No description provided for @saveAddress.
@@ -1953,6 +1953,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully selected {name}!'**
   String successfullySelected(String name);
+
+  /// No description provided for @noPhoneNumberAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No phone number available'**
+  String get noPhoneNumberAvailable;
+
+  /// No description provided for @couldNotOpenPhoneDialer.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open phone dialer'**
+  String get couldNotOpenPhoneDialer;
+
+  /// No description provided for @orderNotAssignedError.
+  ///
+  /// In en, this message translates to:
+  /// **'This order is not assigned to you in the database. Please try picking it up again.'**
+  String get orderNotAssignedError;
+
+  /// No description provided for @orderAlreadyAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, this order has already been assigned to another delivery person.'**
+  String get orderAlreadyAssigned;
+
+  /// No description provided for @noOrdersForPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders ready for pickup'**
+  String get noOrdersForPickup;
+
+  /// No description provided for @noActiveDeliveries.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no active deliveries'**
+  String get noActiveDeliveries;
+
+  /// No description provided for @syncingPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing permissions...'**
+  String get syncingPermissions;
+
+  /// No description provided for @noteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: '**
+  String get noteLabel;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @locationServiceOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Service turned OFF'**
+  String get locationServiceOffTitle;
+
+  /// No description provided for @locationServiceOffMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We need your location to find your address automatically. Please turn on Location Services in your system settings.'**
+  String get locationServiceOffMessage;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn ON'**
+  String get turnOn;
+
+  /// No description provided for @nevermind.
+  ///
+  /// In en, this message translates to:
+  /// **'Nevermind'**
+  String get nevermind;
+
+  /// No description provided for @locationServiceDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t get your location because your phone\'s location service is turned off. Please turn it on.'**
+  String get locationServiceDisabled;
+
+  /// No description provided for @locationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permissions are denied'**
+  String get locationPermissionDenied;
+
+  /// No description provided for @locationPermissionPermanentlyDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permissions are permanently denied, we cannot request permissions.'**
+  String get locationPermissionPermanentlyDenied;
+
+  /// No description provided for @errorVerifyingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error verifying profile'**
+  String get errorVerifyingProfile;
+
+  /// No description provided for @errorCreatingInitialProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating initial profile'**
+  String get errorCreatingInitialProfile;
+
+  /// No description provided for @ago.
+  ///
+  /// In en, this message translates to:
+  /// **'ago'**
+  String get ago;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'m'**
+  String get minutesShort;
+
+  /// No description provided for @secondsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get secondsShort;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @allTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get allTime;
+
+  /// No description provided for @assigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get assigned;
+
+  /// No description provided for @rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'REJECTED'**
+  String get rejected;
+
+  /// No description provided for @freshToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh Today'**
+  String get freshToday;
+
+  /// No description provided for @outOfOven.
+  ///
+  /// In en, this message translates to:
+  /// **'Just Out of Oven'**
+  String get outOfOven;
+
+  /// No description provided for @limitedQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited Quantity'**
+  String get limitedQuantity;
+
+  /// No description provided for @pleaseFillFloorDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill these out to continue'**
+  String get pleaseFillFloorDoor;
 }
 
 class _AppLocalizationsDelegate

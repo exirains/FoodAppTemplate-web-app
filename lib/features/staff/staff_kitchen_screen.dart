@@ -33,11 +33,12 @@ class StaffKitchenScreen extends ConsumerWidget {
           actions: [
             IconButton(
               onPressed: () {
+                final l10n = AppLocalizations.of(context);
                 final userProfile = ref.read(userProfileProvider).asData?.value;
                 if (userProfile != null) {
                   RoleSwitcher.show(context, userProfile.role);
                 } else {
-                  SangakToast.show(context, 'Syncing permissions...');
+                  SangakToast.show(context, l10n.syncingPermissions);
                   ref.invalidate(userProfileProvider);
                 }
               },
@@ -120,7 +121,7 @@ class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
       // Force UI refresh
       ref.invalidate(adminOrdersProvider);
       if (mounted) {
-        SangakToast.show(context, '${widget.l10n.status}: ${newStatus.label}');
+        SangakToast.show(context, '${widget.l10n.status}: ${newStatus.localizedLabel(widget.l10n)}');
       }
     } catch (e) {
       if (mounted) SangakToast.show(context, 'Error: $e');
@@ -158,7 +159,7 @@ class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
                 children: [
                   Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
                   Text(
-                    _formatTime(widget.order.createdAt),
+                    _formatTime(widget.order.createdAt, widget.l10n),
                     style: SangakTypography.title(context).copyWith(color: SangakColors.primary),
                   ),
                 ],
@@ -254,9 +255,10 @@ class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
     );
   }
 
-  String _formatTime(DateTime date) {
+  String _formatTime(DateTime date, AppLocalizations l10n) {
     final diff = DateTime.now().difference(date);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inMinutes < 1) return l10n.justNow;
+    if (diff.inMinutes < 60) return '${diff.inMinutes}${l10n.minutesShort} ${l10n.ago}';
     return '${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 }

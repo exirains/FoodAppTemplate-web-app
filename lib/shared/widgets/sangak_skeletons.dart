@@ -57,46 +57,54 @@ class _SangakSkeletonState extends State<SangakSkeleton>
 }
 
 class ProductCardSkeleton extends StatelessWidget {
-  const ProductCardSkeleton({super.key});
+  final double width;
+  final double imageAspectRatio;
+
+  const ProductCardSkeleton({
+    super.key,
+    this.width = 190,
+    this.imageAspectRatio = 1.0,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220,
-      height: 345, // Match ProductCard height
+      width: width,
       decoration: BoxDecoration(
         color: SangakColors.surface,
         borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
         boxShadow: SangakDimens.shadowLow,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SangakSkeleton(width: 220, height: 210, borderRadius: SangakDimens.radiusXL),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SangakSkeleton(width: 120, height: 18),
-                      const SizedBox(height: 6),
-                      const SangakSkeleton(width: 180, height: 12),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      SangakSkeleton(width: 60, height: 18),
-                      SangakSkeleton(width: 80, height: 32, borderRadius: SangakDimens.radiusM),
-                    ],
-                  ),
-                ],
-              ),
+          AspectRatio(
+            aspectRatio: imageAspectRatio,
+            child: SangakSkeleton(
+              width: width,
+              height: width / imageAspectRatio,
+              borderRadius: SangakDimens.radiusXL,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SangakSkeleton(width: 100, height: 16),
+                const SizedBox(height: 6),
+                const SangakSkeleton(width: 150, height: 10),
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    SangakSkeleton(width: 50, height: 18),
+                    SangakSkeleton(width: 70, height: 32, borderRadius: SangakDimens.radiusM),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

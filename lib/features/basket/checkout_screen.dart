@@ -218,7 +218,7 @@ class CheckoutScreen extends ConsumerWidget {
                           
                           if (context.mounted) {
                             SangakToast.show(context, l10n.orderPlacedSuccessfully);
-                            context.push('/order-confirmation', extra: orderId);
+                            context.pushReplacement('/order-confirmation', extra: orderId);
                           }
                         } catch (e) {
                           if (context.mounted) {

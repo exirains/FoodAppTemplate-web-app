@@ -1,4 +1,5 @@
 import 'order_item.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 
 enum OrderStatus {
   pending,
@@ -37,6 +38,18 @@ enum OrderStatus {
       case OrderStatus.outForDelivery: return 'OUT FOR DELIVERY';
       case OrderStatus.delivered: return 'DELIVERED';
       case OrderStatus.cancelled: return 'CANCELLED';
+    }
+  }
+
+  String localizedLabel(AppLocalizations l10n) {
+    switch (this) {
+      case OrderStatus.pending: return l10n.statusPending;
+      case OrderStatus.confirmed: return l10n.statusConfirmed;
+      case OrderStatus.preparing: return l10n.statusPreparing;
+      case OrderStatus.ready: return l10n.statusReady;
+      case OrderStatus.outForDelivery: return l10n.outForDelivery;
+      case OrderStatus.delivered: return l10n.statusDelivered;
+      case OrderStatus.cancelled: return l10n.statusCancelled;
     }
   }
 

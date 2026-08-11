@@ -5,9 +5,10 @@ import '../../core/design_system/sangak_dimens.dart';
 
 enum SangakButtonVariant { primary, outlined, ghost }
 
-/// Sangak Design System Buttons
-
-class SangakButton extends StatefulWidget {
+/// Sangak Design System Buttons (v4.1.0)
+///
+/// Refined color application and hit-testing.
+class SangakButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final SangakButtonVariant variant;
@@ -62,124 +63,99 @@ class SangakButton extends StatefulWidget {
     this.borderColor,
   }) : variant = SangakButtonVariant.ghost;
 
-  @override
-  State<SangakButton> createState() => _SangakButtonState();
-}
-
-class _SangakButtonState extends State<SangakButton> {
-  bool get _isEnabled => widget.onPressed != null && !widget.isLoading;
-
-  Color _getBackgroundColor() {
-    if (!_isEnabled && widget.variant == SangakButtonVariant.primary) {
-      return SangakColors.border;
-    }
-    
-    switch (widget.variant) {
-      case SangakButtonVariant.primary:
-        return widget.backgroundColor ?? SangakColors.primary;
-      case SangakButtonVariant.outlined:
-      case SangakButtonVariant.ghost:
-        // Use a color that is almost transparent but catches hits
-        return Colors.white.withValues(alpha: 0.01);
-    }
-  }
-
-  Color _getForegroundColor() {
-    if (!_isEnabled) return SangakColors.inkLight;
-    if (widget.foregroundColor != null) return widget.foregroundColor!;
-    
-    switch (widget.variant) {
-      case SangakButtonVariant.primary:
-        return Colors.white;
-      case SangakButtonVariant.outlined:
-      case SangakButtonVariant.ghost:
-        return SangakColors.primary;
-    }
-  }
-
-  Border? _getBorder() {
-    if (widget.variant == SangakButtonVariant.outlined) {
-      return Border.all(
-        color: _isEnabled ? (widget.borderColor ?? SangakColors.primary) : SangakColors.border,
-        width: 1.5,
-      );
-    }
-    return null;
-  }
+  bool get _isEnabled => onPressed != null && !isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width ?? double.infinity,
-      height: 54, // Signature standard height
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Material(
-        color: Colors.transparent, // Let Ink handle the color
-        child: InkWell(
-          onTap: _isEnabled ? widget.onPressed : null,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-          splashColor: _isEnabled 
-              ? (widget.variant == SangakButtonVariant.primary 
-                  ? Colors.white10 
-                  : SangakColors.primary.withValues(alpha: 0.1))
-              : null,
-          child: Ink(
-            padding: widget.padding ?? 
-                (widget.label.isEmpty 
-                    ? EdgeInsets.zero 
-                    : const EdgeInsets.symmetric(horizontal: SangakDimens.spacing16)),
-            decoration: BoxDecoration(
-              color: _getBackgroundColor(),
-              border: _getBorder(),
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              boxShadow: widget.variant == SangakButtonVariant.primary && _isEnabled
-                  ? SangakDimens.shadowLow
-                  : null,
+    final bool isPrimary = variant == SangakButtonVariant.primary;
+    final bool isOutlined = variant == SangakButtonVariant.outlined;
+
+    final Color effectiveBgColor = _isEnabled
+        ? (backgroundColor ?? (isPrimary ? SangakColors.primary : Colors.transparent))
+        : (isPrimary ? SangakColors.border : Colors.transparent);
+
+    final Color effectiveFgColor = _isEnabled
+        ? (foregroundColor ?? (isPrimary ? Colors.white : SangakColors.primary))
+        : SangakColors.inkLight;
+
+    final Widget child = isLoading
+        ? SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(effectiveFgColor),
             ),
-            child: Center(
-              child: widget.isLoading
-                  ? SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(_getForegroundColor()),
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min, // Fix: Prevent unnecessary expansion/overflow
-                        children: [
-                          if (widget.leading != null) ...[
-                            widget.leading!,
-                            const SizedBox(width: SangakDimens.spacing8),
-                          ],
-                          if (widget.icon != null) ...[
-                            Icon(widget.icon, size: 20, color: _getForegroundColor()),
-                            if (widget.label.isNotEmpty) const SizedBox(width: SangakDimens.spacing8),
-                          ],
-                          if (widget.label.isNotEmpty)
-                            Flexible(
-                              child: Text(
-                                widget.label,
-                                style: SangakTypography.button(context).copyWith(
-                                  color: _getForegroundColor(),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                        ],
-                      ),
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (leading != null) ...[
+                leading!,
+                const SizedBox(width: SangakDimens.spacing8),
+              ],
+              if (icon != null) ...[
+                Icon(icon, size: 20, color: effectiveFgColor),
+                if (label.isNotEmpty) const SizedBox(width: SangakDimens.spacing8),
+              ],
+              if (label.isNotEmpty)
+                Flexible(
+                  child: Text(
+                    label,
+                    style: SangakTypography.button(context).copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: effectiveFgColor, // Force color in text style
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+            ],
+          );
+
+    final ButtonStyle style = (isOutlined || variant == SangakButtonVariant.ghost)
+        ? TextButton.styleFrom(
+            backgroundColor: effectiveBgColor,
+            foregroundColor: effectiveFgColor,
+            minimumSize: Size(width ?? double.infinity, 54),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              side: isOutlined
+                  ? BorderSide(
+                      color: _isEnabled ? (borderColor ?? SangakColors.primary) : SangakColors.border,
+                      width: 1.5,
+                    )
+                  : BorderSide.none,
             ),
-          ),
-        ),
-      ),
+          )
+        : ElevatedButton.styleFrom(
+            backgroundColor: effectiveBgColor,
+            foregroundColor: effectiveFgColor,
+            disabledBackgroundColor: SangakColors.border,
+            disabledForegroundColor: SangakColors.inkLight,
+            elevation: _isEnabled ? 2 : 0,
+            minimumSize: Size(width ?? double.infinity, 54),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+            ),
+          );
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: isPrimary
+          ? ElevatedButton(
+              onPressed: _isEnabled ? onPressed : null,
+              style: style,
+              child: child,
+            )
+          : TextButton(
+              onPressed: _isEnabled ? onPressed : null,
+              style: style,
+              child: child,
+            ),
     );
   }
 }

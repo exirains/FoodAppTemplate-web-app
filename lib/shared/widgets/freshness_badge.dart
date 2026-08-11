@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../core/design_system/sangak_tokens.dart';
 
-/// Sangak Design System Freshness Badge (v1.0.0)
+/// Sangak Design System Freshness Badge (v1.1.0)
 ///
 /// Reusable status badge for freshness indicators.
 class FreshnessBadge extends StatelessWidget {
@@ -20,6 +21,8 @@ class FreshnessBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SangakDimens.spacing8,
@@ -39,7 +42,7 @@ class FreshnessBadge extends StatelessWidget {
           ),
           const SizedBox(width: SangakDimens.spacing4),
           Text(
-            token.label.toUpperCase(),
+            token.localizedLabel(l10n).toUpperCase(),
             style: SangakTypography.caption(context).copyWith(
               color: token.color,
               fontWeight: FontWeight.w700,

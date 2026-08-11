@@ -21,6 +21,7 @@ import '../../shared/widgets/category_chip.dart';
 import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/quantity_selector.dart';
+import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/sangak_skeletons.dart';
 import '../../shared/widgets/user_role_tag.dart';
@@ -96,6 +97,7 @@ class HomeScreen extends ConsumerWidget {
                       ],
                     ),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () => SettingsBottomSheet.show(context),
                       child: Container(
                         padding: const EdgeInsets.all(9),
@@ -125,7 +127,56 @@ class HomeScreen extends ConsumerWidget {
                     subtitle: l10n.heroSubtitle,
                     imageUrl: 'https://obealvlqkffozfigtobc.supabase.co/storage/v1/object/public/branding/top_banner_dark.jpg',
                   ),
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: SangakDimens.spacing24),
+
+                  // Phone Number Warning Banner
+                  if (!isGuest && (ref.watch(userProfileProvider).value?.phoneNumber == null || 
+                      ref.watch(userProfileProvider).value!.phoneNumber!.isEmpty))
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: SangakDimens.spacing24),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: SangakColors.warning.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+                          border: Border.all(color: SangakColors.warning.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                color: SangakColors.warning,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.phone_iphone_rounded, color: Colors.white, size: 20),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.completeYourProfile,
+                                    style: SangakTypography.title(context).copyWith(fontSize: 14),
+                                  ),
+                                  Text(
+                                    l10n.addPhoneToOrder,
+                                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            SangakButton.primary(
+                              label: l10n.add,
+                              width: 80,
+                              onPressed: () => ref.read(tabProvider.notifier).state = 3, // Go to Profile
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                   // Categories
                   Text(l10n.categories, style: SangakTypography.h3(context)),

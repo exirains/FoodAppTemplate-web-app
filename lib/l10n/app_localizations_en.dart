@@ -273,13 +273,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get district => 'District';
 
   @override
-  String get building => 'Building / No';
+  String get building => 'Building';
 
   @override
   String get floor => 'Floor';
 
   @override
-  String get door => 'Door No';
+  String get door => 'Door';
 
   @override
   String get saveAddress => 'Save Address';
@@ -980,4 +980,96 @@ class AppLocalizationsEn extends AppLocalizations {
   String successfullySelected(String name) {
     return 'Successfully selected $name!';
   }
+
+  @override
+  String get noPhoneNumberAvailable => 'No phone number available';
+
+  @override
+  String get couldNotOpenPhoneDialer => 'Could not open phone dialer';
+
+  @override
+  String get orderNotAssignedError =>
+      'This order is not assigned to you in the database. Please try picking it up again.';
+
+  @override
+  String get orderAlreadyAssigned =>
+      'Sorry, this order has already been assigned to another delivery person.';
+
+  @override
+  String get noOrdersForPickup => 'No orders ready for pickup';
+
+  @override
+  String get noActiveDeliveries => 'You have no active deliveries';
+
+  @override
+  String get syncingPermissions => 'Syncing permissions...';
+
+  @override
+  String get noteLabel => 'Note: ';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String get locationServiceOffTitle => 'Location Service turned OFF';
+
+  @override
+  String get locationServiceOffMessage =>
+      'We need your location to find your address automatically. Please turn on Location Services in your system settings.';
+
+  @override
+  String get turnOn => 'Turn ON';
+
+  @override
+  String get nevermind => 'Nevermind';
+
+  @override
+  String get locationServiceDisabled =>
+      'We couldn\'t get your location because your phone\'s location service is turned off. Please turn it on.';
+
+  @override
+  String get locationPermissionDenied => 'Location permissions are denied';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'Location permissions are permanently denied, we cannot request permissions.';
+
+  @override
+  String get errorVerifyingProfile => 'Error verifying profile';
+
+  @override
+  String get errorCreatingInitialProfile => 'Error creating initial profile';
+
+  @override
+  String get ago => 'ago';
+
+  @override
+  String get minutesShort => 'm';
+
+  @override
+  String get secondsShort => 's';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get allTime => 'All Time';
+
+  @override
+  String get assigned => 'Assigned';
+
+  @override
+  String get rejected => 'REJECTED';
+
+  @override
+  String get freshToday => 'Fresh Today';
+
+  @override
+  String get outOfOven => 'Just Out of Oven';
+
+  @override
+  String get limitedQuantity => 'Limited Quantity';
+
+  @override
+  String get pleaseFillFloorDoor => 'Please fill these out to continue';
 }

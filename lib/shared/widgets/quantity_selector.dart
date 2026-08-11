@@ -31,7 +31,7 @@ class QuantitySelector extends ConsumerWidget {
     final formattedQuantity = SangakNumberFormatter.format(quantity, languageCode);
 
     return GestureDetector(
-      onTap: () {}, // CRITICAL: Consume tap to prevent parent navigation/glitches
+      onTap: () {},
       behavior: HitTestBehavior.opaque,
       child: Container(
         height: compact ? 34 : 36,
@@ -89,7 +89,7 @@ class _IconButton extends StatelessWidget {
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        child: Padding(
+        child: Ink(
           padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 8),
           child: Icon(icon, size: compact ? 17 : 18, color: Colors.white),
         ),

@@ -26,9 +26,10 @@ class AddressRepository {
     try {
       final data = address.toJson();
       
+      // Explicitly handle conflict on (user_id, label) to prevent 23505 errors
       final response = await _client
           .from('user_addresses')
-          .upsert(data)
+          .upsert(data, onConflict: 'user_id,label')
           .select();
 
       if (response.isEmpty) {

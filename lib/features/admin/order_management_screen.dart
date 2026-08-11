@@ -9,7 +9,10 @@ import '../../models/order.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
+import '../../shared/widgets/sangak_button.dart';
 import 'admin_provider.dart';
+
+final _timeFilterProvider = StateProvider<bool>((ref) => false); // false = All Time (User Preference)
 
 class OrderManagementScreen extends ConsumerStatefulWidget {
   final int initialTab;
@@ -37,39 +40,94 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
   @override
   Widget build(BuildContext context) {
     final ordersAsync = ref.watch(adminOrdersProvider);
+    final isTodayOnly = ref.watch(_timeFilterProvider);
+    final l10n = AppLocalizations.of(context);
 
     return RoleGuard(
       allowedRoles: const ['admin', 'staff'],
       child: Scaffold(
         backgroundColor: SangakColors.background,
         appBar: AppBar(
-          title: const Text('Order Management'),
+          title: Text(l10n.manageOrders),
+          actions: [
+            IconButton(
+              onPressed: () => ref.invalidate(adminOrdersProvider),
+              icon: const Icon(Icons.refresh),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DropdownButton<bool>(
+                value: isTodayOnly,
+                underline: const SizedBox(),
+                icon: const Icon(Icons.filter_list, color: SangakColors.primary),
+                items: [
+                  DropdownMenuItem(value: true, child: Text(l10n.today)),
+                  DropdownMenuItem(value: false, child: Text(l10n.allTime)),
+                ],
+                onChanged: (val) {
+                  if (val != null) ref.read(_timeFilterProvider.notifier).state = val;
+                },
+              ),
+            ),
+          ],
           bottom: _CustomTabBar(
             tabController: _tabController,
             orders: ordersAsync.value ?? [],
+            isTodayOnly: isTodayOnly,
           ),
         ),
         body: ordersAsync.when(
-          data: (orders) => TabBarView(
-            controller: _tabController,
-            children: [
-              _buildOrderList(orders.where((o) => o.status == OrderStatus.pending).toList()),
-              _buildOrderList(orders.where((o) => o.status == OrderStatus.confirmed || o.status == OrderStatus.preparing).toList()),
-              _buildOrderList(orders.where((o) => o.status == OrderStatus.ready).toList()),
-              _buildOrderList(orders.where((o) => o.status == OrderStatus.outForDelivery).toList()),
-              _buildOrderList(orders.where((o) => o.status == OrderStatus.delivered || o.status == OrderStatus.cancelled).toList()),
-            ],
-          ),
+          data: (allOrders) {
+            final orders = isTodayOnly 
+                ? allOrders.where((o) {
+                    final now = DateTime.now();
+                    final localCreated = o.createdAt.toLocal();
+                    return localCreated.year == now.year && 
+                           localCreated.month == now.month && 
+                           localCreated.day == now.day;
+                  }).toList()
+                : allOrders;
+
+            return TabBarView(
+              controller: _tabController,
+              children: [
+                _buildOrderList(orders.where((o) => o.status == OrderStatus.pending).toList()),
+                _buildOrderList(orders.where((o) => o.status == OrderStatus.confirmed || o.status == OrderStatus.preparing).toList()),
+                _buildOrderList(orders.where((o) => o.status == OrderStatus.ready).toList()),
+                _buildOrderList(orders.where((o) => o.status == OrderStatus.outForDelivery).toList()),
+                _buildOrderList(orders.where((o) => o.status == OrderStatus.delivered || o.status == OrderStatus.cancelled).toList()),
+              ],
+            );
+          },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, s) => Center(child: Text('Error: $e')),
+          error: (e, s) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: SangakColors.error),
+                  const SizedBox(height: 16),
+                  Text('Error loading orders: $e', textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  SangakButton.primary(
+                    label: 'Retry', 
+                    width: 150,
+                    onPressed: () => ref.invalidate(adminOrdersProvider),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildOrderList(List<OrderModel> orders) {
+    final l10n = AppLocalizations.of(context);
     if (orders.isEmpty) {
-      return const Center(child: Text('No orders in this status'));
+      return Center(child: Text(l10n.noOrdersInStatus));
     }
 
     final lang = ref.watch(localeProvider).languageCode;
@@ -89,15 +147,29 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
 class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
   final TabController tabController;
   final List<OrderModel> orders;
+  final bool isTodayOnly;
 
-  const _CustomTabBar({required this.tabController, required this.orders});
+  const _CustomTabBar({required this.tabController, required this.orders, required this.isTodayOnly});
 
   @override
   Widget build(BuildContext context) {
-    final newCount = orders.where((o) => o.status == OrderStatus.pending).length;
-    final prepCount = orders.where((o) => o.status == OrderStatus.confirmed || o.status == OrderStatus.preparing).length;
-    final readyCount = orders.where((o) => o.status == OrderStatus.ready).length;
-    final shippingCount = orders.where((o) => o.status == OrderStatus.outForDelivery).length;
+    final l10n = AppLocalizations.of(context);
+    
+    final filteredOrders = isTodayOnly 
+        ? orders.where((o) {
+            final now = DateTime.now();
+            final localCreated = o.createdAt.toLocal();
+            return localCreated.year == now.year && 
+                   localCreated.month == now.month && 
+                   localCreated.day == now.day;
+          }).toList()
+        : orders;
+
+    final newCount = filteredOrders.where((o) => o.status == OrderStatus.pending).length;
+    final prepCount = filteredOrders.where((o) => o.status == OrderStatus.confirmed || o.status == OrderStatus.preparing).length;
+    final readyCount = filteredOrders.where((o) => o.status == OrderStatus.ready).length;
+    final shippingCount = filteredOrders.where((o) => o.status == OrderStatus.outForDelivery).length;
+    final doneCount = filteredOrders.where((o) => o.status == OrderStatus.delivered || o.status == OrderStatus.cancelled).length;
 
     return TabBar(
       controller: tabController,
@@ -106,11 +178,11 @@ class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
       unselectedLabelColor: SangakColors.inkLight,
       indicatorColor: SangakColors.primary,
       tabs: [
-        Tab(text: 'New ($newCount)'),
-        Tab(text: 'Preparing ($prepCount)'),
-        Tab(text: 'Ready ($readyCount)'),
-        Tab(text: 'Shipping ($shippingCount)'),
-        const Tab(text: 'Done'),
+        Tab(text: '${l10n.statusPending} ($newCount)'),
+        Tab(text: '${l10n.statusPreparing} ($prepCount)'),
+        Tab(text: '${l10n.statusReady} ($readyCount)'),
+        Tab(text: '${l10n.outForDelivery} ($shippingCount)'),
+        Tab(text: '${l10n.statusDone} ($doneCount)'),
       ],
     );
   }
@@ -134,7 +206,7 @@ class _OrderCard extends StatelessWidget {
     return InkWell(
       onTap: () => context.push('/admin/orders/${order.id}'),
       borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-      child: Container(
+      child: Ink(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: SangakColors.surface,
@@ -202,10 +274,10 @@ class _OrderCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   const Icon(Icons.delivery_dining_outlined, size: 14, color: SangakColors.primary),
                   const SizedBox(width: 4),
-                  Text('Assigned', style: SangakTypography.caption(context).copyWith(color: SangakColors.primary)),
+                  Text(l10n.assigned, style: SangakTypography.caption(context).copyWith(color: SangakColors.primary)),
                 ],
                 const Spacer(),
-                Text('View Details', style: SangakTypography.button(context).copyWith(fontSize: 12, color: SangakColors.primary)),
+                Text(l10n.openDetails, style: SangakTypography.button(context).copyWith(fontSize: 12, color: SangakColors.primary)),
               ],
             ),
           ],
@@ -226,34 +298,35 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     Color color;
-    String label;
+    String badgeLabel;
 
     switch (status) {
       case OrderStatus.pending:
         color = SangakColors.warning;
-        label = 'NEW';
+        badgeLabel = l10n.statusPending.toUpperCase();
         break;
       case OrderStatus.confirmed:
       case OrderStatus.preparing:
         color = SangakColors.info;
-        label = 'PREPARING';
+        badgeLabel = l10n.statusPreparing.toUpperCase();
         break;
       case OrderStatus.ready:
         color = SangakColors.accent;
-        label = 'READY';
+        badgeLabel = l10n.statusReady.toUpperCase();
         break;
       case OrderStatus.outForDelivery:
         color = SangakColors.primary;
-        label = 'SHIPPING';
+        badgeLabel = l10n.outForDelivery.toUpperCase();
         break;
       case OrderStatus.delivered:
         color = SangakColors.success;
-        label = 'DELIVERED';
+        badgeLabel = l10n.statusDelivered.toUpperCase();
         break;
       case OrderStatus.cancelled:
         color = SangakColors.error;
-        label = 'CANCELLED';
+        badgeLabel = l10n.statusCancelled.toUpperCase();
         break;
     }
 
@@ -265,7 +338,7 @@ class _StatusBadge extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
-        label,
+        badgeLabel,
         style: SangakTypography.caption(context).copyWith(
           color: color,
           fontWeight: FontWeight.bold,

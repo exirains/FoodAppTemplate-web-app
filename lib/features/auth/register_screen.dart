@@ -180,7 +180,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       setState(() => _error = l10n.tooManyAttempts);
       SangakToast.show(
         context,
-        '${l10n.tooManyAttempts} (${secondsLeft}s)',
+        '${l10n.tooManyAttempts} ($secondsLeft${l10n.secondsShort})',
       );
       return;
     }
@@ -220,7 +220,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         if (!mounted) return;
 
         SangakToast.show(context, l10n.registeredSuccessfully);
-        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
+        ref.read(tabProvider.notifier).state = 0; // Go to Home tab
         context.go('/home');
       }
     } catch (e) {
@@ -279,7 +279,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (user != null) {
         final l10n = AppLocalizations.of(context);
         SangakToast.show(context, l10n.registeredSuccessfully);
-        ref.read(tabProvider.notifier).state = 3; // Go to Profile tab
+        ref.read(tabProvider.notifier).state = 0; // Go to Home tab
         context.go('/home');
       }
     } catch (e) {
@@ -490,6 +490,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   children: [
                     Text(l10n.alreadyHaveAccount, style: SangakTypography.bodyMedium(context)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () => context.push('/login'),
                       child: Text(
                         l10n.signIn,

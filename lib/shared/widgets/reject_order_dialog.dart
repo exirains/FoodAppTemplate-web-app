@@ -58,7 +58,7 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
               children: [
                 Center(
                   child: Text(
-                    _isConfirmed ? 'REJECTED' : l10n.slidetoReject,
+                    _isConfirmed ? l10n.rejected : l10n.slidetoReject,
                     style: TextStyle(
                       color: _isConfirmed ? SangakColors.error : SangakColors.inkLight,
                       fontWeight: FontWeight.bold,

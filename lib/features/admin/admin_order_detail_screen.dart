@@ -45,7 +45,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, '${l10n.status}: ${newStatus.label}');
+        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
       }
     } catch (e) {
       if (mounted) {
@@ -191,11 +191,11 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
   Widget _buildCustomerSection(BuildContext context, OrderModel order, AppLocalizations l10n) {
     final profile = order.userProfile;
-    // Mirroring Delivery Panel Logic for Full Name
-    final fullName = profile?['full_name'] ?? profile?['fullName'] ?? profile?['full_name_snapshot'] ?? l10n.guest;
-    final email = profile?['email'] ?? order.userId;
-    final phone = profile?['phone'] ?? profile?['phone_number'] ?? profile?['phoneNumber'];
-    final avatarUrl = profile?['avatar_url'];
+    // Robust parsing to ensure we catch the data even if nested differently
+    final String fullName = profile?['full_name'] ?? profile?['fullName'] ?? profile?['full_name_snapshot'] ?? l10n.guest;
+    final String email = profile?['email'] ?? order.userId;
+    final String? phone = profile?['phone'] ?? profile?['phone_number'] ?? profile?['phoneNumber'];
+    final String? avatarUrl = profile?['avatar_url'] ?? profile?['avatarUrl'];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,9 +212,10 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           child: Row(
             children: [
               CircleAvatar(
+                radius: 24,
                 backgroundColor: SangakColors.border,
-                backgroundImage: avatarUrl != null ? CachedNetworkImageProvider(avatarUrl) : null,
-                child: avatarUrl == null ? const Icon(Icons.person, color: SangakColors.inkLight) : null,
+                backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty) ? CachedNetworkImageProvider(avatarUrl) : null,
+                child: (avatarUrl == null || avatarUrl.isEmpty) ? const Icon(Icons.person, color: SangakColors.inkLight) : null,
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -222,16 +223,20 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(fullName, style: SangakTypography.title(context).copyWith(fontSize: 16)),
-                    Text(email, style: SangakTypography.bodySmall(context)),
-                    if (phone != null)
-                      Text(phone, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                    const SizedBox(height: 2),
+                    Text(email, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight)),
+                    if (phone != null && phone.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(phone, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold)),
+                    ],
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () => _callCustomer(phone),
-                icon: const Icon(Icons.phone_outlined, color: SangakColors.primary),
-              ),
+              if (phone != null && phone.isNotEmpty)
+                IconButton(
+                  onPressed: () => _callCustomer(phone),
+                  icon: const Icon(Icons.phone_outlined, color: SangakColors.primary),
+                ),
             ],
           ),
         ),
@@ -589,34 +594,35 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     Color color;
     String label;
 
     switch (status) {
       case OrderStatus.pending:
         color = SangakColors.warning;
-        label = 'NEW';
+        label = l10n.statusPending.toUpperCase();
         break;
       case OrderStatus.confirmed:
       case OrderStatus.preparing:
         color = SangakColors.info;
-        label = 'PREPARING';
+        label = l10n.statusPreparing.toUpperCase();
         break;
       case OrderStatus.ready:
         color = SangakColors.accent;
-        label = 'READY';
+        label = l10n.statusReady.toUpperCase();
         break;
       case OrderStatus.outForDelivery:
         color = SangakColors.primary;
-        label = 'SHIPPING';
+        label = l10n.outForDelivery.toUpperCase();
         break;
       case OrderStatus.delivered:
         color = SangakColors.success;
-        label = 'DELIVERED';
+        label = l10n.statusDelivered.toUpperCase();
         break;
       case OrderStatus.cancelled:
         color = SangakColors.error;
-        label = 'CANCELLED';
+        label = l10n.statusCancelled.toUpperCase();
         break;
     }
 

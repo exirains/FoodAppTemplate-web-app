@@ -9,6 +9,8 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
+import 'package:geolocator/geolocator.dart';
+import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../models/address.dart';
 import '../../core/location/geoapify_service.dart';
@@ -26,6 +28,17 @@ class AddressSelectionScreen extends ConsumerStatefulWidget {
 
 class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
+  
+  // Focus nodes for validation scrolling
+  final _labelFocus = FocusNode();
+  final _addressFocus = FocusNode();
+  final _cityFocus = FocusNode();
+  final _districtFocus = FocusNode();
+  final _streetFocus = FocusNode();
+  final _buildingFocus = FocusNode();
+  final _doorFocus = FocusNode();
+
   final _labelController = TextEditingController();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
@@ -37,7 +50,9 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   final _noteController = TextEditingController();
 
   bool _isLoadingLocation = false;
+  bool _showAutoFillPrompt = false;
   String _selectedLabelKey = 'home'; // 'home', 'work', 'school', 'other'
+  String? _selectedAddressId; // Track the ID of an existing address
   double? _latitude;
   double? _longitude;
 
@@ -49,6 +64,14 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
 
   @override
   void dispose() {
+    _scrollController.dispose();
+    _labelFocus.dispose();
+    _addressFocus.dispose();
+    _cityFocus.dispose();
+    _districtFocus.dispose();
+    _streetFocus.dispose();
+    _buildingFocus.dispose();
+    _doorFocus.dispose();
     _labelController.dispose();
     _addressController.dispose();
     _cityController.dispose();
@@ -64,6 +87,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
   void _clearForm() {
     _labelController.text = 'Home';
     _selectedLabelKey = 'home';
+    _selectedAddressId = null;
     _addressController.clear();
     _cityController.clear();
     _districtController.clear();
@@ -101,22 +125,89 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
             _streetController.text = locationData.street ?? '';
             _buildingController.text = locationData.buildingNumber ?? '';
             _addressController.text = locationData.formattedAddress ?? '';
+            _showAutoFillPrompt = true;
           });
           SangakToast.show(context, l10n.locationCaptured);
+          
+          // Scroll to bottom after state update
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeOutCubic,
+              );
+            }
+          });
         }
       }
     } catch (e) {
       if (!mounted) return;
-      SangakToast.show(context, l10n.locationError);
+      final errorKey = e.toString();
+      
+      if (errorKey.contains('locationServiceDisabled')) {
+        SangakConfirmDialog.show(
+          context,
+          title: l10n.locationServiceOffTitle,
+          message: l10n.locationServiceOffMessage,
+          confirmLabel: l10n.turnOn,
+          cancelLabel: l10n.nevermind,
+          onConfirm: () => Geolocator.openLocationSettings(),
+        );
+      } else {
+        String message = l10n.locationError;
+        if (errorKey.contains('locationPermissionDenied')) {
+          message = l10n.locationPermissionDenied;
+        } else if (errorKey.contains('locationPermissionPermanentlyDenied')) {
+          message = l10n.locationPermissionPermanentlyDenied;
+        }
+        SangakToast.show(context, message);
+      }
     } finally {
       if (mounted) setState(() => _isLoadingLocation = false);
     }
   }
 
   void _onSave() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      // Logic to scroll to the first error
+      FocusNode? firstErrorFocus;
+      if (_labelController.text.trim().isEmpty) {
+        firstErrorFocus = _labelFocus;
+      } else if (_addressController.text.isEmpty) {
+        firstErrorFocus = _addressFocus;
+      } else if (_cityController.text.isEmpty) {
+        firstErrorFocus = _cityFocus;
+      } else if (_districtController.text.isEmpty) {
+        firstErrorFocus = _districtFocus;
+      } else if (_streetController.text.isEmpty) {
+        firstErrorFocus = _streetFocus;
+      } else if (_buildingController.text.isEmpty) {
+        firstErrorFocus = _buildingFocus;
+      } else if (_doorController.text.isEmpty) {
+        firstErrorFocus = _doorFocus;
+      }
+
+      if (firstErrorFocus != null) {
+        firstErrorFocus.requestFocus();
+        // Ensure the field is visible
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (firstErrorFocus!.context != null) {
+            Scrollable.ensureVisible(
+              firstErrorFocus.context!,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+              alignment: 0.5, // Center the field in the viewport
+            );
+          }
+        });
+      }
+      return;
+    }
 
     final address = Address(
+      id: _selectedAddressId,
+      userId: null, // Set by the provider
       title: _labelController.text.trim(),
       fullAddress: _addressController.text,
       city: _cityController.text,
@@ -163,6 +254,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
 
   void _selectSavedAddress(Address address) {
     setState(() {
+      _selectedAddressId = address.id;
       _labelController.text = address.title;
       _addressController.text = address.fullAddress;
       _cityController.text = address.city;
@@ -234,235 +326,275 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => ref.invalidate(addressListProvider),
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (savedAddresses.isNotEmpty) ...[
-                Text(l10n.lastUsedAddresses, style: SangakTypography.h3(context)),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 110,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: savedAddresses.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final addr = savedAddresses[index];
-                      return GestureDetector(
-                        onTap: () => _selectSavedAddress(addr),
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          width: 220,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: SangakColors.surface,
-                            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                            border: Border.all(color: SangakColors.border),
-                            boxShadow: SangakDimens.shadowLow,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(_getIconForLabel(addr.title), size: 16, color: SangakColors.primary),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      addr.title,
-                                      style: SangakTypography.title(context).copyWith(fontSize: 15),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+      body: RefreshIndicator(
+        onRefresh: () async => ref.invalidate(addressListProvider),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          padding: const EdgeInsets.all(SangakDimens.spacing24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (savedAddresses.isNotEmpty) ...[
+                  Text(l10n.lastUsedAddresses, style: SangakTypography.h3(context)),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 110,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: savedAddresses.length,
+                      separatorBuilder: (context, index) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final addr = savedAddresses[index];
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => _selectSavedAddress(addr),
+                          child: Container(
+                            width: 220,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: SangakColors.surface,
+                              borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+                              border: Border.all(color: SangakColors.border),
+                              boxShadow: SangakDimens.shadowLow,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(_getIconForLabel(addr.title), size: 16, color: SangakColors.primary),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        addr.title,
+                                        style: SangakTypography.title(context).copyWith(fontSize: 15),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                addr.fullAddress,
-                                style: SangakTypography.bodySmall(context).copyWith(fontSize: 12, color: SangakColors.inkLight),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  addr.fullAddress,
+                                  style: SangakTypography.bodySmall(context).copyWith(fontSize: 12, color: SangakColors.inkLight),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                ],
+                
+                SangakButton.outlined(
+                  label: l10n.useCurrentLocation,
+                  width: double.infinity,
+                  icon: Icons.my_location_rounded,
+                  isLoading: _isLoadingLocation,
+                  onPressed: _getCurrentLocation,
+                ),
+                const SizedBox(height: 40),
+                
+                // Label selection title
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(l10n.addressName, style: SangakTypography.h3(context)),
+                    ),
+                    TextButton.icon(
+                      onPressed: _clearForm,
+                      icon: const Icon(Icons.refresh_rounded, size: 16),
+                      label: Text(l10n.clear, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Label selection chips
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _LabelChip(
+                      icon: Icons.home_outlined,
+                      label: l10n.home,
+                      isSelected: _selectedLabelKey == 'home',
+                      onTap: () => setState(() {
+                        _selectedLabelKey = 'home';
+                        _labelController.text = l10n.home;
+                      }),
+                    ),
+                    _LabelChip(
+                      icon: Icons.work_outline,
+                      label: l10n.work,
+                      isSelected: _selectedLabelKey == 'work',
+                      onTap: () => setState(() {
+                        _selectedLabelKey = 'work';
+                        _labelController.text = l10n.work;
+                      }),
+                    ),
+                    _LabelChip(
+                      icon: Icons.school_outlined,
+                      label: l10n.school,
+                      isSelected: _selectedLabelKey == 'school',
+                      onTap: () => setState(() {
+                        _selectedLabelKey = 'school';
+                        _labelController.text = l10n.school;
+                      }),
+                    ),
+                    _LabelChip(
+                      icon: Icons.location_on_outlined,
+                      label: l10n.other,
+                      isSelected: _selectedLabelKey == 'other',
+                      onTap: () => setState(() {
+                        _selectedLabelKey = 'other';
+                        if (_labelController.text == l10n.home || 
+                            _labelController.text == l10n.work || 
+                            _labelController.text == l10n.school) {
+                          _labelController.clear();
+                        }
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SangakTextField(
+                  label: l10n.customName,
+                  hintText: l10n.customName,
+                  controller: _labelController,
+                  focusNode: _labelFocus,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
+                ),
+                
+                const SizedBox(height: 32),
+                Text(l10n.address, style: SangakTypography.h3(context)),
+                const SizedBox(height: 16),
+                SangakTextField(
+                  label: l10n.address,
+                  hintText: l10n.address,
+                  controller: _addressController,
+                  focusNode: _addressFocus,
+                  inputFormatters: [LengthLimitingTextInputFormatter(160)],
+                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SangakTextField(
+                        label: l10n.city,
+                        controller: _cityController,
+                        focusNode: _cityFocus,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
+                          LengthLimitingTextInputFormatter(40),
+                        ],
+                        validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: SangakTextField(
+                        label: l10n.district,
+                        controller: _districtController,
+                        focusNode: _districtFocus,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
+                          LengthLimitingTextInputFormatter(40),
+                        ],
+                        validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SangakTextField(
+                  label: l10n.street,
+                  controller: _streetController,
+                  focusNode: _streetFocus,
+                  inputFormatters: [LengthLimitingTextInputFormatter(80)],
+                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 16),
+                if (_showAutoFillPrompt)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info_outline_rounded, size: 16, color: SangakColors.primary),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.pleaseFillFloorDoor,
+                          style: SangakTypography.title(context).copyWith(
+                            fontSize: 12,
+                            color: SangakColors.primary,
                           ),
                         ),
-                      );
-                    },
+                      ],
+                    ),
                   ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SangakTextField(
+                        label: l10n.building,
+                        controller: _buildingController,
+                        focusNode: _buildingFocus,
+                        inputFormatters: [LengthLimitingTextInputFormatter(12)],
+                        validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SangakTextField(
+                        label: l10n.floor,
+                        controller: _floorController,
+                        inputFormatters: [LengthLimitingTextInputFormatter(8)],
+                        onChanged: (v) {
+                          if (_showAutoFillPrompt) setState(() => _showAutoFillPrompt = false);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SangakTextField(
+                        label: l10n.door,
+                        controller: _doorController,
+                        focusNode: _doorFocus,
+                        inputFormatters: [LengthLimitingTextInputFormatter(12)],
+                        validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                        onChanged: (v) {
+                          if (_showAutoFillPrompt) setState(() => _showAutoFillPrompt = false);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
+                SangakTextField(
+                  label: l10n.addDeliveryNote,
+                  hintText: l10n.addDeliveryNote,
+                  controller: _noteController,
+                  inputFormatters: [LengthLimitingTextInputFormatter(120)],
+                ),
+                const SizedBox(height: 120),
               ],
-              
-              SangakButton.outlined(
-                label: l10n.useCurrentLocation,
-                width: double.infinity,
-                icon: Icons.my_location_rounded,
-                isLoading: _isLoadingLocation,
-                onPressed: _getCurrentLocation,
-              ),
-              const SizedBox(height: 40),
-              
-              // Label selection title
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(l10n.addressName, style: SangakTypography.h3(context)),
-                  ),
-                  TextButton.icon(
-                    onPressed: _clearForm,
-                    icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: Text(l10n.clear, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              
-              // Label selection chips
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  _LabelChip(
-                    icon: Icons.home_outlined,
-                    label: l10n.home,
-                    isSelected: _selectedLabelKey == 'home',
-                    onTap: () => setState(() {
-                      _selectedLabelKey = 'home';
-                      _labelController.text = l10n.home;
-                    }),
-                  ),
-                  _LabelChip(
-                    icon: Icons.work_outline,
-                    label: l10n.work,
-                    isSelected: _selectedLabelKey == 'work',
-                    onTap: () => setState(() {
-                      _selectedLabelKey = 'work';
-                      _labelController.text = l10n.work;
-                    }),
-                  ),
-                  _LabelChip(
-                    icon: Icons.school_outlined,
-                    label: l10n.school,
-                    isSelected: _selectedLabelKey == 'school',
-                    onTap: () => setState(() {
-                      _selectedLabelKey = 'school';
-                      _labelController.text = l10n.school;
-                    }),
-                  ),
-                  _LabelChip(
-                    icon: Icons.location_on_outlined,
-                    label: l10n.other,
-                    isSelected: _selectedLabelKey == 'other',
-                    onTap: () => setState(() {
-                      _selectedLabelKey = 'other';
-                      if (_labelController.text == l10n.home || 
-                          _labelController.text == l10n.work || 
-                          _labelController.text == l10n.school) {
-                        _labelController.clear();
-                      }
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SangakTextField(
-                label: l10n.customName,
-                hintText: l10n.customName,
-                controller: _labelController,
-                validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
-              ),
-              
-              const SizedBox(height: 32),
-              Text(l10n.address, style: SangakTypography.h3(context)),
-              const SizedBox(height: 16),
-              SangakTextField(
-                label: l10n.address,
-                hintText: l10n.address,
-                controller: _addressController,
-                inputFormatters: [LengthLimitingTextInputFormatter(160)],
-                validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: SangakTextField(
-                      label: l10n.city,
-                      controller: _cityController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
-                        LengthLimitingTextInputFormatter(40),
-                      ],
-                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: SangakTextField(
-                      label: l10n.district,
-                      controller: _districtController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZğüşöçıİĞÜŞÖÇ\s-]")),
-                        LengthLimitingTextInputFormatter(40),
-                      ],
-                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SangakTextField(
-                label: l10n.street,
-                controller: _streetController,
-                inputFormatters: [LengthLimitingTextInputFormatter(80)],
-                validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: SangakTextField(
-                      label: l10n.building,
-                      controller: _buildingController,
-                      inputFormatters: [LengthLimitingTextInputFormatter(12)],
-                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: SangakTextField(
-                      label: l10n.floor,
-                      controller: _floorController,
-                      inputFormatters: [LengthLimitingTextInputFormatter(8)],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: SangakTextField(
-                      label: l10n.door,
-                      controller: _doorController,
-                      inputFormatters: [LengthLimitingTextInputFormatter(12)],
-                      validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SangakTextField(
-                label: l10n.addDeliveryNote,
-                hintText: l10n.addDeliveryNote,
-                controller: _noteController,
-                inputFormatters: [LengthLimitingTextInputFormatter(120)],
-              ),
-              const SizedBox(height: 120),
-            ],
+            ),
           ),
         ),
       ),

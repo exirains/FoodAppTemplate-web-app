@@ -170,37 +170,31 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     Color color;
-    String label;
+    String label = status.localizedLabel(l10n);
 
     switch (status) {
       case OrderStatus.pending:
         color = Colors.orange;
-        label = 'Pending';
         break;
       case OrderStatus.confirmed:
         color = Colors.cyan;
-        label = 'Confirmed';
         break;
       case OrderStatus.preparing:
         color = Colors.blue;
-        label = 'Preparing';
         break;
       case OrderStatus.ready:
         color = Colors.teal;
-        label = 'Ready';
         break;
       case OrderStatus.outForDelivery:
         color = Colors.purple;
-        label = 'Out for delivery';
         break;
       case OrderStatus.delivered:
         color = Colors.green;
-        label = 'Delivered';
         break;
       case OrderStatus.cancelled:
         color = Colors.red;
-        label = 'Cancelled';
         break;
     }
 

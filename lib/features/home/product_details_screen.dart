@@ -194,23 +194,26 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
         ),
         child: inBasketQuantity > 0
-            ? Center(
-                child: QuantitySelector(
-                  quantity: inBasketQuantity,
-                  compact: true,
-                  onIncrement: () {
-                    if (!ActionGuard.check(context, ref)) return;
-                    ref.read(basketProvider.notifier).addItem(widget.bread);
-                  },
-                  onDecrement: () {
-                    if (!ActionGuard.check(context, ref)) return;
-                    ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1);
-                  },
-                  onDelete: () {
-                    if (!ActionGuard.check(context, ref)) return;
-                    ref.read(basketProvider.notifier).removeItem(widget.bread.id);
-                  },
-                ),
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QuantitySelector(
+                    quantity: inBasketQuantity,
+                    compact: true,
+                    onIncrement: () {
+                      if (!ActionGuard.check(context, ref)) return;
+                      ref.read(basketProvider.notifier).addItem(widget.bread);
+                    },
+                    onDecrement: () {
+                      if (!ActionGuard.check(context, ref)) return;
+                      ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1);
+                    },
+                    onDelete: () {
+                      if (!ActionGuard.check(context, ref)) return;
+                      ref.read(basketProvider.notifier).removeItem(widget.bread.id);
+                    },
+                  ),
+                ],
               )
             : Row(
                 children: [

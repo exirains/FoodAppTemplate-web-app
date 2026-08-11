@@ -275,13 +275,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get district => 'İlçe/Semt';
 
   @override
-  String get building => 'Bina / No';
+  String get building => 'Bina';
 
   @override
   String get floor => 'Kat';
 
   @override
-  String get door => 'Daire No';
+  String get door => 'Kapı';
 
   @override
   String get saveAddress => 'Adresi Kaydet';
@@ -974,4 +974,95 @@ class AppLocalizationsTr extends AppLocalizations {
   String successfullySelected(String name) {
     return '$name başarıyla seçildi!';
   }
+
+  @override
+  String get noPhoneNumberAvailable => 'Telefon numarası bulunamadı';
+
+  @override
+  String get couldNotOpenPhoneDialer => 'Arama ekranı açılamadı';
+
+  @override
+  String get orderNotAssignedError =>
+      'Sipariş veritabanında size atanmamış. Lütfen tekrar teslim almayı deneyin.';
+
+  @override
+  String get orderAlreadyAssigned =>
+      'Üzgünüz, bu sipariş başka bir kuryeye atanmış.';
+
+  @override
+  String get noOrdersForPickup => 'Alınacak sipariş yok';
+
+  @override
+  String get noActiveDeliveries => 'Aktif teslimatınız bulunmamaktadır';
+
+  @override
+  String get syncingPermissions => 'Yetkiler senkronize ediliyor...';
+
+  @override
+  String get noteLabel => 'Not: ';
+
+  @override
+  String get justNow => 'Yeni';
+
+  @override
+  String get locationServiceOffTitle => 'Konum Servisi KAPALI';
+
+  @override
+  String get locationServiceOffMessage =>
+      'Adresinizi otomatik olarak bulabilmemiz için konumunuza ihtiyacımız var. Lütfen sistem ayarlarından Konum Servislerini açın.';
+
+  @override
+  String get turnOn => 'Aç';
+
+  @override
+  String get nevermind => 'Boşver';
+
+  @override
+  String get locationServiceDisabled => 'Konum servisleri kapalı. Lütfen açın.';
+
+  @override
+  String get locationPermissionDenied => 'Konum izni reddedildi';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'Konum izni kalıcı olarak reddedildi.';
+
+  @override
+  String get errorVerifyingProfile => 'Profil doğrulama hatası';
+
+  @override
+  String get errorCreatingInitialProfile => 'Profil oluşturma hatası';
+
+  @override
+  String get ago => 'önce';
+
+  @override
+  String get minutesShort => 'dk';
+
+  @override
+  String get secondsShort => 'sn';
+
+  @override
+  String get today => 'Bugün';
+
+  @override
+  String get allTime => 'Tüm Zamanlar';
+
+  @override
+  String get assigned => 'Atandı';
+
+  @override
+  String get rejected => 'REDDEDİLDİ';
+
+  @override
+  String get freshToday => 'Bugün Taze';
+
+  @override
+  String get outOfOven => 'Fırından Yeni Çıktı';
+
+  @override
+  String get limitedQuantity => 'Sınırlı Sayıda';
+
+  @override
+  String get pleaseFillFloorDoor => 'Devam etmek için lütfen buraları doldurun';
 }

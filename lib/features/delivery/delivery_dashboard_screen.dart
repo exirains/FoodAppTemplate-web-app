@@ -17,40 +17,55 @@ import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
 import '../admin/admin_provider.dart';
 
-final availableOrdersProvider = FutureProvider<List<OrderModel>>((ref) async {
-  final response = await SupabaseService.client
-      .from('orders')
-      .select('*, customer:profiles(*), order_items(*)')
-      .eq('status', 'ready')
-      .isFilter('assigned_delivery_person', null)
-      .order('created_at', ascending: false);
+final availableOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
+  // Watch auth state to automatically refresh the stream when the session changes
+  ref.watch(authProvider);
   
-  return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+  final repo = ref.read(orderRepositoryProvider);
+  return repo.watchAvailableOrders().handleError((error) {
+    debugPrint('🚨 Realtime Available Orders Error: $error');
+    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
+      // Force a tiny delay then refresh the whole provider state
+      Future.delayed(const Duration(seconds: 2), () {
+        ref.invalidateSelf();
+      });
+    }
+  });
 });
 
-final myActiveDeliveriesProvider = FutureProvider<List<OrderModel>>((ref) async {
+final myActiveDeliveriesProvider = StreamProvider<List<OrderModel>>((ref) {
   final user = ref.watch(authProvider).asData?.value;
-  if (user == null) return [];
+  if (user == null) return Stream.value([]);
   
-  final response = await SupabaseService.client
-      .from('orders')
-      .select('*, customer:profiles(*), order_items(*)')
-      .eq('assigned_delivery_person', user.id)
-      .not('status', 'eq', 'delivered')
-      .not('status', 'eq', 'cancelled')
-      .order('created_at', ascending: false);
-      
-  return (response as List).map((json) => OrderModel.fromJson(json)).toList();
+  final repo = ref.read(orderRepositoryProvider);
+  return repo.watchDriverOrders(user.id).handleError((error) {
+    debugPrint('🚨 Realtime Active Deliveries Error: $error');
+    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
+      Future.delayed(const Duration(seconds: 2), () {
+        ref.invalidateSelf();
+      });
+    }
+  });
 });
 
-final deliveryOrderDetailProvider = FutureProvider.family<OrderModel?, String>((ref, orderId) async {
-  final response = await SupabaseService.client
+final deliveryOrderDetailProvider = StreamProvider.family<OrderModel?, String>((ref, orderId) {
+  // Ensure we have a fresh session
+  ref.watch(authProvider);
+  
+  final repo = ref.read(orderRepositoryProvider);
+  return SupabaseService.client
       .from('orders')
-      .select('*, customer:profiles(*), order_items(*)')
+      .stream(primaryKey: ['id'])
       .eq('id', orderId)
-      .single();
-      
-  return OrderModel.fromJson(response);
+      .asyncMap((_) async => await repo.getOrderById(orderId))
+      .handleError((error) {
+        debugPrint('🚨 Realtime Order Detail Error: $error');
+        if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
+          Future.delayed(const Duration(seconds: 2), () {
+            ref.invalidateSelf();
+          });
+        }
+      });
 });
 
 class DeliveryDashboardScreen extends ConsumerStatefulWidget {
@@ -90,11 +105,12 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
           actions: [
             IconButton(
               onPressed: () {
+                final l10n = AppLocalizations.of(context);
                 final userProfile = ref.read(userProfileProvider).asData?.value;
                 if (userProfile != null) {
                   RoleSwitcher.show(context, userProfile.role);
                 } else {
-                  SangakToast.show(context, 'Syncing permissions...');
+                  SangakToast.show(context, l10n.syncingPermissions);
                   // Invalidate to force a fresh fetch if null
                   ref.invalidate(userProfileProvider);
                 }
@@ -132,7 +148,7 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
     final ordersAsync = ref.watch(availableOrdersProvider);
     return ordersAsync.when(
       data: (orders) => orders.isEmpty 
-          ? _buildEmptyState('No orders ready for pickup')
+          ? _buildEmptyState(l10n.noOrdersForPickup)
           : ListView.separated(
               padding: const EdgeInsets.all(SangakDimens.spacing24),
               itemCount: orders.length,
@@ -148,7 +164,7 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
     final ordersAsync = ref.watch(myActiveDeliveriesProvider);
     return ordersAsync.when(
       data: (orders) => orders.isEmpty 
-          ? _buildEmptyState('You have no active deliveries')
+          ? _buildEmptyState(l10n.noActiveDeliveries)
           : ListView.separated(
               padding: const EdgeInsets.all(SangakDimens.spacing24),
               itemCount: orders.length,
@@ -189,12 +205,23 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
   Future<void> _updateStatus(OrderStatus newStatus) async {
     final user = ref.read(authProvider).asData?.value;
     if (user == null) return;
+    final l10n = AppLocalizations.of(context);
 
     setState(() => _isUpdating = true);
     try {
       if (widget.isPool) {
-        // Driver takes the order from the pool
-        await ref.read(orderRepositoryProvider).assignDeliveryPerson(widget.order.id, user.id);
+        // Driver takes the order from the pool. Use atomic check to prevent race conditions.
+        final success = await ref.read(orderRepositoryProvider).assignDeliveryPerson(
+          widget.order.id, 
+          user.id, 
+          ifUnassigned: true,
+        );
+
+        if (!success) {
+          if (mounted) SangakToast.show(context, l10n.orderAlreadyAssigned);
+          ref.invalidate(availableOrdersProvider);
+          return;
+        }
       }
 
       await ref.read(orderRepositoryProvider).updateOrderStatus(
@@ -207,8 +234,7 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
       ref.invalidate(myActiveDeliveriesProvider);
       
       if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, '${l10n.status}: ${newStatus.name}');
+        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
         if (widget.isPool) {
            // If just picked up, automatically open details
            context.push('/delivery/${widget.order.id}');
@@ -327,7 +353,7 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'Note: ${addr['delivery_note']}',
+                        '${l10n.noteLabel}${addr['delivery_note']}',
                         style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.secondary),
                       ),
                     ),
@@ -348,7 +374,7 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
                           context,
                           title: l10n.confirmPickup,
                           message: l10n.confirmPickupMessage,
-                          confirmLabel: 'Pick Up',
+                          confirmLabel: l10n.pickupOrder,
                           cancelLabel: l10n.cancel,
                           onConfirm: () => _updateStatus(OrderStatus.outForDelivery),
                         );

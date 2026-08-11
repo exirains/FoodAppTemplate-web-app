@@ -412,8 +412,9 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: _pickImage,
-                child: Container(
+                child: Ink(
                   width: double.infinity,
                   height: 150,
                   decoration: BoxDecoration(

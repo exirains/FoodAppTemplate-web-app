@@ -12,6 +12,7 @@ import 'services/storage_service.dart';
 import 'services/favorite_service.dart';
 import 'services/cache_service.dart';
 import 'core/update/update_service.dart';
+import 'shared/utils/responsive_layout.dart';
 import 'models/bread.dart';
 import 'models/category.dart';
 import 'models/address.dart';
@@ -107,6 +108,9 @@ class SangakApp extends ConsumerWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) {
+          return ResponsiveLayout(child: child!);
+        },
       ),
     );
   }

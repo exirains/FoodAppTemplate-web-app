@@ -21,6 +21,10 @@ final userProfileProvider = StreamProvider<UserProfile?>((ref) {
         .map((data) {
           if (data.isEmpty) return null;
           return UserProfile.fromJson(data.first);
+        })
+        .handleError((error) {
+          // Silent fail to avoid debugPrint dependency issues during build
+          return null; 
         });
   } catch (e) {
     return Stream.value(null);
