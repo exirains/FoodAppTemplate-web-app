@@ -134,5 +134,5 @@ class OrderModel {
     };
   }
 
-  String get orderNumber => 'SNK-${id.substring(0, 8).toUpperCase()}';
+  String get orderNumber => 'SNK-${id.substring(0, 5).toUpperCase()}';
 }

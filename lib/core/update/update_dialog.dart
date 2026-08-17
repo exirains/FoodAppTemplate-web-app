@@ -28,6 +28,7 @@ class UpdateDialog extends StatelessWidget {
     return PopScope(
       canPop: !isMandatory,
       child: Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
         ),

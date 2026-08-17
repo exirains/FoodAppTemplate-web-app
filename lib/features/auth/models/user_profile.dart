@@ -9,6 +9,9 @@ class UserProfile {
   final String role;
   final bool phoneVerified;
   final bool isActive;
+  final int currentStreak;
+  final int maxStreak;
+  final DateTime? lastOrderAt;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -20,6 +23,9 @@ class UserProfile {
     this.role = 'customer',
     this.phoneVerified = false,
     this.isActive = true,
+    this.currentStreak = 0,
+    this.maxStreak = 0,
+    this.lastOrderAt,
     required this.createdAt,
     this.updatedAt,
   });
@@ -44,6 +50,9 @@ class UserProfile {
     String? role,
     bool? phoneVerified,
     bool? isActive,
+    int? currentStreak,
+    int? maxStreak,
+    DateTime? lastOrderAt,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -55,6 +64,9 @@ class UserProfile {
       role: role ?? this.role,
       phoneVerified: phoneVerified ?? this.phoneVerified,
       isActive: isActive ?? this.isActive,
+      currentStreak: currentStreak ?? this.currentStreak,
+      maxStreak: maxStreak ?? this.maxStreak,
+      lastOrderAt: lastOrderAt ?? this.lastOrderAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -70,6 +82,9 @@ class UserProfile {
       'role': role,
       'phone_verified': phoneVerified,
       'is_active': isActive,
+      'current_streak': currentStreak,
+      'max_streak': maxStreak,
+      'last_order_at': lastOrderAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -86,6 +101,11 @@ class UserProfile {
       role: json['role'] as String? ?? 'customer',
       phoneVerified: (json['phone_verified'] as bool?) ?? false,
       isActive: (json['is_active'] as bool?) ?? true,
+      currentStreak: json['current_streak'] as int? ?? 0,
+      maxStreak: json['max_streak'] as int? ?? 0,
+      lastOrderAt: json['last_order_at'] != null
+          ? DateTime.parse(json['last_order_at'] as String)
+          : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)

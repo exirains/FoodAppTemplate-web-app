@@ -13,6 +13,7 @@ import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
 import '../../shared/widgets/cancel_order_dialog.dart';
+import '../../services/options_repository.dart';
 import '../auth/auth_provider.dart';
 import 'admin_provider.dart';
 
@@ -33,7 +34,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
     setState(() => _isUpdating = true);
     try {
-      await ref.read(orderRepositoryProvider).updateOrderStatus(
+      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: newStatus,
         changedBy: user.id,
@@ -62,7 +63,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
     setState(() => _isUpdating = true);
     try {
-      await ref.read(orderRepositoryProvider).updateOrderStatus(
+      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: OrderStatus.cancelled,
         changedBy: user.id,
@@ -159,7 +160,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, s) => Center(child: Text('Error: $e')),
+          error: (e, s) => Center(child: Text(l10n.errorOccurred)),
         ),
         bottomSheet: orderAsync.when(
           data: (order) => order != null ? _buildActions(context, order, l10n) : null,
@@ -350,8 +351,23 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.nameSnapshot, style: SangakTypography.title(context).copyWith(fontSize: 14)),
-                      Text('${l10n.addToBasket}: ${item.quantity}', style: SangakTypography.caption(context)),
+                      Text(item.localizedName(lang), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: SangakColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '${item.quantity}x',
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: SangakColors.primary),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -368,10 +384,14 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(l10n.deliveryFeeLabel, style: SangakTypography.bodySmall(context)),
-            Text(
-              SangakNumberFormatter.formatCurrency(15.0, lang),
-              style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
-            ),
+            Consumer(builder: (context, ref, _) {
+              final options = ref.watch(appOptionsProvider).value ?? {};
+              final fee = double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0;
+              return Text(
+                SangakNumberFormatter.formatCurrency(fee, lang),
+                style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
+              );
+            }),
           ],
         ),
       ],
@@ -541,19 +561,19 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                         final s = staff[index];
                         return ListTile(
                           leading: const Icon(Icons.delivery_dining_outlined),
-                          title: Text(s['full_name'] ?? 'Driver'),
+                          title: Text(s['full_name'] ?? l10n.driver),
                           subtitle: Text(s['email'] ?? ''),
                           onTap: () async {
                             Navigator.pop(modalContext);
                             setState(() => _isUpdating = true);
                             try {
-                              await ref.read(orderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
-                              await ref.read(orderRepositoryProvider).updateOrderStatus(
+                              await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
+                              await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
                                 orderId: widget.orderId,
                                 status: OrderStatus.outForDelivery,
                                 changedBy: ref.read(authProvider).asData!.value!.id,
                               );
-                              if (mounted) SangakToast.show(this.context, 'Assigned to ${s['full_name']}');
+                              if (mounted) SangakToast.show(this.context, '${l10n.assigned}: ${s['full_name']}');
                               ref.invalidate(adminOrderDetailProvider(widget.orderId));
                             } finally {
                               if (mounted) setState(() => _isUpdating = false);
@@ -565,7 +585,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, s) => Text('Error loading staff'),
+                error: (e, s) => Text(l10n.errorLoadingStaff),
               ),
               const SizedBox(height: 16),
             ],

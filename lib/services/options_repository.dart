@@ -22,6 +22,30 @@ class OptionsRepository {
         .map((data) => _parseOptions(data));
   }
 
+  Future<void> updateOption(String name, dynamic value) async {
+    try {
+      await _client
+          .from('options')
+          .upsert({'name': name, 'value': value}, onConflict: 'name');
+    } catch (e) {
+      debugPrint('🚨 Error updating option $name: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateOptions(Map<String, dynamic> updates) async {
+    try {
+      final List<Map<String, dynamic>> upsertData = updates.entries
+          .map((e) => {'name': e.key, 'value': e.value})
+          .toList();
+      
+      await _client.from('options').upsert(upsertData, onConflict: 'name');
+    } catch (e) {
+      debugPrint('🚨 Error updating multiple options: $e');
+      rethrow;
+    }
+  }
+
   Map<String, dynamic> _parseOptions(List<dynamic> data) {
     debugPrint('📡 DB DATA RECEIVED: $data');
     final Map<String, dynamic> options = {};
@@ -32,7 +56,7 @@ class OptionsRepository {
         options[name] = value;
       }
     }
-    debugPrint('📊 PARSED OPTIONS MAP: $options');
+    debugPrint('PARSED OPTIONS MAP: $options');
     return options;
   }
 }

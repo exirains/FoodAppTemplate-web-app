@@ -73,14 +73,14 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
       throw Exception('Minimum order amount is $minLimit TL');
     }
 
-    final total = basketTotal + 15.0; // Including delivery fee
+    final total = basketTotal + (double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0);
 
     // Generate 2-digit PIN (10-99)
     final deliveryCode = (Random().nextInt(90) + 10).toString();
 
     setSubmitting(true);
     try {
-      final order = await _ref.read(orderRepositoryProvider).createOrder(
+      final order = await _ref.read(sangakOrderRepositoryProvider).createOrder(
         userId: user.id,
         items: basket,
         address: state.selectedAddress!,
@@ -99,8 +99,6 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
     }
   }
 }
-
-final orderRepositoryProvider = Provider((ref) => OrderRepository());
 
 final checkoutProvider = StateNotifierProvider<CheckoutNotifier, CheckoutState>((ref) {
   return CheckoutNotifier(ref);

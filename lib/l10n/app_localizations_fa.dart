@@ -293,6 +293,39 @@ class AppLocalizationsFa extends AppLocalizations {
   String get orderNumber => 'شماره سفارش';
 
   @override
+  String get newOrders => 'سفارش‌های جدید';
+
+  @override
+  String get acceptOrder => 'تایید سفارش';
+
+  @override
+  String get markReady => 'آماده شد';
+
+  @override
+  String get waitingForPickup => 'در انتظار پیک';
+
+  @override
+  String get newOrderNotification => 'اعلان سفارش جدید';
+
+  @override
+  String get ordersHistory => 'تاریخچه سفارش‌ها';
+
+  @override
+  String get staffProfile => 'پروفایل پرسنل';
+
+  @override
+  String get newOrderAvailable => 'یک سفارش جدید ثبت شد!';
+
+  @override
+  String get preparing => 'در حال پخت';
+
+  @override
+  String get ready => 'آماده تحویل';
+
+  @override
+  String get newLabel => 'جدید';
+
+  @override
   String get estimatedTime => 'زمان آماده‌سازی';
 
   @override
@@ -302,7 +335,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get backToHome => 'بازگشت به خانه';
 
   @override
-  String get searchBreads => 'جستجوی نان...';
+  String get searchBreads => 'جستجو';
 
   @override
   String get noProductsFound => 'محصولی پیدا نشد';
@@ -333,7 +366,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String reviewsCount(num count) {
-    return '($count نظر)';
+    return '$count نظر';
   }
 
   @override
@@ -543,7 +576,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get adminPanel => 'پنل مدیریت';
 
   @override
-  String get kitchenPanel => 'پنل آشپزخانه';
+  String get kitchenPanel => 'پنل استاد';
 
   @override
   String get deliveryPanel => 'پنل پیک';
@@ -840,6 +873,18 @@ class AppLocalizationsFa extends AppLocalizations {
   String get productTagLimited => 'محدود';
 
   @override
+  String get productTagPopular => 'محبوب';
+
+  @override
+  String get productTagTraditional => 'سنتی';
+
+  @override
+  String get productTagRecommended => 'پیشنهادی';
+
+  @override
+  String get productTagSeasonal => 'فصلی';
+
+  @override
   String get productTagNone => 'بدون برچسب';
 
   @override
@@ -864,7 +909,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String minOrderLimitError(num limit) {
-    return 'حداقل مبلغ سفارش $limit تومان می‌باشد';
+    return 'حداقل مبلغ سفارش $limit لیر می‌باشد';
   }
 
   @override
@@ -890,7 +935,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String itemsCount(num count) {
-    return '$count قلم نان';
+    return '$count تعداد اقلام';
   }
 
   @override
@@ -919,7 +964,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get preparingStep => 'در حال آماده‌سازی';
 
   @override
-  String get preparingDesc => 'آشپزخانه در حال پخت است';
+  String get preparingDesc => 'استاد در حال پخت است';
 
   @override
   String get readyStep => 'آماده تحویل';
@@ -964,6 +1009,42 @@ class AppLocalizationsFa extends AppLocalizations {
   String successfullySelected(String name) {
     return 'آدرس $name با موفقیت انتخاب شد!';
   }
+
+  @override
+  String get viewInformation => 'مشاهده اطلاعات';
+
+  @override
+  String get sortBy => 'مرتب‌سازی';
+
+  @override
+  String get newestFirst => 'جدیدترین‌ها';
+
+  @override
+  String get oldestFirst => 'قدیمی‌ترین‌ها';
+
+  @override
+  String get alphabetical => 'الفبا';
+
+  @override
+  String get joinedDate => 'تاریخ عضویت';
+
+  @override
+  String get userOrders => 'سفارش‌های کاربر';
+
+  @override
+  String get userAddresses => 'آدرس‌های کاربر';
+
+  @override
+  String get userFavorites => 'علاقه‌مندی‌های کاربر';
+
+  @override
+  String get noFavoritesFound => 'موردی پیدا نشد';
+
+  @override
+  String get noAddressesFound => 'آدرسی ثبت نشده است';
+
+  @override
+  String get noOrdersFound => 'سفارشی پیدا نشد';
 
   @override
   String get noPhoneNumberAvailable => 'شماره تلفن موجود نیست';
@@ -1046,6 +1127,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get rejected => 'رد شد';
 
   @override
+  String get prepTimeLabel => 'زمان آماده‌سازی (دقیقه)';
+
+  @override
+  String get caloriesLabel => 'کالری';
+
+  @override
   String get freshToday => 'امروز پخته شده';
 
   @override
@@ -1056,4 +1143,283 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get pleaseFillFloorDoor => 'لطفاً این موارد را برای ادامه تکمیل کنید';
+
+  @override
+  String get history => 'سابقه';
+
+  @override
+  String get totalEarnings => 'کل درآمد';
+
+  @override
+  String get searchPlaceholder => 'جستجو با شماره سفارش یا نام مشتری';
+
+  @override
+  String get filterDelivered => 'تحویل شده';
+
+  @override
+  String get filterCancelled => 'لغو شده';
+
+  @override
+  String get selectDate => 'انتخاب تاریخ';
+
+  @override
+  String get priceHighToLow => 'قیمت: زیاد به کم';
+
+  @override
+  String get priceLowToHigh => 'قیمت: کم به زیاد';
+
+  @override
+  String get adjustFilters => 'فیلترها را تغییر دهید';
+
+  @override
+  String get driver => 'پیک';
+
+  @override
+  String get unauthorized => 'دسترسی غیرمجاز';
+
+  @override
+  String get appStartFailed => 'خطا در شروع برنامه';
+
+  @override
+  String get errorLoadingStaff => 'خطا در بارگذاری کارکنان';
+
+  @override
+  String get errorOccurred => 'خطایی رخ داده است';
+
+  @override
+  String get resetFilters => 'حذف فیلترها';
+
+  @override
+  String get totalOrdersToday => 'کل سفارشات امروز';
+
+  @override
+  String get unlockCancellation => 'بکشید تا فیلد لغو باز شود';
+
+  @override
+  String get enterReason => 'علت را اینجا وارد کنید...';
+
+  @override
+  String get cancelReasonBusy => 'فروشگاه شلوغ است';
+
+  @override
+  String get cancelReasonStock => 'عدم موجودی کالا';
+
+  @override
+  String get cancelReasonCourier => 'عدم دسترسی به پیک';
+
+  @override
+  String get cancelReasonTechnical => 'مشکل فنی';
+
+  @override
+  String get cancelReasonOther => 'سایر (در کادر زیر بنویسید)';
+
+  @override
+  String assignedTo(String name) {
+    return 'تخصیص داده شد به $name';
+  }
+
+  @override
+  String get adminSettings => 'تنظیمات مدیریت';
+
+  @override
+  String get minOrderLimitLabel => 'حداقل مبلغ سفارش (لیر)';
+
+  @override
+  String get deliveryFeeSettingLabel => 'هزینه پیک (لیر)';
+
+  @override
+  String get pointsPerOrderLabel => 'امتیاز به ازای هر سفارش';
+
+  @override
+  String get pointsPerCurrencyLabel => 'امتیاز به ازای هر واحد پول';
+
+  @override
+  String get streakBonusLabel => 'امتیاز هدیه استریک';
+
+  @override
+  String get streakThresholdLabel => 'آستانه استریک (روز)';
+
+  @override
+  String get loyaltySettings => 'تنظیمات وفاداری و استریک';
+
+  @override
+  String get rewardsManagement => 'مدیریت جوایز';
+
+  @override
+  String get settingsSaved => 'تنظیمات با موفقیت ذخیره شد';
+
+  @override
+  String get freeDelivery => 'پیک رایگان';
+
+  @override
+  String get loyaltyCenter => 'مرکز وفاداری';
+
+  @override
+  String get points => 'امتیاز';
+
+  @override
+  String streakDay(num count) {
+    return '$count روز استریک';
+  }
+
+  @override
+  String memberLevel(Object level) {
+    return 'عضو $level';
+  }
+
+  @override
+  String pointsUntilLevel(Object count, Object level) {
+    return '$count امتیاز تا سطح $level';
+  }
+
+  @override
+  String get rewards => 'جوایز';
+
+  @override
+  String get redeem => 'دریافت جایزه';
+
+  @override
+  String get redeemReward => 'دریافت جایزه';
+
+  @override
+  String confirmRedeem(Object points, Object reward) {
+    return 'آیا از صرف $points امتیاز برای $reward اطمینان دارید؟';
+  }
+
+  @override
+  String get rewardRedeemed => 'جایزه با موفقیت دریافت شد!';
+
+  @override
+  String get rateExperience => 'امتیاز به تجربه خرید';
+
+  @override
+  String get rateOrderMessage => 'تجربه شما از سفارش سنگک چطور بود؟';
+
+  @override
+  String get overallSatisfaction => 'رضایت کلی';
+
+  @override
+  String get breadQuality => 'کیفیت نان';
+
+  @override
+  String get freshness => 'تازگی';
+
+  @override
+  String get packaging => 'بسته‌بندی';
+
+  @override
+  String get deliveryService => 'خدمات ارسال';
+
+  @override
+  String get writtenReview => 'نظر متنی (اختیاری)';
+
+  @override
+  String get reviewHint => 'درباره تجربه خود بیشتر بنویسید...';
+
+  @override
+  String feedbackThankYou(Object points) {
+    return 'ممنون از نظر شما! +$points امتیاز';
+  }
+
+  @override
+  String get promotionsBanners => 'پروموشن‌ها و بنرها';
+
+  @override
+  String get noDescription => 'بدون توضیحات';
+
+  @override
+  String get noPromotions => 'موردی پیدا نشد';
+
+  @override
+  String get addPromotion => 'افزودن پروموشن';
+
+  @override
+  String get editPromotion => 'ویرایش پروموشن';
+
+  @override
+  String get title => 'عنوان';
+
+  @override
+  String get image => 'تصویر';
+
+  @override
+  String get rewardTitle => 'عنوان جایزه';
+
+  @override
+  String get pointsCost => 'هزینه امتیاز';
+
+  @override
+  String get pts => 'امتیاز';
+
+  @override
+  String get ptsLabel => 'امتیاز';
+
+  @override
+  String get noRewards => 'جایزه‌ای موجود نیست';
+
+  @override
+  String get addReward => 'افزودن جایزه';
+
+  @override
+  String get editReward => 'ویرایش جایزه';
+
+  @override
+  String get rateOrder => 'امتیاز به سفارش';
+
+  @override
+  String get rated => 'امتیاز داده شده';
+
+  @override
+  String get confirmChangeAvatar =>
+      'آیا از تغییر عکس پروفایل این کاربر اطمینان دارید؟';
+
+  @override
+  String get reviewManagement => 'مدیریت نظرات';
+
+  @override
+  String get noReviewsFound => 'نظری یافت نشد';
+
+  @override
+  String get reviewApproved => 'نظر تأیید شد';
+
+  @override
+  String get reviewDeleted => 'نظر حذف شد';
+
+  @override
+  String get deleteReview => 'حذف نظر';
+
+  @override
+  String get confirmDeleteReview => 'آیا از حذف این نظر اطمینان دارید؟';
+
+  @override
+  String orderIdLabel(String id) {
+    return 'شناسه سفارش: $id';
+  }
+
+  @override
+  String get quality => 'کیفیت';
+
+  @override
+  String get delivery => 'ارسال';
+
+  @override
+  String get statusPendingCaps => 'در انتظار';
+
+  @override
+  String get statusApprovedCaps => 'تأیید شده';
+
+  @override
+  String get approve => 'تأیید';
+
+  @override
+  String get deliverySuccessMessage =>
+      'سفارش شما با موفقیت تحویل داده شد! از نان تازه خود لذت ببرید.';
+
+  @override
+  String get orderInformation => 'اطلاعات سفارش';
+
+  @override
+  String ratingValue(num value) {
+    return '$value.0';
+  }
 }

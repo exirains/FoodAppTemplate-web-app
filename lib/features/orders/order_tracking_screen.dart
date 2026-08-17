@@ -9,16 +9,36 @@ import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import 'orders_provider.dart';
 
-class OrderTrackingScreen extends ConsumerWidget {
+import 'widgets/order_rating_dialog.dart';
+import '../../shared/widgets/sangak_button.dart';
+
+class OrderTrackingScreen extends ConsumerStatefulWidget {
   final String orderId;
   const OrderTrackingScreen({super.key, required this.orderId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final orderAsync = ref.watch(orderStatusProvider(orderId));
-    final historyAsync = ref.watch(orderHistoryProvider(orderId));
+  ConsumerState<OrderTrackingScreen> createState() => _OrderTrackingScreenState();
+}
+
+class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
+  bool _dialogShown = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final lang = ref.watch(localeProvider).languageCode;
+
+    ref.listen(orderStatusProvider(widget.orderId), (previous, next) {
+      next.whenData((order) {
+        if (order?.status == OrderStatus.delivered && !_dialogShown) {
+          _dialogShown = true;
+          _showDeliverySuccessDialog(context, order!.id);
+        }
+      });
+    });
+
+    final orderAsync = ref.watch(orderStatusProvider(widget.orderId));
+    final historyAsync = ref.watch(orderHistoryProvider(widget.orderId));
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -45,15 +65,70 @@ class OrderTrackingScreen extends ConsumerWidget {
                     padding: EdgeInsets.all(48.0),
                     child: CircularProgressIndicator(),
                   )),
-                  error: (e, s) => Center(child: Text('Error: $e')),
+                  error: (e, s) => Center(child: Text(l10n.errorOccurred)),
                 ),
+                if (order.status == OrderStatus.delivered) ...[
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: SangakButton.primary(
+                      label: l10n.rateOrder,
+                      icon: Icons.star_outline_rounded,
+                      width: double.infinity,
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => OrderRatingDialog(orderId: order.id),
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 48),
               ],
             ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, s) => Center(child: Text('Error: $e')),
+        error: (e, s) => Center(child: Text(l10n.errorOccurred)),
+      ),
+    );
+  }
+
+  void _showDeliverySuccessDialog(BuildContext context, String orderId) {
+    final l10n = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Column(
+          children: [
+            const Icon(Icons.check_circle_outline_rounded, color: SangakColors.success, size: 64),
+            const SizedBox(height: 16),
+            Text(l10n.deliveredStep, style: SangakTypography.h2(context)),
+          ],
+        ),
+        content: Text(
+          l10n.deliverySuccessMessage,
+          textAlign: TextAlign.center,
+          style: SangakTypography.bodyMedium(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+          SangakButton.primary(
+            label: l10n.rateOrder,
+            width: 120,
+            onPressed: () {
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (context) => OrderRatingDialog(orderId: orderId),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

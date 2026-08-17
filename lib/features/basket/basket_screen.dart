@@ -195,13 +195,13 @@ class BasketScreen extends ConsumerWidget {
     
     final dynamic rawDeliveryFee = dbOptions['delivery_fee'];
     final double deliveryFee = (rawDeliveryFee != null)
-        ? (double.tryParse(rawDeliveryFee.toString()) ?? 15.0)
-        : 15.0;
+        ? (double.tryParse(rawDeliveryFee.toString()) ?? 0.0)
+        : 0.0;
 
     final dynamic rawLimit = dbOptions['min_order_limit'];
     final int minLimit = (rawLimit != null) 
-        ? (int.tryParse(rawLimit.toString()) ?? 200) 
-        : (optionsAsync.isLoading ? 0 : 200);
+        ? (int.tryParse(rawLimit.toString()) ?? 0) 
+        : 0;
 
     final grandTotal = total + deliveryFee;
 
@@ -306,10 +306,16 @@ class BasketScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.deliveryFeeLabel, style: SangakTypography.bodyMedium(context)),
-              Text(
-                SangakNumberFormatter.formatCurrency(deliveryFee, lang),
-                style: SangakTypography.title(context),
-              ),
+              if (deliveryFee == 0)
+                Text(
+                  l10n.freeDelivery,
+                  style: SangakTypography.title(context).copyWith(color: Colors.green.shade700),
+                )
+              else
+                Text(
+                  SangakNumberFormatter.formatCurrency(deliveryFee, lang),
+                  style: SangakTypography.title(context),
+                ),
             ],
           ),
           const Padding(

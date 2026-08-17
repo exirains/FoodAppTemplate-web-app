@@ -6,7 +6,7 @@ import '../../core/design_system/sangak_dimens.dart';
 class SangakToast {
   static OverlayEntry? _activeEntry;
 
-  static void show(BuildContext context, String message) {
+  static void show(BuildContext context, String message, {IconData icon = Icons.check_circle_rounded}) {
     // 1. Remove previous toast immediately to clear the hit-test area
     _activeEntry?.remove();
     _activeEntry = null;
@@ -19,6 +19,7 @@ class SangakToast {
     entry = OverlayEntry(
       builder: (context) => _ToastWidget(
         message: message,
+        icon: icon,
         onDismiss: () {
           // Safely remove the entry from overlay
           entry.remove();
@@ -36,8 +37,9 @@ class SangakToast {
 
 class _ToastWidget extends StatefulWidget {
   final String message;
+  final IconData icon;
   final VoidCallback onDismiss;
-  const _ToastWidget({required this.message, required this.onDismiss});
+  const _ToastWidget({required this.message, required this.icon, required this.onDismiss});
 
   @override
   State<_ToastWidget> createState() => _ToastWidgetState();
@@ -135,7 +137,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.check_circle_rounded, color: SangakColors.primary, size: 20),
+                      Icon(widget.icon, color: SangakColors.primary, size: 20),
                       const SizedBox(width: 12),
                       Flexible(
                         child: Text(

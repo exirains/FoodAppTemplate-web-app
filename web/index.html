@@ -58,6 +58,25 @@
     <div class="spinner"></div>
     <div class="loading-text">SANGAK</div>
   </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getMessaging } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-messaging.js";
+
+    const firebaseConfig = {
+     apiKey: "AIzaSyBqbADXkTNfZz1o-lD9-e8WEif7NPX1zUw",
+     authDomain: "crested-photon-435918-h1.firebaseapp.com",
+     projectId: "crested-photon-435918-h1",
+     storageBucket: "crested-photon-435918-h1.firebasestorage.app",
+     messagingSenderId: "82369512623",
+     appId: "1:82369512623:web:4db3b532b00565186f005a",
+     measurementId: "G-64CW2P076D"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    console.log("Firebase Web initialized");
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

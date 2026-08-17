@@ -21,9 +21,16 @@ import '../../features/admin/order_management_screen.dart';
 import '../../features/admin/admin_order_detail_screen.dart';
 import '../../features/admin/product_management_screen.dart';
 import '../../features/admin/user_management_screen.dart';
+import '../../features/admin/user_details_screen.dart';
+import '../../features/admin/admin_settings_screen.dart';
+import '../../features/admin/reward_management_screen.dart';
+import '../../features/admin/promotion_management_screen.dart';
+import '../../features/admin/review_management_screen.dart';
 import '../../features/staff/staff_kitchen_screen.dart';
 import '../../features/delivery/delivery_dashboard_screen.dart';
 import '../../features/delivery/delivery_order_detail_screen.dart';
+import '../../features/delivery/delivery_history_screen.dart';
+import '../../features/loyalty/loyalty_center_screen.dart';
 import '../../features/auth/profile_provider.dart';
 import '../../features/auth/auth_provider.dart';
 import '../../models/bread.dart';
@@ -219,6 +226,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const FavoritesScreen(),
         ),
       ),
+      GoRoute(
+        path: '/loyalty',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const LoyaltyCenterScreen(),
+        ),
+      ),
       // Admin Routes
       GoRoute(
         path: '/admin',
@@ -267,6 +282,51 @@ final routerProvider = Provider<GoRouter>((ref) {
               state: state,
               child: const UserManagementScreen(),
             ),
+            routes: [
+              GoRoute(
+                path: ':id',
+                pageBuilder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return _buildPageWithTransition(
+                    context: context,
+                    state: state,
+                    child: UserDetailsScreen(userId: id),
+                  );
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'settings',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const AdminSettingsScreen(),
+            ),
+          ),
+          GoRoute(
+            path: 'rewards',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const RewardManagementScreen(),
+            ),
+          ),
+          GoRoute(
+            path: 'promotions',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const PromotionManagementScreen(),
+            ),
+          ),
+          GoRoute(
+            path: 'reviews',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const ReviewManagementScreen(),
+            ),
           ),
         ],
       ),
@@ -288,6 +348,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const DeliveryDashboardScreen(),
         ),
         routes: [
+          GoRoute(
+            path: 'history',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const DeliveryHistoryScreen(),
+            ),
+          ),
           GoRoute(
             path: ':id',
             pageBuilder: (context, state) {

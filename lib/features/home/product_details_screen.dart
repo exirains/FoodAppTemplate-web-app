@@ -150,8 +150,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       const Icon(Icons.star, color: Color(0xFFFFB800), size: 20),
                       const SizedBox(width: 4),
                       Text(widget.bread.rating.toString(), style: SangakTypography.title(context).copyWith(fontSize: 14)),
-                      const SizedBox(width: 4),
-                      Text(l10n.reviewsCount(widget.bread.reviews), style: SangakTypography.bodySmall(context)),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: SangakColors.ink.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+                          border: Border.all(color: SangakColors.border),
+                        ),
+                        child: Text(
+                          l10n.reviewsCount(widget.bread.reviews),
+                          style: SangakTypography.bodySmall(context).copyWith(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: SangakColors.inkLight,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: SangakDimens.spacing24),

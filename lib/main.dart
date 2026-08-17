@@ -11,6 +11,7 @@ import 'services/supabase_service.dart';
 import 'services/storage_service.dart';
 import 'services/favorite_service.dart';
 import 'services/cache_service.dart';
+import 'services/notification_service.dart';
 import 'core/update/update_service.dart';
 import 'shared/utils/responsive_layout.dart';
 import 'models/bread.dart';
@@ -57,7 +58,14 @@ void main() async {
       debugPrint('SANGAK: Supabase initialized.');
     } catch (e) {
       debugPrint('SANGAK ERROR: Supabase init failed: $e');
-      // On web, this might be due to .env issues
+    }
+
+    // Initialize Firebase & FCM
+    try {
+      await NotificationService.initialize();
+      debugPrint('SANGAK: Firebase/FCM initialized.');
+    } catch (e) {
+      debugPrint('SANGAK ERROR: Firebase init failed: $e');
     }
     
     // Initialize SharedPreferences
@@ -75,11 +83,10 @@ void main() async {
   } catch (e, stack) {
     debugPrint('SANGAK CRITICAL ERROR: $e');
     debugPrint('STACK TRACE: $stack');
-    
     // Fallback to minimal app to show error if possible
-    runApp(MaterialApp(
+    runApp(const MaterialApp(
       home: Scaffold(
-        body: Center(child: Text('App failed to start: $e')),
+        body: Center(child: Text('An error occurred while starting the app.')),
       ),
     ));
   }

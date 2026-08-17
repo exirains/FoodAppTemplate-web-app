@@ -46,9 +46,14 @@ class Category {
       }
     }
 
+    String? name = json['name'] as String?;
+    if ((name == null || name.isEmpty) && translationsMap != null && translationsMap.isNotEmpty) {
+      name = translationsMap.values.first;
+    }
+
     return Category(
       id: json['id'] as String,
-      name: json['name'] as String? ?? '',
+      name: name ?? '',
       imageUrl: json['image_url'] as String? ?? '',
       translations: translationsMap,
     );

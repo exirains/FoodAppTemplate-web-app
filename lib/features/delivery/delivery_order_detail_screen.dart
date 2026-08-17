@@ -35,7 +35,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     try {
       if (order.assignedDeliveryPerson == null) {
          debugPrint('Assigning order to driver: ${user.id}');
-         final success = await ref.read(orderRepositoryProvider).assignDeliveryPerson(
+         final success = await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(
            order.id, 
            user.id, 
            ifUnassigned: true,
@@ -48,14 +48,14 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
          }
       }
 
-      await ref.read(orderRepositoryProvider).updateOrderStatus(
+      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: newStatus,
         changedBy: user.id,
       );
       
       // Force refresh of the order data to ensure UI knows about assignment
-      await ref.read(orderRepositoryProvider).getAllOrders();
+      await ref.read(sangakOrderRepositoryProvider).getAllOrders();
       ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
       ref.invalidate(availableOrdersProvider);
       ref.invalidate(myActiveDeliveriesProvider);
@@ -67,7 +67,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         }
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
+      if (mounted) SangakToast.show(context, l10n.errorOccurred);
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -79,7 +79,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
 
     setState(() => _isUpdating = true);
     try {
-      await ref.read(orderRepositoryProvider).updateOrderStatus(
+      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: OrderStatus.cancelled,
         changedBy: user.id,
@@ -93,7 +93,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
+      if (mounted) SangakToast.show(context, AppLocalizations.of(context).errorOccurred);
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -192,7 +192,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, stack) => Center(child: Text('Error: $e')),
+        error: (e, stack) => Center(child: Text(l10n.errorOccurred)),
       ),
       bottomSheet: orderAsync.when(
         data: (order) => order != null ? _buildActions(context, order, l10n) : null,
@@ -408,7 +408,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text(item.nameSnapshot, style: SangakTypography.bodyMedium(context))),
+                Expanded(child: Text(item.localizedName(lang), style: SangakTypography.bodyMedium(context))),
                 Text(SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang), 
                   style: SangakTypography.bodySmall(context)),
               ],
@@ -517,7 +517,24 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       final pin = controller.text;
       setState(() => _isUpdating = true);
       try {
-        await ref.read(orderRepositoryProvider).confirmDelivery(
+        final user = ref.read(authProvider).asData?.value;
+        if (user == null) return;
+
+        // Fetch the ABSOLUTE LATEST state from the provider to avoid race conditions
+        final latestOrder = ref.read(deliveryOrderDetailProvider(widget.orderId)).value;
+        if (latestOrder == null) return;
+
+        // Auto-assign if missing before confirmation
+        if (latestOrder.assignedDeliveryPerson == null) {
+          debugPrint('🚀 [ADMIN/DRIVER] Auto-assigning unassigned order to: ${user.id}');
+          await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(
+            latestOrder.id, 
+            user.id, 
+            ifUnassigned: true,
+          );
+        }
+
+        await ref.read(sangakOrderRepositoryProvider).confirmDelivery(
           orderId: widget.orderId,
           pin: pin,
         );
@@ -535,10 +552,10 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         if (mounted) {
           final l10n = AppLocalizations.of(context);
           final errorStr = e.toString();
-          String message = 'Error: $e';
+          String message = l10n.errorOccurred;
           
           if (errorStr.contains('Not authorized')) {
-            message = l10n.orderNotAssignedError;
+            message = 'Order must be assigned to you first. Please pick it up from the dashboard.';
           } else if (errorStr.contains('Incorrect PIN')) {
             message = l10n.invalidVerificationCode;
           }
@@ -555,13 +572,19 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
 
   Widget _buildActions(BuildContext context, OrderModel order, AppLocalizations l10n) {
     Widget? mainAction;
+    final currentUser = ref.read(authProvider).asData?.value;
+    final bool isAssignedToMe = order.assignedDeliveryPerson == currentUser?.id;
+    final bool isUnassigned = order.assignedDeliveryPerson == null;
+
     if (order.status == OrderStatus.outForDelivery) {
+      // Allow "Mark Delivered" if assigned to me OR if unassigned (Claim & Deliver)
       mainAction = Expanded(
         child: SangakButton.primary(
-          label: l10n.markDelivered,
-          backgroundColor: SangakColors.success,
-          onPressed: () => _showVerificationDialog(order),
+          label: isUnassigned ? 'CLAIM & DELIVER' : l10n.markDelivered,
+          backgroundColor: isUnassigned ? SangakColors.primary : SangakColors.success,
+          onPressed: (isAssignedToMe || isUnassigned) ? () => _showVerificationDialog(order) : null,
           isLoading: _isUpdating,
+          leading: (!isAssignedToMe && !isUnassigned) ? const Icon(Icons.lock_outline, size: 16) : null,
         ),
       );
     } else if (order.status == OrderStatus.ready) {

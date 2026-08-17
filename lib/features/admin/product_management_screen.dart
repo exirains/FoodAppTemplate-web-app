@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +13,7 @@ import '../../shared/utils/sangak_toast.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
+import '../../shared/widgets/product_tag.dart';
 import '../home/home_provider.dart';
 import '../../shared/widgets/role_guard.dart';
 import '../../main.dart';
@@ -52,7 +53,7 @@ class ProductManagementScreen extends ConsumerWidget {
                 },
               ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('Error: $e')),
+          error: (e, _) => Center(child: Text(l10n.errorOccurred)),
         ),
       ),
     );
@@ -106,12 +107,22 @@ class _ProductCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  bread.localizedName(lang),
-                  style: SangakTypography.h3(context).copyWith(fontSize: 16),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      bread.localizedName(lang),
+                      style: SangakTypography.h3(context).copyWith(fontSize: 16),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (bread.tag != null) ...[
+                    const SizedBox(width: 8),
+                    ProductTag.fromText(bread.tag!, context: context),
+                  ],
+                ],
+              ),
                 const SizedBox(height: 4),
                 Text(
                   SangakNumberFormatter.formatCurrency(bread.price, lang),
@@ -128,7 +139,7 @@ class _ProductCard extends ConsumerWidget {
                         ref.invalidate(breadsProvider);
                         if (context.mounted) SangakToast.show(context, l10n.productStatusUpdated);
                       } catch (e) {
-                        if (context.mounted) SangakToast.show(context, 'Error: $e');
+                        if (context.mounted) SangakToast.show(context, l10n.errorOccurred);
                       }
                     },
                     borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
@@ -244,6 +255,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
   late TextEditingController _nameFaController;
   late TextEditingController _descFaController;
   late TextEditingController _priceController;
+  late TextEditingController _prepTimeController;
+  late TextEditingController _caloriesController;
   
   String? _imageUrl;
   String? _selectedCategoryId;
@@ -261,13 +274,15 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     final isEditing = widget.bread != null;
     final b = widget.bread;
     
-    _nameEnController = TextEditingController(text: isEditing ? b.name : '');
-    _descEnController = TextEditingController(text: isEditing ? b.description : '');
+    _nameEnController = TextEditingController(text: isEditing ? (b.translations?['en']?['name'] ?? b.name) : '');
+    _descEnController = TextEditingController(text: isEditing ? (b.translations?['en']?['description'] ?? b.description) : '');
     _nameTrController = TextEditingController(text: isEditing ? b.translations?['tr']?['name'] ?? '' : '');
     _descTrController = TextEditingController(text: isEditing ? b.translations?['tr']?['description'] ?? '' : '');
     _nameFaController = TextEditingController(text: isEditing ? b.translations?['fa']?['name'] ?? '' : '');
     _descFaController = TextEditingController(text: isEditing ? b.translations?['fa']?['description'] ?? '' : '');
     _priceController = TextEditingController(text: isEditing ? b.price.toString() : '');
+    _prepTimeController = TextEditingController(text: isEditing ? b.prepTime.toString() : '20');
+    _caloriesController = TextEditingController(text: isEditing ? b.calories.toString() : '250');
     
     _imageUrl = isEditing ? b.imageUrl : null;
     _selectedCategoryId = isEditing ? b.categoryId : null;
@@ -285,6 +300,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     _nameFaController.dispose();
     _descFaController.dispose();
     _priceController.dispose();
+    _prepTimeController.dispose();
+    _caloriesController.dispose();
     super.dispose();
   }
 
@@ -342,6 +359,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
       }
 
       final price = double.tryParse(_priceController.text) ?? 0.0;
+      final prepTime = int.tryParse(_prepTimeController.text) ?? 20;
+      final calories = int.tryParse(_caloriesController.text) ?? 250;
       
       final productData = {
         'name': _nameEnController.text.trim(),
@@ -352,6 +371,8 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
         'available': _available,
         'is_organic': _isOrganic,
         'tag': (_selectedTag == 'none' || _selectedTag == null) ? null : _selectedTag,
+        'prep_time': prepTime,
+        'calories': calories,
       };
 
       String productId;
@@ -391,11 +412,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
     final tags = [
       {'value': 'none', 'label': l10n.productTagNone},
+      {'value': 'Popular', 'label': l10n.productTagPopular},
       {'value': 'Bestseller', 'label': l10n.productTagBestseller},
-      {'value': 'Special', 'label': l10n.productTagSpecial},
       {'value': 'New', 'label': l10n.productTagNew},
+      {'value': 'Traditional', 'label': l10n.productTagTraditional},
+      {'value': 'Recommended', 'label': l10n.productTagRecommended},
+      {'value': 'Seasonal', 'label': l10n.productTagSeasonal},
+      {'value': 'Special', 'label': l10n.productTagSpecial},
       {'value': 'Limited', 'label': l10n.productTagLimited},
-      {'value': 'Traditional', 'label': 'Traditional'},
     ];
 
     final currentTagValue = _selectedTag ?? 'none';
@@ -491,8 +515,33 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
             SangakTextField(
               label: l10n.price, 
               controller: _priceController, 
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
               validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: SangakTextField(
+                    label: l10n.prepTimeLabel, 
+                    controller: _prepTimeController, 
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: SangakTextField(
+                    label: l10n.caloriesLabel, 
+                    controller: _caloriesController, 
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  ),
+                ),
+              ],
             ),
               
               const SizedBox(height: 24),
@@ -500,13 +549,15 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               SangakTextField(
                 label: 'Name (EN)', 
                 controller: _nameEnController,
+                inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (EN)', 
                 controller: _descEnController, 
-                maxLines: 2,
+                maxLines: 3,
+                inputFormatters: [LengthLimitingTextInputFormatter(1000)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
 
@@ -515,13 +566,15 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               SangakTextField(
                 label: 'Name (TR)', 
                 controller: _nameTrController,
+                inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (TR)', 
                 controller: _descTrController, 
-                maxLines: 2,
+                maxLines: 3,
+                inputFormatters: [LengthLimitingTextInputFormatter(1000)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
 
@@ -530,13 +583,15 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               SangakTextField(
                 label: 'Name (FA)', 
                 controller: _nameFaController,
+                inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
               SangakTextField(
                 label: 'Description (FA)', 
                 controller: _descFaController, 
-                maxLines: 2,
+                maxLines: 3,
+                inputFormatters: [LengthLimitingTextInputFormatter(1000)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
             ],

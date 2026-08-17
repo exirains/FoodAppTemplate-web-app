@@ -15,6 +15,7 @@ import '../../models/address.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import 'basket_provider.dart';
 import 'checkout_provider.dart';
+import '../../services/options_repository.dart';
 
 class CheckoutScreen extends ConsumerWidget {
   const CheckoutScreen({super.key});
@@ -27,6 +28,9 @@ class CheckoutScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
+
+    final options = ref.watch(appOptionsProvider).value ?? {};
+    final deliveryFee = double.tryParse(options['delivery_fee']?.toString() ?? '15.0') ?? 15.0;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -52,12 +56,12 @@ class CheckoutScreen extends ConsumerWidget {
             const SizedBox(height: 32),
             _buildSectionHeader(l10n.orderSummary, context),
             const SizedBox(height: 12),
-            _buildOrderSummary(basket, lang, context),
+            _buildOrderSummary(basket, lang, deliveryFee, context),
             const SizedBox(height: 120),
           ],
         ),
       ),
-      bottomSheet: _buildBottomAction(context, total, l10n, ref, checkoutState),
+      bottomSheet: _buildBottomAction(context, total, deliveryFee, l10n, ref, checkoutState),
     );
   }
 
@@ -94,8 +98,7 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildOrderSummary(List<BasketItem> basket, String lang, BuildContext context) {
-    const deliveryFee = 15.0;
+  Widget _buildOrderSummary(List<BasketItem> basket, String lang, double deliveryFee, BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
@@ -165,8 +168,7 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomAction(BuildContext context, double total, AppLocalizations l10n, WidgetRef ref, CheckoutState checkoutState) {
-    const deliveryFee = 15.0;
+  Widget _buildBottomAction(BuildContext context, double total, double deliveryFee, AppLocalizations l10n, WidgetRef ref, CheckoutState checkoutState) {
     final grandTotal = total + deliveryFee;
     final basket = ref.read(basketProvider);
     final locale = ref.watch(localeProvider);

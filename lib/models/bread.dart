@@ -130,11 +130,25 @@ class Bread {
       }
     }
 
+    // Fallback logic: if root name/description are missing, use first available translation
+    String? name = json['name'] as String?;
+    String? description = json['description'] as String?;
+
+    if ((name == null || name.isEmpty) && translationsMap != null && translationsMap.isNotEmpty) {
+      final firstTrans = translationsMap.values.first;
+      name = firstTrans['name']?.toString();
+    }
+
+    if ((description == null || description.isEmpty) && translationsMap != null && translationsMap.isNotEmpty) {
+      final firstTrans = translationsMap.values.first;
+      description = firstTrans['description']?.toString();
+    }
+
     return Bread(
       id: json['id'] as String,
       categoryId: json['category_id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      description: json['description'] as String? ?? '',
+      name: name ?? '',
+      description: description ?? '',
       price: _toDouble(json['price']),
       imageUrl: json['image_url'] as String? ?? '',
       available: json['available'] as bool? ?? true,

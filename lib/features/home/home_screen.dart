@@ -12,6 +12,7 @@ import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 import 'tab_provider.dart';
 import 'widgets/settings_bottom_sheet.dart';
+import 'widgets/promotion_banners.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../services/greeting_service.dart';
 import '../../shared/utils/auth_gate.dart';
@@ -127,6 +128,9 @@ class HomeScreen extends ConsumerWidget {
                     subtitle: l10n.heroSubtitle,
                     imageUrl: 'https://obealvlqkffozfigtobc.supabase.co/storage/v1/object/public/branding/top_banner_dark.jpg',
                   ),
+                  const SizedBox(height: SangakDimens.spacing24),
+
+                  const PromotionBanners(),
                   const SizedBox(height: SangakDimens.spacing24),
 
                   // Phone Number Warning Banner

@@ -50,10 +50,6 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
         appBar: AppBar(
           title: Text(l10n.manageOrders),
           actions: [
-            IconButton(
-              onPressed: () => ref.invalidate(adminOrdersProvider),
-              icon: const Icon(Icons.refresh),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DropdownButton<bool>(
@@ -174,16 +170,48 @@ class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
     return TabBar(
       controller: tabController,
       isScrollable: true,
+      tabAlignment: TabAlignment.start,
       labelColor: SangakColors.primary,
       unselectedLabelColor: SangakColors.inkLight,
       indicatorColor: SangakColors.primary,
+      indicatorWeight: 3,
+      labelStyle: SangakTypography.title(context).copyWith(fontSize: 13),
       tabs: [
-        Tab(text: '${l10n.statusPending} ($newCount)'),
-        Tab(text: '${l10n.statusPreparing} ($prepCount)'),
-        Tab(text: '${l10n.statusReady} ($readyCount)'),
-        Tab(text: '${l10n.outForDelivery} ($shippingCount)'),
-        Tab(text: '${l10n.statusDone} ($doneCount)'),
+        _buildTab(l10n.statusPending, newCount),
+        _buildTab(l10n.statusPreparing, prepCount),
+        _buildTab(l10n.statusReady, readyCount),
+        _buildTab(l10n.outForDelivery, shippingCount),
+        _buildTab(l10n.statusDone, doneCount),
       ],
+    );
+  }
+
+  Widget _buildTab(String label, int count) {
+    return Tab(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label),
+          if (count > 0) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: SangakColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                count.toString(),
+                style: const TextStyle(
+                  fontSize: 9, 
+                  fontWeight: FontWeight.w900,
+                  color: SangakColors.primary,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

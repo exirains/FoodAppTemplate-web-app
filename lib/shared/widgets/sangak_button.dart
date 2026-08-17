@@ -101,14 +101,16 @@ class SangakButton extends StatelessWidget {
               ],
               if (label.isNotEmpty)
                 Flexible(
-                  child: Text(
-                    label,
-                    style: SangakTypography.button(context).copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: effectiveFgColor, // Force color in text style
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      style: SangakTypography.button(context).copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: effectiveFgColor,
+                      ),
+                      maxLines: 1,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
                   ),
                 ),
             ],

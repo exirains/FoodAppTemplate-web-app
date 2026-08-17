@@ -24,22 +24,22 @@ class ProductTag extends StatelessWidget {
   });
 
   factory ProductTag.fromText(String tag, {required BuildContext context}) {
-    final lower = tag.toLowerCase();
+    final lower = tag.toLowerCase().replaceAll(' ', '');
     final l10n = AppLocalizations.of(context);
 
     if (lower.contains('traditional')) {
       return ProductTag(
-        label: l10n.traditionalFavorites,
+        label: l10n.productTagTraditional,
         type: ProductTagType.traditional,
       );
     } else if (lower.contains('popular')) {
       return ProductTag(
-        label: l10n.popularToday,
+        label: l10n.productTagPopular,
         type: ProductTagType.popular,
       );
     } else if (lower.contains('new')) {
       return ProductTag(
-        label: l10n.newItem,
+        label: l10n.productTagNew,
         type: ProductTagType.newItem,
       );
     } else if (lower.contains('organic')) {
@@ -47,7 +47,33 @@ class ProductTag extends StatelessWidget {
         label: l10n.organic,
         type: ProductTagType.organic,
       );
+    } else if (lower.contains('bestseller')) {
+      return ProductTag(
+        label: l10n.productTagBestseller,
+        type: ProductTagType.popular, // Use same styling as popular
+      );
+    } else if (lower.contains('special')) {
+      return ProductTag(
+        label: l10n.productTagSpecial,
+        type: ProductTagType.popular,
+      );
+    } else if (lower.contains('limited')) {
+      return ProductTag(
+        label: l10n.productTagLimited,
+        type: ProductTagType.newItem,
+      );
+    } else if (lower.contains('recommended')) {
+      return ProductTag(
+        label: l10n.productTagRecommended,
+        type: ProductTagType.traditional,
+      );
+    } else if (lower.contains('seasonal')) {
+      return ProductTag(
+        label: l10n.productTagSeasonal,
+        type: ProductTagType.newItem,
+      );
     }
+    
     return ProductTag(label: tag, type: ProductTagType.general);
   }
 

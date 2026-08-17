@@ -252,17 +252,39 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: FittedBox(
-                              alignment: Alignment.centerLeft,
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                formattedPrice,
-                                style: SangakTypography.price(context).copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                  color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    formattedPrice,
+                                    style: SangakTypography.price(context).copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                      color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                if (widget.bread != null && widget.bread!.reviews > 0) ...[
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.star_rounded, size: 12, color: Colors.amber),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        '${SangakNumberFormatter.format(widget.bread!.rating, languageCode)} (${SangakNumberFormatter.format(widget.bread!.reviews, languageCode)})',
+                                        style: SangakTypography.caption(context).copyWith(
+                                          fontSize: 10,
+                                          color: SangakColors.inkLight,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                           const SizedBox(width: 8),
