@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sangak/l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/sangak_theme.dart';
@@ -39,6 +41,12 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('SANGAK: Initializing app...');
+
+    // Initialize Firebase first
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint('SANGAK: Firebase ready.');
     
     // 1. Initialize Hive (Essential for local state)
     await Hive.initFlutter();
@@ -110,18 +118,8 @@ class SangakApp extends ConsumerWidget {
       builder: (context, child) {
         if (child == null) return const SizedBox.shrink();
 
-        // Safely determine workstation routes
-        bool isWorkstation = false;
-        try {
-          final uri = router.routerDelegate.currentConfiguration.uri;
-          final path = uri.path;
-          isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
-        } catch (_) {}
-        
-        return ResponsiveLayout(
-          maxWidth: isWorkstation 
-              ? ResponsiveLayout.workstationMaxWidth 
-              : ResponsiveLayout.mobileMaxWidth,
+        return Material(
+          color: const Color(0xFFFDFCF8),
           child: child,
         );
       },

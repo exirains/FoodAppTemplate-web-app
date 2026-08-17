@@ -6,35 +6,83 @@ import 'package:flutter/material.dart';
 class ResponsiveLayout extends StatelessWidget {
   final Widget child;
   final double? maxWidth;
+  final bool usePadding;
 
   const ResponsiveLayout({
     super.key,
     required this.child,
     this.maxWidth,
+    this.usePadding = true,
   });
 
-  /// Standard max width for a mobile-first app on desktop
+  // --- Breakpoints ---
+  static const double breakpointMobile = 600.0;
+  static const double breakpointTablet = 1024.0;
+  static const double breakpointDesktop = 1440.0;
+
+  // --- Max Widths ---
   static const double mobileMaxWidth = 600.0;
-
-  /// Max width for desktop workstation interfaces
   static const double workstationMaxWidth = 1440.0;
+  static const double desktopMaxWidth = 1200.0;
 
-  /// Static helper to check if the screen is "large"
-  static bool isLargeScreen(BuildContext context) {
-    return MediaQuery.of(context).size.width > 600;
+  // --- Helper Methods ---
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < breakpointMobile;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= breakpointMobile &&
+      MediaQuery.of(context).size.width < breakpointTablet;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= breakpointTablet;
+
+  static bool isLargeDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= breakpointDesktop;
+
+  /// Returns a value based on the current screen size
+  static T value<T>(
+    BuildContext context, {
+    required T mobile,
+    T? tablet,
+    T? desktop,
+    T? largeDesktop,
+  }) {
+    if (isLargeDesktop(context) && largeDesktop != null) return largeDesktop;
+    if (isDesktop(context) && desktop != null) return desktop;
+    if (isTablet(context) && tablet != null) return tablet;
+    return mobile;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine the constraint: use provided maxWidth or default to mobileMaxWidth
-    final constraint = maxWidth ?? mobileMaxWidth;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    
+    // Intelligent max width
+    double? effectiveMaxWidth = maxWidth;
+    if (effectiveMaxWidth == null) {
+      if (isMobile(context)) {
+        effectiveMaxWidth = double.infinity;
+      } else if (isTablet(context)) {
+        effectiveMaxWidth = 900.0;
+      } else {
+        effectiveMaxWidth = desktopMaxWidth;
+      }
+    }
+
+    final horizontalPadding = usePadding ? value<double>(
+      context,
+      mobile: 16.0,
+      tablet: 24.0,
+      desktop: 32.0,
+      largeDesktop: 48.0,
+    ) : 0.0;
 
     return Material(
-      color: const Color(0xFFFDFCF8), // Match Sangak Theme background (Natural Paper)
+      color: const Color(0xFFFDFCF8),
       child: Center(
         child: Container(
-          constraints: BoxConstraints(maxWidth: constraint),
-          // Ensure the child fills the constraint
+          constraints: BoxConstraints(maxWidth: effectiveMaxWidth),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: child,
         ),
       ),
