@@ -91,38 +91,37 @@ class SangakApp extends ConsumerWidget {
     // Sync navigator key for push notification handling
     NotificationService.setNavigatorKey(router.configuration.navigatorKey);
 
-    return Container(
-      color: const Color(0xFFFDFCF8), // Natural Paper background to avoid black flash
-      child: MaterialApp.router(
-        title: 'Sangak',
-        debugShowCheckedModeBanner: false,
-        theme: SangakTheme.light(locale),
-        routerConfig: router,
-        locale: locale,
-        localizationsDelegates: [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        builder: (context, child) {
-          if (child == null) return const SizedBox.shrink();
+    return MaterialApp.router(
+      title: 'Sangak',
+      debugShowCheckedModeBanner: false,
+      theme: SangakTheme.light(locale),
+      routerConfig: router,
+      locale: locale,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) {
+        if (child == null) return const SizedBox.shrink();
 
-          // Safely determine if we are in a workstation route (staff/admin)
-          bool isWorkstation = false;
-          try {
-            // Using a safer path extraction method for web initialization
-            final String path = router.routerDelegate.currentConfiguration.last.matchedLocation;
-            isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
-          } catch (_) {}
-          
-          return ResponsiveLayout(
-            maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
-            child: child,
-          );
-        },
-      ),
+        // Safely determine if we are in a workstation route (staff/admin)
+        bool isWorkstation = false;
+        try {
+          // GoRouter 14+ safe URI extraction
+          final String path = router.routerDelegate.currentConfiguration.uri.path;
+          isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
+        } catch (_) {
+          // Fallback to mobile width during initial load or error
+        }
+        
+        return ResponsiveLayout(
+          maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
+          child: child,
+        );
+      },
     );
   }
 }
