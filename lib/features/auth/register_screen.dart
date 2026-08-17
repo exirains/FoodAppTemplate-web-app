@@ -10,7 +10,8 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/google_mark.dart';
 import '../../shared/utils/sangak_toast.dart';
-import '../../services/supabase_service.dart';
+import 'package:sangak/services/supabase_service.dart';
+import 'package:sangak/services/referral_repository.dart';
 import '../home/tab_provider.dart';
 import 'auth_provider.dart';
 import 'auth_validators.dart';
@@ -32,14 +33,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _invitationCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _passwordFocus = FocusNode();
   final _confirmPasswordFocus = FocusNode();
+  final _referralFocus = FocusNode();
   
   bool _agreedToTerms = false;
-  String? _error;
   bool _isSubmitting = false;
   bool _showPassword = false;
   bool _showConfirmPassword = false;
@@ -57,6 +59,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _invitationCodeController.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _passwordFocus.dispose();
@@ -162,7 +165,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     // Check terms agreement
     if (!_agreedToTerms) {
-      setState(() => _error = l10n.pleaseAgreeToTerms);
       SangakToast.show(context, l10n.pleaseAgreeToTerms);
       return;
     }
@@ -177,7 +179,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // Check rate limiting
     if (!authRateLimiter.isAllowed(email)) {
       final secondsLeft = authRateLimiter.getSecondsUntilRetry(email);
-      setState(() => _error = l10n.tooManyAttempts);
       SangakToast.show(
         context,
         '${l10n.tooManyAttempts} ($secondsLeft${l10n.secondsShort})',
@@ -186,7 +187,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
 
     setState(() {
-      _error = null;
       _isSubmitting = true;
     });
 
@@ -216,6 +216,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
         // Clear guest data after successful registration
         await GuestModeService.exitGuestMode();
+        
+        // Link Referral if code is provided
+        final referralCode = _invitationCodeController.text.trim();
+        if (referralCode.isNotEmpty) {
+          try {
+            await ref.read(referralRepositoryProvider).linkReferral(
+              referredUserId: user.id,
+              referralCode: referralCode,
+            );
+          } catch (e) {
+            debugPrint('Non-critical: Error linking referral code: $e');
+            // We don't block registration for referral errors
+          }
+        }
+
         if (!mounted) return;
 
         SangakToast.show(context, l10n.registeredSuccessfully);
@@ -239,7 +254,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         errorMessage = _getLocalizedError(messageKey, l10n);
       }
 
-      setState(() => _error = errorMessage);
       SangakToast.show(context, errorMessage);
     } finally {
       if (mounted) {
@@ -337,9 +351,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onEditingComplete: () {
                     _emailFocus.requestFocus();
                   },
-                  onChanged: (_) {
-                    setState(() => _error = null);
-                  },
                   validator: _validateName,
                 ),
                 const SizedBox(height: SangakDimens.spacing16),
@@ -355,9 +366,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onEditingComplete: () {
                     _emailFocus.unfocus();
                     FocusScope.of(context).requestFocus(_phoneFocus);
-                  },
-                  onChanged: (_) {
-                    setState(() => _error = null);
                   },
                   validator: _validateEmail,
                 ),
@@ -377,9 +385,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onEditingComplete: () {
                     _phoneFocus.unfocus();
                     FocusScope.of(context).requestFocus(_passwordFocus);
-                  },
-                  onChanged: (_) {
-                    setState(() => _error = null);
                   },
                   validator: _validatePhone,
                 ),
@@ -402,7 +407,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     FocusScope.of(context).requestFocus(_confirmPasswordFocus);
                   },
                   onChanged: (_) {
-                    setState(() => _error = null);
                     setState(() {}); // Rebuild to update strength indicator
                   },
                   validator: _validatePassword,
@@ -417,7 +421,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ],
                 const SizedBox(height: SangakDimens.spacing16),
                 // Confirm password field
-                SangakTextField(
+                 SangakTextField(
                   label: l10n.confirmPassword,
                   hintText: l10n.reEnterPassword,
                   controller: _confirmPasswordController,
@@ -428,13 +432,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onTrailingIconPressed: () {
                     setState(() => _showConfirmPassword = !_showConfirmPassword);
                   },
-                  errorText: _error,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: isButtonDisabled ? null : _register,
-                  onChanged: (_) {
-                    setState(() => _error = null);
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () {
+                    _confirmPasswordFocus.unfocus();
+                    FocusScope.of(context).requestFocus(_referralFocus);
                   },
                   validator: _validateConfirmPassword,
+                ),
+                const SizedBox(height: SangakDimens.spacing16),
+                // Referral Code field
+                SangakTextField(
+                  label: l10n.invitationCode,
+                  hintText: l10n.invitationCodeOptional,
+                  controller: _invitationCodeController,
+                  focusNode: _referralFocus,
+                  leadingIcon: Icons.card_giftcard,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: isButtonDisabled ? null : _register,
                 ),
                 const SizedBox(height: SangakDimens.spacing16),
                 // Terms agreement checkbox

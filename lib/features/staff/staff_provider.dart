@@ -1,26 +1,22 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:vibration/vibration.dart';
 import '../../models/order.dart';
 import '../../services/order_repository.dart';
+import '../../services/alert_service.dart';
 
 final staffOrdersProvider = StateNotifierProvider<StaffOrdersNotifier, AsyncValue<List<OrderModel>>>((ref) {
   final repository = ref.read(sangakOrderRepositoryProvider);
-  return StaffOrdersNotifier(repository);
+  final alertService = ref.read(alertServiceProvider);
+  return StaffOrdersNotifier(repository, alertService);
 });
 
 class StaffOrdersNotifier extends StateNotifier<AsyncValue<List<OrderModel>>> {
   final OrderRepository _repo;
+  final AlertService _alertService;
   StreamSubscription? _subscription;
   final Set<String> _notifiedOrderIds = {};
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  Timer? _debounceTimer;
 
-  StaffOrdersNotifier(this._repo) : super(const AsyncValue.loading()) {
-    // AudioPlayers 6.x defaults to 'assets/' prefix. We use 'lib/assets/'
-    _audioPlayer.audioCache.prefix = '';
+  StaffOrdersNotifier(this._repo, this._alertService) : super(const AsyncValue.loading()) {
     _init();
   }
 
@@ -60,30 +56,12 @@ class StaffOrdersNotifier extends StateNotifier<AsyncValue<List<OrderModel>>> {
   }
 
   void _triggerAlert() {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 600), () async {
-      try {
-        debugPrint('🔔 [STAFF] New order alert triggered!');
-        // AudioPlayers 6.x: AssetSource path relative to prefix.
-        // We set prefix to empty, so we use the full asset path registered in pubspec.
-        await _audioPlayer.play(
-          AssetSource('lib/assets/audio/sangak_chime.mp3'), 
-          volume: 1.0,
-        );
-        if (await Vibration.hasVibrator()) {
-          Vibration.vibrate(duration: 500);
-        }
-      } catch (e) {
-        debugPrint('🚨 [STAFF] Audio alert failed: $e');
-      }
-    });
+    _alertService.triggerNewOrderAlert();
   }
 
   @override
   void dispose() {
     _subscription?.cancel();
-    _debounceTimer?.cancel();
-    _audioPlayer.dispose();
     super.dispose();
   }
 }

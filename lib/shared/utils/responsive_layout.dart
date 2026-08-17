@@ -5,13 +5,19 @@ import 'package:flutter/material.dart';
 /// Provides a consistent way to handle adaptive layouts across Mobile, Web, and Desktop.
 class ResponsiveLayout extends StatelessWidget {
   final Widget child;
-  final double maxWidth;
+  final double? maxWidth;
 
   const ResponsiveLayout({
     super.key,
     required this.child,
-    this.maxWidth = 600.0, // Standard max width for a mobile-first app on desktop
+    this.maxWidth,
   });
+
+  /// Standard max width for a mobile-first app on desktop
+  static const double mobileMaxWidth = 600.0;
+
+  /// Max width for desktop workstation interfaces
+  static const double workstationMaxWidth = 1440.0;
 
   /// Static helper to check if the screen is "large"
   static bool isLargeScreen(BuildContext context) {
@@ -20,17 +26,20 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine the constraint: use provided maxWidth or default to mobileMaxWidth
+    final constraint = maxWidth ?? mobileMaxWidth;
+
     return Container(
-      color: const Color(0xFFFBF6EE), // Inlined SangakColors.background to fix import issue
+      color: const Color(0xFFFDFCF8), // Natural Paper (matching Sangak Theme)
       child: Center(
         child: Container(
           decoration: BoxDecoration(
-            boxShadow: isLargeScreen(context) 
+            boxShadow: isLargeScreen(context) && constraint < double.infinity
               ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 40, offset: const Offset(0, 4))]
               : null,
           ),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
+            constraints: BoxConstraints(maxWidth: constraint),
             child: child,
           ),
         ),

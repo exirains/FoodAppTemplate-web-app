@@ -7,13 +7,13 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../models/order.dart';
 import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/cancel_order_dialog.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
+import '../../services/order_repository.dart';
+import '../../services/analytics_service.dart';
 import '../auth/auth_provider.dart';
-import '../admin/admin_provider.dart';
-import 'delivery_dashboard_screen.dart';
+import 'delivery_provider.dart';
 
 class DeliveryOrderDetailScreen extends ConsumerStatefulWidget {
   final String orderId;
@@ -27,73 +27,21 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
   bool _isUpdating = false;
 
   Future<void> _updateStatus(OrderModel order, OrderStatus newStatus) async {
-    final user = ref.read(authProvider).asData?.value;
-    if (user == null) return;
     final l10n = AppLocalizations.of(context);
-
     setState(() => _isUpdating = true);
     try {
-      if (order.assignedDeliveryPerson == null) {
-         debugPrint('Assigning order to driver: ${user.id}');
-         final success = await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(
-           order.id, 
-           user.id, 
-           ifUnassigned: true,
-         );
-
-         if (!success) {
-           if (mounted) SangakToast.show(context, l10n.orderAlreadyAssigned);
-           ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
-           return;
-         }
-      }
-
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
-        orderId: widget.orderId,
-        status: newStatus,
-        changedBy: user.id,
-      );
-      
-      // Force refresh of the order data to ensure UI knows about assignment
-      await ref.read(sangakOrderRepositoryProvider).getAllOrders();
-      ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
-      ref.invalidate(availableOrdersProvider);
-      ref.invalidate(myActiveDeliveriesProvider);
-      
+      await ref.read(deliveryDashboardProvider.notifier).pickupOrder(order.id);
       if (mounted) {
         SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
-        if (newStatus == OrderStatus.delivered) {
-          Navigator.pop(context);
-        }
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, l10n.errorOccurred);
-    } finally {
-      if (mounted) setState(() => _isUpdating = false);
-    }
-  }
-
-  Future<void> _cancelOrder(String reason) async {
-    final user = ref.read(authProvider).asData?.value;
-    if (user == null) return;
-
-    setState(() => _isUpdating = true);
-    try {
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
-        orderId: widget.orderId,
-        status: OrderStatus.cancelled,
-        changedBy: user.id,
-      );
-      
       if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, l10n.orderCancelled);
-        ref.invalidate(availableOrdersProvider);
-        ref.invalidate(myActiveDeliveriesProvider);
-        Navigator.pop(context);
+        String msg = e.toString();
+        if (msg.contains('orderAlreadyAssigned')) {
+          msg = l10n.orderAlreadyAssigned;
+        }
+        SangakToast.show(context, msg);
       }
-    } catch (e) {
-      if (mounted) SangakToast.show(context, AppLocalizations.of(context).errorOccurred);
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -122,27 +70,41 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       return;
     }
     
-    // Remove spaces and keep +, digits
     final sanitizedPhone = phone.replaceAll(RegExp(r'[^+\d]'), '');
     final url = Uri.parse('tel:$sanitizedPhone');
     
-    debugPrint('📱 Attempting to call: $sanitizedPhone');
-    
     try {
-      // Force launch without pre-checking canLaunchUrl as system schemes
-      // like tel: are sometimes hidden from query checks but always available
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
-      debugPrint('🚨 Call failed: $e');
       if (mounted) SangakToast.show(context, l10n.couldNotOpenPhoneDialer);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final orderAsync = ref.watch(deliveryOrderDetailProvider(widget.orderId));
+    final state = ref.watch(deliveryDashboardProvider);
+    final order = [...state.availableOrders, ...state.myTasks].firstWhere(
+      (o) => o.id == widget.orderId,
+      orElse: () => OrderModel(
+        id: widget.orderId,
+        userId: '',
+        status: OrderStatus.pending,
+        addressSnapshot: {},
+        paymentMethod: '',
+        totalPrice: 0,
+        createdAt: DateTime.now(),
+      ),
+    );
+    
     final l10n = AppLocalizations.of(context);
     final lang = ref.watch(localeProvider).languageCode;
+
+    if (order.userId.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -150,55 +112,43 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         title: Text(l10n.deliveryDetails),
         elevation: 0,
       ),
-      body: orderAsync.when(
-        data: (order) {
-          if (order == null) return Center(child: Text(l10n.noProductsFound));
-
-          return Column(
-            children: [
-              _buildStatusBanner(context, order),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(SangakDimens.spacing24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfoSection(
-                        context,
-                        title: l10n.customer,
-                        icon: Icons.person_outline,
-                        child: _buildCustomerCard(context, order),
-                      ),
-                      const SizedBox(height: 24),
-                      _buildInfoSection(
-                        context,
-                        title: l10n.deliveryAddressLabel,
-                        icon: Icons.location_on_outlined,
-                        child: _buildAddressCard(context, order, l10n),
-                      ),
-                      const SizedBox(height: 24),
-                      _buildInfoSection(
-                        context,
-                        title: l10n.orderItemsLabel,
-                        icon: Icons.shopping_basket_outlined,
-                        child: _buildItemsCard(context, order, lang, l10n),
-                      ),
-                      const SizedBox(height: 100),
-                    ],
+      body: Column(
+        children: [
+          _buildStatusBanner(context, order),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInfoSection(
+                    context,
+                    title: l10n.customer,
+                    icon: Icons.person_outline,
+                    child: _buildCustomerCard(context, order),
                   ),
-                ),
+                  const SizedBox(height: 24),
+                  _buildInfoSection(
+                    context,
+                    title: l10n.deliveryAddressLabel,
+                    icon: Icons.location_on_outlined,
+                    child: _buildAddressCard(context, order, l10n),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildInfoSection(
+                    context,
+                    title: l10n.orderItemsLabel,
+                    icon: Icons.shopping_basket_outlined,
+                    child: _buildItemsCard(context, order, lang, l10n),
+                  ),
+                  const SizedBox(height: 100),
+                ],
               ),
-            ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, stack) => Center(child: Text(l10n.errorOccurred)),
+            ),
+          ),
+        ],
       ),
-      bottomSheet: orderAsync.when(
-        data: (order) => order != null ? _buildActions(context, order, l10n) : null,
-        loading: () => null,
-        error: (error, stack) => null,
-      ),
+      bottomSheet: _buildActions(context, order, l10n),
     );
   }
 
@@ -341,7 +291,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           ),
           const SizedBox(height: 4),
           Text(
-            '${l10n.building}: ${addr['building_number']} • ${l10n.floor}: ${addr['floor']} • ${l10n.door}: ${addr['door_number']}',
+            '${l10n.building}: ${addr['building_number'] ?? '-'} • ${l10n.floor}: ${addr['floor'] ?? '-'} • ${l10n.door}: ${addr['door_number'] ?? '-'}',
             style: SangakTypography.bodySmall(context),
           ),
           if (deliveryNote != null && deliveryNote.isNotEmpty) ...[
@@ -415,14 +365,6 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
             ),
           )),
           const Divider(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.deliveryFeeLabel, style: SangakTypography.bodySmall(context)),
-              Text(SangakNumberFormatter.formatCurrency(15.0, lang), style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -517,52 +459,21 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       final pin = controller.text;
       setState(() => _isUpdating = true);
       try {
-        final user = ref.read(authProvider).asData?.value;
-        if (user == null) return;
-
-        // Fetch the ABSOLUTE LATEST state from the provider to avoid race conditions
-        final latestOrder = ref.read(deliveryOrderDetailProvider(widget.orderId)).value;
-        if (latestOrder == null) return;
-
-        // Auto-assign if missing before confirmation
-        if (latestOrder.assignedDeliveryPerson == null) {
-          debugPrint('🚀 [ADMIN/DRIVER] Auto-assigning unassigned order to: ${user.id}');
-          await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(
-            latestOrder.id, 
-            user.id, 
-            ifUnassigned: true,
-          );
-        }
-
         await ref.read(sangakOrderRepositoryProvider).confirmDelivery(
-          orderId: widget.orderId,
+          orderId: order.id,
           pin: pin,
         );
         
-        ref.invalidate(availableOrdersProvider);
-        ref.invalidate(myActiveDeliveriesProvider);
-        ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
-        
+        // Log delivery completion
+        ref.read(analyticsServiceProvider).logDeliveryCompleted(orderId: order.id);
+
         if (mounted) {
-          final l10n = AppLocalizations.of(context);
           SangakToast.show(context, l10n.deliveredStep);
           Navigator.pop(context);
         }
       } catch (e) {
         if (mounted) {
-          final l10n = AppLocalizations.of(context);
-          final errorStr = e.toString();
-          String message = l10n.errorOccurred;
-          
-          if (errorStr.contains('Not authorized')) {
-            message = 'Order must be assigned to you first. Please pick it up from the dashboard.';
-          } else if (errorStr.contains('Incorrect PIN')) {
-            message = l10n.invalidVerificationCode;
-          }
-          
-          SangakToast.show(context, message);
-          // Force refresh to fix identity issue
-          ref.invalidate(deliveryOrderDetailProvider(widget.orderId));
+          SangakToast.show(context, l10n.errorOccurred);
         }
       } finally {
         if (mounted) setState(() => _isUpdating = false);
@@ -574,17 +485,13 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     Widget? mainAction;
     final currentUser = ref.read(authProvider).asData?.value;
     final bool isAssignedToMe = order.assignedDeliveryPerson == currentUser?.id;
-    final bool isUnassigned = order.assignedDeliveryPerson == null;
 
-    if (order.status == OrderStatus.outForDelivery) {
-      // Allow "Mark Delivered" if assigned to me OR if unassigned (Claim & Deliver)
+    if (order.status == OrderStatus.outForDelivery && isAssignedToMe) {
       mainAction = Expanded(
         child: SangakButton.primary(
-          label: isUnassigned ? 'CLAIM & DELIVER' : l10n.markDelivered,
-          backgroundColor: isUnassigned ? SangakColors.primary : SangakColors.success,
-          onPressed: (isAssignedToMe || isUnassigned) ? () => _showVerificationDialog(order) : null,
+          label: l10n.markDelivered,
+          onPressed: () => _showVerificationDialog(order),
           isLoading: _isUpdating,
-          leading: (!isAssignedToMe && !isUnassigned) ? const Icon(Icons.lock_outline, size: 16) : null,
         ),
       );
     } else if (order.status == OrderStatus.ready) {
@@ -609,21 +516,6 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       child: SafeArea(
         child: Row(
           children: [
-            SizedBox(
-              width: 56,
-              height: 56,
-              child: SangakButton.outlined(
-                label: '',
-                icon: Icons.cancel_outlined,
-                foregroundColor: SangakColors.error,
-                borderColor: SangakColors.error,
-                onPressed: () => CancelOrderDialog.show(
-                  context, 
-                  onConfirm: (reason) => _cancelOrder(reason),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
             mainAction,
           ],
         ),

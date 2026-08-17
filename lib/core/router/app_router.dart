@@ -33,6 +33,7 @@ import '../../features/delivery/delivery_history_screen.dart';
 import '../../features/loyalty/loyalty_center_screen.dart';
 import '../../features/auth/profile_provider.dart';
 import '../../features/auth/auth_provider.dart';
+import '../../services/analytics_service.dart';
 import '../../models/bread.dart';
 import '../../main.dart';
 import 'router_notifier.dart';
@@ -68,6 +69,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
     refreshListenable: notifier,
+    observers: [AnalyticsService.observer],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
       final profileAsync = ref.read(userProfileProvider);

@@ -70,7 +70,14 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final items = widget.order.items ?? [];
+    final isWide = MediaQuery.of(context).size.width > 600;
     
+    // Responsive Dimensions
+    final padding = isWide ? 20.0 : 24.0;
+    final actionHeight = isWide ? 64.0 : 72.0;
+    final titleSize = isWide ? 20.0 : 24.0;
+    final itemTitleSize = isWide ? 18.0 : 22.0;
+
     Widget card = Container(
       decoration: BoxDecoration(
         color: SangakColors.surface,
@@ -86,7 +93,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(padding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -98,6 +105,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       style: SangakTypography.h2(context).copyWith(
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
+                        fontSize: titleSize,
                       ),
                     ),
                     if (widget.isNew)
@@ -123,6 +131,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                   _formatTime(widget.order.createdAt, l10n),
                   style: SangakTypography.h3(context).copyWith(
                     color: SangakColors.primary,
+                    fontSize: isWide ? 16 : 20,
                   ),
                 ),
               ],
@@ -131,58 +140,58 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
           const Divider(height: 1),
           
           // Items
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: items.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: SangakColors.ink.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '${item.quantity}x',
-                        style: SangakTypography.h2(context).copyWith(
-                          color: SangakColors.ink,
-                          fontWeight: FontWeight.bold,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(padding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items.map((item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: SangakColors.ink.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${item.quantity}x',
+                          style: SangakTypography.title(context).copyWith(
+                            color: SangakColors.ink,
+                            fontWeight: FontWeight.bold,
+                            fontSize: isWide ? 14 : 18,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.nameSnapshot,
-                            style: SangakTypography.h2(context).copyWith(
-                              fontSize: 22,
-                            ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          item.nameSnapshot,
+                          style: SangakTypography.h3(context).copyWith(
+                            fontSize: itemTitleSize,
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )).toList(),
+                    ],
+                  ),
+                )).toList(),
+              ),
             ),
           ),
           
+          const Divider(height: 1),
+          
           // Actions
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            padding: EdgeInsets.all(padding),
             child: Row(
               children: [
                 // Quick Cancel
                 SizedBox(
-                  width: 72,
-                  height: 72,
+                  width: actionHeight,
+                  height: actionHeight,
                   child: SangakButton.outlined(
                     label: '',
                     icon: Icons.close_rounded,
@@ -194,12 +203,12 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 
                 // Primary Action
                 Expanded(
                   child: SizedBox(
-                    height: 72,
+                    height: actionHeight,
                     child: _buildActionButton(l10n),
                   ),
                 ),

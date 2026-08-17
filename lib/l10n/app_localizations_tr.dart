@@ -609,13 +609,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get outForDelivery => 'Yolda';
 
   @override
-  String get confirmPickup => 'Teslim Almayı Onayla';
+  String get confirmPickup => 'Alımı Onayla';
 
   @override
   String get openDetails => 'Detayları Aç';
 
   @override
-  String get markDelivered => 'Teslim Edildi';
+  String get markDelivered => 'Teslim Edildi İşaretle';
 
   @override
   String get available => 'Mevcut';
@@ -691,7 +691,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get confirmPickupMessage =>
-      'Bu siparişi teslim alıp dağıtıma başlamak istediğinizden emin misiniz?';
+      'Bu siparişi almak üzeresiniz. Onaylandıktan sonra teslimattan siz sorumlu olacaksınız.';
 
   @override
   String get acceptAndConfirm => 'Kabul Et ve Onayla';
@@ -1421,6 +1421,105 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get approve => 'Onayla';
+
+  @override
+  String get invitationCode => 'Davet Kodu';
+
+  @override
+  String get invitationCodeOptional => 'Davet Kodu (İsteğe Bağlı)';
+
+  @override
+  String invitedBy(Object name) {
+    return '$name tarafından davet edildiniz';
+  }
+
+  @override
+  String get inviteFriends => 'Arkadaşlarını Davet Et';
+
+  @override
+  String get copyCode => 'Kodu Kopyala';
+
+  @override
+  String get shareCode => 'Kodu Paylaş';
+
+  @override
+  String get referralReward => 'Davet Ödülü';
+
+  @override
+  String get successfulReferrals => 'Başarılı Davetler';
+
+  @override
+  String get friendsInvited => 'Davet Edilen Arkadaşlar';
+
+  @override
+  String get referralPoints => 'Kazanılan Puan';
+
+  @override
+  String get invalidInvitationCode => 'Geçersiz davet kodu';
+
+  @override
+  String get invitationCodeApplied => 'Davet kodu uygulandı!';
+
+  @override
+  String get invitationReward => 'Davet Ödülü';
+
+  @override
+  String get referralRewardNotification => 'Davet ödülünüz hesabınıza eklendi!';
+
+  @override
+  String inviteFriendMessage(Object code) {
+    return 'Fırından yeni çıkmış sıcacık taze Sangak\'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nUygulamayı indir: https://sangak.tr\n\nDavet kodum:\n$code';
+  }
+
+  @override
+  String get copySuccess => 'Kod panoya kopyalandı!';
+
+  @override
+  String get referralSystemTitle => 'Davet Et ve Kazan';
+
+  @override
+  String get referralSystemDesc =>
+      'Sangak\'a bir arkadaşını davet et ve Sadakat Puanı kazan.';
+
+  @override
+  String get referralStatusPending => 'Beklemede';
+
+  @override
+  String get referralStatusRewarded => 'Ödüllendirildi';
+
+  @override
+  String get referralStats => 'Davet İstatistikleri';
+
+  @override
+  String get referralSectionTitle => 'Ödülleriniz';
+
+  @override
+  String get invitationCodeLabel => 'Davet kodunuz';
+
+  @override
+  String newOrdersAvailable(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count YENİ SİPARİŞ MEVCUT',
+      one: '1 YENİ SİPARİŞ MEVCUT',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickUpOrder => 'Siparişi Al';
+
+  @override
+  String get openInMaps => 'Haritada Aç';
+
+  @override
+  String get newSangakOrder => 'Yeni Sangak Siparişi';
+
+  @override
+  String orderIsReadyForPickup(Object number) {
+    return '#$number nolu sipariş alınmaya hazır.';
+  }
 
   @override
   String get deliverySuccessMessage =>

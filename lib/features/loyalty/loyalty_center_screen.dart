@@ -11,6 +11,7 @@ import '../auth/profile_provider.dart';
 import 'loyalty_provider.dart';
 import '../../models/reward.dart';
 import '../../services/loyalty_repository.dart';
+import '../profile/widgets/referral_section.dart';
 
 class LoyaltyCenterScreen extends ConsumerWidget {
   const LoyaltyCenterScreen({super.key});
@@ -46,7 +47,10 @@ class LoyaltyCenterScreen extends ConsumerWidget {
               
               _buildProgressSection(context, loyaltyAsync, l10n),
               const SizedBox(height: 40),
-              
+
+              const ReferralSection(),
+              const SizedBox(height: 40),
+
               Text(l10n.rewards, style: SangakTypography.h3(context)),
               const SizedBox(height: 16),
               _buildRewardsGrid(context, ref, rewardsAsync, loyaltyAsync, l10n),

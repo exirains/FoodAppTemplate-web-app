@@ -23,6 +23,7 @@ import '../auth/profile_provider.dart';
 import '../loyalty/loyalty_provider.dart';
 import '../../features/home/home_provider.dart';
 import '../orders/orders_provider.dart';
+import 'widgets/referral_section.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -355,6 +356,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 12),
             _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () => context.push('/payment-selection?from=profile'), context),
             
+            const SizedBox(height: 12),
+            // Referral Section
+            const ReferralSection(),
+
             const SizedBox(height: 48),
             SangakButton.outlined(
               label: l10n.signOut,

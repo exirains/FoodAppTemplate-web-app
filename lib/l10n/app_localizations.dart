@@ -1267,7 +1267,7 @@ abstract class AppLocalizations {
   /// No description provided for @markDelivered.
   ///
   /// In en, this message translates to:
-  /// **'Mark as Delivered'**
+  /// **'Mark Delivered'**
   String get markDelivered;
 
   /// No description provided for @available.
@@ -1417,7 +1417,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPickupMessage.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to pick up this order and start delivery?'**
+  /// **'You are about to take this order. Once confirmed, you will be responsible for the delivery.'**
   String get confirmPickupMessage;
 
   /// No description provided for @acceptAndConfirm.
@@ -2805,6 +2805,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Approve'**
   String get approve;
+
+  /// No description provided for @invitationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation Code'**
+  String get invitationCode;
+
+  /// No description provided for @invitationCodeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation Code (Optional)'**
+  String get invitationCodeOptional;
+
+  /// No description provided for @invitedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited by {name}'**
+  String invitedBy(Object name);
+
+  /// No description provided for @inviteFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Friends'**
+  String get inviteFriends;
+
+  /// No description provided for @copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Code'**
+  String get copyCode;
+
+  /// No description provided for @shareCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Code'**
+  String get shareCode;
+
+  /// No description provided for @referralReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Reward'**
+  String get referralReward;
+
+  /// No description provided for @successfulReferrals.
+  ///
+  /// In en, this message translates to:
+  /// **'Successful Referrals'**
+  String get successfulReferrals;
+
+  /// No description provided for @friendsInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends Invited'**
+  String get friendsInvited;
+
+  /// No description provided for @referralPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Earned'**
+  String get referralPoints;
+
+  /// No description provided for @invalidInvitationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid invitation code'**
+  String get invalidInvitationCode;
+
+  /// No description provided for @invitationCodeApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation code applied!'**
+  String get invitationCodeApplied;
+
+  /// No description provided for @invitationReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation Reward'**
+  String get invitationReward;
+
+  /// No description provided for @referralRewardNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Your referral reward has been added!'**
+  String get referralRewardNotification;
+
+  /// No description provided for @inviteFriendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nDownload the app: https://sangak.tr\n\nMy Invite Code:\n{code}'**
+  String inviteFriendMessage(Object code);
+
+  /// No description provided for @copySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied to clipboard!'**
+  String get copySuccess;
+
+  /// No description provided for @referralSystemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer & Earn'**
+  String get referralSystemTitle;
+
+  /// No description provided for @referralSystemDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite a friend to Sangak and earn Loyalty Points.'**
+  String get referralSystemDesc;
+
+  /// No description provided for @referralStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get referralStatusPending;
+
+  /// No description provided for @referralStatusRewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewarded'**
+  String get referralStatusRewarded;
+
+  /// No description provided for @referralStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Stats'**
+  String get referralStats;
+
+  /// No description provided for @referralSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rewards'**
+  String get referralSectionTitle;
+
+  /// No description provided for @invitationCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your invitation code'**
+  String get invitationCodeLabel;
+
+  /// No description provided for @newOrdersAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 NEW ORDER AVAILABLE} other{{count} NEW ORDERS AVAILABLE}}'**
+  String newOrdersAvailable(num count);
+
+  /// No description provided for @pickUpOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Up Order'**
+  String get pickUpOrder;
+
+  /// No description provided for @openInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Maps'**
+  String get openInMaps;
+
+  /// No description provided for @newSangakOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New Sangak Order'**
+  String get newSangakOrder;
+
+  /// No description provided for @orderIsReadyForPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Order #{number} is ready for pickup.'**
+  String orderIsReadyForPickup(Object number);
 
   /// No description provided for @deliverySuccessMessage.
   ///

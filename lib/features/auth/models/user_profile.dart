@@ -20,7 +20,7 @@ class UserProfile {
     required this.email,
     this.fullName,
     this.phoneNumber,
-    this.role = 'customer',
+    required this.role,
     this.phoneVerified = false,
     this.isActive = true,
     this.currentStreak = 0,
@@ -73,13 +73,14 @@ class UserProfile {
   }
 
   /// Convert to JSON for API calls
-  Map<String, dynamic> toJson() {
+  /// [includeRole] should only be true for intentional admin overrides.
+  Map<String, dynamic> toJson({bool includeRole = false}) {
     return {
       'id': id,
       'email': email,
       'full_name': fullName,
       'phone': phoneNumber, // Standardized to 'phone' for DB
-      'role': role,
+      if (includeRole) 'role': role,
       'phone_verified': phoneVerified,
       'is_active': isActive,
       'current_streak': currentStreak,

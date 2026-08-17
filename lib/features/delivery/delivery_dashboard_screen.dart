@@ -15,73 +15,9 @@ import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/sangak_empty_states.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../services/supabase_service.dart';
-import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
-import '../admin/admin_provider.dart';
 import '../../shared/widgets/sangak_back_handler.dart';
-
-final availableOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
-  ref.watch(authProvider);
-  final repo = ref.read(sangakOrderRepositoryProvider);
-  return repo.watchAvailableOrders().handleError((error) {
-    debugPrint('🚨 Realtime Available Orders Error: $error');
-    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
-      Future.delayed(const Duration(seconds: 2), () => ref.invalidateSelf());
-    }
-  });
-});
-
-final myActiveDeliveriesProvider = StreamProvider<List<OrderModel>>((ref) {
-  final user = ref.watch(authProvider).asData?.value;
-  if (user == null) return Stream.value([]);
-  final repo = ref.read(sangakOrderRepositoryProvider);
-  return repo.watchDriverOrders(user.id).handleError((error) {
-    debugPrint('🚨 Realtime Active Deliveries Error: $error');
-    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
-      Future.delayed(const Duration(seconds: 2), () => ref.invalidateSelf());
-    }
-  });
-});
-
-final deliveryOrderDetailProvider = StreamProvider.family<OrderModel?, String>((ref, orderId) {
-  ref.watch(authProvider);
-  final repo = ref.read(sangakOrderRepositoryProvider);
-  return SupabaseService.client
-      .from('orders')
-      .stream(primaryKey: ['id'])
-      .eq('id', orderId)
-      .asyncMap((_) async => await repo.getOrderById(orderId))
-      .handleError((error) {
-        debugPrint('🚨 Realtime Order Detail Error: $error');
-        if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
-          Future.delayed(const Duration(seconds: 2), () => ref.invalidateSelf());
-        }
-      });
-});
-
-final incomingOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
-  ref.watch(authProvider);
-  final repo = ref.read(sangakOrderRepositoryProvider);
-  return repo.watchIncomingOrders().handleError((error) {
-    debugPrint('🚨 Realtime Incoming Orders Error: $error');
-    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
-      Future.delayed(const Duration(seconds: 2), () => ref.invalidateSelf());
-    }
-  });
-});
-
-final myDeliveryHistoryProvider = StreamProvider<List<OrderModel>>((ref) {
-  final user = ref.watch(authProvider).asData?.value;
-  if (user == null) return Stream.value([]);
-  final repo = ref.read(sangakOrderRepositoryProvider);
-  return repo.watchDriverHistory(user.id).handleError((error) {
-    debugPrint('🚨 Realtime Delivery History Error: $error');
-    if (error.toString().contains('InvalidJWTToken') || error.toString().contains('expired')) {
-      Future.delayed(const Duration(seconds: 2), () => ref.invalidateSelf());
-    }
-  });
-});
+import 'delivery_provider.dart';
 
 class DeliveryDashboardScreen extends ConsumerStatefulWidget {
   const DeliveryDashboardScreen({super.key});
@@ -92,88 +28,129 @@ class DeliveryDashboardScreen extends ConsumerStatefulWidget {
 
 class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final availableCount = ref.watch(availableOrdersProvider).value?.length ?? 0;
-    final incomingCount = ref.watch(incomingOrdersProvider).value?.length ?? 0;
-    final activeCount = ref.watch(myActiveDeliveriesProvider).value?.length ?? 0;
+    final state = ref.watch(deliveryDashboardProvider);
+    final availableCount = state.availableOrders.length;
+    final myTasksCount = state.myTasks.length;
 
     return RoleGuard(
       allowedRoles: const ['admin', 'delivery'],
       child: SangakBackHandler(
         child: Scaffold(
           backgroundColor: SangakColors.background,
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverAppBar(
-                pinned: true,
-                floating: true,
-                expandedHeight: 80,
-                backgroundColor: SangakColors.background,
-                surfaceTintColor: Colors.transparent,
-                centerTitle: true,
-                title: Text(l10n.deliveryPanel, style: SangakTypography.h2(context)),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      final userProfile = ref.read(userProfileProvider).asData?.value;
-                      if (userProfile != null) RoleSwitcher.show(context, userProfile.role);
-                    },
-                    icon: const Icon(Icons.swap_horiz_rounded, color: SangakColors.ink),
+          body: Column(
+            children: [
+              // Custom Top App Bar
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Row(
+                    children: [
+                      Text(l10n.deliveryPanel, style: SangakTypography.h2(context)),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          final userProfile = ref.read(userProfileProvider).asData?.value;
+                          if (userProfile != null) RoleSwitcher.show(context, userProfile.role);
+                        },
+                        icon: const Icon(Icons.swap_horiz_rounded),
+                      ),
+                      IconButton(
+                        onPressed: () => context.push('/delivery/history'),
+                        icon: const Icon(Icons.history_rounded, color: SangakColors.primary),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () => context.push('/delivery/history'),
-                    icon: const Icon(Icons.history_rounded, color: SangakColors.primary, size: 26),
-                  ),
-                  const SizedBox(width: 12),
-                ],
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(48),
+                ),
+              ),
+
+              // Top Alert Bar
+              if (availableCount > 0)
+                GestureDetector(
+                  onTap: () {
+                    _tabController.animateTo(0);
+                    _scrollToTop();
+                  },
                   child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: SangakColors.border, width: 1)),
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: SangakColors.primary,
+                      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                      boxShadow: SangakDimens.shadowMedium,
                     ),
-                    child: TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.center,
-                      labelColor: SangakColors.primary,
-                      unselectedLabelColor: SangakColors.inkLight,
-                      indicatorColor: SangakColors.primary,
-                      indicatorWeight: 3,
-                      labelStyle: SangakTypography.title(context).copyWith(fontSize: 13),
-                      tabs: [
-                        _buildTab(l10n.available, availableCount),
-                        _buildTab(l10n.statusPreparing, incomingCount),
-                        _buildTab(l10n.myTasks, activeCount),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.notifications_active, color: Colors.white, size: 20),
+                        const SizedBox(width: 12),
+                        Text(
+                          '${l10n.newLabel.toUpperCase()} ($availableCount)',
+                          style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+                        ),
+                        const Spacer(),
+                        const Icon(Icons.arrow_upward, color: Colors.white, size: 16),
                       ],
                     ),
                   ),
                 ),
+
+              // Tabs
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: SangakColors.border, width: 1)),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: SangakColors.primary,
+                  unselectedLabelColor: SangakColors.inkLight,
+                  indicatorColor: SangakColors.primary,
+                  indicatorWeight: 3,
+                  labelStyle: SangakTypography.title(context).copyWith(fontSize: 14),
+                  tabs: [
+                    _buildTab(l10n.available.toUpperCase(), availableCount),
+                    _buildTab(l10n.myTasks.toUpperCase(), myTasksCount),
+                  ],
+                ),
+              ),
+
+              // Tab Content
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildOrderList(state.availableOrders, l10n.noOrdersForPickup, isPool: true),
+                    _buildOrderList(state.myTasks, l10n.noActiveDeliveries, isPool: false),
+                  ],
+                ),
               ),
             ],
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildPoolTab(availableOrdersProvider, l10n.noOrdersForPickup),
-                _buildPoolTab(incomingOrdersProvider, l10n.noOrdersToPrepare, isPool: false, showOnly: true),
-                _buildPoolTab(myActiveDeliveriesProvider, l10n.noActiveDeliveries, isPool: false),
-              ],
-            ),
           ),
         ),
       ),
@@ -187,16 +164,16 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
         children: [
           Text(label),
           if (count > 0) ...[
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: SangakColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
               ),
               child: Text(
                 count.toString(),
-                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: SangakColors.primary),
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SangakColors.primary),
               ),
             ),
           ],
@@ -205,34 +182,30 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
     );
   }
 
-  Widget _buildPoolTab(ProviderBase<AsyncValue<List<OrderModel>>> provider, String emptyMsg, {bool isPool = true, bool showOnly = false}) {
-    final ordersAsync = ref.watch(provider);
+  Widget _buildOrderList(List<OrderModel> orders, String emptyMsg, {required bool isPool}) {
+    final state = ref.watch(deliveryDashboardProvider);
     final l10n = AppLocalizations.of(context);
 
-    return RefreshIndicator(
-      onRefresh: () async => ref.invalidate(provider),
-      color: SangakColors.primary,
-      child: ordersAsync.when(
-        data: (orders) => orders.isEmpty
-            ? SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  width: double.infinity,
-                  child: Center(
-                    child: SangakEmptyState(title: l10n.allCaughtUp, message: emptyMsg, icon: Icons.delivery_dining_outlined),
-                  ),
-                ),
-              )
-            : ListView.separated(
-                padding: const EdgeInsets.all(24),
-                itemCount: orders.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
-                itemBuilder: (context, index) => _DeliveryOrderCard(order: orders[index], isPool: isPool, showOnly: showOnly),
-              ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, s) => Center(child: Text(l10n.errorOccurred)),
-      ),
+    if (state.isLoading && orders.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (orders.isEmpty) {
+      return Center(
+        child: SangakEmptyState(
+          title: l10n.allCaughtUp, 
+          message: emptyMsg, 
+          icon: Icons.delivery_dining_outlined,
+        ),
+      );
+    }
+
+    return ListView.separated(
+      controller: isPool ? _scrollController : null,
+      padding: const EdgeInsets.all(24),
+      itemCount: orders.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
+      itemBuilder: (context, index) => _DeliveryOrderCard(order: orders[index], isPool: isPool),
     );
   }
 }
@@ -240,8 +213,7 @@ class _DeliveryDashboardScreenState extends ConsumerState<DeliveryDashboardScree
 class _DeliveryOrderCard extends ConsumerStatefulWidget {
   final OrderModel order;
   final bool isPool;
-  final bool showOnly;
-  const _DeliveryOrderCard({required this.order, required this.isPool, this.showOnly = false});
+  const _DeliveryOrderCard({required this.order, required this.isPool});
 
   @override
   ConsumerState<_DeliveryOrderCard> createState() => _DeliveryOrderCardState();
@@ -250,29 +222,23 @@ class _DeliveryOrderCard extends ConsumerStatefulWidget {
 class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
   bool _isUpdating = false;
 
-  Future<void> _updateStatus(OrderStatus newStatus) async {
-    final user = ref.read(authProvider).asData?.value;
-    if (user == null) return;
+  Future<void> _handlePickup() async {
     final l10n = AppLocalizations.of(context);
     setState(() => _isUpdating = true);
     try {
-      if (widget.isPool) {
-        final success = await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(widget.order.id, user.id, ifUnassigned: true);
-        if (!success) {
-          if (mounted) SangakToast.show(context, l10n.orderAlreadyAssigned);
-          ref.invalidate(availableOrdersProvider);
-          return;
-        }
-      }
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(orderId: widget.order.id, status: newStatus, changedBy: user.id);
-      ref.invalidate(availableOrdersProvider);
-      ref.invalidate(myActiveDeliveriesProvider);
+      await ref.read(deliveryDashboardProvider.notifier).pickupOrder(widget.order.id);
       if (mounted) {
-        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
-        if (widget.isPool) context.push('/delivery/${widget.order.id}');
+        SangakToast.show(context, l10n.invitationCodeApplied); // Reusing a toast or just success
+        context.push('/delivery/${widget.order.id}');
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
+      if (mounted) {
+        String msg = e.toString();
+        if (msg.contains('orderAlreadyAssigned')) {
+          msg = l10n.orderAlreadyAssigned;
+        }
+        SangakToast.show(context, msg);
+      }
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -333,7 +299,11 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                        child: Icon(Icons.location_on_rounded, color: statusColor, size: 24),
+                        child: Icon(
+                          widget.isPool ? Icons.inventory_2_outlined : Icons.location_on_rounded, 
+                          color: statusColor, 
+                          size: 24
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -349,50 +319,45 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Divider(height: 1),
-                  const SizedBox(height: 16),
                   Row(
                     children: [
                       _buildMetaItem(context, Icons.shopping_bag_outlined, l10n.itemsCount(itemsCount)),
-                      const SizedBox(width: 16),
-                      _buildMetaItem(context, Icons.payments_outlined, widget.order.paymentMethod.toUpperCase()),
                       const Spacer(),
-                      Text(SangakNumberFormatter.formatCurrency(widget.order.totalPrice, ref.watch(localeProvider).languageCode), style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.w900)),
+                      Text(
+                        SangakNumberFormatter.formatCurrency(widget.order.totalPrice, ref.watch(localeProvider).languageCode), 
+                        style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.w900)
+                      ),
                     ],
                   ),
-                  if (addr['delivery_note'] != null && addr['delivery_note'].toString().isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(color: SangakColors.warning.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(8), border: Border.all(color: SangakColors.warning.withValues(alpha: 0.1))),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.sticky_note_2_outlined, size: 14, color: SangakColors.warning),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(addr['delivery_note'], style: SangakTypography.caption(context).copyWith(color: SangakColors.secondary, fontStyle: FontStyle.italic), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                        ],
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
-                        child: widget.showOnly
-                            ? SangakButton.outlined(label: l10n.openDetails, onPressed: () => context.push('/delivery/${widget.order.id}'))
-                            : widget.isPool 
-                                ? SangakButton.primary(
-                                    label: l10n.pickupOrder, 
-                                    onPressed: () => SangakConfirmDialog.show(context, title: l10n.confirmPickup, message: l10n.confirmPickupMessage, confirmLabel: l10n.pickupOrder, cancelLabel: l10n.cancel, onConfirm: () => _updateStatus(OrderStatus.outForDelivery)), 
-                                    isLoading: _isUpdating)
-                                : SangakButton.primary(label: l10n.openDetails, onPressed: () => context.push('/delivery/${widget.order.id}')),
+                        child: widget.isPool 
+                          ? SangakButton.primary(
+                              label: l10n.pickupOrder, 
+                              onPressed: () => SangakConfirmDialog.show(
+                                context, 
+                                title: l10n.confirmPickup, 
+                                message: l10n.confirmPickupMessage, 
+                                confirmLabel: l10n.pickupOrder, 
+                                cancelLabel: l10n.cancel, 
+                                onConfirm: _handlePickup,
+                              ), 
+                              isLoading: _isUpdating,
+                            )
+                          : SangakButton.primary(
+                              label: l10n.openDetails, 
+                              onPressed: () => context.push('/delivery/${widget.order.id}'),
+                            ),
                       ),
-                      const SizedBox(width: 12),
-                      Container(
-                        decoration: BoxDecoration(color: SangakColors.surface, borderRadius: BorderRadius.circular(SangakDimens.radiusM), border: Border.all(color: SangakColors.border), boxShadow: SangakDimens.shadowLow),
-                        child: IconButton(onPressed: _openNavigation, icon: const Icon(Icons.map_rounded, color: SangakColors.primary), visualDensity: VisualDensity.compact),
-                      ),
+                      if (!widget.isPool) ...[
+                        const SizedBox(width: 12),
+                        Container(
+                          decoration: BoxDecoration(color: SangakColors.surface, borderRadius: BorderRadius.circular(SangakDimens.radiusM), border: Border.all(color: SangakColors.border), boxShadow: SangakDimens.shadowLow),
+                          child: IconButton(onPressed: _openNavigation, icon: const Icon(Icons.map_rounded, color: SangakColors.primary), visualDensity: VisualDensity.compact),
+                        ),
+                      ],
                     ],
                   ),
                 ],
@@ -419,8 +384,6 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
       case OrderStatus.ready: return SangakColors.info;
       case OrderStatus.outForDelivery: return SangakColors.primary;
       case OrderStatus.delivered: return SangakColors.success;
-      case OrderStatus.preparing:
-      case OrderStatus.confirmed: return SangakColors.accent;
       default: return SangakColors.inkLight;
     }
   }
@@ -446,8 +409,6 @@ class _StatusChip extends StatelessWidget {
       case OrderStatus.ready: return SangakColors.info;
       case OrderStatus.outForDelivery: return SangakColors.primary;
       case OrderStatus.delivered: return SangakColors.success;
-      case OrderStatus.preparing:
-      case OrderStatus.confirmed: return SangakColors.accent;
       default: return SangakColors.inkLight;
     }
   }

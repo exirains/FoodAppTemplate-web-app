@@ -619,7 +619,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openDetails => 'Open Details';
 
   @override
-  String get markDelivered => 'Mark as Delivered';
+  String get markDelivered => 'Mark Delivered';
 
   @override
   String get available => 'Available';
@@ -695,7 +695,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmPickupMessage =>
-      'Are you sure you want to pick up this order and start delivery?';
+      'You are about to take this order. Once confirmed, you will be responsible for the delivery.';
 
   @override
   String get acceptAndConfirm => 'Accept & Confirm';
@@ -1433,6 +1433,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get approve => 'Approve';
+
+  @override
+  String get invitationCode => 'Invitation Code';
+
+  @override
+  String get invitationCodeOptional => 'Invitation Code (Optional)';
+
+  @override
+  String invitedBy(Object name) {
+    return 'Invited by $name';
+  }
+
+  @override
+  String get inviteFriends => 'Invite Friends';
+
+  @override
+  String get copyCode => 'Copy Code';
+
+  @override
+  String get shareCode => 'Share Code';
+
+  @override
+  String get referralReward => 'Referral Reward';
+
+  @override
+  String get successfulReferrals => 'Successful Referrals';
+
+  @override
+  String get friendsInvited => 'Friends Invited';
+
+  @override
+  String get referralPoints => 'Points Earned';
+
+  @override
+  String get invalidInvitationCode => 'Invalid invitation code';
+
+  @override
+  String get invitationCodeApplied => 'Invitation code applied!';
+
+  @override
+  String get invitationReward => 'Invitation Reward';
+
+  @override
+  String get referralRewardNotification =>
+      'Your referral reward has been added!';
+
+  @override
+  String inviteFriendMessage(Object code) {
+    return 'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nDownload the app: https://sangak.tr\n\nMy Invite Code:\n$code';
+  }
+
+  @override
+  String get copySuccess => 'Code copied to clipboard!';
+
+  @override
+  String get referralSystemTitle => 'Refer & Earn';
+
+  @override
+  String get referralSystemDesc =>
+      'Invite a friend to Sangak and earn Loyalty Points.';
+
+  @override
+  String get referralStatusPending => 'Pending';
+
+  @override
+  String get referralStatusRewarded => 'Rewarded';
+
+  @override
+  String get referralStats => 'Referral Stats';
+
+  @override
+  String get referralSectionTitle => 'Your Rewards';
+
+  @override
+  String get invitationCodeLabel => 'Your invitation code';
+
+  @override
+  String newOrdersAvailable(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count NEW ORDERS AVAILABLE',
+      one: '1 NEW ORDER AVAILABLE',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickUpOrder => 'Pick Up Order';
+
+  @override
+  String get openInMaps => 'Open in Maps';
+
+  @override
+  String get newSangakOrder => 'New Sangak Order';
+
+  @override
+  String orderIsReadyForPickup(Object number) {
+    return 'Order #$number is ready for pickup.';
+  }
 
   @override
   String get deliverySuccessMessage =>

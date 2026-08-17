@@ -100,6 +100,9 @@ class SangakApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
 
+    // Sync navigator key for push notification handling
+    NotificationService.setNavigatorKey(router.configuration.navigatorKey);
+
     return Container(
       color: const Color(0xFFFDFCF8), // Natural Paper background to avoid black flash
       child: MaterialApp.router(
@@ -116,7 +119,13 @@ class SangakApp extends ConsumerWidget {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         builder: (context, child) {
-          return ResponsiveLayout(child: child!);
+          final path = router.routeInformationProvider.value.uri.path;
+          final isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
+          
+          return ResponsiveLayout(
+            maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
+            child: child!,
+          );
         },
       ),
     );

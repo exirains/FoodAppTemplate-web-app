@@ -603,13 +603,13 @@ class AppLocalizationsFa extends AppLocalizations {
   String get outForDelivery => 'در حال ارسال';
 
   @override
-  String get confirmPickup => 'تایید تحویل گرفتن';
+  String get confirmPickup => 'تأیید تحویل';
 
   @override
   String get openDetails => 'مشاهده جزئیات';
 
   @override
-  String get markDelivered => 'تایید تحویل به مشتری';
+  String get markDelivered => 'تأیید تحویل به مشتری';
 
   @override
   String get available => 'موجود';
@@ -684,7 +684,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pickupOrder => 'تحویل گرفتن';
 
   @override
-  String get confirmPickupMessage => 'سفارش را تحویل می‌گیرید؟';
+  String get confirmPickupMessage =>
+      'شما در حال تحویل گرفتن این سفارش هستید. پس از تأیید، مسئولیت ارسال با شما خواهد بود.';
 
   @override
   String get acceptAndConfirm => 'پذیرش و تایید';
@@ -720,7 +721,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get newPrice => 'قیمت جدید';
 
   @override
-  String get myTasks => 'وظایف';
+  String get myTasks => 'کارهای من';
 
   @override
   String get assignToDelivery => 'تخصیص به پیک';
@@ -1410,6 +1411,105 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get approve => 'تأیید';
+
+  @override
+  String get invitationCode => 'کد دعوت';
+
+  @override
+  String get invitationCodeOptional => 'کد دعوت (اختیاری)';
+
+  @override
+  String invitedBy(Object name) {
+    return 'دعوت شده توسط $name';
+  }
+
+  @override
+  String get inviteFriends => 'دعوت از دوستان';
+
+  @override
+  String get copyCode => 'کپی کد';
+
+  @override
+  String get shareCode => 'اشتراک‌گذاری کد';
+
+  @override
+  String get referralReward => 'پاداش دعوت';
+
+  @override
+  String get successfulReferrals => 'دعوت‌های موفق';
+
+  @override
+  String get friendsInvited => 'دوستان دعوت شده';
+
+  @override
+  String get referralPoints => 'امتیاز کسب شده';
+
+  @override
+  String get invalidInvitationCode => 'کد دعوت نامعتبر است';
+
+  @override
+  String get invitationCodeApplied => 'کد دعوت اعمال شد!';
+
+  @override
+  String get invitationReward => 'پاداش دعوت';
+
+  @override
+  String get referralRewardNotification => 'پاداش دعوت به حساب شما اضافه شد!';
+
+  @override
+  String inviteFriendMessage(Object code) {
+    return 'هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nدانلود اپلیکیشن: https://sangak.tr\n\nکد دعوت من:\n$code';
+  }
+
+  @override
+  String get copySuccess => 'کد در حافظه کپی شد!';
+
+  @override
+  String get referralSystemTitle => 'دعوت و جایزه';
+
+  @override
+  String get referralSystemDesc =>
+      'دوستت رو به سنگک دعوت کن و امتیاز وفاداری بگیر.';
+
+  @override
+  String get referralStatusPending => 'در انتظار';
+
+  @override
+  String get referralStatusRewarded => 'جایزه داده شده';
+
+  @override
+  String get referralStats => 'آمار دعوت';
+
+  @override
+  String get referralSectionTitle => 'پاداش‌های شما';
+
+  @override
+  String get invitationCodeLabel => 'کد دعوت شما';
+
+  @override
+  String newOrdersAvailable(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سفارش جدید آماده ارسال',
+      one: '۱ سفارش جدید آماده ارسال',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickUpOrder => 'تحویل گرفتن سفارش';
+
+  @override
+  String get openInMaps => 'مشاهده روی نقشه';
+
+  @override
+  String get newSangakOrder => 'سفارش جدید سنگک';
+
+  @override
+  String orderIsReadyForPickup(Object number) {
+    return 'سفارش شماره $number آماده تحویل است.';
+  }
 
   @override
   String get deliverySuccessMessage =>
