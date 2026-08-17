@@ -119,12 +119,22 @@ class SangakApp extends ConsumerWidget {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         builder: (context, child) {
-          final path = router.routeInformationProvider.value.uri.path;
-          final isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
+          if (child == null) return const SizedBox.shrink();
+
+          // Safely determine if we are in a workstation route (staff/admin)
+          bool isWorkstation = false;
+          try {
+            // Use routeInformationProvider only if it's ready
+            final provider = router.routeInformationProvider;
+            final path = provider.value.uri.path;
+            isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
+          } catch (_) {
+            // Initializing state
+          }
           
           return ResponsiveLayout(
             maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
-            child: child!,
+            child: child,
           );
         },
       ),

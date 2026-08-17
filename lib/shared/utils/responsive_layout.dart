@@ -29,19 +29,13 @@ class ResponsiveLayout extends StatelessWidget {
     // Determine the constraint: use provided maxWidth or default to mobileMaxWidth
     final constraint = maxWidth ?? mobileMaxWidth;
 
-    return Container(
-      color: const Color(0xFFFDFCF8), // Natural Paper (matching Sangak Theme)
+    return Material(
+      color: const Color(0xFFFDFCF8), // Match Sangak Theme background
       child: Center(
         child: Container(
-          decoration: BoxDecoration(
-            boxShadow: isLargeScreen(context) && constraint < double.infinity
-              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 40, offset: const Offset(0, 4))]
-              : null,
-          ),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: constraint),
-            child: child,
-          ),
+          clipBehavior: Clip.none,
+          constraints: BoxConstraints(maxWidth: constraint),
+          child: child,
         ),
       ),
     );

@@ -153,7 +153,8 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: SangakColors.ink.withValues(alpha: 0.08),
+                          // ignore: deprecated_member_use
+                          color: SangakColors.ink.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -224,7 +225,8 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
         onPlay: (controller) => controller.repeat(reverse: true),
       ).shimmer(
         duration: 2.seconds,
-        color: SangakColors.warning.withValues(alpha: 0.1),
+        // ignore: deprecated_member_use
+        color: SangakColors.warning.withOpacity(0.1),
       ).scale(
         begin: const Offset(1.0, 1.0),
         end: const Offset(1.01, 1.01),

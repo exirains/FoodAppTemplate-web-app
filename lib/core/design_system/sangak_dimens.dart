@@ -25,7 +25,8 @@ class SangakDimens {
   // Elevations (Custom Shadow Tokens)
   static List<BoxShadow> get shadowLow => [
         BoxShadow(
-          color: const Color(0xFF2A241E).withValues(alpha: 0.04),
+          // ignore: deprecated_member_use
+          color: const Color(0xFF2A241E).withOpacity(0.04),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -33,7 +34,8 @@ class SangakDimens {
 
   static List<BoxShadow> get shadowMedium => [
         BoxShadow(
-          color: const Color(0xFF2A241E).withValues(alpha: 0.06),
+          // ignore: deprecated_member_use
+          color: const Color(0xFF2A241E).withOpacity(0.06),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -41,7 +43,8 @@ class SangakDimens {
 
   static List<BoxShadow> get shadowHigh => [
         BoxShadow(
-          color: const Color(0xFF2A241E).withValues(alpha: 0.08),
+          // ignore: deprecated_member_use
+          color: const Color(0xFF2A241E).withOpacity(0.08),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
