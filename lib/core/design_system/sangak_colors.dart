@@ -16,7 +16,7 @@ class SangakColors {
   static const Color inkLight = Color(0xFF6D675F); // Secondary Text
   static const Color border = Color(0xFFE8E4D9); // Subtle Divider/Border
   
-  // Semantic Colors
+  // Semantic ColorFs
   static const Color success = Color(0xFF919D7E); // Same as accent
   static const Color warning = Color(0xFFE2A04E); // Warm Honey
   static const Color error = Color(0xFFC95A4A); // Brick Red

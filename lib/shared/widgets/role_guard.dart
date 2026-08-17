@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangak/l10n/app_localizations.dart';
 import '../../features/auth/profile_provider.dart';
 
 class RoleGuard extends ConsumerWidget {
@@ -21,9 +22,9 @@ class RoleGuard extends ConsumerWidget {
         if (profile != null && allowedRoles.contains(profile.role)) {
           return child;
         }
-        return const Scaffold(
+        return Scaffold(
           body: Center(
-            child: Text('Unauthorized access'),
+            child: Text(AppLocalizations.of(context).unauthorized),
           ),
         );
       },
@@ -31,7 +32,7 @@ class RoleGuard extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (e, s) => Scaffold(
-        body: Center(child: Text('Error: $e')),
+        body: Center(child: Text(AppLocalizations.of(context).errorOccurred)),
       ),
     );
   }

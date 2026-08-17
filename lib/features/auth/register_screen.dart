@@ -208,7 +208,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             'full_name': name,
             'email': email,
             'phone': phone,
-            'role': 'customer',
           });
         } catch (e) {
           debugPrint('Non-critical: Error creating initial profile record: $e');

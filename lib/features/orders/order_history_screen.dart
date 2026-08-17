@@ -11,6 +11,8 @@ import '../../models/order.dart';
 import 'package:go_router/go_router.dart';
 import '../../shared/widgets/sangak_button.dart';
 import 'orders_provider.dart';
+import 'widgets/order_rating_dialog.dart';
+import '../../services/options_repository.dart';
 
 class OrderHistoryScreen extends ConsumerWidget {
   const OrderHistoryScreen({super.key});
@@ -38,10 +40,7 @@ class OrderHistoryScreen extends ConsumerWidget {
                 children: [
                   const Icon(Icons.receipt_long_outlined, size: 64, color: SangakColors.inkLight),
                   const SizedBox(height: 16),
-                  Text(
-                    l10n.noOrdersYet,
-                    style: SangakTypography.title(context),
-                  ),
+                  Text(l10n.noOrdersYet, style: SangakTypography.title(context)),
                 ],
               ),
             );
@@ -50,14 +49,11 @@ class OrderHistoryScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(SangakDimens.spacing24),
             itemCount: orders.length,
             separatorBuilder: (context, index) => const SizedBox(height: 16),
-            itemBuilder: (context, index) {
-              final order = orders[index];
-              return _OrderCard(order: order);
-            },
+            itemBuilder: (context, index) => _OrderCard(order: orders[index]),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error loading orders: $e')),
+        error: (e, _) => Center(child: Text(l10n.errorOccurred)),
       ),
     );
   }
@@ -65,17 +61,13 @@ class OrderHistoryScreen extends ConsumerWidget {
 
 class _OrderCard extends ConsumerWidget {
   final OrderModel order;
-
   const _OrderCard({required this.order});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final locale = ref.watch(localeProvider);
-    final lang = locale.languageCode;
+    final lang = ref.watch(localeProvider).languageCode;
     final dateStr = DateFormat('MMM dd, yyyy • HH:mm').format(order.createdAt.toLocal());
-    final formattedDate = SangakNumberFormatter.format(dateStr, lang);
-    final formattedOrderNumber = SangakNumberFormatter.format(order.orderNumber, lang);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -91,50 +83,34 @@ class _OrderCard extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                formattedOrderNumber,
-                style: SangakTypography.title(context).copyWith(fontSize: 16),
-              ),
+              Text(SangakNumberFormatter.format(order.orderNumber, lang), style: SangakTypography.title(context).copyWith(fontSize: 16)),
               _StatusBadge(status: order.status),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            formattedDate,
-            style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
-          ),
+          Text(SangakNumberFormatter.format(dateStr, lang), style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight)),
           const Divider(height: 24),
           if (order.items != null)
-            Column(
-              children: order.items!.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${SangakNumberFormatter.format(item.quantity, lang)}x ${item.nameSnapshot}',
-                      style: SangakTypography.bodyMedium(context),
-                    ),
-                    Text(
-                      SangakNumberFormatter.formatCurrency(item.total, lang),
-                      style: SangakTypography.title(context).copyWith(fontSize: 14),
-                    ),
-                  ],
-                ),
-              )).toList(),
-            ),
+            ...order.items!.map((item) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('${SangakNumberFormatter.format(item.quantity, lang)}x ${item.localizedName(lang)}', style: SangakTypography.bodyMedium(context)),
+                  Text(SangakNumberFormatter.formatCurrency(item.total, lang), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                ],
+              ),
+            )),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                l10n.deliveryFeeLabel,
-                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
-              ),
-              Text(
-                SangakNumberFormatter.formatCurrency(15.0, lang),
-                style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
-              ),
+              Text(l10n.deliveryFeeLabel, style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight)),
+              Consumer(builder: (context, ref, child) {
+                final options = ref.watch(appOptionsProvider).value ?? {};
+                final fee = double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0;
+                return Text(SangakNumberFormatter.formatCurrency(fee, lang), style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight));
+              }),
             ],
           ),
           const Divider(height: 24),
@@ -142,12 +118,11 @@ class _OrderCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.total, style: SangakTypography.title(context)),
-              Text(
-                SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
-                style: SangakTypography.h3(context).copyWith(color: SangakColors.primary),
-              ),
+              Text(SangakNumberFormatter.formatCurrency(order.totalPrice, lang), style: SangakTypography.h3(context).copyWith(color: SangakColors.primary)),
             ],
           ),
+          
+          // ACTIONS
           if (order.status != OrderStatus.delivered && order.status != OrderStatus.cancelled) ...[
             const SizedBox(height: 16),
             SangakButton.primary(
@@ -157,6 +132,41 @@ class _OrderCard extends ConsumerWidget {
               onPressed: () => context.push('/tracking/${order.id}'),
             ),
           ],
+          
+          if (order.status == OrderStatus.delivered) ...[
+            const SizedBox(height: 16),
+            Consumer(builder: (context, ref, child) {
+              final isRatedAsync = ref.watch(isOrderRatedProvider(order.id));
+              return isRatedAsync.when(
+                data: (isRated) => isRated 
+                    ? SangakButton.primary(
+                        label: l10n.orderInformation,
+                        icon: Icons.receipt_long_rounded,
+                        width: double.infinity,
+                        onPressed: () => context.push('/tracking/${order.id}'),
+                      )
+                    : SangakButton.outlined(
+                        label: l10n.rateOrder,
+                        icon: Icons.star_outline_rounded,
+                        width: double.infinity,
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => OrderRatingDialog(orderId: order.id),
+                        ),
+                      ),
+                loading: () => const Center(child: Padding(padding: EdgeInsets.all(8.0), child: CircularProgressIndicator(strokeWidth: 2))),
+                error: (error, stack) => SangakButton.outlined(
+                  label: l10n.rateOrder,
+                  icon: Icons.star_outline_rounded,
+                  width: double.infinity,
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => OrderRatingDialog(orderId: order.id),
+                  ),
+                ),
+              );
+            }),
+          ],
         ],
       ),
     );
@@ -165,53 +175,25 @@ class _OrderCard extends ConsumerWidget {
 
 class _StatusBadge extends StatelessWidget {
   final OrderStatus status;
-
   const _StatusBadge({required this.status});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     Color color;
-    String label = status.localizedLabel(l10n);
-
     switch (status) {
-      case OrderStatus.pending:
-        color = Colors.orange;
-        break;
-      case OrderStatus.confirmed:
-        color = Colors.cyan;
-        break;
-      case OrderStatus.preparing:
-        color = Colors.blue;
-        break;
-      case OrderStatus.ready:
-        color = Colors.teal;
-        break;
-      case OrderStatus.outForDelivery:
-        color = Colors.purple;
-        break;
-      case OrderStatus.delivered:
-        color = Colors.green;
-        break;
-      case OrderStatus.cancelled:
-        color = Colors.red;
-        break;
+      case OrderStatus.pending: color = Colors.orange; break;
+      case OrderStatus.confirmed: color = Colors.cyan; break;
+      case OrderStatus.preparing: color = Colors.blue; break;
+      case OrderStatus.ready: color = Colors.teal; break;
+      case OrderStatus.outForDelivery: color = Colors.purple; break;
+      case OrderStatus.delivered: color = Colors.green; break;
+      case OrderStatus.cancelled: color = Colors.red; break;
     }
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Text(
-        label,
-        style: SangakTypography.caption(context).copyWith(
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(SangakDimens.radiusPill), border: Border.all(color: color.withValues(alpha: 0.3))),
+      child: Text(status.localizedLabel(l10n), style: SangakTypography.caption(context).copyWith(color: color, fontWeight: FontWeight.bold)),
     );
   }
 }

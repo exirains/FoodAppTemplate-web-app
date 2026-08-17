@@ -1,41 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../services/supabase_service.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/utils/sangak_toast.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/user_role_tag.dart';
+
+enum UserSortOption { newestFirst, oldestFirst, alphabetical }
 
 final usersProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final response = await SupabaseService.client
       .from('profiles')
       .select()
-      .order('full_name');
+      .order('created_at', ascending: false);
   return (response as List).cast<Map<String, dynamic>>();
 });
 
-class UserManagementScreen extends ConsumerStatefulWidget {
+final userSearchQueryProvider = StateProvider<String>((ref) => '');
+final userRoleFilterProvider = StateProvider<String>((ref) => 'all');
+final userDisabledFilterProvider = StateProvider<bool>((ref) => false);
+final userSortOptionProvider = StateProvider<UserSortOption>((ref) => UserSortOption.newestFirst);
+
+final filteredUsersProvider = Provider<List<Map<String, dynamic>>>((ref) {
+  final usersAsync = ref.watch(usersProvider);
+  final searchQuery = ref.watch(userSearchQueryProvider).toLowerCase();
+  final roleFilter = ref.watch(userRoleFilterProvider);
+  final showDisabledOnly = ref.watch(userDisabledFilterProvider);
+  final sortOption = ref.watch(userSortOptionProvider);
+
+  return usersAsync.when(
+    data: (users) {
+      var filtered = users.where((u) {
+        final name = (u['full_name'] as String? ?? '').toLowerCase();
+        final email = (u['email'] as String? ?? '').toLowerCase();
+        final matchesSearch = name.contains(searchQuery) || email.contains(searchQuery);
+        
+        final matchesRole = roleFilter == 'all' || u['role'] == roleFilter;
+        final matchesDisabled = !showDisabledOnly || (u['is_active'] ?? true) == false;
+        
+        return matchesSearch && matchesRole && matchesDisabled;
+      }).toList();
+
+      switch (sortOption) {
+        case UserSortOption.newestFirst:
+          filtered.sort((a, b) => b['created_at'].compareTo(a['created_at']));
+          break;
+        case UserSortOption.oldestFirst:
+          filtered.sort((a, b) => a['created_at'].compareTo(b['created_at']));
+          break;
+        case UserSortOption.alphabetical:
+          filtered.sort((a, b) => (a['full_name'] ?? '').compareTo(b['full_name'] ?? ''));
+          break;
+      }
+
+      return filtered;
+    },
+    loading: () => [],
+    error: (error, stack) => [],
+  );
+});
+
+class UserManagementScreen extends ConsumerWidget {
   const UserManagementScreen({super.key});
 
   @override
-  ConsumerState<UserManagementScreen> createState() => _UserManagementScreenState();
-}
-
-class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
-  String _searchQuery = '';
-  bool _showDisabledOnly = false;
-  String _selectedRoleFilter = 'all'; // 'all', 'admin', 'staff', 'delivery', 'customer'
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final usersAsync = ref.watch(usersProvider);
+    final filteredUsers = ref.watch(filteredUsersProvider);
     final l10n = AppLocalizations.of(context);
 
     return RoleGuard(
@@ -48,23 +83,11 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
         ),
         body: Column(
           children: [
-            _buildSearchAndFilters(l10n),
+            _buildSearchAndFilters(context, ref, l10n),
             Expanded(
               child: usersAsync.when(
-                data: (users) {
-                  final filtered = users.where((u) {
-                    final name = (u['full_name'] as String? ?? '').toLowerCase();
-                    final email = (u['email'] as String? ?? '').toLowerCase();
-                    final query = _searchQuery.toLowerCase();
-                    final matchesSearch = name.contains(query) || email.contains(query);
-                    
-                    final matchesRole = _selectedRoleFilter == 'all' || u['role'] == _selectedRoleFilter;
-                    final matchesDisabled = !_showDisabledOnly || (u['is_active'] ?? true) == false;
-                    
-                    return matchesSearch && matchesRole && matchesDisabled;
-                  }).toList();
-
-                  if (filtered.isEmpty) {
+                data: (_) {
+                  if (filteredUsers.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,16 +102,15 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
 
                   return ListView.separated(
                     padding: const EdgeInsets.all(SangakDimens.spacing24),
-                    itemCount: filtered.length,
+                    itemCount: filteredUsers.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 16),
                     itemBuilder: (context, index) => _UserListItem(
-                      user: filtered[index],
-                      onRefresh: () => ref.invalidate(usersProvider),
+                      user: filteredUsers[index],
                     ),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(child: Text('Error: $error')),
+                error: (error, stack) => Center(child: Text(l10n.errorOccurred)),
               ),
             ),
           ],
@@ -97,73 +119,78 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
     );
   }
 
-  Widget _buildSearchAndFilters(AppLocalizations l10n) {
+  Widget _buildSearchAndFilters(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
     return Container(
       color: SangakColors.surface,
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
       child: Column(
         children: [
-          // Search Bar
-          Container(
-            decoration: BoxDecoration(
-              color: SangakColors.background,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: SangakColors.border),
-            ),
-            child: TextField(
-              onChanged: (v) => setState(() => _searchQuery = v),
-              decoration: InputDecoration(
-                hintText: l10n.searchByPlaceholder,
-                prefixIcon: const Icon(Icons.search_rounded, size: 20, color: SangakColors.inkLight),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: SangakColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: SangakColors.border),
+                  ),
+                  child: TextField(
+                    onChanged: (v) => ref.read(userSearchQueryProvider.notifier).state = v,
+                    decoration: InputDecoration(
+                      hintText: l10n.searchByPlaceholder,
+                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: SangakColors.inkLight),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              IconButton(
+                onPressed: () {
+                  ref.read(userSearchQueryProvider.notifier).state = '';
+                  ref.read(userRoleFilterProvider.notifier).state = 'all';
+                  ref.read(userDisabledFilterProvider.notifier).state = false;
+                  ref.read(userSortOptionProvider.notifier).state = UserSortOption.newestFirst;
+                },
+                icon: const Icon(Icons.filter_alt_off_rounded, color: SangakColors.error),
+                tooltip: l10n.resetFilters,
+              ),
+            ],
           ),
           const SizedBox(height: 16),
-          // Role & Disabled Filters
+          Row(
+            children: [
+              Expanded(
+                child: Text(l10n.categories.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
+              ),
+              IconButton(
+                icon: const Icon(Icons.sort_rounded, color: SangakColors.primary, size: 20),
+                onPressed: () => _showSortDialog(context, ref, l10n),
+                tooltip: l10n.sortBy,
+              ),
+              IconButton(
+                icon: Icon(
+                  ref.watch(userDisabledFilterProvider) ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: ref.watch(userDisabledFilterProvider) ? SangakColors.error : SangakColors.inkLight,
+                  size: 20,
+                ),
+                onPressed: () => ref.read(userDisabledFilterProvider.notifier).update((s) => !s),
+                tooltip: l10n.filterDisabledOnly,
+              ),
+            ],
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _FilterChip(
-                  label: l10n.filterAll,
-                  isSelected: _selectedRoleFilter == 'all',
-                  onTap: () => setState(() => _selectedRoleFilter = 'all'),
-                ),
+                _RoleFilterChip(label: l10n.filterAll, value: 'all'),
                 const SizedBox(width: 8),
-                _FilterChip(
-                  label: l10n.filterAdmins,
-                  isSelected: _selectedRoleFilter == 'admin',
-                  onTap: () => setState(() => _selectedRoleFilter = 'admin'),
-                ),
+                _RoleFilterChip(label: l10n.filterAdmins, value: 'admin'),
                 const SizedBox(width: 8),
-                _FilterChip(
-                  label: l10n.filterStaff,
-                  isSelected: _selectedRoleFilter == 'staff',
-                  onTap: () => setState(() => _selectedRoleFilter = 'staff'),
-                ),
+                _RoleFilterChip(label: l10n.filterStaff, value: 'staff'),
                 const SizedBox(width: 8),
-                _FilterChip(
-                  label: l10n.filterDelivery,
-                  isSelected: _selectedRoleFilter == 'delivery',
-                  onTap: () => setState(() => _selectedRoleFilter = 'delivery'),
-                ),
-                const SizedBox(width: 16),
-                const VerticalDivider(width: 1),
-                const SizedBox(width: 16),
-                FilterChip(
-                  label: Text(l10n.filterDisabledOnly),
-                  selected: _showDisabledOnly,
-                  onSelected: (v) => setState(() => _showDisabledOnly = v),
-                  selectedColor: SangakColors.error.withValues(alpha: 0.1),
-                  checkmarkColor: SangakColors.error,
-                  labelStyle: TextStyle(
-                    color: _showDisabledOnly ? SangakColors.error : SangakColors.inkLight,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                _RoleFilterChip(label: l10n.filterDelivery, value: 'delivery'),
               ],
             ),
           ),
@@ -171,19 +198,40 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
       ),
     );
   }
+
+  void _showSortDialog(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.sortBy, style: SangakTypography.h3(context)),
+            const SizedBox(height: 16),
+            _SortTile(label: l10n.newestFirst, value: UserSortOption.newestFirst),
+            _SortTile(label: l10n.oldestFirst, value: UserSortOption.oldestFirst),
+            _SortTile(label: l10n.alphabetical, value: UserSortOption.alphabetical),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _FilterChip extends StatelessWidget {
+class _RoleFilterChip extends ConsumerWidget {
   final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _FilterChip({required this.label, required this.isSelected, required this.onTap});
+  final String value;
+  const _RoleFilterChip({required this.label, required this.value});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(userRoleFilterProvider);
+    final isSelected = selected == value;
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => ref.read(userRoleFilterProvider.notifier).state = value,
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -206,14 +254,31 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-class _UserListItem extends ConsumerWidget {
-  final Map<String, dynamic> user;
-  final VoidCallback onRefresh;
-
-  const _UserListItem({required this.user, required this.onRefresh});
+class _SortTile extends ConsumerWidget {
+  final String label;
+  final UserSortOption value;
+  const _SortTile({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(userSortOptionProvider);
+    return ListTile(
+      title: Text(label),
+      trailing: selected == value ? const Icon(Icons.check_circle, color: SangakColors.primary) : null,
+      onTap: () {
+        ref.read(userSortOptionProvider.notifier).state = value;
+        Navigator.pop(context);
+      },
+    );
+  }
+}
+
+class _UserListItem extends StatelessWidget {
+  final Map<String, dynamic> user;
+  const _UserListItem({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isActive = user['is_active'] ?? true;
     final avatarUrl = user['avatar_url'] as String?;
@@ -292,179 +357,22 @@ class _UserListItem extends ConsumerWidget {
           const SizedBox(height: 16),
           const Divider(height: 1),
           const SizedBox(height: 12),
-          // Actions Row
-          Row(
-            children: [
-              // EDIT PROFILE ON LEFT
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => _showAdminEditDialog(context, ref),
-                  icon: const Icon(Icons.edit_outlined, size: 18),
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(l10n.editProfileButton),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: SangakColors.ink,
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
+          // View Information Button
+          SizedBox(
+            width: double.infinity,
+            child: TextButton.icon(
+              onPressed: () => context.push('/admin/users/${user['id']}'),
+              icon: const Icon(Icons.info_outline_rounded, size: 18),
+              label: Text(l10n.viewInformation),
+              style: TextButton.styleFrom(
+                foregroundColor: SangakColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              const SizedBox(width: 8),
-              // DISABLE ON RIGHT
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => _confirmStatusChange(context, ref, !isActive),
-                  icon: Icon(isActive ? Icons.block_flipped : Icons.check_circle_outline_rounded, size: 18),
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(isActive ? l10n.disableAccount : l10n.enableAccount),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: isActive ? SangakColors.error : SangakColors.success,
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  void _confirmStatusChange(BuildContext context, WidgetRef ref, bool newStatus) {
-    final l10n = AppLocalizations.of(context);
-    final statusText = newStatus ? l10n.enable : l10n.disable;
-    
-    SangakConfirmDialog.show(
-      context,
-      title: newStatus ? l10n.enableAccount : l10n.disableAccount,
-      message: l10n.confirmStatusChange(statusText, user['full_name'] ?? 'User'),
-      confirmLabel: newStatus ? l10n.enableAccount : l10n.disableAccount,
-      cancelLabel: l10n.cancel,
-      onConfirm: () async {
-        try {
-          await SupabaseService.client
-              .from('profiles')
-              .update({'is_active': newStatus})
-              .eq('id', user['id']);
-          onRefresh();
-          if (context.mounted) SangakToast.show(context, l10n.userStatusUpdated);
-        } catch (e) {
-          if (context.mounted) SangakToast.show(context, 'Error: $e');
-        }
-      },
-      isDestructive: !newStatus,
-    );
-  }
-
-  void _showAdminEditDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => _AdminEditUserDialog(user: user, onRefresh: onRefresh),
-    );
-  }
-}
-
-class _AdminEditUserDialog extends ConsumerStatefulWidget {
-  final Map<String, dynamic> user;
-  final VoidCallback onRefresh;
-  const _AdminEditUserDialog({required this.user, required this.onRefresh});
-
-  @override
-  ConsumerState<_AdminEditUserDialog> createState() => _AdminEditUserDialogState();
-}
-
-class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
-  late TextEditingController _nameController;
-  late TextEditingController _phoneController;
-  late String _selectedRole;
-  bool _isSaving = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.user['full_name']);
-    _phoneController = TextEditingController(text: widget.user['phone'] ?? widget.user['phone_number']);
-    _selectedRole = widget.user['role'] ?? 'customer';
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final roles = ['customer', 'staff', 'delivery', 'admin'];
-
-    return AlertDialog(
-      title: Text(l10n.editUserProfile),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SangakTextField(label: l10n.fullName, controller: _nameController),
-            const SizedBox(height: 16),
-            SangakTextField(label: l10n.phoneNumber, controller: _phoneController, keyboardType: TextInputType.phone),
-            const SizedBox(height: 24),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.roleSwitch.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: SangakColors.border),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _selectedRole,
-                  isExpanded: true,
-                  items: roles.map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
-                  onChanged: (v) => setState(() => _selectedRole = v!),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
-        SangakButton.primary(
-          label: l10n.save,
-          width: 100,
-          isLoading: _isSaving,
-          onPressed: () async {
-            setState(() => _isSaving = true);
-            try {
-              await SupabaseService.client.from('profiles').update({
-                'full_name': _nameController.text.trim(),
-                'phone': _phoneController.text.trim(),
-                'role': _selectedRole,
-              }).eq('id', widget.user['id']);
-              
-              widget.onRefresh();
-              if (context.mounted) {
-                SangakToast.show(context, l10n.profileUpdated);
-                Navigator.pop(context);
-              }
-            } catch (e) {
-              if (context.mounted) SangakToast.show(context, 'Error: $e');
-            } finally {
-              if (mounted) setState(() => _isSaving = false);
-            }
-          },
-        ),
-      ],
     );
   }
 }

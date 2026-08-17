@@ -118,7 +118,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               'id': user.id,
               'full_name': user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
               'email': user.email,
-              'role': 'customer',
             });
           }
         } catch (e) {

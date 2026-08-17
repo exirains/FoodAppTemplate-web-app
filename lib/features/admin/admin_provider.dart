@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/order.dart';
 import '../../services/order_repository.dart';
 
-final orderRepositoryProvider = Provider((ref) => OrderRepository());
+export '../../services/order_repository.dart';
 
 final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
-  final repo = ref.read(orderRepositoryProvider);
+  final repo = ref.read(sangakOrderRepositoryProvider);
   return repo.watchAllOrders().asyncMap((list) async {
     // Standard stream doesn't join profiles, so we refetch full data when change detected
     return await repo.getAllOrders();
@@ -13,7 +13,7 @@ final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
 });
 
 final adminOrderDetailProvider = FutureProvider.family<OrderModel?, String>((ref, orderId) async {
-  final response = await ref.read(orderRepositoryProvider).getOrderById(orderId);
+  final response = await ref.read(sangakOrderRepositoryProvider).getOrderById(orderId);
   return response;
 });
 
@@ -94,5 +94,5 @@ class AdminStats {
 }
 
 final deliveryStaffProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
-  return await ref.read(orderRepositoryProvider).getDeliveryStaff();
+  return await ref.read(sangakOrderRepositoryProvider).getDeliveryStaff();
 });

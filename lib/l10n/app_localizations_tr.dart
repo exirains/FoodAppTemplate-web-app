@@ -293,6 +293,39 @@ class AppLocalizationsTr extends AppLocalizations {
   String get orderNumber => 'Sipariş Numarası';
 
   @override
+  String get newOrders => 'Yeni Siparişler';
+
+  @override
+  String get acceptOrder => 'Siparişi Onayla';
+
+  @override
+  String get markReady => 'Hazır Olarak İşaretle';
+
+  @override
+  String get waitingForPickup => 'Teslimat Bekleniyor';
+
+  @override
+  String get newOrderNotification => 'Yeni sipariş bildirimi';
+
+  @override
+  String get ordersHistory => 'Sipariş Geçmişi';
+
+  @override
+  String get staffProfile => 'Personel Profili';
+
+  @override
+  String get newOrderAvailable => 'Yeni bir sipariş geldi!';
+
+  @override
+  String get preparing => 'Hazırlanıyor';
+
+  @override
+  String get ready => 'Hazır';
+
+  @override
+  String get newLabel => 'Yeni';
+
+  @override
   String get estimatedTime => 'Yaklaşık hazırlanma süresi';
 
   @override
@@ -302,7 +335,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backToHome => 'Ana Sayfaya Dön';
 
   @override
-  String get searchBreads => 'Ekmek ara...';
+  String get searchBreads => 'Ara';
 
   @override
   String get noProductsFound => 'Ürün bulunamadı';
@@ -333,7 +366,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String reviewsCount(num count) {
-    return '($count değerlendirme)';
+    return '$count değerlendirme';
   }
 
   @override
@@ -849,6 +882,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get productTagLimited => 'Sınırlı';
 
   @override
+  String get productTagPopular => 'Popüler';
+
+  @override
+  String get productTagTraditional => 'Geleneksel';
+
+  @override
+  String get productTagRecommended => 'Önerilen';
+
+  @override
+  String get productTagSeasonal => 'Mevsimlik';
+
+  @override
   String get productTagNone => 'Etiket Yok';
 
   @override
@@ -976,6 +1021,42 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get viewInformation => 'Bilgileri Görüntüle';
+
+  @override
+  String get sortBy => 'Sıralama';
+
+  @override
+  String get newestFirst => 'En Yeni';
+
+  @override
+  String get oldestFirst => 'En Eski';
+
+  @override
+  String get alphabetical => 'Alfabetik';
+
+  @override
+  String get joinedDate => 'Katılım Tarihi';
+
+  @override
+  String get userOrders => 'Kullanıcı Siparişleri';
+
+  @override
+  String get userAddresses => 'Kullanıcı Adresleri';
+
+  @override
+  String get userFavorites => 'Kullanıcı Favorileri';
+
+  @override
+  String get noFavoritesFound => 'Favori bulunamadı';
+
+  @override
+  String get noAddressesFound => 'Adres bulunamadı';
+
+  @override
+  String get noOrdersFound => 'Sipariş bulunamadı';
+
+  @override
   String get noPhoneNumberAvailable => 'Telefon numarası bulunamadı';
 
   @override
@@ -1055,6 +1136,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get rejected => 'REDDEDİLDİ';
 
   @override
+  String get prepTimeLabel => 'Hazırlanma Süresi (dk)';
+
+  @override
+  String get caloriesLabel => 'Kalori (kcal)';
+
+  @override
   String get freshToday => 'Bugün Taze';
 
   @override
@@ -1065,4 +1152,285 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pleaseFillFloorDoor => 'Devam etmek için lütfen buraları doldurun';
+
+  @override
+  String get history => 'Geçmiş';
+
+  @override
+  String get totalEarnings => 'Toplam Kazanç';
+
+  @override
+  String get searchPlaceholder => 'Sipariş No veya Müşteri ile Ara';
+
+  @override
+  String get filterDelivered => 'Teslim Edildi';
+
+  @override
+  String get filterCancelled => 'İptal Edildi';
+
+  @override
+  String get selectDate => 'Tarih Seç';
+
+  @override
+  String get priceHighToLow => 'Fiyat: Yüksekten Düşüğe';
+
+  @override
+  String get priceLowToHigh => 'Fiyat: Düşükten Yükseğe';
+
+  @override
+  String get adjustFilters => 'Filtreleri ayarlamayı deneyin';
+
+  @override
+  String get driver => 'Kurye';
+
+  @override
+  String get unauthorized => 'Yetkisiz erişim';
+
+  @override
+  String get appStartFailed => 'Uygulama başlatılamadı';
+
+  @override
+  String get errorLoadingStaff => 'Personel yükleme hatası';
+
+  @override
+  String get errorOccurred => 'Bir hata oluştu';
+
+  @override
+  String get resetFilters => 'Filtreleri Sıfırla';
+
+  @override
+  String get totalOrdersToday => 'Bugünkü Toplam Sipariş';
+
+  @override
+  String get unlockCancellation =>
+      'İptal girişinin kilidini açmak için kaydırın';
+
+  @override
+  String get enterReason => 'Nedeni buraya girin...';
+
+  @override
+  String get cancelReasonBusy => 'Mağaza çok yoğun';
+
+  @override
+  String get cancelReasonStock => 'Stokta yok';
+
+  @override
+  String get cancelReasonCourier => 'Kurye bulunamadı';
+
+  @override
+  String get cancelReasonTechnical => 'Teknik sorun';
+
+  @override
+  String get cancelReasonOther => 'Diğer (aşağıya yazın)';
+
+  @override
+  String assignedTo(String name) {
+    return '$name adlı kişiye atandı';
+  }
+
+  @override
+  String get adminSettings => 'Yönetici Ayarları';
+
+  @override
+  String get minOrderLimitLabel => 'Minimum Sipariş Tutarı (TL)';
+
+  @override
+  String get deliveryFeeSettingLabel => 'Teslimat Ücreti (TL)';
+
+  @override
+  String get pointsPerOrderLabel => 'Sipariş Başına Puan';
+
+  @override
+  String get pointsPerCurrencyLabel => 'Para Birimi Başına Puan';
+
+  @override
+  String get streakBonusLabel => 'Seri Bonus Puanları';
+
+  @override
+  String get streakThresholdLabel => 'Seri Eşiği (Gün)';
+
+  @override
+  String get loyaltySettings => 'Sadakat ve Seri Ayarları';
+
+  @override
+  String get rewardsManagement => 'Ödül Yönetimi';
+
+  @override
+  String get settingsSaved => 'Ayarlar başarıyla kaydedildi';
+
+  @override
+  String get freeDelivery => 'Ücretsiz Teslimat';
+
+  @override
+  String get loyaltyCenter => 'Sadakat Merkezi';
+
+  @override
+  String get points => 'Puan';
+
+  @override
+  String streakDay(num count) {
+    return '$count Günlük Seri';
+  }
+
+  @override
+  String memberLevel(Object level) {
+    return '$level Üyesi';
+  }
+
+  @override
+  String pointsUntilLevel(Object count, Object level) {
+    return '$level için $count puan kaldı';
+  }
+
+  @override
+  String get rewards => 'Ödüller';
+
+  @override
+  String get redeem => 'Kullan';
+
+  @override
+  String get redeemReward => 'Ödül Kullan';
+
+  @override
+  String confirmRedeem(Object points, Object reward) {
+    return '$reward için $points puan harcamak istediğinize emin misiniz?';
+  }
+
+  @override
+  String get rewardRedeemed => 'Ödül başarıyla kullanıldı!';
+
+  @override
+  String get rateExperience => 'Deneyiminizi oylayın';
+
+  @override
+  String get rateOrderMessage => 'Sangak siparişiniz nasıldı?';
+
+  @override
+  String get overallSatisfaction => 'Genel Memnuniyet';
+
+  @override
+  String get breadQuality => 'Ekmek Kalitesi';
+
+  @override
+  String get freshness => 'Tazelik';
+
+  @override
+  String get packaging => 'Paketleme';
+
+  @override
+  String get deliveryService => 'Teslimat Hizmeti';
+
+  @override
+  String get writtenReview => 'Yazılı Yorum (İsteğe bağlı)';
+
+  @override
+  String get reviewHint => 'Deneyiminizi bizimle paylaşın...';
+
+  @override
+  String feedbackThankYou(Object points) {
+    return 'Geri bildiriminiz için teşekkürler! +$points Puan';
+  }
+
+  @override
+  String get promotionsBanners => 'Promosyonlar ve Bannerlar';
+
+  @override
+  String get noDescription => 'Açıklama yok';
+
+  @override
+  String get noPromotions => 'Promosyon bulunamadı';
+
+  @override
+  String get addPromotion => 'Promosyon Ekle';
+
+  @override
+  String get editPromotion => 'Promosyonu Düzenle';
+
+  @override
+  String get title => 'Başlık';
+
+  @override
+  String get image => 'Resim';
+
+  @override
+  String get rewardTitle => 'Ödül Başlığı';
+
+  @override
+  String get pointsCost => 'Puan Maliyeti';
+
+  @override
+  String get pts => 'Puan';
+
+  @override
+  String get ptsLabel => 'Puan';
+
+  @override
+  String get noRewards => 'Ödül bulunamadı';
+
+  @override
+  String get addReward => 'Ödül Ekle';
+
+  @override
+  String get editReward => 'Ödülü Düzenle';
+
+  @override
+  String get rateOrder => 'Siparişi Oyla';
+
+  @override
+  String get rated => 'Oylandı';
+
+  @override
+  String get confirmChangeAvatar =>
+      'Bu kullanıcının profil resmini değiştirmek istediğinizden emin misiniz?';
+
+  @override
+  String get reviewManagement => 'Yorum Yönetimi';
+
+  @override
+  String get noReviewsFound => 'Yorum bulunamadı';
+
+  @override
+  String get reviewApproved => 'Yorum onaylandı';
+
+  @override
+  String get reviewDeleted => 'Yorum silindi';
+
+  @override
+  String get deleteReview => 'Yorumu Sil';
+
+  @override
+  String get confirmDeleteReview =>
+      'Bu yorumu silmek istediğinizden emin misiniz?';
+
+  @override
+  String orderIdLabel(String id) {
+    return 'Sipariş ID: $id';
+  }
+
+  @override
+  String get quality => 'Kalite';
+
+  @override
+  String get delivery => 'Teslimat';
+
+  @override
+  String get statusPendingCaps => 'BEKLEMEDE';
+
+  @override
+  String get statusApprovedCaps => 'ONAYLANDI';
+
+  @override
+  String get approve => 'Onayla';
+
+  @override
+  String get deliverySuccessMessage =>
+      'Siparişiniz başarıyla teslim edildi! Taze ekmeğinizin tadını çıkarın.';
+
+  @override
+  String get orderInformation => 'Sipariş Bilgileri';
+
+  @override
+  String ratingValue(num value) {
+    return '$value.0';
+  }
 }

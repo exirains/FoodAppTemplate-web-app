@@ -203,7 +203,6 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
               'id': response.user!.id,
               'full_name': response.user!.userMetadata?['full_name'] ?? response.user!.email?.split('@')[0] ?? 'User',
               'email': response.user!.email,
-              'role': 'customer',
             });
           } catch (e) {
             debugPrint('Non-critical: Error syncing profile after Google login: $e');

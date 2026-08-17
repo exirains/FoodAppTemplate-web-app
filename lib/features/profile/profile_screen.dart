@@ -20,6 +20,7 @@ import '../auth/auth_validators.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
+import '../loyalty/loyalty_provider.dart';
 import '../../features/home/home_provider.dart';
 import '../orders/orders_provider.dart';
 
@@ -194,10 +195,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 'phone': phoneController.text.trim(),
                               };
                               
-                              await SupabaseService.client.from('profiles').upsert({
-                                'id': user.id,
-                                ...data,
-                              });
+                              await SupabaseService.client.from('profiles').update(data).eq('id', user.id);
                               
                               await ref.read(authProvider.notifier).updateMetadata(data);
                               
@@ -297,7 +295,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 32),
+            
+            // Loyalty Bar
+            _buildLoyaltyBar(context, ref),
+            const SizedBox(height: 32),
             
             Text(l10n.activity, style: SangakTypography.title(context)),
             const SizedBox(height: 16),
@@ -362,6 +364,77 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               onPressed: _signOut,
             ),
             const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoyaltyBar(BuildContext context, WidgetRef ref) {
+    final loyaltyAsync = ref.watch(userLoyaltyProvider);
+    final profileAsync = ref.watch(userProfileProvider);
+    final l10n = AppLocalizations.of(context);
+    
+    final profile = profileAsync.value;
+    final streak = profile?.currentStreak ?? 0;
+
+    return loyaltyAsync.when(
+      data: (loyalty) => _buildLoyaltyContent(context, loyalty?.currentPoints ?? 0, loyalty?.loyaltyLevel ?? "Bronze", streak, l10n),
+      loading: () => _buildLoyaltyContent(context, 0, "...", streak, l10n, isLoading: true),
+      error: (e, s) {
+        debugPrint('🚨 Loyalty Bar Error: $e');
+        return _buildLoyaltyContent(context, 0, "Error", streak, l10n);
+      },
+    );
+  }
+
+  Widget _buildLoyaltyContent(BuildContext context, int points, String level, int streak, AppLocalizations l10n, {bool isLoading = false}) {
+    return InkWell(
+      onTap: () => context.push('/loyalty'),
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: SangakColors.ink,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: SangakDimens.shadowMedium,
+        ),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '🔥 ${l10n.streakDay(streak)}',
+                  style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+                ),
+                Text(
+                  l10n.memberLevel(level),
+                  style: SangakTypography.caption(context).copyWith(color: Colors.white70),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: SangakColors.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.card_giftcard_rounded, color: Colors.white, size: 16),
+                  const SizedBox(width: 8),
+                  if (isLoading)
+                    const SizedBox(width: 20, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  else
+                    Text(
+                      '$points ${l10n.pts}',
+                      style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

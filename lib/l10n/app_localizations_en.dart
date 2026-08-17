@@ -291,6 +291,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderNumber => 'Order Number';
 
   @override
+  String get newOrders => 'New Orders';
+
+  @override
+  String get acceptOrder => 'Accept Order';
+
+  @override
+  String get markReady => 'Mark Ready';
+
+  @override
+  String get waitingForPickup => 'Waiting for Pickup';
+
+  @override
+  String get newOrderNotification => 'New order notification';
+
+  @override
+  String get ordersHistory => 'Order History';
+
+  @override
+  String get staffProfile => 'Staff Profile';
+
+  @override
+  String get newOrderAvailable => 'A new order is available!';
+
+  @override
+  String get preparing => 'Preparing';
+
+  @override
+  String get ready => 'Ready';
+
+  @override
+  String get newLabel => 'New';
+
+  @override
   String get estimatedTime => 'Approximate preparation time';
 
   @override
@@ -300,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToHome => 'Back to Home';
 
   @override
-  String get searchBreads => 'Search breads...';
+  String get searchBreads => 'Search';
 
   @override
   String get noProductsFound => 'No products found';
@@ -331,7 +364,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String reviewsCount(num count) {
-    return '($count reviews)';
+    return '$count reviews';
   }
 
   @override
@@ -843,7 +876,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get productSavedSuccess => 'Product saved successfully';
 
   @override
-  String get productTagBestseller => 'Bestseller';
+  String get productTagBestseller => 'Best seller';
 
   @override
   String get productTagSpecial => 'Special';
@@ -853,6 +886,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productTagLimited => 'Limited';
+
+  @override
+  String get productTagPopular => 'Popular';
+
+  @override
+  String get productTagTraditional => 'Traditional';
+
+  @override
+  String get productTagRecommended => 'Recommended';
+
+  @override
+  String get productTagSeasonal => 'Seasonal';
 
   @override
   String get productTagNone => 'No Tag';
@@ -982,6 +1027,42 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get viewInformation => 'View Information';
+
+  @override
+  String get sortBy => 'Sort By';
+
+  @override
+  String get newestFirst => 'Newest First';
+
+  @override
+  String get oldestFirst => 'Oldest First';
+
+  @override
+  String get alphabetical => 'Alphabetical';
+
+  @override
+  String get joinedDate => 'Joined Date';
+
+  @override
+  String get userOrders => 'User Orders';
+
+  @override
+  String get userAddresses => 'User Addresses';
+
+  @override
+  String get userFavorites => 'User Favorites';
+
+  @override
+  String get noFavoritesFound => 'No favorites found';
+
+  @override
+  String get noAddressesFound => 'No addresses found';
+
+  @override
+  String get noOrdersFound => 'No orders found';
+
+  @override
   String get noPhoneNumberAvailable => 'No phone number available';
 
   @override
@@ -1062,6 +1143,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rejected => 'REJECTED';
 
   @override
+  String get prepTimeLabel => 'Prep Time (mins)';
+
+  @override
+  String get caloriesLabel => 'Calories (kcal)';
+
+  @override
   String get freshToday => 'Fresh Today';
 
   @override
@@ -1072,4 +1159,290 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseFillFloorDoor => 'Please fill these out to continue';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get totalEarnings => 'Total Earnings';
+
+  @override
+  String get searchPlaceholder => 'Search by Order # or Customer';
+
+  @override
+  String get filterDelivered => 'Delivered';
+
+  @override
+  String get filterCancelled => 'Cancelled';
+
+  @override
+  String get selectDate => 'Select Date';
+
+  @override
+  String get priceHighToLow => 'Price: High to Low';
+
+  @override
+  String get priceLowToHigh => 'Price: Low to High';
+
+  @override
+  String get adjustFilters => 'Try adjusting your filters';
+
+  @override
+  String get driver => 'Driver';
+
+  @override
+  String get unauthorized => 'Unauthorized access';
+
+  @override
+  String get appStartFailed => 'App failed to start';
+
+  @override
+  String get errorLoadingStaff => 'Error loading staff';
+
+  @override
+  String get errorOccurred => 'An error occurred';
+
+  @override
+  String get resetFilters => 'Reset Filters';
+
+  @override
+  String get totalOrdersToday => 'Total Orders Today';
+
+  @override
+  String get unlockCancellation => 'Slide to unlock cancellation input';
+
+  @override
+  String get enterReason => 'Enter reason here...';
+
+  @override
+  String get cancelReasonBusy => 'Store too busy';
+
+  @override
+  String get cancelReasonStock => 'Out of stock';
+
+  @override
+  String get cancelReasonCourier => 'No courier available';
+
+  @override
+  String get cancelReasonTechnical => 'Technical issue';
+
+  @override
+  String get cancelReasonOther => 'Other (write below)';
+
+  @override
+  String assignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get adminSettings => 'Admin Settings';
+
+  @override
+  String get minOrderLimitLabel => 'Minimum Order Limit (TL)';
+
+  @override
+  String get deliveryFeeSettingLabel => 'Delivery Fee (TL)';
+
+  @override
+  String get pointsPerOrderLabel => 'Points Per Order';
+
+  @override
+  String get pointsPerCurrencyLabel => 'Points Per Currency Unit';
+
+  @override
+  String get streakBonusLabel => 'Streak Bonus Points';
+
+  @override
+  String get streakThresholdLabel => 'Streak Threshold (Days)';
+
+  @override
+  String get loyaltySettings => 'Loyalty & Streak Settings';
+
+  @override
+  String get rewardsManagement => 'Rewards Management';
+
+  @override
+  String get settingsSaved => 'Settings saved successfully';
+
+  @override
+  String get freeDelivery => 'Free Delivery';
+
+  @override
+  String get loyaltyCenter => 'Loyalty Center';
+
+  @override
+  String get points => 'Points';
+
+  @override
+  String streakDay(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Day Streak',
+      one: '1 Day Streak',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String memberLevel(Object level) {
+    return '$level Member';
+  }
+
+  @override
+  String pointsUntilLevel(Object count, Object level) {
+    return '$count points until $level';
+  }
+
+  @override
+  String get rewards => 'Rewards';
+
+  @override
+  String get redeem => 'Redeem';
+
+  @override
+  String get redeemReward => 'Redeem Reward';
+
+  @override
+  String confirmRedeem(Object points, Object reward) {
+    return 'Are you sure you want to spend $points points for $reward?';
+  }
+
+  @override
+  String get rewardRedeemed => 'Reward redeemed successfully!';
+
+  @override
+  String get rateExperience => 'Rate your experience';
+
+  @override
+  String get rateOrderMessage => 'How was your order from Sangak?';
+
+  @override
+  String get overallSatisfaction => 'Overall Satisfaction';
+
+  @override
+  String get breadQuality => 'Bread Quality';
+
+  @override
+  String get freshness => 'Freshness';
+
+  @override
+  String get packaging => 'Packaging';
+
+  @override
+  String get deliveryService => 'Delivery Service';
+
+  @override
+  String get writtenReview => 'Written Review (Optional)';
+
+  @override
+  String get reviewHint => 'Tell us more about your experience...';
+
+  @override
+  String feedbackThankYou(Object points) {
+    return 'Thank you for your feedback! +$points Pts';
+  }
+
+  @override
+  String get promotionsBanners => 'Promotions & Banners';
+
+  @override
+  String get noDescription => 'No description';
+
+  @override
+  String get noPromotions => 'No promotions found';
+
+  @override
+  String get addPromotion => 'Add Promotion';
+
+  @override
+  String get editPromotion => 'Edit Promotion';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get image => 'Image';
+
+  @override
+  String get rewardTitle => 'Reward Title';
+
+  @override
+  String get pointsCost => 'Points Cost';
+
+  @override
+  String get pts => 'Pts';
+
+  @override
+  String get ptsLabel => 'Points';
+
+  @override
+  String get noRewards => 'No rewards available';
+
+  @override
+  String get addReward => 'Add Reward';
+
+  @override
+  String get editReward => 'Edit Reward';
+
+  @override
+  String get rateOrder => 'Rate Order';
+
+  @override
+  String get rated => 'Rated';
+
+  @override
+  String get confirmChangeAvatar =>
+      'Are you sure you want to change this user\'s profile picture?';
+
+  @override
+  String get reviewManagement => 'Review Management';
+
+  @override
+  String get noReviewsFound => 'No reviews found';
+
+  @override
+  String get reviewApproved => 'Review approved';
+
+  @override
+  String get reviewDeleted => 'Review deleted';
+
+  @override
+  String get deleteReview => 'Delete Review';
+
+  @override
+  String get confirmDeleteReview =>
+      'Are you sure you want to delete this review?';
+
+  @override
+  String orderIdLabel(String id) {
+    return 'Order ID: $id';
+  }
+
+  @override
+  String get quality => 'Quality';
+
+  @override
+  String get delivery => 'Delivery';
+
+  @override
+  String get statusPendingCaps => 'PENDING';
+
+  @override
+  String get statusApprovedCaps => 'APPROVED';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get deliverySuccessMessage =>
+      'Your order has been delivered successfully! Enjoy your fresh bread.';
+
+  @override
+  String get orderInformation => 'Order Information';
+
+  @override
+  String ratingValue(num value) {
+    return '$value.0';
+  }
 }

@@ -5,77 +5,181 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../models/order.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/widgets/cancel_order_dialog.dart';
-import '../auth/auth_provider.dart';
+import '../../shared/widgets/sangak_back_handler.dart';
 import '../auth/profile_provider.dart';
-import '../admin/admin_provider.dart';
+import 'staff_provider.dart';
+import 'widgets/staff_order_card.dart';
 
-class StaffKitchenScreen extends ConsumerWidget {
+class StaffKitchenScreen extends ConsumerStatefulWidget {
   const StaffKitchenScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ordersAsync = ref.watch(adminOrdersProvider);
-    // Watch profile to keep stream active and roles synced
-    ref.watch(userProfileProvider);
-    final l10n = AppLocalizations.of(context);
+  ConsumerState<StaffKitchenScreen> createState() => _StaffKitchenScreenState();
+}
 
+class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return RoleGuard(
       allowedRoles: const ['admin', 'staff'],
-      child: Scaffold(
-        backgroundColor: SangakColors.background,
-        appBar: AppBar(
-          title: Text(l10n.kitchenPanel),
-          actions: [
-            IconButton(
-              onPressed: () {
-                final l10n = AppLocalizations.of(context);
-                final userProfile = ref.read(userProfileProvider).asData?.value;
-                if (userProfile != null) {
-                  RoleSwitcher.show(context, userProfile.role);
-                } else {
-                  SangakToast.show(context, l10n.syncingPermissions);
-                  ref.invalidate(userProfileProvider);
-                }
-              },
-              icon: const Icon(Icons.swap_horiz_rounded),
+      child: SangakBackHandler(
+        child: Scaffold(
+          backgroundColor: SangakColors.background,
+          body: IndexedStack(
+            index: _currentIndex,
+            children: [
+              const _StaffOrdersView(),
+              _buildPlaceholder(l10n.ordersHistory),
+              _buildPlaceholder(l10n.staffProfile),
+            ],
+          ),
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: SangakColors.border, width: 1)),
             ),
-            IconButton(
-              onPressed: () {
-                ref.invalidate(adminOrdersProvider);
-              },
-              icon: const Icon(Icons.refresh),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) => setState(() => _currentIndex = index),
+              selectedItemColor: SangakColors.primary,
+              unselectedItemColor: SangakColors.inkLight,
+              backgroundColor: SangakColors.surface,
+              type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              unselectedLabelStyle: const TextStyle(fontSize: 12),
+              items: [
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.bakery_dining_rounded),
+                  label: l10n.orders,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.history_rounded),
+                  label: l10n.ordersHistory,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.person_outline_rounded),
+                  label: l10n.profile,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-        body: ordersAsync.when(
-          data: (orders) {
-            final kitchenOrders = orders.where((o) => 
-              o.status == OrderStatus.pending || 
-              o.status == OrderStatus.confirmed || 
-              o.status == OrderStatus.preparing
-            ).toList();
-  
-            if (kitchenOrders.isEmpty) {
-              return _buildEmptyState(context, l10n);
-            }
-  
-            return ListView.separated(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
-              itemCount: kitchenOrders.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 24),
-              itemBuilder: (context, index) {
-                return _KitchenOrderCard(order: kitchenOrders[index], l10n: l10n);
-              },
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, s) => Center(child: Text('Error: $e')),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder(String title) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Text(
+          'Coming Soon',
+          style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
         ),
+      ),
+    );
+  }
+}
+
+class _StaffOrdersView extends ConsumerWidget {
+  const _StaffOrdersView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ordersAsync = ref.watch(activeBakeryOrdersProvider);
+    final newCount = ref.watch(pendingOrdersCountProvider);
+    final l10n = AppLocalizations.of(context);
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(l10n.kitchenPanel, style: SangakTypography.h2(context)),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final userProfile = ref.read(userProfileProvider).asData?.value;
+              if (userProfile != null) {
+                RoleSwitcher.show(context, userProfile.role);
+              }
+            },
+            icon: const Icon(Icons.swap_horiz_rounded),
+          ),
+        ],
+      ),
+      body: ordersAsync.when(
+        data: (orders) {
+          if (orders.isEmpty) return _buildEmptyState(context, l10n);
+
+          final pending = orders.where((o) => o.status == OrderStatus.pending).toList();
+          final preparing = orders.where((o) => o.status == OrderStatus.confirmed || o.status == OrderStatus.preparing).toList();
+          final ready = orders.where((o) => o.status == OrderStatus.ready).toList();
+
+          return Column(
+            children: [
+              // Sticky New Order Alert
+              if (newCount > 0)
+                Container(
+                  width: double.infinity,
+                  color: SangakColors.warning,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.notifications_active, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Text(
+                        '$newCount ${l10n.newOrders.toUpperCase()}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.arrow_downward_rounded, color: Colors.white, size: 20),
+                    ],
+                  ),
+                ),
+
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(SangakDimens.spacing24),
+                  children: [
+                    if (pending.isNotEmpty) ...[
+                      _SectionHeader(title: l10n.newLabel.toUpperCase(), color: SangakColors.warning),
+                      ...pending.map((o) => Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: StaffOrderCard(order: o, isNew: true),
+                      )),
+                    ],
+                    if (preparing.isNotEmpty) ...[
+                      _SectionHeader(title: l10n.preparing.toUpperCase(), color: SangakColors.info),
+                      ...preparing.map((o) => Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: StaffOrderCard(order: o),
+                      )),
+                    ],
+                    if (ready.isNotEmpty) ...[
+                      _SectionHeader(title: l10n.ready.toUpperCase(), color: SangakColors.success),
+                      ...ready.map((o) => Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: StaffOrderCard(order: o),
+                      )),
+                    ],
+                    const SizedBox(height: 80), // Bottom padding
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, s) => Center(child: Text(l10n.errorOccurred)),
       ),
     );
   }
@@ -85,180 +189,48 @@ class StaffKitchenScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.bakery_dining_outlined, size: 64, color: SangakColors.border),
-          const SizedBox(height: 16),
-          Text(l10n.allCaughtUp, style: SangakTypography.h3(context)),
-          Text(l10n.noOrdersToPrepare, style: SangakTypography.bodySmall(context)),
+          const Icon(Icons.bakery_dining_outlined, size: 80, color: SangakColors.border),
+          const SizedBox(height: 24),
+          Text(l10n.allCaughtUp, style: SangakTypography.h2(context)),
+          const SizedBox(height: 8),
+          Text(l10n.noOrdersToPrepare, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
         ],
       ),
     );
   }
 }
 
-class _KitchenOrderCard extends ConsumerStatefulWidget {
-  final OrderModel order;
-  final AppLocalizations l10n;
-  const _KitchenOrderCard({required this.order, required this.l10n});
-
-  @override
-  ConsumerState<_KitchenOrderCard> createState() => _KitchenOrderCardState();
-}
-
-class _KitchenOrderCardState extends ConsumerState<_KitchenOrderCard> {
-  bool _isUpdating = false;
-
-  Future<void> _updateStatus(OrderStatus newStatus) async {
-    final user = ref.read(authProvider).asData?.value;
-    if (user == null) return;
-
-    setState(() => _isUpdating = true);
-    try {
-      await ref.read(orderRepositoryProvider).updateOrderStatus(
-        orderId: widget.order.id,
-        status: newStatus,
-        changedBy: user.id,
-      );
-      // Force UI refresh
-      ref.invalidate(adminOrdersProvider);
-      if (mounted) {
-        SangakToast.show(context, '${widget.l10n.status}: ${newStatus.localizedLabel(widget.l10n)}');
-      }
-    } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
-    } finally {
-      if (mounted) setState(() => _isUpdating = false);
-    }
-  }
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final Color color;
+  const _SectionHeader({required this.title, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    final items = widget.order.items ?? [];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowMedium,
-        border: Border.all(
-          color: widget.order.status == OrderStatus.pending 
-              ? SangakColors.warning.withValues(alpha: 0.5) 
-              : SangakColors.border,
-          width: 2,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.order.orderNumber, style: SangakTypography.h3(context)),
-                  Text(
-                    _formatTime(widget.order.createdAt, widget.l10n),
-                    style: SangakTypography.title(context).copyWith(color: SangakColors.primary),
-                  ),
-                ],
-              ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 24,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(2),
             ),
-            const Divider(height: 1),
-            
-            // Items
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...items.map((item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: SangakColors.ink.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '${item.quantity}x',
-                            style: SangakTypography.title(context).copyWith(fontSize: 18, color: SangakColors.ink),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            item.nameSnapshot,
-                            style: SangakTypography.h3(context).copyWith(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
-                ],
-              ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: SangakTypography.h3(context).copyWith(
+              color: color,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.1,
             ),
-            
-            // Actions
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              child: Row(
-                children: [
-                  // ALWAYS SHOW CANCEL ON LEFT
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: SangakButton.outlined(
-                      label: '',
-                      icon: Icons.cancel_outlined,
-                      foregroundColor: SangakColors.error,
-                      borderColor: SangakColors.error,
-                      onPressed: () => CancelOrderDialog.show(
-                        context, 
-                        onConfirm: (reason) => _updateStatus(OrderStatus.cancelled),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // MAIN ACTION ON RIGHT
-                  Expanded(
-                    child: widget.order.status == OrderStatus.pending
-                        ? SangakButton.primary(
-                            label: widget.l10n.acceptAndConfirm,
-                            onPressed: () => _updateStatus(OrderStatus.confirmed),
-                            isLoading: _isUpdating,
-                          )
-                        : widget.order.status == OrderStatus.confirmed
-                            ? SangakButton.primary(
-                                label: widget.l10n.startPreparing,
-                                backgroundColor: SangakColors.info,
-                                onPressed: () => _updateStatus(OrderStatus.preparing),
-                                isLoading: _isUpdating,
-                              )
-                            : SangakButton.primary(
-                                label: widget.l10n.markAsReady,
-                                backgroundColor: SangakColors.success,
-                                onPressed: () => _updateStatus(OrderStatus.ready),
-                                isLoading: _isUpdating,
-                              ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-
-  String _formatTime(DateTime date, AppLocalizations l10n) {
-    final diff = DateTime.now().difference(date);
-    if (diff.inMinutes < 1) return l10n.justNow;
-    if (diff.inMinutes < 60) return '${diff.inMinutes}${l10n.minutesShort} ${l10n.ago}';
-    return '${date.hour}:${date.minute.toString().padLeft(2, '0')}';
-  }
 }
+
