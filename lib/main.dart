@@ -52,21 +52,9 @@ void main() async {
     await cacheBox.clear(); 
     debugPrint('SANGAK: Hive box opened and cleared.');
     
-    // Initialize Supabase
-    try {
-      await SupabaseService.initialize();
-      debugPrint('SANGAK: Supabase initialized.');
-    } catch (e) {
-      debugPrint('SANGAK ERROR: Supabase init failed: $e');
-    }
-
-    // Initialize Firebase & FCM
-    try {
-      await NotificationService.initialize();
-      debugPrint('SANGAK: Firebase/FCM initialized.');
-    } catch (e) {
-      debugPrint('SANGAK ERROR: Firebase init failed: $e');
-    }
+    // Initialize background services (Non-blocking)
+    SupabaseService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Supabase init failed: $e'));
+    NotificationService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Firebase init failed: $e'));
     
     // Initialize SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -124,13 +112,10 @@ class SangakApp extends ConsumerWidget {
           // Safely determine if we are in a workstation route (staff/admin)
           bool isWorkstation = false;
           try {
-            // Use routeInformationProvider only if it's ready
-            final provider = router.routeInformationProvider;
-            final path = provider.value.uri.path;
+            // Using a safer path extraction method for web initialization
+            final String path = router.routerDelegate.currentConfiguration.last.matchedLocation;
             isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
-          } catch (_) {
-            // Initializing state
-          }
+          } catch (_) {}
           
           return ResponsiveLayout(
             maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
