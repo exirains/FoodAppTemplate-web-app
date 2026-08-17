@@ -6,7 +6,7 @@ import 'package:sangak/services/supabase_service.dart';
 import 'package:sangak/services/analytics_service.dart';
 
 class NotificationService {
-  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static FirebaseMessaging get _messaging => FirebaseMessaging.instance;
   static GlobalKey<NavigatorState>? _navigatorKey;
   static final AnalyticsService _analytics = AnalyticsService();
   
@@ -22,20 +22,24 @@ class NotificationService {
         await Firebase.initializeApp();
       }
 
-      NotificationSettings settings = await _messaging.requestPermission(
+      // Web might throw if messaging is not supported or service worker fails
+      final settings = await _messaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
       );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        debugPrint('🔔 FCM: User granted permission');
+        String? token;
+        try {
+          token = await _messaging.getToken(
+            vapidKey: kIsWeb ? _vapidKey : null,
+          );
+        } catch (e) {
+          debugPrint('FCM Token Error: $e');
+        }
         
-        String? token = await _messaging.getToken(
-          vapidKey: kIsWeb ? _vapidKey : null,
-        );
         if (token != null) {
-          debugPrint('🔔 FCM Token: $token');
           await _syncToken(token);
         }
       }

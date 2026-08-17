@@ -40,25 +40,29 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('SANGAK: Initializing app...');
     
-    // Initialize Hive
+    // 1. Initialize Hive (Essential for local state)
     await Hive.initFlutter();
-    debugPrint('SANGAK: Hive initialized.');
-    
     Hive.registerAdapter(BreadAdapter());
     Hive.registerAdapter(CategoryAdapter());
     Hive.registerAdapter(AddressAdapter());
     
-    final cacheBox = await Hive.openBox<List>('cache');
-    await cacheBox.clear(); 
-    debugPrint('SANGAK: Hive box opened and cleared.');
+    // Clear cache box safely
+    try {
+      final cacheBox = await Hive.openBox('cache');
+      await cacheBox.clear();
+    } catch (e) {
+      debugPrint('Hive Cache Error: $e');
+    }
     
-    // Initialize background services (Non-blocking)
-    SupabaseService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Supabase init failed: $e'));
-    NotificationService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Firebase init failed: $e'));
-    
-    // Initialize SharedPreferences
+    // 2. Initialize SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    debugPrint('SANGAK: SharedPrefs initialized.');
+    
+    // 3. Initialize Critical Services (Must await Supabase to avoid FCM null-check errors)
+    await SupabaseService.initialize();
+    debugPrint('SANGAK: Supabase ready.');
+
+    // 4. Initialize background services
+    NotificationService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Firebase init failed: $e'));
     
     runApp(
       ProviderScope(
@@ -71,10 +75,9 @@ void main() async {
   } catch (e, stack) {
     debugPrint('SANGAK CRITICAL ERROR: $e');
     debugPrint('STACK TRACE: $stack');
-    // Fallback to minimal app to show error if possible
-    runApp(const MaterialApp(
+    runApp(MaterialApp(
       home: Scaffold(
-        body: Center(child: Text('An error occurred while starting the app.')),
+        body: Center(child: Text('Initialization Error: $e')),
       ),
     ));
   }
@@ -107,18 +110,18 @@ class SangakApp extends ConsumerWidget {
       builder: (context, child) {
         if (child == null) return const SizedBox.shrink();
 
-        // Safely determine if we are in a workstation route (staff/admin)
+        // Safely determine workstation routes
         bool isWorkstation = false;
         try {
-          // GoRouter 14+ safe URI extraction
-          final String path = router.routerDelegate.currentConfiguration.uri.path;
+          final uri = router.routerDelegate.currentConfiguration.uri;
+          final path = uri.path;
           isWorkstation = path.startsWith('/staff') || path.startsWith('/admin');
-        } catch (_) {
-          // Fallback to mobile width during initial load or error
-        }
+        } catch (_) {}
         
         return ResponsiveLayout(
-          maxWidth: isWorkstation ? ResponsiveLayout.workstationMaxWidth : ResponsiveLayout.mobileMaxWidth,
+          maxWidth: isWorkstation 
+              ? ResponsiveLayout.workstationMaxWidth 
+              : ResponsiveLayout.mobileMaxWidth,
           child: child,
         );
       },
