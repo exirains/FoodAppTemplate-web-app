@@ -367,7 +367,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
         'description': _descEnController.text.trim(),
         'price': price,
         'image_url': finalImageUrl,
-        'category_id': _selectedCategoryId ?? '8906660b-8d18-4720-bc2d-520e50e1ef00',
+        'category_id': _selectedCategoryId,
         'available': _available,
         'is_organic': _isOrganic,
         'tag': (_selectedTag == 'none' || _selectedTag == null) ? null : _selectedTag,
@@ -461,17 +461,29 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               categoriesAsync.when(
-                data: (categories) => DropdownButtonFormField<String>(
-                  initialValue: _selectedCategoryId ?? categories.firstOrNull?.id,
-                  decoration: InputDecoration(labelText: l10n.category),
-                  items: categories.map((c) => DropdownMenuItem(
-                    value: c.id,
-                    child: Text(c.name),
-                  )).toList(),
-                  onChanged: (v) => setState(() => _selectedCategoryId = v),
-                ),
+                data: (categories) {
+                  if (categories.isEmpty) {
+                    return const Text('No categories found');
+                  }
+
+                  // Automatically set default category ID if unset
+                  _selectedCategoryId ??= categories.first.id;
+
+                  return DropdownButtonFormField<String>(
+                    value: categories.any((c) => c.id == _selectedCategoryId)
+                        ? _selectedCategoryId
+                        : categories.first.id,
+                    decoration: InputDecoration(labelText: l10n.category),
+                    items: categories.map((c) => DropdownMenuItem(
+                      value: c.id,
+                      child: Text(c.name),
+                    )).toList(),
+                    onChanged: (v) => setState(() => _selectedCategoryId = v),
+                    validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  );
+                },
                 loading: () => const LinearProgressIndicator(),
                 error: (error, stack) => Text(l10n.errorLoadingCategories),
               ),

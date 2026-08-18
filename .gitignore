@@ -108,6 +108,7 @@ GoogleService-Info.plist
 supabase/.temp/
 supabase/.branches/
 supabase/.gitignore
+supabase/migrations/*.sql
 
 
 # =========================
