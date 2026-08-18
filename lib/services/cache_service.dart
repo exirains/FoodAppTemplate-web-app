@@ -4,16 +4,17 @@ import '../models/category.dart';
 
 class CacheService {
   static const String boxName = 'cache';
-  
-  final Box<List> _box = Hive.box<List>(boxName);
+
+  // Use a dynamic getter instead of typed Box<List> field
+  Box get _box => Hive.box(boxName);
 
   Future<void> saveCategories(List<Category> categories, String languageCode) async {
     await _box.put('categories_$languageCode', categories);
   }
 
   List<Category>? getCategories(String languageCode) {
-    final list = _box.get('categories_$languageCode');
-    return list?.cast<Category>();
+    final rawList = _box.get('categories_$languageCode') as List?;
+    return rawList?.cast<Category>();
   }
 
   Future<void> saveBreads(List<Bread> breads, String languageCode) async {
@@ -21,8 +22,8 @@ class CacheService {
   }
 
   List<Bread>? getBreads(String languageCode) {
-    final list = _box.get('all_breads_$languageCode');
-    return list?.cast<Bread>();
+    final rawList = _box.get('all_breads_$languageCode') as List?;
+    return rawList?.cast<Bread>();
   }
 
   Future<void> savePopularToday(List<Bread> breads, String languageCode) async {
@@ -30,8 +31,8 @@ class CacheService {
   }
 
   List<Bread>? getPopularToday(String languageCode) {
-    final list = _box.get('popular_today_$languageCode');
-    return list?.cast<Bread>();
+    final rawList = _box.get('popular_today_$languageCode') as List?;
+    return rawList?.cast<Bread>();
   }
 
   Future<void> clear() async {
