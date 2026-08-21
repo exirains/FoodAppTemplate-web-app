@@ -44,7 +44,7 @@ write_env_var "GOOGLE_WEB_CLIENT_ID" "$GOOGLE_WEB_CLIENT_ID"
 write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
 
 echo "Building Sangak web..."
-flutter build web --release -v
+flutter build web --web-renderer html --release -v
 
 # 4. Kill-switch: unregister any previously installed service worker for existing users
 cat > build/web/flutter_service_worker.js << 'EOF'
