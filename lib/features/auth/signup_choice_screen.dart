@@ -33,6 +33,10 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
     final pendingReferral = ref.read(pendingReferralProvider);
     if (pendingReferral != null && pendingReferral.isNotEmpty) {
       _referralController.text = pendingReferral;
+      // If we have a code from a link, jump straight to auth choices
+      _showAuthChoices = true;
+      _isReferralApplied = false; // Will be set to true after validation
+      
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _handleContinue();
       });
@@ -72,6 +76,8 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
       } else {
         setState(() {
           _referralError = _getLocalizedError(result['error']);
+          _showAuthChoices = false; // Show referral field to display error
+          _isReferralApplied = false;
         });
       }
     } catch (e) {

@@ -85,6 +85,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           // Persist to storage for cold starts/reloads
           storage.setReferralCode(referralCode);
           debugPrint('SANGAK: Referral code detected and persisted: $referralCode');
+          
+          // Reset handled state when a new referral code is detected
+          ref.read(referralRedirectHandledProvider.notifier).state = false;
         }
       }
 
@@ -104,7 +107,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
-      if (referralCode != null && referralCode.isNotEmpty && !isAuth) {
+      // 1.5 Auto-redirect for Referral Links
+      final hasRedirected = ref.read(referralRedirectHandledProvider);
+      if (referralCode != null && referralCode.isNotEmpty && !isAuth && !hasRedirected) {
+        ref.read(referralRedirectHandledProvider.notifier).state = true;
+        debugPrint('SANGAK: Auto-redirecting to signup-choice for referral link');
         return '/signup-choice';
       }
 

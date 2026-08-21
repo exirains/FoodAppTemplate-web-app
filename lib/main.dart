@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_links/app_links.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'firebase_options.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/router/app_router.dart';
@@ -42,6 +44,10 @@ final cacheServiceProvider = Provider<CacheService>((ref) {
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
+    
+    // Enable clean path routing (removes # from URL on Web)
+    usePathUrlStrategy();
+    
     debugPrint('SANGAK: Initializing app...');
 
     // Initialize Firebase first
@@ -68,21 +74,31 @@ void main() async {
     final prefs = await SharedPreferences.getInstance();
     final storage = StorageService(prefs);
     
-    // 2.5 Handle Deep Links (Referral Links)
-    final appLinks = AppLinks();
-    
-    // Check for initial link (Cold Start)
-    try {
-      final initialUri = await appLinks.getInitialLink();
-      if (initialUri != null) {
-        final refCode = initialUri.queryParameters['ref']?.trim();
-        if (refCode != null && refCode.isNotEmpty) {
-          await storage.setReferralCode(refCode);
-          debugPrint('SANGAK: Initial referral code captured: $refCode');
-        }
+    // 2.5 Handle Referral Links (Web & Mobile)
+    if (kIsWeb) {
+      // For Web, check Uri.base for query parameters directly
+      final refCode = Uri.base.queryParameters['ref']?.trim();
+      if (refCode != null && refCode.isNotEmpty) {
+        await storage.setReferralCode(refCode);
+        debugPrint('SANGAK: Web referral code captured from Uri.base: $refCode');
       }
-    } catch (e) {
-      debugPrint('SANGAK: Deep link error: $e');
+    } else {
+      // For Mobile, use AppLinks for deep links
+      final appLinks = AppLinks();
+      
+      // Check for initial link (Cold Start)
+      try {
+        final initialUri = await appLinks.getInitialLink();
+        if (initialUri != null) {
+          final refCode = initialUri.queryParameters['ref']?.trim();
+          if (refCode != null && refCode.isNotEmpty) {
+            await storage.setReferralCode(refCode);
+            debugPrint('SANGAK: Initial referral code captured: $refCode');
+          }
+        }
+      } catch (e) {
+        debugPrint('SANGAK: Deep link error: $e');
+      }
     }
 
     // 3. Initialize Critical Services (Must await Supabase to avoid FCM null-check errors)

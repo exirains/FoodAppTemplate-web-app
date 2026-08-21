@@ -26,6 +26,10 @@ final pendingReferralProvider = StateProvider<String?>((ref) {
   }
 });
 
+/// Tracks if the automatic redirect for a referral link has already occurred
+/// to prevent infinite redirect loops.
+final referralRedirectHandledProvider = StateProvider<bool>((ref) => false);
+
 class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   final Ref _ref;
 
