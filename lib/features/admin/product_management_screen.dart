@@ -257,7 +257,6 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
   late TextEditingController _priceController;
   late TextEditingController _prepTimeController;
   late TextEditingController _caloriesController;
-  late TextEditingController _weightController;
   
   String? _imageUrl;
   String? _selectedCategoryId;
@@ -284,7 +283,6 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     _priceController = TextEditingController(text: isEditing ? b.price.toString() : '');
     _prepTimeController = TextEditingController(text: isEditing ? b.prepTime.toString() : '20');
     _caloriesController = TextEditingController(text: isEditing ? b.calories.toString() : '250');
-    _weightController = TextEditingController(text: isEditing ? b.weight ?? '' : '');
     
     _imageUrl = isEditing ? b.imageUrl : null;
     _selectedCategoryId = isEditing ? b.categoryId : null;
@@ -304,7 +302,6 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     _priceController.dispose();
     _prepTimeController.dispose();
     _caloriesController.dispose();
-    _weightController.dispose();
     super.dispose();
   }
 
@@ -364,20 +361,18 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
       final price = double.tryParse(_priceController.text) ?? 0.0;
       final prepTime = int.tryParse(_prepTimeController.text) ?? 20;
       final calories = int.tryParse(_caloriesController.text) ?? 250;
-      final weight = _weightController.text.trim();
       
       final productData = {
         'name': _nameEnController.text.trim(),
         'description': _descEnController.text.trim(),
         'price': price,
         'image_url': finalImageUrl,
-        'category_id': _selectedCategoryId,
+        'category_id': _selectedCategoryId ?? '8906660b-8d18-4720-bc2d-520e50e1ef00',
         'available': _available,
         'is_organic': _isOrganic,
         'tag': (_selectedTag == 'none' || _selectedTag == null) ? null : _selectedTag,
         'prep_time': prepTime,
         'calories': calories,
-        'weight': weight.isEmpty ? null : weight,
       };
 
       String productId;
@@ -466,29 +461,17 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                 ),
               ),
               const SizedBox(height: 16),
-
+              
               categoriesAsync.when(
-                data: (categories) {
-                  if (categories.isEmpty) {
-                    return Text(l10n.noCategoriesFound);
-                  }
-
-                  // Automatically set default category ID if unset
-                  _selectedCategoryId ??= categories.first.id;
-
-                  return DropdownButtonFormField<String>(
-                    initialValue: categories.any((c) => c.id == _selectedCategoryId)
-                        ? _selectedCategoryId
-                        : categories.first.id,
-                    decoration: InputDecoration(labelText: l10n.category),
-                    items: categories.map((c) => DropdownMenuItem(
-                      value: c.id,
-                      child: Text(c.name),
-                    )).toList(),
-                    onChanged: (v) => setState(() => _selectedCategoryId = v),
-                    validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-                  );
-                },
+                data: (categories) => DropdownButtonFormField<String>(
+                  initialValue: _selectedCategoryId ?? categories.firstOrNull?.id,
+                  decoration: InputDecoration(labelText: l10n.category),
+                  items: categories.map((c) => DropdownMenuItem(
+                    value: c.id,
+                    child: Text(c.name),
+                  )).toList(),
+                  onChanged: (v) => setState(() => _selectedCategoryId = v),
+                ),
                 loading: () => const LinearProgressIndicator(),
                 error: (error, stack) => Text(l10n.errorLoadingCategories),
               ),
@@ -535,12 +518,6 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
               validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-            ),
-            const SizedBox(height: 12),
-            SangakTextField(
-              label: l10n.weight,
-              controller: _weightController,
-              hintText: 'e.g., 400±20 gr',
             ),
             const SizedBox(height: 12),
             Row(
