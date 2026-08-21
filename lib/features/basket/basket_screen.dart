@@ -16,6 +16,7 @@ import '../../core/localization/sangak_number_formatter.dart';
 import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import 'basket_provider.dart';
+import '../auth/auth_provider.dart';
 import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 import '../auth/models/user_profile.dart';
@@ -35,7 +36,11 @@ class BasketScreen extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     final profileAsync = ref.watch(userProfileProvider);
+    final authUser = ref.watch(authProvider).value;
     final optionsAsync = ref.watch(appOptionsProvider);
+
+    final hasPhone = AuthValidators.hasValidPhoneNumber(profileAsync.value?.phoneNumber) ||
+                     AuthValidators.hasValidPhoneNumber(authUser?.userMetadata?['phone'] as String?);
 
     if (basket.isEmpty) {
       return Scaffold(
@@ -197,13 +202,13 @@ class BasketScreen extends ConsumerWidget {
               },
             ),
           ),
-          _buildSummary(context, ref, total, l10n, profileAsync.value, optionsAsync),
+          _buildSummary(context, ref, total, l10n, profileAsync.value, hasPhone, optionsAsync),
         ],
       ),
     );
   }
 
-  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n, UserProfile? profile, AsyncValue<Map<String, dynamic>> optionsAsync) {
+  Widget _buildSummary(BuildContext context, WidgetRef ref, double total, AppLocalizations l10n, UserProfile? profile, bool hasPhone, AsyncValue<Map<String, dynamic>> optionsAsync) {
     // Get values from DB. Use 0 fallback while loading to avoid "200" flickering.
     // Once loaded, if key is missing, THEN we use the business fallback of 200.
     final Map<String, dynamic> dbOptions = optionsAsync.value ?? {};
@@ -223,7 +228,6 @@ class BasketScreen extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final lang = locale.languageCode;
     
-    final hasPhone = AuthValidators.hasValidPhoneNumber(profile?.phoneNumber);
     final isAccountDisabled = profile != null && !profile.isActive;
     
     final bool isBelowLimit = total < minLimit;

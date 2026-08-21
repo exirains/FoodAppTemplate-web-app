@@ -7,6 +7,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../auth/auth_provider.dart';
+import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 import '../basket/basket_provider.dart';
 import 'home_provider.dart';
@@ -134,8 +135,10 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: SangakDimens.spacing24),
 
                   // Phone Number Warning Banner
-                  if (!isGuest && (ref.watch(userProfileProvider).value?.phoneNumber == null || 
-                      ref.watch(userProfileProvider).value!.phoneNumber!.isEmpty))
+                  if (!isGuest && 
+                      !ref.watch(userProfileProvider).isLoading && 
+                      !AuthValidators.hasValidPhoneNumber(ref.watch(userProfileProvider).value?.phoneNumber) &&
+                      !AuthValidators.hasValidPhoneNumber(user.userMetadata?['phone'] as String?))
                     Padding(
                       padding: const EdgeInsets.only(bottom: SangakDimens.spacing24),
                       child: Container(

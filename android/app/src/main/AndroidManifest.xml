@@ -48,7 +48,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="sangak.tr"/>
+                    android:host="app.sangak.tr"/>
             </intent-filter>
 
             <!-- FCM Intent Filter -->

@@ -614,16 +614,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Center(child: CircularProgressIndicator()),
             ),
           Positioned(
-            bottom: 0,
-            right: 0,
+            bottom: 4,
+            right: 4,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _isUploading ? null : _pickAndUploadAvatar,
-              child: Ink(
+              child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: SangakColors.primary,
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: const Icon(Icons.camera_alt_rounded, size: 20, color: Colors.white),
               ),
