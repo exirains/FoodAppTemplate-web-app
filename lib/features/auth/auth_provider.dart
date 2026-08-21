@@ -7,12 +7,20 @@ import 'auth_error_handler.dart';
 import 'auth_rate_limiter.dart';
 import 'auth_validators.dart';
 
+import '../../services/referral_repository.dart';
+import '../../core/localization/locale_provider.dart';
+
 final authProvider = StateNotifierProvider<AuthNotifier, AsyncValue<User?>>((ref) {
-  return AuthNotifier();
+  return AuthNotifier(ref);
 });
 
+/// Provider for a pending referral code entered during signup
+final pendingReferralProvider = StateProvider<String?>((ref) => null);
+
 class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
-  AuthNotifier() : super(const AsyncValue.loading()) {
+  final Ref _ref;
+
+  AuthNotifier(this._ref) : super(const AsyncValue.loading()) {
     _init();
   }
 
@@ -58,6 +66,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
       
       // Record successful attempt
       authRateLimiter.recordSuccess(email);
+      
+      if (response.user != null) {
+        await _handlePendingReferral(response.user!.id);
+      }
       
       state = AsyncValue.data(response.user);
       return response.user;
@@ -117,6 +129,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
       
       // Record successful attempt
       authRateLimiter.recordSuccess(email);
+      
+      if (response.user != null) {
+        await _handlePendingReferral(response.user!.id);
+      }
       
       state = AsyncValue.data(response.user);
       return response.user;
@@ -199,14 +215,26 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         if (response.user != null) {
           // Sync/Create profile after successful Google Login
           try {
+            final lang = _ref.read(localeProvider).languageCode;
             await SupabaseService.client.from('profiles').upsert({
               'id': response.user!.id,
               'full_name': response.user!.userMetadata?['full_name'] ?? response.user!.email?.split('@')[0] ?? 'User',
               'email': response.user!.email,
+              'preferred_language': lang,
             });
           } catch (e) {
             debugPrint('Non-critical: Error syncing profile after Google login: $e');
           }
+
+          // Check if this is a new user for referral processing
+          final user = response.user!;
+          final isNewUser = user.lastSignInAt == null || 
+              (DateTime.tryParse(user.lastSignInAt!)?.difference(DateTime.parse(user.createdAt)).inSeconds.abs() ?? 10) < 5;
+          
+          if (isNewUser) {
+            await _handlePendingReferral(user.id);
+          }
+
           return response.user;
         }
         return null;
@@ -232,6 +260,36 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
       // Keep previous state to avoid breaking the whole UI with an error state
       state = AsyncValue.data(state.asData?.value);
       throw authError;
+    }
+  }
+
+  /// Processes a pending referral code for a newly created user
+  Future<void> _handlePendingReferral(String userId) async {
+    final referralCode = _ref.read(pendingReferralProvider);
+    if (referralCode == null || referralCode.isEmpty) return;
+
+    try {
+      final result = await _ref.read(referralRepositoryProvider).processReferralReward(
+            referredUserId: userId,
+            referralCode: referralCode,
+          );
+
+      if (result['success'] == true) {
+        debugPrint('✅ Referral processed successfully for user: $userId');
+        // Clear the pending referral code after successful processing
+        _ref.read(pendingReferralProvider.notifier).state = null;
+      } else {
+        final error = result['error'] ?? 'unknown_error';
+        debugPrint('ℹ️ Referral not processed: $error');
+        
+        // If it's already referred or invalid, we clear the pending state 
+        // to prevent repeated attempts on subsequent logins
+        if (error == 'already_referred' || error == 'invalid_code' || error == 'self_referral') {
+          _ref.read(pendingReferralProvider.notifier).state = null;
+        }
+      }
+    } catch (e) {
+      debugPrint('🚨 Error in _handlePendingReferral: $e');
     }
   }
 }

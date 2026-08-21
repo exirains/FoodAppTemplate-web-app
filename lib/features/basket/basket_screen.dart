@@ -19,6 +19,8 @@ import 'basket_provider.dart';
 import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 import '../auth/models/user_profile.dart';
+import '../../models/sangak_customization.dart';
+import '../custom_sangak/data/sangak_customization_options.dart';
 
 import '../../services/options_repository.dart';
 
@@ -127,6 +129,19 @@ class BasketScreen extends ConsumerWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
+                            if (item.customization != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  _getCustomizationSummary(item.customization!),
+                                  style: SangakTypography.bodySmall(context).copyWith(
+                                    fontSize: 12,
+                                    color: SangakColors.primary,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             const SizedBox(height: 4),
                             Text(
                               SangakNumberFormatter.formatCurrency(item.bread.price, lang),
@@ -144,7 +159,7 @@ class BasketScreen extends ConsumerWidget {
                           compact: true,
                           onIncrement: () {
                             if (!ActionGuard.check(context, ref)) return;
-                            ref.read(basketProvider.notifier).updateQuantity(item.bread.id, 1);
+                            ref.read(basketProvider.notifier).updateQuantity(item.basketId, 1);
                           },
                           onDecrement: () {
                             if (!ActionGuard.check(context, ref)) return;
@@ -155,11 +170,11 @@ class BasketScreen extends ConsumerWidget {
                                 message: l10n.removeItemFromBasket,
                                 confirmLabel: l10n.remove,
                                 cancelLabel: l10n.cancel,
-                                onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                                onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.basketId),
                                 isDestructive: true,
                               );
                             } else {
-                              ref.read(basketProvider.notifier).updateQuantity(item.bread.id, -1);
+                              ref.read(basketProvider.notifier).updateQuantity(item.basketId, -1);
                             }
                           },
                           onDelete: () {
@@ -170,7 +185,7 @@ class BasketScreen extends ConsumerWidget {
                               message: l10n.removeItemFromBasket,
                               confirmLabel: l10n.remove,
                               cancelLabel: l10n.cancel,
-                              onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.bread.id),
+                              onConfirm: () => ref.read(basketProvider.notifier).removeItem(item.basketId),
                               isDestructive: true,
                             );
                           },
@@ -359,5 +374,23 @@ class BasketScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _getCustomizationSummary(SangakCustomization customization) {
+    if (customization.selectedOptions.isEmpty) return 'Plain';
+    
+    final List<String> parts = [];
+    for (final entry in customization.selectedOptions.entries) {
+      final option = sangakCustomizationOptions.cast<SangakCustomizationOption?>().firstWhere(
+        (o) => o?.id == entry.key,
+        orElse: () => null,
+      );
+      if (option != null) {
+        final name = option.name;
+        final qty = entry.value;
+        parts.add(qty > 1 ? '$name (x$qty)' : name);
+      }
+    }
+    return parts.isEmpty ? 'Custom' : parts.join(', ');
   }
 }

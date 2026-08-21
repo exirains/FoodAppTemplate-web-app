@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
@@ -33,9 +34,29 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       child: SangakBackHandler(
         child: Scaffold(
           backgroundColor: SangakColors.background,
-          body: isWide 
-            ? _buildWorkstationLayout(l10n)
-            : _buildMobileLayout(l10n),
+          appBar: isWide ? null : AppBar(
+            backgroundColor: SangakColors.surface,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+              onPressed: () => context.go('/home'),
+            ),
+            title: Text(
+              _currentIndex == 0 ? l10n.kitchenPanel : 
+              _currentIndex == 1 ? l10n.ordersHistory : l10n.staffProfile,
+              style: SangakTypography.h3(context),
+            ),
+            centerTitle: true,
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(1),
+              child: Divider(height: 1, thickness: 1, color: SangakColors.border),
+            ),
+          ),
+          body: SafeArea(
+            child: isWide 
+              ? _buildWorkstationLayout(l10n)
+              : _buildMobileLayout(l10n),
+          ),
           bottomNavigationBar: isWide ? null : _buildBottomNav(l10n),
         ),
       ),
@@ -234,9 +255,12 @@ class _StaffOrdersView extends ConsumerWidget {
               ),
 
             Expanded(
-              child: isWide 
-                ? _buildGridView(context, pending, preparing, ready, l10n)
-                : _buildListView(context, pending, preparing, ready, l10n),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: isWide 
+                  ? _buildGridView(context, pending, preparing, ready, l10n)
+                  : _buildListView(context, pending, preparing, ready, l10n),
+              ),
             ),
           ],
         );

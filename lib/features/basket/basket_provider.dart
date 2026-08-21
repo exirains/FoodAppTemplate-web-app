@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import '../../models/bread.dart';
 import '../../models/basket_item.dart';
+import '../../models/sangak_customization.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 
@@ -173,8 +174,10 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
     }
   }
 
-  void addItem(Bread bread, {int quantity = 1}) {
-    final existingIndex = state.indexWhere((item) => item.bread.id == bread.id);
+  void addItem(Bread bread, {int quantity = 1, SangakCustomization? customization}) {
+    final existingIndex = state.indexWhere(
+      (item) => item.bread.id == bread.id && item.customization == customization
+    );
     int newQuantity = quantity;
 
     if (existingIndex != -1) {
@@ -187,21 +190,31 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
             state[i]
       ];
     } else {
-      state = [...state, BasketItem(bread: bread, quantity: quantity)];
+      state = [...state, BasketItem(bread: bread, quantity: quantity, customization: customization)];
     }
     
     _saveLocal();
-    _syncItem(bread.id, newQuantity);
+    // For customized items, syncing to Supabase might need a more complex schema 
+    // if we want to store the customization there too. 
+    // For now, let's sync the base item if customization is null, or skip if it's customized 
+    // until the DB supports it.
+    if (customization == null) {
+      _syncItem(bread.id, newQuantity);
+    }
   }
 
-  void removeItem(String breadId) {
-    state = state.where((item) => item.bread.id != breadId).toList();
+  void addItemWithCustomization(BasketItem item) {
+    addItem(item.bread, quantity: item.quantity, customization: item.customization);
+  }
+
+  void removeItem(String basketId) {
+    state = state.where((item) => item.basketId != basketId).toList();
     _saveLocal();
-    _deleteItem(breadId);
+    // TODO: Sync deletion to Supabase if basketId is tracked there
   }
 
-  void updateQuantity(String breadId, int delta) {
-    final index = state.indexWhere((item) => item.bread.id == breadId);
+  void updateQuantity(String basketId, int delta) {
+    final index = state.indexWhere((item) => item.basketId == basketId);
     if (index == -1) return;
     
     final item = state[index];
@@ -213,9 +226,12 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
           if (i == index) item.copyWith(quantity: newQuantity) else state[i]
       ];
       _saveLocal();
-      _syncItem(breadId, newQuantity);
+      // Only sync non-customized items to Supabase for now
+      if (item.customization == null) {
+        _syncItem(item.bread.id, newQuantity);
+      }
     } else {
-      removeItem(breadId);
+      removeItem(basketId);
     }
   }
 
@@ -233,20 +249,6 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
       debugPrint('Sync successful');
     } catch (e) {
       debugPrint('Error background syncing basket item: $e');
-    }
-  }
-
-  Future<void> _deleteItem(String productId) async {
-    final user = _ref.read(authProvider).asData?.value;
-    if (user == null) return;
-
-    try {
-      await SupabaseService.client
-          .from('basket_items')
-          .delete()
-          .match({'user_id': user.id, 'product_id': productId});
-    } catch (e) {
-      debugPrint('Error background deleting basket item: $e');
     }
   }
 

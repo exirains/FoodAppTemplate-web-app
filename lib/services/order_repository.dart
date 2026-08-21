@@ -386,17 +386,19 @@ class OrderRepository {
 
       // 2. Fetch loyalty settings
       final options = await _ref.read(optionsRepositoryProvider).getOptions();
+      final earningRule = options['points_earning_rule']?.toString() ?? 'total_spent';
       
-      final pointsPerOrder = int.tryParse(options['points_per_order']?.toString() ?? '10') ?? 10;
-      final pointsPerCurrency = int.tryParse(options['points_per_currency']?.toString() ?? '0') ?? 0;
-      
-      int amount = pointsPerOrder;
-      if (pointsPerCurrency > 0) {
-        amount += (order.totalPrice * pointsPerCurrency).floor();
+      int amount = 0;
+      if (earningRule == 'total_spent') {
+        final pointsPerCurrency = int.tryParse(options['points_per_currency']?.toString() ?? '1') ?? 1;
+        amount = (order.totalPrice * pointsPerCurrency).floor();
+        debugPrint('🏅 [LOYALTY] Rule: Total Spent. Mult: $pointsPerCurrency. Amount: $amount');
+      } else {
+        amount = int.tryParse(options['points_per_order']?.toString() ?? '10') ?? 10;
+        debugPrint('🏅 [LOYALTY] Rule: Fixed. Amount: $amount');
       }
 
       debugPrint('🏅 [LOYALTY] Awarding $amount points to user ${order.userId} for order ${order.orderNumber}');
-      debugPrint('🏅 [LOYALTY] Base: $pointsPerOrder, Currency multiplier: $pointsPerCurrency');
 
       // 3. Call award_loyalty_points RPC
       await _ref.read(loyaltyRepositoryProvider).awardPoints(

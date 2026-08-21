@@ -7,6 +7,7 @@ import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
 import '../../../shared/utils/sangak_toast.dart';
+import '../../../models/referral.dart';
 import '../referral_provider.dart';
 
 class ReferralSection extends ConsumerWidget {
@@ -80,12 +81,32 @@ class ReferralSection extends ConsumerWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: SangakColors.background,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        ),
-        padding: const EdgeInsets.all(SangakDimens.spacing32),
+      builder: (context) => _ReferralDetailsSheet(code: code),
+    );
+  }
+}
+
+class _ReferralDetailsSheet extends ConsumerWidget {
+  final String code;
+  const _ReferralDetailsSheet({required this.code});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final statsAsync = ref.watch(referralStatsProvider);
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: SangakColors.background,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      padding: EdgeInsets.only(
+        left: SangakDimens.spacing32,
+        right: SangakDimens.spacing32,
+        top: SangakDimens.spacing32,
+        bottom: MediaQuery.of(context).padding.bottom + SangakDimens.spacing32,
+      ),
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -98,14 +119,78 @@ class ReferralSection extends ConsumerWidget {
             _buildCodeDisplay(context, code, l10n),
             const SizedBox(height: 32),
             statsAsync.when(
-              data: (stats) => _buildStatsGrid(context, stats, l10n),
-              loading: () => const CircularProgressIndicator(),
-              error: (e, s) => const SizedBox.shrink(),
+              data: (stats) => Column(
+                children: [
+                  _buildStatsGrid(context, stats, l10n),
+                  const SizedBox(height: 32),
+                  _buildHistorySection(context, (stats['referrals'] as List<Referral>?) ?? [], l10n),
+                ],
+              ),
+              loading: () => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 48),
+                child: CircularProgressIndicator(),
+              ),
+              error: (e, s) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Text(l10n.errorOccurred),
+              ),
             ),
-            const SizedBox(height: 32),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHistorySection(BuildContext context, List<Referral> referrals, AppLocalizations l10n) {
+    if (referrals.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.referralStats, style: SangakTypography.title(context)),
+        const SizedBox(height: 16),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: referrals.length,
+          separatorBuilder: (context, index) => const Divider(height: 1),
+          itemBuilder: (context, index) {
+            final referral = referrals[index];
+            final isRewarded = referral.status == ReferralStatus.rewarded;
+            
+            return ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (isRewarded ? Colors.green : SangakColors.inkLight).withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isRewarded ? Icons.check_circle_outline_rounded : Icons.pending_outlined,
+                  color: isRewarded ? Colors.green : SangakColors.inkLight,
+                  size: 20,
+                ),
+              ),
+              title: Text(
+                referral.referredUserName ?? 'New User',
+                style: SangakTypography.title(context).copyWith(fontSize: 14),
+              ),
+              subtitle: Text(
+                '${referral.createdAt.day}/${referral.createdAt.month}/${referral.createdAt.year}',
+                style: SangakTypography.caption(context),
+              ),
+              trailing: Text(
+                isRewarded ? l10n.referralStatusRewarded : l10n.referralStatusPending,
+                style: SangakTypography.bodySmall(context).copyWith(
+                  color: isRewarded ? Colors.green : SangakColors.inkLight,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 

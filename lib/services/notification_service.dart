@@ -78,7 +78,27 @@ class NotificationService {
 
   static void _handleMessageNavigation(RemoteMessage message) {
     final type = message.data['type'];
-    if (type == 'new_delivery_order' || message.data['status'] == 'ready') {
+    final orderId = message.data['order_id'];
+
+    if (type == 'new_order') {
+      final user = SupabaseService.client.auth.currentUser;
+      if (user != null) {
+        // We fetch the profile to be role-accurate for navigation
+        SupabaseService.client
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+            .then((data) {
+          final role = data['role'] as String?;
+          if (role == 'admin' && orderId != null) {
+            _navigatorKey?.currentState?.pushNamed('/admin/orders/$orderId');
+          } else if (role == 'staff') {
+            _navigatorKey?.currentState?.pushNamed('/staff');
+          }
+        });
+      }
+    } else if (type == 'new_delivery_order' || message.data['status'] == 'ready') {
       _navigatorKey?.currentState?.pushNamed('/delivery');
     }
   }

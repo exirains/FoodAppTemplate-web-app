@@ -31,6 +31,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeBack => 'Welcome Back';
 
   @override
+  String get signInSubtitle => 'Sign in to continue where you left off.';
+
+  @override
   String get email => 'Email';
 
   @override
@@ -142,6 +145,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumberRequired => 'Phone number is required for delivery.';
 
   @override
+  String get buildYourSangak => 'Build Your Sangak';
+
+  @override
+  String get base => 'Base';
+
+  @override
+  String get seeds => 'Seeds';
+
+  @override
+  String get extras => 'Extras';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get customizeYourSangak => 'Customize Your Sangak';
+
+  @override
+  String get addedCustomSangak => 'Added your custom Sangak to basket!';
+
+  @override
   String get saveYourFavorites => 'Save your favorites';
 
   @override
@@ -203,6 +227,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get notifications => 'Notifications';
+
+  @override
   String get language => 'Language';
 
   @override
@@ -234,9 +261,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deliveryFee => 'Delivery Fee';
-
-  @override
-  String get total => 'Total';
 
   @override
   String get proceedToCheckout => 'Proceed to Checkout';
@@ -346,6 +370,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLoadingCategories => 'Error loading categories';
+
+  @override
+  String get noCategoriesFound => 'No categories found';
 
   @override
   String get errorLoadingBreads => 'Error loading breads';
@@ -860,6 +887,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editUserProfile => 'Edit User Profile';
 
   @override
+  String get weight => 'Weight';
+
+  @override
   String get price => 'Price';
 
   @override
@@ -1197,6 +1227,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appStartFailed => 'App failed to start';
 
   @override
+  String get initializationError => 'Initialization Error';
+
+  @override
   String get errorLoadingStaff => 'Error loading staff';
 
   @override
@@ -1207,6 +1240,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalOrdersToday => 'Total Orders Today';
+
+  @override
+  String get totalUsers => 'Total Users';
 
   @override
   String get unlockCancellation => 'Slide to unlock cancellation input';
@@ -1238,6 +1274,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSettings => 'Admin Settings';
 
   @override
+  String get customization => 'Customization';
+
+  @override
+  String get customSangak => 'Custom Sangak';
+
+  @override
+  String get customSangakDescription =>
+      'Enable or disable the Make Your Own Sangak feature for customers.';
+
+  @override
   String get minOrderLimitLabel => 'Minimum Order Limit (TL)';
 
   @override
@@ -1248,6 +1294,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointsPerCurrencyLabel => 'Points Per Currency Unit';
+
+  @override
+  String get pointsEarningRule => 'Points Earning Rule';
+
+  @override
+  String get totalSpentRule => 'Points = Total Spent (1:1)';
+
+  @override
+  String get totalSpentSubtitle => '1 TL = 1 Point';
+
+  @override
+  String get fixedPointsRule => 'Fixed Points per Order';
 
   @override
   String get streakBonusLabel => 'Streak Bonus Points';
@@ -1269,6 +1327,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loyaltyCenter => 'Loyalty Center';
+
+  @override
+  String get loyaltySystemDisclaimer =>
+      'The loyalty and rewards system is currently under development. Points earned now will be valid when the system is fully launched.';
 
   @override
   String get points => 'Points';
@@ -1486,6 +1548,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copySuccess => 'Code copied to clipboard!';
+
+  @override
+  String get selfReferralError => 'You cannot use your own referral code';
+
+  @override
+  String get inactiveReferralCodeError =>
+      'This referral code is no longer active';
+
+  @override
+  String get featureUnavailable => 'This feature is temporarily unavailable.';
 
   @override
   String get referralSystemTitle => 'Refer & Earn';

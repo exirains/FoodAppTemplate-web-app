@@ -83,6 +83,7 @@ class UserManagementScreen extends ConsumerWidget {
         ),
         body: Column(
           children: [
+            _buildStatHeader(context, usersAsync.value?.length ?? 0, l10n),
             _buildSearchAndFilters(context, ref, l10n),
             Expanded(
               child: usersAsync.when(
@@ -193,6 +194,43 @@ class UserManagementScreen extends ConsumerWidget {
                 _RoleFilterChip(label: l10n.filterDelivery, value: 'delivery'),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatHeader(BuildContext context, int count, AppLocalizations l10n) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        border: Border(bottom: BorderSide(color: SangakColors.border, width: 0.5)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: SangakColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.people_rounded, color: SangakColors.primary, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.totalUsers,
+                style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                count.toString(),
+                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+              ),
+            ],
           ),
         ],
       ),

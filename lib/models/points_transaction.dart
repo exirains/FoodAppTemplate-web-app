@@ -1,19 +1,19 @@
 class PointsTransaction {
   final String id;
   final String userId;
-  final int points;
+  final int amount;
   final String type; // 'earn', 'spend'
   final String reason;
-  final String? orderId;
+  final String? relatedId;
   final DateTime createdAt;
 
   PointsTransaction({
     required this.id,
     required this.userId,
-    required this.points,
+    required this.amount,
     required this.type,
     required this.reason,
-    this.orderId,
+    this.relatedId,
     required this.createdAt,
   });
 
@@ -21,10 +21,10 @@ class PointsTransaction {
     return PointsTransaction(
       id: json['id'] as String,
       userId: json['user_id'] as String,
-      points: json['points'] as int,
+      amount: json['amount'] as int,
       type: json['type'] as String,
       reason: json['reason'] as String,
-      orderId: json['order_id'] as String?,
+      relatedId: json['related_id'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -33,10 +33,10 @@ class PointsTransaction {
     return {
       'id': id,
       'user_id': userId,
-      'points': points,
+      'amount': amount,
       'type': type,
       'reason': reason,
-      'order_id': orderId,
+      'related_id': relatedId,
       'created_at': createdAt.toIso8601String(),
     };
   }

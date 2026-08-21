@@ -10,6 +10,7 @@ class OrderRating {
   final String? reviewText;
   final bool isApproved;
   final DateTime createdAt;
+  final Map<String, dynamic>? customer;
 
   OrderRating({
     required this.id,
@@ -23,21 +24,25 @@ class OrderRating {
     this.reviewText,
     this.isApproved = false,
     required this.createdAt,
+    this.customer,
   });
 
   factory OrderRating.fromJson(Map<String, dynamic> json) {
     return OrderRating(
-      id: json['id'] as String,
-      orderId: json['order_id'] as String,
-      userId: json['user_id'] as String,
-      overallRating: json['overall_rating'] as int,
-      qualityRating: json['quality_rating'] as int,
-      freshnessRating: json['freshness_rating'] as int,
-      packagingRating: json['packaging_rating'] as int,
-      deliveryRating: json['delivery_rating'] as int,
+      id: (json['id'] ?? '').toString(),
+      orderId: (json['order_id'] ?? '').toString(),
+      userId: (json['user_id'] ?? '').toString(),
+      overallRating: int.tryParse(json['overall_rating']?.toString() ?? '5') ?? 5,
+      qualityRating: int.tryParse(json['quality_rating']?.toString() ?? '5') ?? 5,
+      freshnessRating: int.tryParse(json['freshness_rating']?.toString() ?? '5') ?? 5,
+      packagingRating: int.tryParse(json['packaging_rating']?.toString() ?? '5') ?? 5,
+      deliveryRating: int.tryParse(json['delivery_rating']?.toString() ?? '5') ?? 5,
       reviewText: json['review_text'] as String?,
       isApproved: json['is_approved'] as bool? ?? false,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'] as String) 
+          : DateTime.now(),
+      customer: json['customer'] is Map ? Map<String, dynamic>.from(json['customer'] as Map) : null,
     );
   }
 

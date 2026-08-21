@@ -55,8 +55,6 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    
     // Intelligent max width
     double? effectiveMaxWidth = maxWidth;
     if (effectiveMaxWidth == null) {

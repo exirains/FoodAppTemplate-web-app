@@ -25,8 +25,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
     // but for now we use state from checkout
     
     final orderNumber = orderId != null 
-        ? 'SNK-${orderId!.substring(0, 8).toUpperCase()}'
-        : 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+        ? 'SNK-${orderId!.substring(0, 4).toUpperCase()}'
+        : 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(9)}';
         
     final formattedOrderNumber = SangakNumberFormatter.format(orderNumber, lang);
     

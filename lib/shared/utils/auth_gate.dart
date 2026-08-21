@@ -32,7 +32,7 @@ class AuthGate {
       if (result == 'login') {
         context.push('/login');
       } else if (result == 'register') {
-        context.push('/register');
+        context.push('/signup-choice');
       }
     }
   }

@@ -22,8 +22,10 @@ class Referral {
   final String referralCodeId;
   final ReferralStatus status;
   final String? completedOrderId;
+  final DateTime? rewardedAt;
   final DateTime? qualifiedAt;
   final DateTime createdAt;
+  final String? referredUserName; // NEW
 
   Referral({
     required this.id,
@@ -32,8 +34,10 @@ class Referral {
     required this.referralCodeId,
     required this.status,
     this.completedOrderId,
+    this.rewardedAt,
     this.qualifiedAt,
     required this.createdAt,
+    this.referredUserName,
   });
 
   factory Referral.fromJson(Map<String, dynamic> json) {
@@ -44,10 +48,16 @@ class Referral {
       referralCodeId: json['referral_code_id'] as String,
       status: ReferralStatus.fromString(json['status'] as String),
       completedOrderId: json['completed_order_id'] as String?,
+      rewardedAt: json['rewarded_at'] != null 
+          ? DateTime.parse(json['rewarded_at'] as String)
+          : null,
       qualifiedAt: json['qualified_at'] != null 
           ? DateTime.parse(json['qualified_at'] as String)
           : null,
       createdAt: DateTime.parse(json['created_at'] as String),
+      referredUserName: json['referred_user'] != null 
+          ? json['referred_user']['full_name'] as String?
+          : null,
     );
   }
 
@@ -59,6 +69,7 @@ class Referral {
       'referral_code_id': referralCodeId,
       'status': status.toString(),
       'completed_order_id': completedOrderId,
+      'rewarded_at': rewardedAt?.toIso8601String(),
       'qualified_at': qualifiedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
     };

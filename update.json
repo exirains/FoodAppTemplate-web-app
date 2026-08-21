@@ -1,13 +1,13 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.3.4",
-  "build_number": 12,
+  "version": "1.3.5",
+  "build_number": 13,
   "force_update": false,
   "notes": [
-    "Major bug fixes",
-    "Improvements in performance",
+    "Stability updates and major bug fixes",
+    "Staff and admin UI updates and improvements",
     "Quality of life improvements and additions"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/download/v1.3.4/Sangak_v1.3.4.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/download/v1.3.5/Sangak_v1.3.5.apk"
 }

@@ -28,14 +28,16 @@ class Bread {
   @HiveField(10)
   final bool isOrganic;
   @HiveField(11)
-  final DateTime? createdAt;
+  final String? weight;
   @HiveField(12)
-  final DateTime? updatedAt;
+  final DateTime? createdAt;
   @HiveField(13)
-  final double rating;
+  final DateTime? updatedAt;
   @HiveField(14)
-  final int reviews;
+  final double rating;
   @HiveField(15)
+  final int reviews;
+  @HiveField(16)
   final Map<String, dynamic>? translations; // { 'en': {'name': '...', 'description': '...'}, ... }
   
   final FreshnessToken? freshness;
@@ -53,6 +55,7 @@ class Bread {
     this.prepTime = 20,
     this.calories = 250,
     this.isOrganic = false,
+    this.weight,
     this.createdAt,
     this.updatedAt,
     this.rating = 0.0,
@@ -93,6 +96,7 @@ class Bread {
       'prep_time': prepTime,
       'calories': calories,
       'is_organic': isOrganic,
+      'weight': weight,
       'translations': translations,
     };
   }
@@ -156,6 +160,7 @@ class Bread {
       prepTime: _toInt(json['prep_time'], 20),
       calories: _toInt(json['calories'], 250),
       isOrganic: json['is_organic'] as bool? ?? false,
+      weight: json['weight'] as String?,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at'] as String) : null,
       rating: _toDouble(json['rating']),

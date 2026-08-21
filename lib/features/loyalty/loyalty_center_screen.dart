@@ -43,7 +43,9 @@ class LoyaltyCenterScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildPointsHeader(context, loyaltyAsync, profileAsync, l10n),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
+              _buildDisclaimer(context, l10n),
+              const SizedBox(height: 24),
               
               _buildProgressSection(context, loyaltyAsync, l10n),
               const SizedBox(height: 40),
@@ -190,34 +192,54 @@ class LoyaltyCenterScreen extends ConsumerWidget {
       data: (rewards) {
         if (rewards.isEmpty) return Center(child: Text(l10n.noProductsFound));
         
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.rewards, style: SangakTypography.h3(context)),
-            const SizedBox(height: 16),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.8,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-              ),
-              itemCount: rewards.length,
-              itemBuilder: (context, index) {
-                final reward = rewards[index];
-                final userPoints = loyaltyAsync.asData?.value?.currentPoints ?? 0;
-                final canAfford = userPoints >= reward.pointsCost;
-                
-                return _RewardCard(reward: reward, canAfford: canAfford);
-              },
-            ),
-          ],
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+          ),
+          itemCount: rewards.length,
+          itemBuilder: (context, index) {
+            final reward = rewards[index];
+            final userPoints = loyaltyAsync.asData?.value?.currentPoints ?? 0;
+            final canAfford = userPoints >= reward.pointsCost;
+            
+            return _RewardCard(reward: reward, canAfford: canAfford);
+          },
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, _) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildDisclaimer(BuildContext context, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: SangakColors.warning.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: SangakColors.warning.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline_rounded, color: SangakColors.warning, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              l10n.loyaltySystemDisclaimer,
+              style: SangakTypography.bodySmall(context).copyWith(
+                color: SangakColors.ink,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

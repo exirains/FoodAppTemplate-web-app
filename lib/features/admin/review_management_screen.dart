@@ -128,9 +128,18 @@ class _ReviewCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                l10n.orderIdLabel(rating.orderId.substring(0, 5).toUpperCase()),
-                style: SangakTypography.title(context).copyWith(fontSize: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    rating.customer?['full_name'] ?? l10n.guest,
+                    style: SangakTypography.title(context).copyWith(fontSize: 16),
+                  ),
+                  Text(
+                    l10n.orderIdLabel(rating.orderId.substring(0, 5).toUpperCase()),
+                    style: SangakTypography.caption(context),
+                  ),
+                ],
               ),
               _ApprovalBadge(isApproved: rating.isApproved),
             ],

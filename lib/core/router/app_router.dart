@@ -4,11 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/gallery/design_system_gallery_screen.dart';
 import '../../features/language/language_selection_screen.dart';
-import '../../features/auth/login_screen.dart';
+import '../../features/auth/login_choice_screen.dart';
+import '../../features/auth/login_details_screen.dart';
+import '../../features/auth/signup_choice_screen.dart';
 import '../../features/auth/register_screen.dart';
 
 import '../../features/home/main_screen.dart';
 import '../../features/home/product_details_screen.dart';
+import '../../features/custom_sangak/pages/custom_sangak_page.dart';
 import '../../features/basket/checkout_screen.dart';
 import '../../features/basket/address_selection_screen.dart';
 import '../../features/basket/payment_selection_screen.dart';
@@ -80,7 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       
       final isSplash = state.uri.path == '/';
       final isLanguage = state.uri.path == '/language';
-      final isAuth = state.uri.path == '/login' || state.uri.path == '/register';
+      final isAuth = state.uri.path == '/login' || 
+                     state.uri.path == '/login-details' ||
+                     state.uri.path == '/register' || 
+                     state.uri.path == '/signup-choice';
 
       // 1. Force Language Selection if never done
       if (storage.isFirstLaunch || storage.language == null) {
@@ -133,7 +139,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _buildPageWithTransition(
           context: context,
           state: state,
-          child: const LoginScreen(),
+          child: const LoginChoiceScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/login-details',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const LoginDetailsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/signup-choice',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SignupChoiceScreen(),
         ),
       ),
       GoRoute(
@@ -393,6 +415,17 @@ final routerProvider = Provider<GoRouter>((ref) {
             context: context,
             state: state,
             child: ProductDetailsScreen(bread: bread),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/custom-sangak',
+        pageBuilder: (context, state) {
+          final bread = state.extra as Bread;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: CustomSangakPage(initialBread: bread),
           );
         },
       ),

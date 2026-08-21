@@ -356,6 +356,43 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 12),
             _buildActionTile(Icons.credit_card_outlined, l10n.paymentInfo, () => context.push('/payment-selection?from=profile'), context),
             
+            const SizedBox(height: 32),
+            if (role == 'admin' || role == 'staff') ...[
+              Text(l10n.notifications, style: SangakTypography.title(context)),
+              const SizedBox(height: 16),
+              _buildNotificationToggle(
+                l10n.newOrders,
+                profile?.notificationsNewOrderEnabled ?? true,
+                (value) async {
+                  if (profile == null) return;
+                  try {
+                    await SupabaseService.client
+                        .from('profiles')
+                        .update({'notifications_new_order_enabled': value})
+                        .eq('id', profile.id);
+                    if (!context.mounted) return;
+                    if (mounted) {
+                      SangakToast.show(context, l10n.settingsSaved);
+                    }
+                  } catch (e) {
+                    debugPrint('🚨 NOTIFICATION TOGGLE ERROR: $e');
+                    if (e is PostgrestException) {
+                      debugPrint('   - Message: ${e.message}');
+                      debugPrint('   - Code: ${e.code}');
+                      debugPrint('   - Details: ${e.details}');
+                      debugPrint('   - Hint: ${e.hint}');
+                    }
+                    if (mounted) {
+                      if (!context.mounted) return;
+                      SangakToast.show(context, l10n.errorOccurred);
+                    }
+                  }
+                },
+                context,
+              ),
+              const SizedBox(height: 32),
+            ],
+            
             const SizedBox(height: 12),
             // Referral Section
             const ReferralSection(),
@@ -517,6 +554,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationToggle(String label, bool value, ValueChanged<bool> onChanged, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        border: Border.all(color: SangakColors.border),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.notifications_active_outlined, color: SangakColors.primary, size: 22),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+          ),
+          Switch.adaptive(
+            value: value,
+            onChanged: onChanged,
+            activeTrackColor: SangakColors.primary,
+          ),
+        ],
       ),
     );
   }

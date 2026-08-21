@@ -30,7 +30,7 @@ class CheckoutScreen extends ConsumerWidget {
     final lang = locale.languageCode;
 
     final options = ref.watch(appOptionsProvider).value ?? {};
-    final deliveryFee = double.tryParse(options['delivery_fee']?.toString() ?? '15.0') ?? 15.0;
+    final deliveryFee = double.tryParse(options['delivery_fee']?.toString() ?? '0.0') ?? 0.0;
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -134,10 +134,20 @@ class CheckoutScreen extends ConsumerWidget {
                 l10n.deliveryFeeLabel,
                 style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
               ),
-              Text(
-                SangakNumberFormatter.formatCurrency(deliveryFee, lang),
-                style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
-              ),
+              if (deliveryFee == 0)
+                Text(
+                  l10n.freeDelivery,
+                  style: SangakTypography.title(context).copyWith(
+                    fontSize: 14,
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              else
+                Text(
+                  SangakNumberFormatter.formatCurrency(deliveryFee, lang),
+                  style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
+                ),
             ],
           ),
         ],

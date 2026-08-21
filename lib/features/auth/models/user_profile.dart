@@ -9,6 +9,8 @@ class UserProfile {
   final String role;
   final bool phoneVerified;
   final bool isActive;
+  final bool notificationsNewOrderEnabled;
+  final String preferredLanguage;
   final int currentStreak;
   final int maxStreak;
   final DateTime? lastOrderAt;
@@ -23,6 +25,8 @@ class UserProfile {
     required this.role,
     this.phoneVerified = false,
     this.isActive = true,
+    this.notificationsNewOrderEnabled = true,
+    this.preferredLanguage = 'en',
     this.currentStreak = 0,
     this.maxStreak = 0,
     this.lastOrderAt,
@@ -50,6 +54,8 @@ class UserProfile {
     String? role,
     bool? phoneVerified,
     bool? isActive,
+    bool? notificationsNewOrderEnabled,
+    String? preferredLanguage,
     int? currentStreak,
     int? maxStreak,
     DateTime? lastOrderAt,
@@ -64,6 +70,9 @@ class UserProfile {
       role: role ?? this.role,
       phoneVerified: phoneVerified ?? this.phoneVerified,
       isActive: isActive ?? this.isActive,
+      notificationsNewOrderEnabled:
+          notificationsNewOrderEnabled ?? this.notificationsNewOrderEnabled,
+      preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       currentStreak: currentStreak ?? this.currentStreak,
       maxStreak: maxStreak ?? this.maxStreak,
       lastOrderAt: lastOrderAt ?? this.lastOrderAt,
@@ -83,6 +92,8 @@ class UserProfile {
       if (includeRole) 'role': role,
       'phone_verified': phoneVerified,
       'is_active': isActive,
+      'notifications_new_order_enabled': notificationsNewOrderEnabled,
+      'preferred_language': preferredLanguage,
       'current_streak': currentStreak,
       'max_streak': maxStreak,
       'last_order_at': lastOrderAt?.toIso8601String(),
@@ -102,6 +113,9 @@ class UserProfile {
       role: json['role'] as String? ?? 'customer',
       phoneVerified: (json['phone_verified'] as bool?) ?? false,
       isActive: (json['is_active'] as bool?) ?? true,
+      notificationsNewOrderEnabled:
+          (json['notifications_new_order_enabled'] as bool?) ?? true,
+      preferredLanguage: (json['preferred_language'] as String?) ?? 'en',
       currentStreak: json['current_streak'] as int? ?? 0,
       maxStreak: json['max_streak'] as int? ?? 0,
       lastOrderAt: json['last_order_at'] != null

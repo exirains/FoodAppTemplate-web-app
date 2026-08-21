@@ -10,7 +10,7 @@ final userReferralCodeProvider = FutureProvider<ReferralCode?>((ref) async {
   return ref.read(referralRepositoryProvider).getUserReferralCode(user.id);
 });
 
-final referralStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+final referralStatsProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   final user = ref.watch(authProvider).value;
   if (user == null) {
     return {
@@ -20,5 +20,6 @@ final referralStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
     };
   }
   
+  // We use autoDispose to ensure it's refetched when the user returns to the screen
   return ref.read(referralRepositoryProvider).getReferralStats(user.id);
 });

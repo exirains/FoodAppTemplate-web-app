@@ -26,6 +26,8 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
   final _pointsPerOrderController = TextEditingController();
   final _streakBonusController = TextEditingController();
   final _streakThresholdController = TextEditingController();
+  String _pointsEarningRule = 'total_spent';
+  bool _customizationEnabled = false;
   bool _isSaving = false;
 
   @override
@@ -51,6 +53,8 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
         'points_per_order': int.tryParse(_pointsPerOrderController.text) ?? 10,
         'streak_bonus': int.tryParse(_streakBonusController.text) ?? 50,
         'streak_threshold': int.tryParse(_streakThresholdController.text) ?? 3,
+        'points_earning_rule': _pointsEarningRule,
+        'custom_sangak_enabled': _customizationEnabled,
       };
 
       await ref.read(optionsRepositoryProvider).updateOptions(updates);
@@ -102,6 +106,12 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
             if (_streakThresholdController.text.isEmpty && options.containsKey('streak_threshold')) {
               _streakThresholdController.text = options['streak_threshold'].toString();
             }
+            if (options.containsKey('points_earning_rule')) {
+              _pointsEarningRule = options['points_earning_rule'].toString();
+            }
+            if (options.containsKey('custom_sangak_enabled')) {
+              _customizationEnabled = options['custom_sangak_enabled'] == true || options['custom_sangak_enabled'] == 'true';
+            }
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(SangakDimens.spacing24),
@@ -143,24 +153,62 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                   
                   const SizedBox(height: SangakDimens.spacing32),
                   _buildSectionTitle(context, l10n.loyaltySettings),
-                  SangakTextField(
-                    label: l10n.pointsPerCurrencyLabel,
-                    controller: _pointsPerCurrencyController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    leadingIcon: Icons.stars_rounded,
-                    hintText: '1',
+                  
+                  // Points Earning Rule Toggle
+                  Text(
+                    l10n.pointsEarningRule,
+                    style: SangakTypography.title(context).copyWith(fontSize: 14),
                   ),
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: SangakColors.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: SangakColors.border),
+                    ),
+                    child: RadioGroup<String>(
+                      groupValue: _pointsEarningRule,
+                      onChanged: (v) => setState(() => _pointsEarningRule = v!),
+                      child: Column(
+                        children: [
+                          RadioListTile<String>(
+                            title: Text(l10n.totalSpentRule),
+                            subtitle: Text(l10n.totalSpentSubtitle),
+                            value: 'total_spent',
+                            activeColor: SangakColors.primary,
+                          ),
+                          const Divider(height: 1),
+                          RadioListTile<String>(
+                            title: Text(l10n.fixedPointsRule),
+                            subtitle: Text(l10n.pointsPerOrderLabel),
+                            value: 'fixed',
+                            activeColor: SangakColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
 
-                  SangakTextField(
-                    label: l10n.pointsPerOrderLabel,
-                    controller: _pointsPerOrderController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    leadingIcon: Icons.add_task_rounded,
-                    hintText: '10',
-                  ),
+                  if (_pointsEarningRule == 'total_spent')
+                    SangakTextField(
+                      label: l10n.pointsPerCurrencyLabel,
+                      controller: _pointsPerCurrencyController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      leadingIcon: Icons.stars_rounded,
+                      hintText: '1',
+                    )
+                  else
+                    SangakTextField(
+                      label: l10n.pointsPerOrderLabel,
+                      controller: _pointsPerOrderController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      leadingIcon: Icons.add_task_rounded,
+                      hintText: '10',
+                    ),
+                  
                   const SizedBox(height: SangakDimens.spacing24),
 
                   SangakTextField(
@@ -180,6 +228,16 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     leadingIcon: Icons.timer_rounded,
                     hintText: '3',
+                  ),
+
+                  const SizedBox(height: SangakDimens.spacing32),
+                  _buildSectionTitle(context, l10n.customization),
+                  _buildFeatureToggle(
+                    l10n.customSangak,
+                    l10n.customSangakDescription,
+                    _customizationEnabled,
+                    (v) => setState(() => _customizationEnabled = v),
+                    context,
                   ),
 
                   const SizedBox(height: SangakDimens.spacing32),
@@ -205,6 +263,35 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(child: Text(l10n.errorOccurred)),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureToggle(String title, String description, bool value, ValueChanged<bool> onChanged, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: SangakColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: SangakColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+              Switch.adaptive(
+                value: value,
+                onChanged: onChanged,
+                activeTrackColor: SangakColors.primary,
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(description, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight)),
+        ],
       ),
     );
   }

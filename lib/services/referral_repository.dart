@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/referral_code.dart';
+import '../models/referral.dart';
 import 'supabase_service.dart';
 
 class ReferralRepository {
@@ -23,59 +24,52 @@ class ReferralRepository {
     }
   }
 
-  /// Validates a referral code and returns the referral_code_id if valid
-  Future<String?> validateReferralCode(String code) async {
+  /// Validates a referral code using the secure backend RPC
+  Future<Map<String, dynamic>> validateReferralCodeSecurely(String code, {String? userId}) async {
     try {
-      final response = await _client
-          .from('referral_codes')
-          .select('id, user_id, is_active')
-          .ilike('code', code)
-          .maybeSingle();
+      final response = await _client.rpc('validate_referral_code', params: {
+        'p_code': code,
+        'p_user_id': userId,
+      });
       
-      if (response == null) return null;
-      if (response['is_active'] == false) return null;
-      
-      return response['id'] as String;
+      return response as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('🚨 Error validating referral code: $e');
-      return null;
+      debugPrint('🚨 Error validating referral code securely: $e');
+      return {'valid': false, 'error': e.toString()};
     }
   }
 
-  /// Links a new user to a referrer using a referral code
-  Future<void> linkReferral({
+  /// Processes a referral reward atomically using the backend RPC
+  Future<Map<String, dynamic>> processReferralReward({
     required String referredUserId,
     required String referralCode,
   }) async {
     try {
-      // 1. Get the referral code ID and referrer ID
-      final codeResponse = await _client
-          .from('referral_codes')
-          .select('id, user_id')
-          .ilike('code', referralCode)
-          .maybeSingle();
-      
-      if (codeResponse == null) {
-        throw Exception('Invalid referral code');
-      }
-
-      final String referralCodeId = codeResponse['id'];
-      final String referrerUserId = codeResponse['user_id'];
-
-      if (referrerUserId == referredUserId) {
-        throw Exception('Self-referral is not allowed');
-      }
-
-      // 2. Create the referral relationship
-      await _client.from('referrals').insert({
-        'referrer_user_id': referrerUserId,
-        'referred_user_id': referredUserId,
-        'referral_code_id': referralCodeId,
-        'status': 'pending',
+      final response = await _client.rpc('process_referral_reward', params: {
+        'p_referred_user_id': referredUserId,
+        'p_referral_code': referralCode,
       });
+      
+      return response as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('🚨 Error linking referral: $e');
-      rethrow;
+      debugPrint('🚨 Error processing referral reward: $e');
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  /// Links a new user to a referrer using a referral code
+  /// [DEPRECATED] Use [processReferralReward] for atomic reward processing
+  Future<void> linkReferral({
+    required String referredUserId,
+    required String referralCode,
+  }) async {
+    final result = await processReferralReward(
+      referredUserId: referredUserId,
+      referralCode: referralCode,
+    );
+    
+    if (result['success'] == false && result['valid'] == false) {
+       throw Exception(result['error'] ?? 'Referral processing failed');
     }
   }
 
@@ -84,28 +78,32 @@ class ReferralRepository {
     try {
       final referralsResponse = await _client
           .from('referrals')
-          .select('status, id')
-          .eq('referrer_user_id', userId);
+          .select('*, referred_user:profiles!referred_user_id(full_name)')
+          .eq('referrer_user_id', userId)
+          .order('created_at', ascending: false);
       
-      final List referrals = referralsResponse as List;
+      final List referralsList = referralsResponse as List;
+      final List<Referral> referrals = referralsList.map((r) => Referral.fromJson(r)).toList();
       
       final totalInvited = referrals.length;
-      final successfulReferrals = referrals.where((r) => r['status'] == 'rewarded').length;
+      final successfulReferrals = referrals.where((r) => r.status == ReferralStatus.rewarded).length;
       
       // Calculate points earned from referrals by querying points_transactions
       final pointsResponse = await _client
           .from('points_transactions')
-          .select('points')
+          .select('amount')
           .eq('user_id', userId)
           .eq('reason', 'Referral Reward');
       
       final List points = pointsResponse as List;
-      final totalPointsEarned = points.fold<int>(0, (sum, p) => sum + (p['points'] as int));
+      final totalPointsEarned = points.fold<int>(0, (sum, p) => sum + (p['amount'] as int));
 
       return {
         'totalInvited': totalInvited,
         'successfulReferrals': successfulReferrals,
         'totalPointsEarned': totalPointsEarned,
+        'referrals': referrals,
+        'referralData': referralsList, // For raw access if needed
       };
     } catch (e) {
       debugPrint('🚨 Error getting referral stats: $e');
@@ -113,6 +111,7 @@ class ReferralRepository {
         'totalInvited': 0,
         'successfulReferrals': 0,
         'totalPointsEarned': 0,
+        'referrals': <Referral>[],
       };
     }
   }

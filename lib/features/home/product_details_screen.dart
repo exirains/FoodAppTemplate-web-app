@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
@@ -15,6 +16,7 @@ import '../../shared/utils/sangak_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../core/localization/sangak_number_formatter.dart';
+import '../../services/options_repository.dart';
 import '../basket/basket_provider.dart';
 import 'home_provider.dart';
 
@@ -37,7 +39,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final basket = ref.watch(basketProvider);
-    final basketItem = basket.where((item) => item.bread.id == widget.bread.id).firstOrNull;
+    final basketItem = basket.where((item) => item.bread.id == widget.bread.id && item.customization == null).firstOrNull;
     final inBasketQuantity = basketItem?.quantity ?? 0;
     
     final isFavorite = ref.watch(isFavoriteProvider(widget.bread.id));
@@ -47,6 +49,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     final displayName = widget.bread.localizedName(languageCode);
     final displayDescription = widget.bread.localizedDescription(languageCode);
     final formattedPrice = SangakNumberFormatter.formatCurrency(widget.bread.price, languageCode);
+    
+    final optionsAsync = ref.watch(appOptionsProvider);
+    final isCustomSangakEnabled = optionsAsync.value?['custom_sangak_enabled'] == true || 
+                                 optionsAsync.value?['custom_sangak_enabled'] == 'true';
 
     return Scaffold(
       backgroundColor: SangakColors.background,
@@ -178,6 +184,16 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   ),
                   const SizedBox(height: SangakDimens.spacing32),
                   
+                  if (isCustomSangakEnabled && widget.bread.name.toLowerCase().contains('sangak'))
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
+                      child: SangakButton.outlined(
+                        label: l10n.customizeYourSangak,
+                        icon: Icons.auto_awesome_outlined,
+                        onPressed: () => context.push('/custom-sangak', extra: widget.bread),
+                      ),
+                    ),
+
                   // Nutrition / Details Row
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -221,11 +237,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     },
                     onDecrement: () {
                       if (!ActionGuard.check(context, ref)) return;
-                      ref.read(basketProvider.notifier).updateQuantity(widget.bread.id, -1);
+                      if (basketItem != null) {
+                        ref.read(basketProvider.notifier).updateQuantity(basketItem.basketId, -1);
+                      }
                     },
                     onDelete: () {
                       if (!ActionGuard.check(context, ref)) return;
-                      ref.read(basketProvider.notifier).removeItem(widget.bread.id);
+                      if (basketItem != null) {
+                        ref.read(basketProvider.notifier).removeItem(basketItem.basketId);
+                      }
                     },
                   ),
                 ],

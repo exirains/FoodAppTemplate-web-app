@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Supports Trash icon for deletion when quantity is 1.
 class QuantitySelector extends ConsumerWidget {
   final int quantity;
+  final int? maxQuantity;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
   final VoidCallback? onDelete;
@@ -19,6 +20,7 @@ class QuantitySelector extends ConsumerWidget {
   const QuantitySelector({
     super.key,
     required this.quantity,
+    this.maxQuantity,
     required this.onIncrement,
     required this.onDecrement,
     this.onDelete,
@@ -29,6 +31,7 @@ class QuantitySelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCode = ref.watch(localeProvider).languageCode;
     final formattedQuantity = SangakNumberFormatter.format(quantity, languageCode);
+    final canIncrement = maxQuantity == null || quantity < maxQuantity!;
 
     return GestureDetector(
       onTap: () {},
@@ -63,7 +66,12 @@ class QuantitySelector extends ConsumerWidget {
                 ),
               ),
             ),
-            _IconButton(icon: Icons.add, onPressed: onIncrement, compact: compact),
+            _IconButton(
+              icon: Icons.add,
+              onPressed: onIncrement,
+              compact: compact,
+              enabled: canIncrement,
+            ),
           ],
         ),
       ),
@@ -75,11 +83,13 @@ class _IconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
   final bool compact;
+  final bool enabled;
 
   const _IconButton({
     required this.icon,
     required this.onPressed,
     this.compact = false,
+    this.enabled = true,
   });
 
   @override
@@ -87,11 +97,15 @@ class _IconButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onPressed,
+        onTap: enabled ? onPressed : null,
         borderRadius: BorderRadius.circular(SangakDimens.radiusM),
         child: Ink(
           padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 8),
-          child: Icon(icon, size: compact ? 17 : 18, color: Colors.white),
+          child: Icon(
+            icon,
+            size: compact ? 17 : 18,
+            color: enabled ? Colors.white : Colors.white.withValues(alpha: 0.5),
+          ),
         ),
       ),
     );

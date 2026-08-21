@@ -8,11 +8,10 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/google_mark.dart';
 import '../../shared/utils/sangak_toast.dart';
 import 'package:sangak/services/supabase_service.dart';
-import 'package:sangak/services/referral_repository.dart';
 import '../home/tab_provider.dart';
+import '../../core/localization/locale_provider.dart';
 import 'auth_provider.dart';
 import 'auth_validators.dart';
 import 'auth_error_handler.dart';
@@ -33,13 +32,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _invitationCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _passwordFocus = FocusNode();
   final _confirmPasswordFocus = FocusNode();
-  final _referralFocus = FocusNode();
   
   bool _agreedToTerms = false;
   bool _isSubmitting = false;
@@ -59,7 +56,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _invitationCodeController.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _passwordFocus.dispose();
@@ -203,11 +199,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (user != null) {
         // Create profile in Supabase to avoid crashes in other screens
         try {
+          final lang = ref.read(localeProvider).languageCode;
           await SupabaseService.client.from('profiles').upsert({
             'id': user.id,
             'full_name': name,
             'email': email,
             'phone': phone,
+            'preferred_language': lang,
           });
         } catch (e) {
           debugPrint('Non-critical: Error creating initial profile record: $e');
@@ -217,20 +215,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         // Clear guest data after successful registration
         await GuestModeService.exitGuestMode();
         
-        // Link Referral if code is provided
-        final referralCode = _invitationCodeController.text.trim();
-        if (referralCode.isNotEmpty) {
-          try {
-            await ref.read(referralRepositoryProvider).linkReferral(
-              referredUserId: user.id,
-              referralCode: referralCode,
-            );
-          } catch (e) {
-            debugPrint('Non-critical: Error linking referral code: $e');
-            // We don't block registration for referral errors
-          }
-        }
-
         if (!mounted) return;
 
         SangakToast.show(context, l10n.registeredSuccessfully);
@@ -280,36 +264,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
-  /// Handle Google Sign-In
-  Future<void> _handleGoogleSignIn() async {
-    setState(() => _isSubmitting = true);
-
-    try {
-      final user = await ref.read(authProvider.notifier).signInWithGoogle();
-      
-      if (!mounted) return;
-      
-      if (user != null) {
-        final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, l10n.registeredSuccessfully);
-        ref.read(tabProvider.notifier).state = 0; // Go to Home tab
-        context.go('/home');
-      }
-    } catch (e) {
-      if (!mounted) return;
-
-      final l10n = AppLocalizations.of(context);
-      final (_, messageKey) = AuthErrorHandler.handleAuthError(e);
-      final errorMessage = _getLocalizedError(messageKey, l10n);
-
-      SangakToast.show(context, errorMessage);
-    } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authProvider).isLoading;
@@ -335,7 +289,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(SangakDimens.spacing24),
+          padding: const EdgeInsets.fromLTRB(
+            SangakDimens.spacing24,
+            SangakDimens.spacing24,
+            SangakDimens.spacing24,
+            SangakDimens.spacing48,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -435,20 +394,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   onEditingComplete: () {
                     _confirmPasswordFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_referralFocus);
                   },
                   validator: _validateConfirmPassword,
-                ),
-                const SizedBox(height: SangakDimens.spacing16),
-                // Referral Code field
-                SangakTextField(
-                  label: l10n.invitationCode,
-                  hintText: l10n.invitationCodeOptional,
-                  controller: _invitationCodeController,
-                  focusNode: _referralFocus,
-                  leadingIcon: Icons.card_giftcard,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: isButtonDisabled ? null : _register,
                 ),
                 const SizedBox(height: SangakDimens.spacing16),
                 // Terms agreement checkbox
@@ -476,27 +423,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onPressed: isButtonDisabled ? null : _register,
                 ),
                 const SizedBox(height: SangakDimens.spacing24),
-                // Divider
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(l10n.or, style: SangakTypography.caption(context)),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-                const SizedBox(height: SangakDimens.spacing24),
-                // Google Sign-In button
-                SangakButton.outlined(
-                  label: l10n.continueWithGoogle,
-                  width: double.infinity,
-                  leading: const GoogleMark(),
-                  isLoading: isLoading || _isSubmitting,
-                  onPressed: (_isSubmitting || isLoading) ? null : _handleGoogleSignIn,
-                ),
-                const SizedBox(height: SangakDimens.spacing16),
                 // Sign in link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

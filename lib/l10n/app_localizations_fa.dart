@@ -31,6 +31,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get welcomeBack => 'خوش آمدید';
 
   @override
+  String get signInSubtitle => 'برای ادامه، وارد حساب کاربری خود شوید.';
+
+  @override
   String get email => 'ایمیل';
 
   @override
@@ -144,6 +147,27 @@ class AppLocalizationsFa extends AppLocalizations {
       'وارد کردن شماره تلفن برای تحویل سفارش الزامی است.';
 
   @override
+  String get buildYourSangak => 'سنگک خود را بسازید';
+
+  @override
+  String get base => 'پایه';
+
+  @override
+  String get seeds => 'دانه‌ها';
+
+  @override
+  String get extras => 'افزودنی‌ها';
+
+  @override
+  String get total => 'جمع کل';
+
+  @override
+  String get customizeYourSangak => 'شخصی‌سازی سنگک';
+
+  @override
+  String get addedCustomSangak => 'سنگک سفارشی شما به سبد خرید اضافه شد!';
+
+  @override
   String get saveYourFavorites => 'علاقه‌مندی‌های خود را ذخیره کنید';
 
   @override
@@ -205,6 +229,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settings => 'تنظیمات';
 
   @override
+  String get notifications => 'اعلان‌ها';
+
+  @override
   String get language => 'زبان';
 
   @override
@@ -236,9 +263,6 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get deliveryFee => 'هزینه ارسال';
-
-  @override
-  String get total => 'جمع کل';
 
   @override
   String get proceedToCheckout => 'ادامه به تسویه حساب';
@@ -348,6 +372,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get errorLoadingCategories => 'خطا در دسته‌بندی';
+
+  @override
+  String get noCategoriesFound => 'دسته‌بندی پیدا نشد';
 
   @override
   String get errorLoadingBreads => 'خطا در بارگذاری';
@@ -847,6 +874,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editUserProfile => 'ویرایش پروفایل کاربر';
 
   @override
+  String get weight => 'وزن';
+
+  @override
   String get price => 'قیمت';
 
   @override
@@ -1182,6 +1212,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get appStartFailed => 'خطا در شروع برنامه';
 
   @override
+  String get initializationError => 'خطا در راه‌اندازی';
+
+  @override
   String get errorLoadingStaff => 'خطا در بارگذاری کارکنان';
 
   @override
@@ -1192,6 +1225,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get totalOrdersToday => 'کل سفارشات امروز';
+
+  @override
+  String get totalUsers => 'کل کاربران';
 
   @override
   String get unlockCancellation => 'بکشید تا فیلد لغو باز شود';
@@ -1223,6 +1259,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get adminSettings => 'تنظیمات مدیریت';
 
   @override
+  String get customization => 'شخصی‌سازی';
+
+  @override
+  String get customSangak => 'سنگک سفارشی';
+
+  @override
+  String get customSangakDescription =>
+      'فعال یا غیرفعال کردن قابلیت «سنگک خودت رو بساز» برای مشتریان.';
+
+  @override
   String get minOrderLimitLabel => 'حداقل مبلغ سفارش (لیر)';
 
   @override
@@ -1233,6 +1279,18 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get pointsPerCurrencyLabel => 'امتیاز به ازای هر واحد پول';
+
+  @override
+  String get pointsEarningRule => 'روش محاسبه امتیاز';
+
+  @override
+  String get totalSpentRule => 'امتیاز = مبلغ کل خرید';
+
+  @override
+  String get totalSpentSubtitle => '۱ لیر = ۱ امتیاز';
+
+  @override
+  String get fixedPointsRule => 'امتیاز ثابت برای هر سفارش';
 
   @override
   String get streakBonusLabel => 'امتیاز هدیه استریک';
@@ -1254,6 +1312,10 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get loyaltyCenter => 'مرکز وفاداری';
+
+  @override
+  String get loyaltySystemDisclaimer =>
+      'سیستم امتیازدهی و جوایز در حال حاضر در حال توسعه است. امتیازهای کسب شده در زمان راه‌اندازی کامل معتبر خواهند بود.';
 
   @override
   String get points => 'امتیاز';
@@ -1465,6 +1527,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get copySuccess => 'کد در حافظه کپی شد!';
 
   @override
+  String get selfReferralError =>
+      'شما نمی‌توانید از کد دعوت خودتان استفاده کنید';
+
+  @override
+  String get inactiveReferralCodeError => 'این کد دعوت دیگر فعال نیست';
+
+  @override
+  String get featureUnavailable => 'این قابلیت در حال حاضر در دسترس نیست.';
+
+  @override
   String get referralSystemTitle => 'دعوت و جایزه';
 
   @override
@@ -1513,7 +1585,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get deliverySuccessMessage =>
-      'سفارش شما با موفقیت تحویل داده شد! از نان تازه خود لذت ببرید.';
+      'سفارش شما با موفقیت تحویل داده شد! از خرید خود لذت ببرید.';
 
   @override
   String get orderInformation => 'اطلاعات سفارش';

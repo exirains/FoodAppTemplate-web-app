@@ -79,7 +79,7 @@ class UserDetailsScreen extends ConsumerStatefulWidget {
   ConsumerState<UserDetailsScreen> createState() => _UserDetailsScreenState();
 }
 
-class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with SingleTickerProviderStateMixin {
+class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with TickerProviderStateMixin {
   TabController? _tabController;
   String? _currentRole;
   bool _isUploading = false;

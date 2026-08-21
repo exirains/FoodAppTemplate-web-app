@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/bread.dart';
 import '../models/category.dart';
 import 'supabase_service.dart';
@@ -178,3 +179,9 @@ class BreadRepository {
     return query;
   }
 }
+
+final breadRepositoryProvider = Provider((ref) => BreadRepository());
+
+final breadsProvider = FutureProvider.family<List<Bread>, String?>((ref, categoryId) {
+  return ref.watch(breadRepositoryProvider).getBreads(categoryId: categoryId);
+});

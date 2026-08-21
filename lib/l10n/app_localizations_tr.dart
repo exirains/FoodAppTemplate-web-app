@@ -31,6 +31,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get welcomeBack => 'Tekrar Hoş Geldiniz';
 
   @override
+  String get signInSubtitle =>
+      'Kaldığınız yerden devam etmek için giriş yapın.';
+
+  @override
   String get email => 'E-posta';
 
   @override
@@ -144,6 +148,27 @@ class AppLocalizationsTr extends AppLocalizations {
       'Teslimat için telefon numarası gereklidir.';
 
   @override
+  String get buildYourSangak => 'Sangak Ekmeğini Oluştur';
+
+  @override
+  String get base => 'Taban';
+
+  @override
+  String get seeds => 'Tohumlar';
+
+  @override
+  String get extras => 'Ekstralar';
+
+  @override
+  String get total => 'Toplam';
+
+  @override
+  String get customizeYourSangak => 'Sangak Ekmeğini Özelleştir';
+
+  @override
+  String get addedCustomSangak => 'Özel Sangak ekmeğiniz sepete eklendi!';
+
+  @override
   String get saveYourFavorites => 'Favorilerinizi kaydedin';
 
   @override
@@ -205,6 +230,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settings => 'Ayarlar';
 
   @override
+  String get notifications => 'Bildirimler';
+
+  @override
   String get language => 'Dil';
 
   @override
@@ -236,9 +264,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deliveryFee => 'Teslimat Ücreti';
-
-  @override
-  String get total => 'Toplam';
 
   @override
   String get proceedToCheckout => 'Ödemeye Geç';
@@ -348,6 +373,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorLoadingCategories => 'Kategoriler yüklenirken hata oluştu';
+
+  @override
+  String get noCategoriesFound => 'Kategori bulunamadı';
 
   @override
   String get errorLoadingBreads => 'Ekmekler yüklenirken hata oluştu';
@@ -854,6 +882,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get editUserProfile => 'Kullanıcı Profilini Düzenle';
 
   @override
+  String get weight => 'Ağırlık';
+
+  @override
   String get price => 'Fiyat';
 
   @override
@@ -1190,6 +1221,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appStartFailed => 'Uygulama başlatılamadı';
 
   @override
+  String get initializationError => 'Başlatma Hatası';
+
+  @override
   String get errorLoadingStaff => 'Personel yükleme hatası';
 
   @override
@@ -1200,6 +1234,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get totalOrdersToday => 'Bugünkü Toplam Sipariş';
+
+  @override
+  String get totalUsers => 'Toplam Kullanıcı';
 
   @override
   String get unlockCancellation =>
@@ -1232,6 +1269,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adminSettings => 'Yönetici Ayarları';
 
   @override
+  String get customization => 'Özelleştirme';
+
+  @override
+  String get customSangak => 'Özel Sangak';
+
+  @override
+  String get customSangakDescription =>
+      'Müşteriler için Kendi Sangak\'ını Yap özelliğini etkinleştirin veya devre dışı bırakın.';
+
+  @override
   String get minOrderLimitLabel => 'Minimum Sipariş Tutarı (TL)';
 
   @override
@@ -1242,6 +1289,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pointsPerCurrencyLabel => 'Para Birimi Başına Puan';
+
+  @override
+  String get pointsEarningRule => 'Puan Kazanma Kuralı';
+
+  @override
+  String get totalSpentRule => 'Puan = Toplam Harcama (1:1)';
+
+  @override
+  String get totalSpentSubtitle => '1 TL = 1 Puan';
+
+  @override
+  String get fixedPointsRule => 'Sipariş Başına Sabit Puan';
 
   @override
   String get streakBonusLabel => 'Seri Bonus Puanları';
@@ -1263,6 +1322,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loyaltyCenter => 'Sadakat Merkezi';
+
+  @override
+  String get loyaltySystemDisclaimer =>
+      'Sadakat ve ödül sistemi şu anda geliştirme aşamasındadır. Şimdi kazanılan puanlar, sistem tam olarak başlatıldığında geçerli olacaktır.';
 
   @override
   String get points => 'Puan';
@@ -1473,6 +1536,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get copySuccess => 'Kod panoya kopyalandı!';
+
+  @override
+  String get selfReferralError => 'Kendi davet kodunuzu kullanamazsınız';
+
+  @override
+  String get inactiveReferralCodeError => 'Bu davet kodu artık aktif değil';
+
+  @override
+  String get featureUnavailable => 'Bu özellik geçici olarak kullanılamıyor.';
 
   @override
   String get referralSystemTitle => 'Davet Et ve Kazan';

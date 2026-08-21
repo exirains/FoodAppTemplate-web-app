@@ -11,6 +11,7 @@ import '../../../shared/utils/sangak_toast.dart';
 import '../../../shared/widgets/cancel_order_dialog.dart';
 import '../../auth/auth_provider.dart';
 import '../../admin/admin_provider.dart';
+import '../../../core/localization/locale_provider.dart';
 
 class StaffOrderCard extends ConsumerStatefulWidget {
   final OrderModel order;
@@ -69,6 +70,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final lang = ref.watch(localeProvider).languageCode;
     final items = widget.order.items ?? [];
     final isWide = MediaQuery.of(context).size.width > 600;
     
@@ -100,12 +102,16 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.order.orderNumber,
-                      style: SangakTypography.h2(context).copyWith(
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
-                        fontSize: titleSize,
+                    Localizations.override(
+                      context: context,
+                      locale: const Locale('en', 'US'),
+                      child: Text(
+                        widget.order.orderNumber,
+                        style: SangakTypography.h2(context).copyWith(
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          fontSize: titleSize,
+                        ),
                       ),
                     ),
                     if (widget.isNew)
@@ -169,7 +175,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       const SizedBox(width: 16),
                       Expanded(
                         child: Text(
-                          item.nameSnapshot,
+                          item.localizedName(lang),
                           style: SangakTypography.h3(context).copyWith(
                             fontSize: itemTitleSize,
                           ),
@@ -227,9 +233,9 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
         duration: 2.seconds,
         // ignore: deprecated_member_use
         color: SangakColors.warning.withOpacity(0.1),
-      ).scale(
-        begin: const Offset(1.0, 1.0),
-        end: const Offset(1.01, 1.01),
+      ).boxShadow(
+        begin: BoxShadow(color: SangakColors.warning.withValues(alpha: 0.1), blurRadius: 10, spreadRadius: 2),
+        end: BoxShadow(color: SangakColors.warning.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5),
         duration: 1.seconds,
         curve: Curves.easeInOut,
       );

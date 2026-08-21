@@ -142,6 +142,12 @@ abstract class AppLocalizations {
   /// **'Welcome Back'**
   String get welcomeBack;
 
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue where you left off.'**
+  String get signInSubtitle;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
@@ -358,6 +364,48 @@ abstract class AppLocalizations {
   /// **'Phone number is required for delivery.'**
   String get phoneNumberRequired;
 
+  /// No description provided for @buildYourSangak.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Your Sangak'**
+  String get buildYourSangak;
+
+  /// No description provided for @base.
+  ///
+  /// In en, this message translates to:
+  /// **'Base'**
+  String get base;
+
+  /// No description provided for @seeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Seeds'**
+  String get seeds;
+
+  /// No description provided for @extras.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get extras;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @customizeYourSangak.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize Your Sangak'**
+  String get customizeYourSangak;
+
+  /// No description provided for @addedCustomSangak.
+  ///
+  /// In en, this message translates to:
+  /// **'Added your custom Sangak to basket!'**
+  String get addedCustomSangak;
+
   /// No description provided for @saveYourFavorites.
   ///
   /// In en, this message translates to:
@@ -472,6 +520,12 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -537,12 +591,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delivery Fee'**
   String get deliveryFee;
-
-  /// No description provided for @total.
-  ///
-  /// In en, this message translates to:
-  /// **'Total'**
-  String get total;
 
   /// No description provided for @proceedToCheckout.
   ///
@@ -759,6 +807,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading categories'**
   String get errorLoadingCategories;
+
+  /// No description provided for @noCategoriesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories found'**
+  String get noCategoriesFound;
 
   /// No description provided for @errorLoadingBreads.
   ///
@@ -1732,6 +1786,12 @@ abstract class AppLocalizations {
   /// **'Edit User Profile'**
   String get editUserProfile;
 
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weight;
+
   /// No description provided for @price.
   ///
   /// In en, this message translates to:
@@ -2374,6 +2434,12 @@ abstract class AppLocalizations {
   /// **'App failed to start'**
   String get appStartFailed;
 
+  /// No description provided for @initializationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialization Error'**
+  String get initializationError;
+
   /// No description provided for @errorLoadingStaff.
   ///
   /// In en, this message translates to:
@@ -2397,6 +2463,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Orders Today'**
   String get totalOrdersToday;
+
+  /// No description provided for @totalUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Users'**
+  String get totalUsers;
 
   /// No description provided for @unlockCancellation.
   ///
@@ -2452,6 +2524,24 @@ abstract class AppLocalizations {
   /// **'Admin Settings'**
   String get adminSettings;
 
+  /// No description provided for @customization.
+  ///
+  /// In en, this message translates to:
+  /// **'Customization'**
+  String get customization;
+
+  /// No description provided for @customSangak.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Sangak'**
+  String get customSangak;
+
+  /// No description provided for @customSangakDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable or disable the Make Your Own Sangak feature for customers.'**
+  String get customSangakDescription;
+
   /// No description provided for @minOrderLimitLabel.
   ///
   /// In en, this message translates to:
@@ -2475,6 +2565,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Points Per Currency Unit'**
   String get pointsPerCurrencyLabel;
+
+  /// No description provided for @pointsEarningRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Earning Rule'**
+  String get pointsEarningRule;
+
+  /// No description provided for @totalSpentRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Points = Total Spent (1:1)'**
+  String get totalSpentRule;
+
+  /// No description provided for @totalSpentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'1 TL = 1 Point'**
+  String get totalSpentSubtitle;
+
+  /// No description provided for @fixedPointsRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed Points per Order'**
+  String get fixedPointsRule;
 
   /// No description provided for @streakBonusLabel.
   ///
@@ -2517,6 +2631,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loyalty Center'**
   String get loyaltyCenter;
+
+  /// No description provided for @loyaltySystemDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'The loyalty and rewards system is currently under development. Points earned now will be valid when the system is fully launched.'**
+  String get loyaltySystemDisclaimer;
 
   /// No description provided for @points.
   ///
@@ -2901,6 +3021,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Code copied to clipboard!'**
   String get copySuccess;
+
+  /// No description provided for @selfReferralError.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot use your own referral code'**
+  String get selfReferralError;
+
+  /// No description provided for @inactiveReferralCodeError.
+  ///
+  /// In en, this message translates to:
+  /// **'This referral code is no longer active'**
+  String get inactiveReferralCodeError;
+
+  /// No description provided for @featureUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is temporarily unavailable.'**
+  String get featureUnavailable;
 
   /// No description provided for @referralSystemTitle.
   ///

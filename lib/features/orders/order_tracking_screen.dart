@@ -104,7 +104,7 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
           children: [
             const Icon(Icons.check_circle_outline_rounded, color: SangakColors.success, size: 64),
             const SizedBox(height: 16),
-            Text(l10n.deliveredStep, style: SangakTypography.h2(context)),
+            Text(l10n.statusDelivered, style: SangakTypography.h2(context)),
           ],
         ),
         content: Text(

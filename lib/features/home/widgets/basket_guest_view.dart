@@ -39,7 +39,7 @@ class BasketGuestView extends StatelessWidget {
               SangakButton.primary(
                 label: l10n.createAccount,
                 width: double.infinity,
-                onPressed: () => context.push('/register'),
+                onPressed: () => context.push('/signup-choice'),
               ),
               const SizedBox(height: SangakDimens.spacing12),
               SangakButton.ghost(

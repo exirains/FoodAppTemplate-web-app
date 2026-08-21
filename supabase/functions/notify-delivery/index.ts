@@ -27,8 +27,8 @@ serve(async (req) => {
     }
 
     const orderId = record.id
-    // Matches Flutter logic: SNK- + first 5 chars of UUID
-    const orderNumber = `SNK-${orderId.substring(0, 5).toUpperCase()}`
+    // Matches Flutter logic: SNK- + first 4 chars of UUID
+    const orderNumber = `SNK-${orderId.substring(0, 4).toUpperCase()}`
 
     // 2. Initialize Supabase Admin Client
     const supabase = createClient(
