@@ -133,7 +133,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
                       ],
                     ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, s) => Center(child: Text('Error: $e')),
+              error: (e, s) => Center(child: Text('${l10n.errorOccurred}: $e')),
             ),
           ),
         ],
