@@ -257,6 +257,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderPlacedSuccessfully => 'Order placed successfully!';
 
   @override
+  String get orderAssignedSuccessfully => 'Order assigned successfully.';
+
+  @override
   String get subtotal => 'Subtotal';
 
   @override
@@ -1543,7 +1546,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nDownload the app: https://sangak.tr\n\nMy Invite Code:\n$code';
+    return 'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref=$code';
   }
 
   @override
@@ -1617,4 +1620,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String ratingValue(num value) {
     return '$value.0';
   }
+
+  @override
+  String get pickedUp => 'Picked Up';
+
+  @override
+  String get assignedToYou => 'Assigned to You';
 }

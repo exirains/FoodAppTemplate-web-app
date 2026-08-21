@@ -102,8 +102,14 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    // Dynamically adjust position based on keyboard (viewInsets)
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final bottomPosition = bottomInset > 0 
+        ? bottomInset + SangakDimens.spacing24 
+        : 110.0;
+
     return Positioned(
-      bottom: 110,
+      bottom: bottomPosition,
       left: SangakDimens.spacing24,
       right: SangakDimens.spacing24,
       // IgnorePointer ensures that while the toast is fading out, 

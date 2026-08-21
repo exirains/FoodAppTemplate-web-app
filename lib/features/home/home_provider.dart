@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import '../../models/bread.dart';
 import '../../models/category.dart';
 import '../../services/bread_repository.dart';
+import '../../services/lifecycle_service.dart';
 import '../../core/localization/locale_provider.dart';
 import '../auth/auth_provider.dart';
 
@@ -91,6 +94,14 @@ final breadsProvider = StreamProvider<List<Bread>>((ref) {
   final selectedId = ref.watch(selectedCategoryIdProvider);
   final repo = ref.read(breadRepositoryProvider);
   
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating Breads Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
+
   // Realtime stream triggers a high-fidelity fetch with translations
   return repo.watchBreads(categoryId: selectedId).asyncMap((_) async {
     return await repo.getBreads(categoryId: selectedId);
@@ -106,6 +117,14 @@ final filteredBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
 final popularBreadsProvider = StreamProvider<List<Bread>>((ref) {
   final repo = ref.read(breadRepositoryProvider);
   
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating Popular Breads Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
+
   // Realtime stream triggers a fetch for popular items
   return repo.watchBreads().asyncMap((_) async {
     return await repo.getPopularToday();

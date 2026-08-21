@@ -181,7 +181,8 @@ class OrderRepository {
       }).eq('id', orderId);
 
       if (ifUnassigned) {
-        query = query.isFilter('assigned_delivery_person', null);
+        // Idempotent: succeed if unassigned OR if already assigned to this driver
+        query = query.or('assigned_delivery_person.is.null,assigned_delivery_person.eq.$driverId');
       }
 
       final response = await query.select('id');

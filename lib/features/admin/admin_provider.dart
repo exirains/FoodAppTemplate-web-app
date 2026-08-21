@@ -1,11 +1,22 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/order.dart';
 import '../../services/order_repository.dart';
+import '../../services/lifecycle_service.dart';
 
 export '../../services/order_repository.dart';
 
 final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
   final repo = ref.read(sangakOrderRepositoryProvider);
+
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating Admin Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
+
   return repo.watchAllOrders().asyncMap((list) async {
     // Standard stream doesn't join profiles, so we refetch full data when change detected
     return await repo.getAllOrders();

@@ -87,6 +87,7 @@
   "grandTotal": "Genel Toplam",
   "placeOrder": "Siparişi Ver",
   "orderPlacedSuccessfully": "Sipariş başarıyla verildi!",
+  "orderAssignedSuccessfully": "Sipariş başarıyla atandı.",
   "subtotal": "Ara Toplam",
   "deliveryFee": "Teslimat Ücreti",
   "total": "Toplam",
@@ -523,7 +524,7 @@
   "invitationCodeApplied": "Davet kodu uygulandı!",
   "invitationReward": "Davet Ödülü",
   "referralRewardNotification": "Davet ödülünüz hesabınıza eklendi!",
-  "inviteFriendMessage": "Fırından yeni çıkmış sıcacık taze Sangak'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nUygulamayı indir: https://sangak.tr\n\nDavet kodum:\n{code}",
+  "inviteFriendMessage": "Fırından yeni çıkmış sıcacık taze Sangak'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.sangak.tr/?ref={code}",
   "copySuccess": "Kod panoya kopyalandı!",
   "selfReferralError": "Kendi davet kodunuzu kullanamazsınız",
   "inactiveReferralCodeError": "Bu davet kodu artık aktif değil",
@@ -569,6 +570,8 @@
       "name": { "type": "String" }
     }
   },
+  "pickedUp": "Teslim Alındı",
+  "assignedToYou": "Size Atandı",
   "@itemsCount": {
     "placeholders": {
       "count": {

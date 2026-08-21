@@ -564,17 +564,36 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                           title: Text(s['full_name'] ?? l10n.driver),
                           subtitle: Text(s['email'] ?? ''),
                           onTap: () async {
-                            Navigator.pop(modalContext);
                             setState(() => _isUpdating = true);
                             try {
+                              // 1. Assign in database
                               await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
+                              
+                              // 2. Update status to 'out_for_delivery' (matching existing workflow)
                               await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
                                 orderId: widget.orderId,
                                 status: OrderStatus.outForDelivery,
                                 changedBy: ref.read(authProvider).asData!.value!.id,
                               );
-                              if (mounted) SangakToast.show(this.context, '${l10n.assigned}: ${s['full_name']}');
+                              
+                              if (mounted && modalContext.mounted) {
+                                // 3. Close modal only after success
+                                Navigator.pop(modalContext);
+                                
+                                // 4. Show success toast (using existing keys or newly added if possible)
+                                // For now, stick to the clear confirmation requested
+                                SangakToast.show(this.context, l10n.orderAssignedSuccessfully);
+                              }
                               ref.invalidate(adminOrderDetailProvider(widget.orderId));
+                            } catch (e) {
+                              debugPrint('Error assigning delivery person: $e');
+                              if (mounted) {
+                                SangakToast.show(
+                                  this.context, 
+                                  l10n.errorOccurred, 
+                                  icon: Icons.error_outline_rounded,
+                                );
+                              }
                             } finally {
                               if (mounted) setState(() => _isUpdating = false);
                             }

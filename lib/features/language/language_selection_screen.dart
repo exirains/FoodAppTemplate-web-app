@@ -8,6 +8,7 @@ import '../../shared/widgets/language_card.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../main.dart';
+import '../auth/auth_provider.dart';
 
 class LanguageSelectionScreen extends ConsumerStatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -80,7 +81,12 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                 onPressed: _selectedCode == null
                     ? null
                     : () {
-                        context.go('/home');
+                        final pendingReferral = ref.read(pendingReferralProvider);
+                        context.go(
+                          pendingReferral != null && pendingReferral.isNotEmpty
+                              ? '/signup-choice'
+                              : '/home',
+                        );
                       },
               ),
             ],

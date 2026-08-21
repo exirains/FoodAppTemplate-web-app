@@ -259,6 +259,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get orderPlacedSuccessfully => 'سفارش با موفقیت ثبت شد!';
 
   @override
+  String get orderAssignedSuccessfully => 'سفارش با موفقیت واگذار شد.';
+
+  @override
   String get subtotal => 'جمع جزئی';
 
   @override
@@ -1520,7 +1523,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nدانلود اپلیکیشن: https://sangak.tr\n\nکد دعوت من:\n$code';
+    return 'هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nثبت‌نام با لینک دعوت من:\nhttps://app.sangak.tr/?ref=$code';
   }
 
   @override
@@ -1594,4 +1597,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String ratingValue(num value) {
     return '$value.0';
   }
+
+  @override
+  String get pickedUp => 'تحویل گرفته شد';
+
+  @override
+  String get assignedToYou => 'به شما واگذار شد';
 }

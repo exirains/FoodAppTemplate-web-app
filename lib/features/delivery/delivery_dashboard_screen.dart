@@ -16,6 +16,7 @@ import '../../shared/widgets/sangak_empty_states.dart';
 import '../../core/localization/sangak_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../auth/profile_provider.dart';
+import '../auth/auth_provider.dart';
 import '../../shared/widgets/sangak_back_handler.dart';
 import 'delivery_provider.dart';
 
@@ -264,6 +265,11 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final userId = ref.watch(authProvider).value?.id;
+    final isAssignedToMe = widget.order.assignedDeliveryPerson == userId && userId != null;
+    final showAssignedBadge = isAssignedToMe && widget.order.status == OrderStatus.ready;
+    final showPickedUpBadge = isAssignedToMe && widget.order.status == OrderStatus.outForDelivery;
+
     final addr = widget.order.addressSnapshot;
     final itemsCount = widget.order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
     final statusColor = _getStatusColor(widget.order.status);
@@ -285,6 +291,27 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (showAssignedBadge || showPickedUpBadge) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          showPickedUpBadge ? Icons.inventory_2_rounded : Icons.local_shipping_rounded,
+                          size: 16,
+                          color: showPickedUpBadge ? SangakColors.primary : SangakColors.info,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          (showPickedUpBadge ? l10n.pickedUp : l10n.assignedToYou).toUpperCase(),
+                          style: SangakTypography.caption(context).copyWith(
+                            color: showPickedUpBadge ? SangakColors.primary : SangakColors.info,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

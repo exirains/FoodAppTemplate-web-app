@@ -87,6 +87,7 @@
   "grandTotal": "مبلغ کل",
   "placeOrder": "ثبت سفارش",
   "orderPlacedSuccessfully": "سفارش با موفقیت ثبت شد!",
+  "orderAssignedSuccessfully": "سفارش با موفقیت واگذار شد.",
   "subtotal": "جمع جزئی",
   "deliveryFee": "هزینه ارسال",
   "total": "جمع کل",
@@ -502,7 +503,7 @@
   "invitationCodeApplied": "کد دعوت اعمال شد!",
   "invitationReward": "پاداش دعوت",
   "referralRewardNotification": "پاداش دعوت به حساب شما اضافه شد!",
-  "inviteFriendMessage": "هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nدانلود اپلیکیشن: https://sangak.tr\n\nکد دعوت من:\n{code}",
+  "inviteFriendMessage": "هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nثبت‌نام با لینک دعوت من:\nhttps://app.sangak.tr/?ref={code}",
   "copySuccess": "کد در حافظه کپی شد!",
   "selfReferralError": "شما نمی‌توانید از کد دعوت خودتان استفاده کنید",
   "inactiveReferralCodeError": "این کد دعوت دیگر فعال نیست",
@@ -548,6 +549,8 @@
       "name": { "type": "String" }
     }
   },
+  "pickedUp": "تحویل گرفته شد",
+  "assignedToYou": "به شما واگذار شد",
   "@itemsCount": {
     "placeholders": {
       "count": {

@@ -98,8 +98,12 @@ class NotificationService {
           }
         });
       }
-    } else if (type == 'new_delivery_order' || message.data['status'] == 'ready') {
-      _navigatorKey?.currentState?.pushNamed('/delivery');
+    } else if (type == 'new_delivery_order' || type == 'delivery_assignment' || message.data['status'] == 'ready') {
+      if (orderId != null) {
+        _navigatorKey?.currentState?.pushNamed('/delivery/$orderId');
+      } else {
+        _navigatorKey?.currentState?.pushNamed('/delivery');
+      }
     }
   }
 

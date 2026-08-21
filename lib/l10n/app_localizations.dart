@@ -580,6 +580,12 @@ abstract class AppLocalizations {
   /// **'Order placed successfully!'**
   String get orderPlacedSuccessfully;
 
+  /// No description provided for @orderAssignedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order assigned successfully.'**
+  String get orderAssignedSuccessfully;
+
   /// No description provided for @subtotal.
   ///
   /// In en, this message translates to:
@@ -3013,7 +3019,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteFriendMessage.
   ///
   /// In en, this message translates to:
-  /// **'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nDownload the app: https://sangak.tr\n\nMy Invite Code:\n{code}'**
+  /// **'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref={code}'**
   String inviteFriendMessage(Object code);
 
   /// No description provided for @copySuccess.
@@ -3129,6 +3135,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{value}.0'**
   String ratingValue(num value);
+
+  /// No description provided for @pickedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked Up'**
+  String get pickedUp;
+
+  /// No description provided for @assignedToYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to You'**
+  String get assignedToYou;
 }
 
 class _AppLocalizationsDelegate

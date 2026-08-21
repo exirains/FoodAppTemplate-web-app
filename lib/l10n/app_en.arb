@@ -87,6 +87,7 @@
   "grandTotal": "Grand Total",
   "placeOrder": "Place Order",
   "orderPlacedSuccessfully": "Order placed successfully!",
+  "orderAssignedSuccessfully": "Order assigned successfully.",
   "subtotal": "Subtotal",
   "deliveryFee": "Delivery Fee",
   "total": "Total",
@@ -532,7 +533,7 @@
   "invitationCodeApplied": "Invitation code applied!",
   "invitationReward": "Invitation Reward",
   "referralRewardNotification": "Your referral reward has been added!",
-  "inviteFriendMessage": "Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nDownload the app: https://sangak.tr\n\nMy Invite Code:\n{code}",
+  "inviteFriendMessage": "Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref={code}",
   "copySuccess": "Code copied to clipboard!",
   "selfReferralError": "You cannot use your own referral code",
   "inactiveReferralCodeError": "This referral code is no longer active",
@@ -578,6 +579,8 @@
       "name": { "type": "String" }
     }
   },
+  "pickedUp": "Picked Up",
+  "assignedToYou": "Assigned to You",
   "@itemsCount": {
     "placeholders": {
       "count": {

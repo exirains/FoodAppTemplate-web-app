@@ -28,6 +28,18 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
   bool _isReferralApplied = false;
 
   @override
+  void initState() {
+    super.initState();
+    final pendingReferral = ref.read(pendingReferralProvider);
+    if (pendingReferral != null && pendingReferral.isNotEmpty) {
+      _referralController.text = pendingReferral;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _handleContinue();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _referralController.dispose();
     super.dispose();
@@ -111,6 +123,16 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isLoading = ref.watch(authProvider).isLoading;
+
+    // Listen for external referral code updates (e.g. from deep links)
+    ref.listen(pendingReferralProvider, (previous, next) {
+      if (next != null && next.isNotEmpty && _referralController.text != next) {
+        _referralController.text = next;
+        if (!_isReferralApplied && !_isValidating) {
+          _handleContinue();
+        }
+      }
+    });
     
     return Scaffold(
       appBar: AppBar(

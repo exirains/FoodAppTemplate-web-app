@@ -32,6 +32,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _referralController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _phoneFocus = FocusNode();
@@ -47,6 +48,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   void initState() {
     super.initState();
     _phoneController.text = '+90';
+    
+    // Pre-fill referral code from provider
+    final pendingReferral = ref.read(pendingReferralProvider);
+    if (pendingReferral != null) {
+      _referralController.text = pendingReferral;
+    }
   }
 
   @override
@@ -56,6 +63,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _referralController.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _passwordFocus.dispose();
@@ -171,6 +179,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final email = AuthValidators.sanitizeEmail(_emailController.text);
     final name = AuthValidators.sanitizeName(_nameController.text);
     final phone = AuthValidators.sanitizePhoneNumber(_phoneController.text);
+    final referralCode = _referralController.text.trim();
+
+    // Update the provider with whatever is in the text field 
+    // to ensure it's picked up by the auth notifier
+    if (referralCode.isNotEmpty) {
+      ref.read(pendingReferralProvider.notifier).state = referralCode;
+    }
 
     // Check rate limiting
     if (!authRateLimiter.isAllowed(email)) {
@@ -268,6 +283,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authProvider).isLoading;
     final l10n = AppLocalizations.of(context);
+
+    // Listen for external referral code updates
+    ref.listen(pendingReferralProvider, (previous, next) {
+      if (next != null && next.isNotEmpty && _referralController.text != next) {
+        _referralController.text = next;
+      }
+    });
 
     // Check if form is valid for button state
     final isFormValid = _nameController.text.isNotEmpty &&
@@ -396,6 +418,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     _confirmPasswordFocus.unfocus();
                   },
                   validator: _validateConfirmPassword,
+                ),
+                const SizedBox(height: SangakDimens.spacing16),
+                // Referral Code field (Optional)
+                SangakTextField(
+                  label: l10n.invitationCode,
+                  hintText: l10n.invitationCodeOptional,
+                  controller: _referralController,
+                  leadingIcon: Icons.card_giftcard,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: SangakDimens.spacing16),
                 // Terms agreement checkbox

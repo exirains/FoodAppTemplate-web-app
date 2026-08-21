@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/order.dart';
 import '../../services/order_repository.dart';
 import '../../services/alert_service.dart';
 import '../../services/analytics_service.dart';
+import '../../services/lifecycle_service.dart';
 import '../auth/auth_provider.dart';
 
 final deliveryDashboardProvider = StateNotifierProvider<DeliveryDashboardNotifier, DeliveryDashboardState>((ref) {
@@ -12,6 +14,15 @@ final deliveryDashboardProvider = StateNotifierProvider<DeliveryDashboardNotifie
   final alertService = ref.read(alertServiceProvider);
   final analyticsService = ref.read(analyticsServiceProvider);
   final userId = ref.watch(authProvider).value?.id;
+
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating Delivery Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
+
   return DeliveryDashboardNotifier(repo, alertService, analyticsService, userId);
 });
 
@@ -101,13 +112,27 @@ class DeliveryDashboardNotifier extends StateNotifier<DeliveryDashboardState> {
   Future<void> pickupOrder(String orderId) async {
     if (_userId == null) return;
     
-    // Assign to current user
-    final success = await _repo.assignDeliveryPerson(orderId, _userId, ifUnassigned: true);
-    if (!success) {
+    // 1. Fetch fresh order state to avoid stale UI data
+    final order = await _repo.getOrderById(orderId);
+    if (order == null) {
+      throw Exception('orderNotFound');
+    }
+
+    // 2. Authorization check: If already assigned to SOMEONE ELSE, reject.
+    // If assigned to ME or UNASSIGNED, we can proceed.
+    if (order.assignedDeliveryPerson != null && order.assignedDeliveryPerson != _userId) {
       throw Exception('orderAlreadyAssigned');
     }
 
-    // Update status to out_for_delivery
+    // 3. Perform idempotent assignment (handles race conditions)
+    final success = await _repo.assignDeliveryPerson(orderId, _userId, ifUnassigned: true);
+    if (!success) {
+      // This means between getOrderById and now, someone else claimed it
+      throw Exception('orderAlreadyAssigned');
+    }
+
+    // 4. Update status to out_for_delivery
+    // Note: Repository updateOrderStatus should ideally also check assigned_delivery_person
     await _repo.updateOrderStatus(
       orderId: orderId,
       status: OrderStatus.outForDelivery,

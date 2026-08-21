@@ -1,5 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/supabase_service.dart';
+import '../../services/lifecycle_service.dart';
 import 'auth_provider.dart';
 import 'models/user_profile.dart';
 
@@ -12,6 +14,14 @@ final userProfileProvider = StreamProvider<UserProfile?>((ref) {
   if (user == null) {
     return Stream.value(null);
   }
+
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating User Profile Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
 
   try {
     return SupabaseService.client

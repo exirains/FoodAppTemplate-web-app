@@ -3,44 +3,59 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 import { JWT } from "https://esm.sh/google-auth-library@8.7.0"
 
 interface WebhookPayload {
-  type: 'INSERT' | 'UPDATE' | 'DELETE';
+  type: string; // e.g. 'INSERT', 'UPDATE', 'delivery_assignment'
   table: string;
   record: any;
   old_record: any;
   schema: string;
 }
 
+const getLocalizedContent = (type: string, lang: string, orderNumber: string) => {
+  const translations: any = {
+    new_delivery_order: {
+      en: { title: '🛵 New Sangak Order!', body: `Order #${orderNumber} is ready!` },
+      tr: { title: '🛵 Yeni Sangak Siparişi!', body: `Sipariş #${orderNumber} hazır!` },
+      fa: { title: '🛵 سفارش جدید سنگک!', body: `سفارش #${orderNumber} آماده است!` },
+    },
+    delivery_assignment: {
+      en: { title: '🚚 New Delivery Assigned', body: `Order #${orderNumber} has been assigned to you.` },
+      tr: { title: '🚚 Yeni Teslimat Atandı', body: `Sipariş #${orderNumber} size atandı.` },
+      fa: { title: '🚚 ارسال جدید به شما واگذار شد', body: `سفارش #${orderNumber} به شما واگذار شد.` },
+    }
+  }
+
+  const isAssignment = type === 'delivery_assignment';
+  const typeKey = isAssignment ? 'delivery_assignment' : 'new_delivery_order';
+  const content = translations[typeKey][lang] || translations[typeKey]['en'];
+  return content;
+}
+
 serve(async (req) => {
   try {
     const payload: WebhookPayload = await req.json()
-    const { record, old_record } = payload
+    const { record, old_record, type } = payload
 
-    // 1. Validation Logic
-    // Only proceed if status is now 'ready' and it wasn't 'ready' before
-    const newStatus = record?.status
-    const oldStatus = old_record?.status
+    const isAssignment = type === 'delivery_assignment';
+    const isReady = record?.status === 'ready' && old_record?.status !== 'ready';
 
-    if (newStatus !== 'ready' || oldStatus === 'ready') {
+    if (!isAssignment && !isReady) {
       return new Response(JSON.stringify({
-        message: `Ignore: Status changed from ${oldStatus} to ${newStatus}`
+        message: `Ignore: type=${type}, status=${old_record?.status}->${record?.status}`
       }), { status: 200 })
     }
 
     const orderId = record.id
-    // Matches Flutter logic: SNK- + first 4 chars of UUID
     const orderNumber = `SNK-${orderId.substring(0, 4).toUpperCase()}`
 
-    // 2. Initialize Supabase Admin Client
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // 3. Find Delivery Users from Profiles
-    // Single source of truth: profiles.fcm_token
+    // Fetch delivery staff profiles
     const { data: deliveryUsers, error: profileError } = await supabase
       .from('profiles')
-      .select('id, fcm_token')
+      .select('id, fcm_token, preferred_language')
       .eq('role', 'delivery')
       .not('fcm_token', 'is', null)
       .neq('fcm_token', '')
@@ -49,7 +64,17 @@ serve(async (req) => {
       return new Response(JSON.stringify({ message: 'No delivery staff with FCM tokens found' }), { status: 200 })
     }
 
-    // 4. Get Google Auth Token for FCM v1
+    // Identify recipients
+    let recipients = deliveryUsers;
+    if (isAssignment) {
+      const assignedId = record.assigned_delivery_person;
+      recipients = deliveryUsers.filter(u => u.id === assignedId);
+      if (recipients.length === 0) {
+        return new Response(JSON.stringify({ message: `Assigned user ${assignedId} has no token` }), { status: 200 })
+      }
+    }
+
+    // Get FCM Auth Token
     const client = new JWT({
       email: Deno.env.get('FIREBASE_CLIENT_EMAIL'),
       key: Deno.env.get('FIREBASE_PRIVATE_KEY')?.replace(/\\n/g, '\n'),
@@ -58,11 +83,13 @@ serve(async (req) => {
     const gTokens = await client.authorize()
     const accessToken = gTokens.access_token
 
-    // 5. Send notifications via FCM v1 API
     const project_id = Deno.env.get('FIREBASE_PROJECT_ID')
     const fcmUrl = `https://fcm.googleapis.com/v1/projects/${project_id}/messages:send`
 
-    const sendPromises = deliveryUsers.map(user => {
+    const sendPromises = recipients.map(user => {
+      const typeKey = isAssignment ? 'delivery_assignment' : 'new_delivery_order';
+      const localized = getLocalizedContent(typeKey, user.preferred_language || 'en', orderNumber);
+
       return fetch(fcmUrl, {
         method: 'POST',
         headers: {
@@ -73,33 +100,19 @@ serve(async (req) => {
           message: {
             token: user.fcm_token,
             notification: {
-              title: '🛵 New Sangak Order!',
-              body: `Order #${orderNumber} is ready!`,
+              title: localized.title,
+              body: localized.body,
             },
             data: {
-              type: 'new_delivery_order',
+              type: typeKey,
               order_id: orderId,
-              status: 'ready',
               order_number: orderNumber,
-            },
-            fcm_options: {
-              analytics_label: 'delivery_new_order',
             },
             android: {
               priority: 'high',
-              notification: {
-                channel_id: 'delivery_alerts',
-                sound: 'default',
-              }
+              notification: { channel_id: 'delivery_alerts', sound: 'default' }
             },
-            apns: {
-              payload: {
-                aps: {
-                  sound: 'default',
-                  badge: 1,
-                }
-              }
-            }
+            apns: { payload: { aps: { sound: 'default', badge: 1 } } }
           }
         })
       })
@@ -109,18 +122,12 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       success: true,
-      sent_count: deliveryUsers.length,
-      order: orderNumber
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-      status: 200,
-    })
+      type: isAssignment ? 'delivery_assignment' : 'ready_broadcast',
+      sent_count: recipients.length
+    }), { status: 200 })
 
   } catch (error) {
     console.error('Edge Function Error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { 'Content-Type': 'application/json' },
-      status: 500,
-    })
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 })
   }
 })

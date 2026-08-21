@@ -14,6 +14,8 @@ import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/widgets/sangak_dialogs.dart';
 import '../../shared/widgets/product_tag.dart';
+import '../../models/bread.dart';
+import '../../models/category.dart';
 import '../home/home_provider.dart';
 import '../../shared/widgets/role_guard.dart';
 import '../../main.dart';
@@ -59,7 +61,7 @@ class ProductManagementScreen extends ConsumerWidget {
     );
   }
 
-  void _showEditProductDialog(BuildContext context, WidgetRef ref, dynamic bread) {
+  void _showEditProductDialog(BuildContext context, WidgetRef ref, Bread? bread) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -69,7 +71,7 @@ class ProductManagementScreen extends ConsumerWidget {
 }
 
 class _ProductCard extends ConsumerWidget {
-  final dynamic bread;
+  final Bread bread;
   final String lang;
   final AppLocalizations l10n;
 
@@ -180,7 +182,7 @@ class _ProductCard extends ConsumerWidget {
     );
   }
 
-  void _showEditProductDialog(BuildContext context, WidgetRef ref, dynamic bread) {
+  void _showEditProductDialog(BuildContext context, WidgetRef ref, Bread? bread) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -188,7 +190,7 @@ class _ProductCard extends ConsumerWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, WidgetRef ref, dynamic bread) {
+  void _confirmDelete(BuildContext context, WidgetRef ref, Bread bread) {
     SangakConfirmDialog.show(
       context,
       title: l10n.deleteProduct,
@@ -239,7 +241,7 @@ class _StatusChip extends StatelessWidget {
 }
 
 class _EditProductDialog extends ConsumerStatefulWidget {
-  final dynamic bread;
+  final Bread? bread;
   const _EditProductDialog({this.bread});
 
   @override
@@ -274,21 +276,21 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     final isEditing = widget.bread != null;
     final b = widget.bread;
     
-    _nameEnController = TextEditingController(text: isEditing ? (b.translations?['en']?['name'] ?? b.name) : '');
-    _descEnController = TextEditingController(text: isEditing ? (b.translations?['en']?['description'] ?? b.description) : '');
-    _nameTrController = TextEditingController(text: isEditing ? b.translations?['tr']?['name'] ?? '' : '');
-    _descTrController = TextEditingController(text: isEditing ? b.translations?['tr']?['description'] ?? '' : '');
-    _nameFaController = TextEditingController(text: isEditing ? b.translations?['fa']?['name'] ?? '' : '');
-    _descFaController = TextEditingController(text: isEditing ? b.translations?['fa']?['description'] ?? '' : '');
-    _priceController = TextEditingController(text: isEditing ? b.price.toString() : '');
-    _prepTimeController = TextEditingController(text: isEditing ? b.prepTime.toString() : '20');
-    _caloriesController = TextEditingController(text: isEditing ? b.calories.toString() : '250');
+    _nameEnController = TextEditingController(text: isEditing ? (b!.translations?['en']?['name'] ?? b.name) : '');
+    _descEnController = TextEditingController(text: isEditing ? (b!.translations?['en']?['description'] ?? b.description) : '');
+    _nameTrController = TextEditingController(text: isEditing ? b!.translations?['tr']?['name'] ?? '' : '');
+    _descTrController = TextEditingController(text: isEditing ? b!.translations?['tr']?['description'] ?? '' : '');
+    _nameFaController = TextEditingController(text: isEditing ? b!.translations?['fa']?['name'] ?? '' : '');
+    _descFaController = TextEditingController(text: isEditing ? b!.translations?['fa']?['description'] ?? '' : '');
+    _priceController = TextEditingController(text: isEditing ? b!.price.toString() : '');
+    _prepTimeController = TextEditingController(text: isEditing ? b!.prepTime.toString() : '20');
+    _caloriesController = TextEditingController(text: isEditing ? b!.calories.toString() : '250');
     
-    _imageUrl = isEditing ? b.imageUrl : null;
-    _selectedCategoryId = isEditing ? b.categoryId : null;
-    _selectedTag = isEditing ? b.tag : null;
-    _available = isEditing ? b.available : true;
-    _isOrganic = isEditing ? b.isOrganic : false;
+    _imageUrl = isEditing ? b!.imageUrl : null;
+    _selectedCategoryId = isEditing ? b!.categoryId : null;
+    _selectedTag = isEditing ? b!.tag : null;
+    _available = isEditing ? b!.available : true;
+    _isOrganic = isEditing ? b!.isOrganic : false;
   }
 
   @override
@@ -377,7 +379,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
       String productId;
       if (widget.bread != null) {
-        productId = widget.bread.id;
+        productId = widget.bread!.id;
         await repo.updateProduct(productId, productData);
       } else {
         final newProduct = await repo.addProduct(productData);
@@ -462,19 +464,22 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               ),
               const SizedBox(height: 16),
               
-              categoriesAsync.when(
-                data: (categories) => DropdownButtonFormField<String>(
-                  initialValue: _selectedCategoryId ?? categories.firstOrNull?.id,
+              if (categoriesAsync.hasValue)
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedCategoryId ?? (categoriesAsync.value!.isNotEmpty ? categoriesAsync.value!.first.id : null),
                   decoration: InputDecoration(labelText: l10n.category),
-                  items: categories.map((c) => DropdownMenuItem(
-                    value: c.id,
-                    child: Text(c.name),
-                  )).toList(),
+                  items: categoriesAsync.value!.map<DropdownMenuItem<String>>((cat) {
+                    return DropdownMenuItem<String>(
+                      value: cat.id,
+                      child: Text(cat.name),
+                    );
+                  }).toList(),
                   onChanged: (v) => setState(() => _selectedCategoryId = v),
-                ),
-                loading: () => const LinearProgressIndicator(),
-                error: (error, stack) => Text(l10n.errorLoadingCategories),
-              ),
+                )
+              else if (categoriesAsync.isLoading)
+                const LinearProgressIndicator()
+              else
+                Text(l10n.errorLoadingCategories),
               
               const SizedBox(height: 12),
               Row(

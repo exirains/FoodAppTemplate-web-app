@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'supabase_service.dart';
+import 'lifecycle_service.dart';
 
 class OptionsRepository {
   final _client = SupabaseService.client;
@@ -64,5 +65,13 @@ class OptionsRepository {
 final optionsRepositoryProvider = Provider((ref) => OptionsRepository());
 
 final appOptionsProvider = StreamProvider<Map<String, dynamic>>((ref) {
+  // Watch for app resume to recover stale realtime connections
+  ref.listen(appLifecycleProvider, (previous, next) {
+    if (next.value == AppLifecycleState.resumed) {
+      debugPrint('♻️ App Resumed: Invalidating App Options Realtime Provider');
+      ref.invalidateSelf();
+    }
+  });
+
   return ref.read(optionsRepositoryProvider).watchOptions();
 });

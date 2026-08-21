@@ -77,6 +77,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       final authState = ref.read(authProvider);
       final profileAsync = ref.read(userProfileProvider);
       final storage = ref.read(storageServiceProvider);
+      final referralCode = state.uri.queryParameters['ref']?.trim();
+      if (referralCode != null && referralCode.isNotEmpty) {
+        final currentPending = ref.read(pendingReferralProvider);
+        if (currentPending != referralCode) {
+          ref.read(pendingReferralProvider.notifier).state = referralCode;
+          // Persist to storage for cold starts/reloads
+          storage.setReferralCode(referralCode);
+          debugPrint('SANGAK: Referral code detected and persisted: $referralCode');
+        }
+      }
 
       final user = authState.asData?.value;
       final profile = profileAsync.asData?.value;
@@ -92,6 +102,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (storage.isFirstLaunch || storage.language == null) {
         if (!isLanguage && !isSplash) return '/language';
         return null;
+      }
+
+      if (referralCode != null && referralCode.isNotEmpty && !isAuth) {
+        return '/signup-choice';
       }
 
       // 2. Redirect logged in users away from auth pages

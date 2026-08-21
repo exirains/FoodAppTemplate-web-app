@@ -9,13 +9,22 @@ import 'auth_validators.dart';
 
 import '../../services/referral_repository.dart';
 import '../../core/localization/locale_provider.dart';
+import '../../main.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AsyncValue<User?>>((ref) {
   return AuthNotifier(ref);
 });
 
 /// Provider for a pending referral code entered during signup
-final pendingReferralProvider = StateProvider<String?>((ref) => null);
+final pendingReferralProvider = StateProvider<String?>((ref) {
+  // Initialize from storage if available
+  try {
+    final storage = ref.read(storageServiceProvider);
+    return storage.referralCode;
+  } catch (_) {
+    return null;
+  }
+});
 
 class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   final Ref _ref;
@@ -278,6 +287,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         debugPrint('✅ Referral processed successfully for user: $userId');
         // Clear the pending referral code after successful processing
         _ref.read(pendingReferralProvider.notifier).state = null;
+        await _ref.read(storageServiceProvider).setReferralCode(null);
       } else {
         final error = result['error'] ?? 'unknown_error';
         debugPrint('ℹ️ Referral not processed: $error');
@@ -286,6 +296,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         // to prevent repeated attempts on subsequent logins
         if (error == 'already_referred' || error == 'invalid_code' || error == 'self_referral') {
           _ref.read(pendingReferralProvider.notifier).state = null;
+          await _ref.read(storageServiceProvider).setReferralCode(null);
         }
       }
     } catch (e) {

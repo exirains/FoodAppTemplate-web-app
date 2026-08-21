@@ -10,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../core/update/update_dialog.dart';
 import '../auth/profile_provider.dart';
+import '../auth/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -87,6 +88,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     if (storage.isFirstLaunch || storage.language == null) {
       await storage.setFirstLaunch(false);
       if (mounted) context.go('/language');
+      return;
+    }
+
+    final pendingReferral = ref.read(pendingReferralProvider);
+    if (pendingReferral != null && pendingReferral.isNotEmpty) {
+      if (mounted) context.go('/signup-choice');
       return;
     }
 

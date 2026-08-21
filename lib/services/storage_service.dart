@@ -6,10 +6,21 @@ class StorageService {
   static const String _keyFirstLaunch = 'is_first_launch';
   static const String _keyBasket = 'local_basket';
   static const String _keyAddresses = 'saved_addresses';
+  static const String _keyReferralCode = 'pending_referral_code';
 
   final SharedPreferences _prefs;
 
   StorageService(this._prefs);
+
+  Future<void> setReferralCode(String? code) async {
+    if (code == null) {
+      await _tryWrite(() => _prefs.remove(_keyReferralCode));
+    } else {
+      await _tryWrite(() => _prefs.setString(_keyReferralCode, code));
+    }
+  }
+
+  String? get referralCode => _prefs.getString(_keyReferralCode);
 
   Future<void> setLanguage(String languageCode) async {
     await _tryWrite(() => _prefs.setString(_keyLanguage, languageCode));

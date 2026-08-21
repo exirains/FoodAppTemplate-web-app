@@ -260,6 +260,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get orderPlacedSuccessfully => 'Sipariş başarıyla verildi!';
 
   @override
+  String get orderAssignedSuccessfully => 'Sipariş başarıyla atandı.';
+
+  @override
   String get subtotal => 'Ara Toplam';
 
   @override
@@ -1531,7 +1534,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'Fırından yeni çıkmış sıcacık taze Sangak\'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nUygulamayı indir: https://sangak.tr\n\nDavet kodum:\n$code';
+    return 'Fırından yeni çıkmış sıcacık taze Sangak\'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.sangak.tr/?ref=$code';
   }
 
   @override
@@ -1604,4 +1607,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String ratingValue(num value) {
     return '$value.0';
   }
+
+  @override
+  String get pickedUp => 'Teslim Alındı';
+
+  @override
+  String get assignedToYou => 'Size Atandı';
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:app_links/app_links.dart';
 import 'firebase_options.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/router/app_router.dart';
@@ -15,6 +17,7 @@ import 'services/favorite_service.dart';
 import 'services/cache_service.dart';
 import 'services/notification_service.dart';
 import 'core/update/update_service.dart';
+import 'features/auth/auth_provider.dart';
 import 'models/bread.dart';
 import 'models/category.dart';
 import 'models/address.dart';
@@ -63,7 +66,25 @@ void main() async {
     
     // 2. Initialize SharedPreferences
     final prefs = await SharedPreferences.getInstance();
+    final storage = StorageService(prefs);
     
+    // 2.5 Handle Deep Links (Referral Links)
+    final appLinks = AppLinks();
+    
+    // Check for initial link (Cold Start)
+    try {
+      final initialUri = await appLinks.getInitialLink();
+      if (initialUri != null) {
+        final refCode = initialUri.queryParameters['ref']?.trim();
+        if (refCode != null && refCode.isNotEmpty) {
+          await storage.setReferralCode(refCode);
+          debugPrint('SANGAK: Initial referral code captured: $refCode');
+        }
+      }
+    } catch (e) {
+      debugPrint('SANGAK: Deep link error: $e');
+    }
+
     // 3. Initialize Critical Services (Must await Supabase to avoid FCM null-check errors)
     await SupabaseService.initialize();
     debugPrint('SANGAK: Supabase ready.');
@@ -90,11 +111,44 @@ void main() async {
   }
 }
 
-class SangakApp extends ConsumerWidget {
+class SangakApp extends ConsumerStatefulWidget {
   const SangakApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SangakApp> createState() => _SangakAppState();
+}
+
+class _SangakAppState extends ConsumerState<SangakApp> {
+  late final AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  void _initDeepLinks() {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      final refCode = uri.queryParameters['ref']?.trim();
+      if (refCode != null && refCode.isNotEmpty) {
+        debugPrint('SANGAK: Incoming stream referral code: $refCode');
+        // Update both the provider and persistent storage
+        ref.read(pendingReferralProvider.notifier).state = refCode;
+        ref.read(storageServiceProvider).setReferralCode(refCode);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
 
