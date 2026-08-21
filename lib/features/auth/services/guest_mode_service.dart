@@ -1,6 +1,7 @@
 // Guest mode service for managing guest user data.
 // Handles local storage of guest data and migration to account.
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/user_profile.dart';
@@ -17,14 +18,12 @@ class GuestModeService {
 
   /// Enter guest mode (store preferences)
   static Future<void> enterGuestMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isGuestKey, true);
+    await _tryWrite((prefs) => prefs.setBool(_isGuestKey, true));
   }
 
   /// Exit guest mode (convert to account)
   static Future<void> exitGuestMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isGuestKey, false);
+    await _tryWrite((prefs) => prefs.setBool(_isGuestKey, false));
   }
 
   /// Get current guest data
@@ -47,9 +46,8 @@ class GuestModeService {
 
   /// Save guest data
   static Future<void> saveGuestData(GuestUserData data) async {
-    final prefs = await SharedPreferences.getInstance();
     final json = jsonEncode(data.toJson());
-    await prefs.setString(_guestDataKey, json);
+    await _tryWrite((prefs) => prefs.setString(_guestDataKey, json));
   }
 
   /// Add item to guest basket
@@ -128,9 +126,10 @@ class GuestModeService {
 
   /// Clear guest data after successful account migration
   static Future<void> clearGuestData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_guestDataKey);
-    await prefs.remove(_isGuestKey);
+    await _tryWrite((prefs) async {
+      await prefs.remove(_guestDataKey);
+      return prefs.remove(_isGuestKey);
+    });
   }
 
   /// Reset guest mode (clears all data and re-enters guest mode)
@@ -160,5 +159,16 @@ class GuestModeService {
     final duration = DateTime.now().difference(guestData.createdAt);
 
     return basketSize >= 3 || favoritesCount >= 2 || duration.inMinutes >= 5;
+  }
+
+  static Future<void> _tryWrite(
+    Future<bool> Function(SharedPreferences prefs) write,
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await write(prefs);
+    } catch (e) {
+      debugPrint('Storage access blocked: $e');
+    }
   }
 }

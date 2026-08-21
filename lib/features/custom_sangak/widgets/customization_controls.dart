@@ -26,10 +26,14 @@ class CustomizationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+          padding: const EdgeInsets.symmetric(
+            horizontal: SangakDimens.spacing24,
+          ),
           child: Text(
             title,
-            style: SangakTypography.h3(context).copyWith(color: SangakColors.primary),
+            style: SangakTypography.h3(
+              context,
+            ).copyWith(color: SangakColors.primary),
           ),
         ),
         const SizedBox(height: SangakDimens.spacing16),
@@ -70,9 +74,9 @@ class CustomizationOptionRow extends ConsumerWidget {
               children: [
                 Text(
                   option.name,
-                  style: SangakTypography.bodyLarge(context).copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: SangakTypography.bodyLarge(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.w600),
                 ),
                 if (option.price > 0)
                   Text(
@@ -89,11 +93,13 @@ class CustomizationOptionRow extends ConsumerWidget {
             quantity: quantity,
             maxQuantity: option.maxQuantity,
             onIncrement: () {
-              ref.read(customSangakProvider(baseBread).notifier)
+              ref
+                  .read(customSangakProvider(baseBread).notifier)
                   .updateOption(option.id, quantity + 1);
             },
             onDecrement: () {
-              ref.read(customSangakProvider(baseBread).notifier)
+              ref
+                  .read(customSangakProvider(baseBread).notifier)
                   .updateOption(option.id, quantity - 1);
             },
           ),
@@ -124,7 +130,9 @@ class BaseSelectionCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: SangakDimens.spacing12),
         padding: const EdgeInsets.all(SangakDimens.spacing12),
         decoration: BoxDecoration(
-          color: isSelected ? SangakColors.primary.withValues(alpha: 0.1) : SangakColors.surface,
+          color: isSelected
+              ? SangakColors.primary.withValues(alpha: 0.1)
+              : SangakColors.surface,
           borderRadius: BorderRadius.circular(SangakDimens.radiusM),
           border: Border.all(
             color: isSelected ? SangakColors.primary : SangakColors.border,
@@ -137,6 +145,7 @@ class BaseSelectionCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(SangakDimens.radiusS),
               child: Image.network(
                 bread.imageUrl,
+                gaplessPlayback: true,
                 height: 60,
                 width: 60,
                 fit: BoxFit.cover,
@@ -144,7 +153,10 @@ class BaseSelectionCard extends StatelessWidget {
                   height: 60,
                   width: 60,
                   color: SangakColors.border,
-                  child: const Icon(Icons.bakery_dining, color: SangakColors.inkLight),
+                  child: const Icon(
+                    Icons.bakery_dining,
+                    color: SangakColors.inkLight,
+                  ),
                 ),
               ),
             ),

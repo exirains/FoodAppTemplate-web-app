@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
@@ -11,26 +12,34 @@ class StorageService {
   StorageService(this._prefs);
 
   Future<void> setLanguage(String languageCode) async {
-    await _prefs.setString(_keyLanguage, languageCode);
+    await _tryWrite(() => _prefs.setString(_keyLanguage, languageCode));
   }
 
   String? get language => _prefs.getString(_keyLanguage);
 
   Future<void> setFirstLaunch(bool isFirstLaunch) async {
-    await _prefs.setBool(_keyFirstLaunch, isFirstLaunch);
+    await _tryWrite(() => _prefs.setBool(_keyFirstLaunch, isFirstLaunch));
   }
 
   bool get isFirstLaunch => _prefs.getBool(_keyFirstLaunch) ?? true;
 
   Future<void> saveBasket(String basketJson) async {
-    await _prefs.setString(_keyBasket, basketJson);
+    await _tryWrite(() => _prefs.setString(_keyBasket, basketJson));
   }
 
   String? get basket => _prefs.getString(_keyBasket);
 
   Future<void> saveAddresses(String addressesJson) async {
-    await _prefs.setString(_keyAddresses, addressesJson);
+    await _tryWrite(() => _prefs.setString(_keyAddresses, addressesJson));
   }
 
   String? get addresses => _prefs.getString(_keyAddresses);
+
+  Future<void> _tryWrite(Future<bool> Function() write) async {
+    try {
+      await write();
+    } catch (e) {
+      debugPrint('Storage access blocked: $e');
+    }
+  }
 }

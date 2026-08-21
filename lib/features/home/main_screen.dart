@@ -41,11 +41,18 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> _handleEngagementStreak(String userId) async {
     final options = ref.read(appOptionsProvider).value ?? {};
-    final bool loginStreakEnabled = options['enable_login_streak']?.toString() == 'true';
-    if (!loginStreakEnabled) return;
+    final bool loginStreakEnabled =
+        options['enable_login_streak']?.toString() == 'true';
+    if (!loginStreakEnabled) {
+      return;
+    }
 
     try {
-      final profile = await SupabaseService.client.from('profiles').select('last_login_date, current_streak').eq('id', userId).single();
+      final profile = await SupabaseService.client
+          .from('profiles')
+          .select('last_login_date, current_streak')
+          .eq('id', userId)
+          .single();
       final lastLoginStr = profile['last_login_date'] as String?;
       final currentStreak = profile['current_streak'] as int? ?? 0;
       final today = DateTime.now();
@@ -53,23 +60,62 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
       if (lastLoginStr != null) {
         final lastLogin = DateTime.parse(lastLoginStr);
-        final lastLoginDate = DateTime(lastLogin.year, lastLogin.month, lastLogin.day);
+        final lastLoginDate = DateTime(
+          lastLogin.year,
+          lastLogin.month,
+          lastLogin.day,
+        );
         final difference = todayDate.difference(lastLoginDate).inDays;
 
         if (difference == 1) {
           final newStreak = currentStreak + 1;
-          await SupabaseService.client.from('profiles').update({'last_login_date': todayDate.toIso8601String(), 'current_streak': newStreak, 'max_streak': currentStreak >= (profile['max_streak'] ?? 0) ? newStreak : profile['max_streak']}).eq('id', userId);
-          final threshold = int.tryParse(options['streak_threshold']?.toString() ?? '3') ?? 3;
+          await SupabaseService.client
+              .from('profiles')
+              .update({
+                'last_login_date': todayDate.toIso8601String(),
+                'current_streak': newStreak,
+                'max_streak': currentStreak >= (profile['max_streak'] ?? 0)
+                    ? newStreak
+                    : profile['max_streak'],
+              })
+              .eq('id', userId);
+          final threshold =
+              int.tryParse(options['streak_threshold']?.toString() ?? '3') ?? 3;
           if (newStreak % threshold == 0) {
-            final bonus = int.tryParse(options['streak_bonus']?.toString() ?? '50') ?? 50;
-            await ref.read(loyaltyRepositoryProvider).awardPoints(userId: userId, amount: bonus, reason: 'Streak Bonus ($newStreak Days)', type: 'earn');
-            if (mounted) SangakToast.show(context, '🔥 $newStreak Day Streak! +$bonus Pts');
+            final bonus =
+                int.tryParse(options['streak_bonus']?.toString() ?? '50') ?? 50;
+            await ref
+                .read(loyaltyRepositoryProvider)
+                .awardPoints(
+                  userId: userId,
+                  amount: bonus,
+                  reason: 'Streak Bonus ($newStreak Days)',
+                  type: 'earn',
+                );
+            if (mounted) {
+              SangakToast.show(
+                context,
+                '🔥 $newStreak Day Streak! +$bonus Pts',
+              );
+            }
           }
         } else if (difference > 1) {
-          await SupabaseService.client.from('profiles').update({'last_login_date': todayDate.toIso8601String(), 'current_streak': 1}).eq('id', userId);
+          await SupabaseService.client
+              .from('profiles')
+              .update({
+                'last_login_date': todayDate.toIso8601String(),
+                'current_streak': 1,
+              })
+              .eq('id', userId);
         }
       } else {
-        await SupabaseService.client.from('profiles').update({'last_login_date': todayDate.toIso8601String(), 'current_streak': 1}).eq('id', userId);
+        await SupabaseService.client
+            .from('profiles')
+            .update({
+              'last_login_date': todayDate.toIso8601String(),
+              'current_streak': 1,
+            })
+            .eq('id', userId);
       }
       ref.invalidate(userProfileProvider);
     } catch (e) {
@@ -94,20 +140,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return SangakBackHandler(
       child: Scaffold(
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(begin: const Offset(0, 0.01), end: Offset.zero).animate(animation),
-                child: child,
-              ),
-            );
-          },
-          child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
+        body: IndexedStack(index: currentIndex, children: screens),
+        bottomNavigationBar: SangakBottomNav(
+          currentIndex: currentIndex,
+          onTap: _onTabTapped,
         ),
-        bottomNavigationBar: SangakBottomNav(currentIndex: currentIndex, onTap: _onTabTapped),
       ),
     );
   }
