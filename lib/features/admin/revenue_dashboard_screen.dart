@@ -29,7 +29,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
         child: Scaffold(
           backgroundColor: SangakColors.background,
           appBar: AppBar(
-            title: Text(l10n.revenueDashboard ?? 'Revenue Dashboard'),
+            title: Text(l10n.revenueDashboard),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),
               onPressed: () => Navigator.of(context).pop(),
@@ -114,7 +114,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
     if (days > 1 && days <= 7) {
       revenueTitle = 'Weekly Revenue';
     } else if (days > 7 && days <= 31) {
-      revenueTitle = '${l10n.thisMonth ?? 'Monthly'} Revenue';
+      revenueTitle = '${l10n.thisMonth} Revenue';
     } else if (days > 31) {
       final startStr = DateFormat('MMM dd').format(range.start);
       final endStr = DateFormat('MMM dd').format(range.end);
@@ -135,7 +135,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
           children: [
             Expanded(
               child: _MetricCard(
-                title: l10n.activeOrders ?? 'Active Orders',
+                title: l10n.activeOrders,
                 value: '${stats.activeOrdersCount}',
                 icon: Icons.shopping_basket_outlined,
                 color: SangakColors.info,
@@ -144,7 +144,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _MetricCard(
-                title: l10n.averageOrderValue ?? 'Avg. Order Value',
+                title: l10n.averageOrderValue,
                 value: SangakNumberFormatter.formatCurrency(aov, lang),
                 icon: Icons.analytics_outlined,
                 color: SangakColors.accent,
@@ -166,7 +166,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
     if (days <= 1) {
       chartTitle = l10n.todaysRevenue;
     } else if (days > 7 && days <= 31) {
-      chartTitle = l10n.thisMonth ?? 'Monthly Sales Trends';
+      chartTitle = l10n.thisMonth;
     } else if (days > 31) {
       final startStr = DateFormat('MMM dd').format(range.start);
       final endStr = DateFormat('MMM dd').format(range.end);
@@ -244,7 +244,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.topProducts ?? 'Top Products', style: SangakTypography.h3(context)),
+          Text(l10n.topProducts, style: SangakTypography.h3(context)),
           const SizedBox(height: 20),
           if (stats.topSellingProducts.isEmpty)
             Center(child: Text(l10n.noProductsFound, style: SangakTypography.bodySmall(context)))
@@ -289,9 +289,9 @@ class RevenueDashboardScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.liveOrderProgress ?? 'Live Order Progress', style: SangakTypography.h3(context)),
+              Text(l10n.liveOrderProgress, style: SangakTypography.h3(context)),
               _MetricCard(
-                title: l10n.avgDeliveryTime ?? 'Avg. Deliv.',
+                title: l10n.avgDeliveryTime,
                 value: '${stats.averageDeliveryTimeMinutes.toStringAsFixed(1)} ${l10n.minutesShort}',
                 icon: Icons.timer_outlined,
                 color: SangakColors.warning,
@@ -356,7 +356,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: _buildStatRow(l10n.totalOrdersToday ?? 'Period Orders', '${stats.todayTotalOrders}', Colors.white70)),
+              Expanded(child: _buildStatRow(l10n.totalOrdersToday, '${stats.todayTotalOrders}', Colors.white70)),
               const VerticalDivider(color: Colors.white12),
               Expanded(child: _buildStatRow(l10n.statusDelivered, '${stats.deliveredCount}', Colors.white70)),
               const VerticalDivider(color: Colors.white12),
@@ -480,7 +480,7 @@ class _RangeSelector extends ConsumerWidget {
           const SizedBox(width: 8),
           _buildChip(ref, 'Week', DateTimeRange(start: today.subtract(const Duration(days: 6)), end: now)),
           const SizedBox(width: 8),
-          _buildChip(ref, l10n.thisMonth ?? 'Month', DateTimeRange(start: DateTime(now.year, now.month, 1), end: now)),
+          _buildChip(ref, l10n.thisMonth, DateTimeRange(start: DateTime(now.year, now.month, 1), end: now)),
           const SizedBox(width: 8),
           _buildCustomChip(context, ref, l10n),
         ],
@@ -505,7 +505,7 @@ class _RangeSelector extends ConsumerWidget {
     return ActionChip(
       label: Row(
         children: [
-          Text(l10n.customRange ?? 'Custom'),
+          Text(l10n.customRange),
           const SizedBox(width: 4),
           const Icon(Icons.date_range, size: 14),
         ],

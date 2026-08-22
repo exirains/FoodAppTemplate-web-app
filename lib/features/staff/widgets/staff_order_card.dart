@@ -177,7 +177,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                         width: thumbnailSize,
                         height: thumbnailSize,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (context, url, error) => Container(
                           width: thumbnailSize,
                           height: thumbnailSize,
                           color: SangakColors.border, 

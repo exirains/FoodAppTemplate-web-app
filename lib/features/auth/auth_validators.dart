@@ -16,11 +16,6 @@ class AuthValidators {
     r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
   );
 
-  /// Password pattern: must contain uppercase, lowercase, and number
-  static final RegExp _passwordRegex = RegExp(
-    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)',
-  );
-
   /// Validates email address
   /// - Trims whitespace
   /// - Converts to lowercase

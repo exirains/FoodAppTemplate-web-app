@@ -93,7 +93,7 @@ class SettingsBottomSheet extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.appDomain ?? 'App Domain', style: SangakTypography.bodyMedium(context)),
+                      Text(l10n.appDomain, style: SangakTypography.bodyMedium(context)),
                       Text(
                         'www.sangak.tr',
                         style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),

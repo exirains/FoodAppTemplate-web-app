@@ -187,15 +187,6 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       ),
     );
   }
-
-  Widget _buildPlaceholder(String title) {
-    return Center(
-      child: Text(
-        'Coming Soon: $title',
-        style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
-      ),
-    );
-  }
 }
 
 class _StaffHistoryView extends ConsumerWidget {
@@ -221,7 +212,7 @@ class _StaffHistoryView extends ConsumerWidget {
               children: [
                 const Icon(Icons.history_rounded, size: 80, color: SangakColors.border),
                 const SizedBox(height: 24),
-                Text(l10n.noOrderHistory ?? 'No order history yet', style: SangakTypography.h2(context)),
+                Text(l10n.noOrderHistory, style: SangakTypography.h2(context)),
                 const SizedBox(height: 8),
                 Text(l10n.allCaughtUp, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
               ],

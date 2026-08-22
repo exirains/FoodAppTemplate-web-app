@@ -376,7 +376,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        l10n.haveInvitationCode ?? 'Have an invitation code?',
+                        l10n.haveInvitationCode,
                         style: SangakTypography.bodySmall(context).copyWith(
                           color: SangakColors.primary,
                           fontWeight: FontWeight.bold,
@@ -410,7 +410,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      l10n.agreeToTermsAndPrivacy ?? 'By continuing, you agree to our Terms & Privacy Policy.',
+                      l10n.agreeToTermsAndPrivacy,
                       textAlign: TextAlign.center,
                       style: SangakTypography.caption(context).copyWith(
                         color: SangakColors.inkLight,

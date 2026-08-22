@@ -228,7 +228,7 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final courierName = order.deliveryProfile?['full_name'] ?? (l10n.unassigned ?? 'Unassigned');
+    final courierName = order.deliveryProfile?['full_name'] ?? l10n.unassigned;
     final itemsCount = order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
 
     return InkWell(

@@ -136,12 +136,10 @@ class _RequirementsList extends StatelessWidget {
 class _RequirementItem extends StatelessWidget {
   final String text;
   final bool isMet;
-  final bool isOptional;
 
   const _RequirementItem({
     required this.text,
     required this.isMet,
-    this.isOptional = false,
   });
 
   @override

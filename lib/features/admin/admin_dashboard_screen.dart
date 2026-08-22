@@ -80,7 +80,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                     const SizedBox(height: SangakDimens.spacing48),
                     Text(l10n.quickActions, style: SangakTypography.h3(context)),
                     const SizedBox(height: SangakDimens.spacing16),
-                    _buildQuickAction(context, l10n.revenueDashboard ?? 'Revenue Dashboard', Icons.bar_chart_rounded, () => context.push('/admin/revenue')),
+                    _buildQuickAction(context, l10n.revenueDashboard, Icons.bar_chart_rounded, () => context.push('/admin/revenue')),
                     const SizedBox(height: SangakDimens.spacing12),
                     _buildQuickAction(context, l10n.manageOrders, Icons.list_alt_rounded, () => context.push('/admin/orders')),
                     const SizedBox(height: SangakDimens.spacing12),
