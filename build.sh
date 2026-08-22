@@ -46,21 +46,42 @@ write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
 echo "Building Sangak web..."
 flutter build web --release -v
 
-# 4. Kill-switch: unregister any previously installed service worker for existing users
+# 4. PWA Support: Create a minimal service worker that allows "Add to Home Screen"
+# without caching assets (avoiding stale content/update risks).
 cat > build/web/flutter_service_worker.js << 'EOF'
-self.addEventListener('install', () => self.skipWaiting());
+const CACHE_NAME = 'sangak-v1';
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
-      .then(() => self.registration.unregister())
-      .then(() => self.clients.matchAll())
-      .then((clients) => clients.forEach((c) => c.navigate(c.url))))
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// Network-first strategy: Always try to fetch from network first.
+// This ensures users always see the latest version when online.
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
   );
 });
 EOF
 
-# 5. Remove potential PWA artifacts to ensure clean browser behavior
-rm -f build/web/manifest.json
+# 5. Ensure manifest.json is present (do NOT remove it)
+# We make sure it exists in the build folder
+cp web/manifest.json build/web/manifest.json
 
 echo "Build finished successfully!"
