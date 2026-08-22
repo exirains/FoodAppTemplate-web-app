@@ -57,7 +57,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+          .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
@@ -72,7 +72,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+          .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
           .order('created_at', ascending: false);
 
       return (response as List).map((json) => OrderModel.fromJson(json)).toList();
@@ -86,7 +86,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+          .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
           .eq('id', orderId)
           .single();
       
@@ -101,7 +101,7 @@ class OrderRepository {
     try {
       final response = await _client
           .from('orders')
-          .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+          .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
           .eq('assigned_delivery_person', driverId)
           .order('created_at', ascending: false);
 
@@ -231,7 +231,7 @@ class OrderRepository {
         .asyncMap((list) async {
           final response = await _client
               .from('orders')
-              .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+              .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
               .or('status.eq.ready,status.eq.out_for_delivery')
               .isFilter('assigned_delivery_person', null)
               .order('created_at', ascending: false);
@@ -248,7 +248,7 @@ class OrderRepository {
         .asyncMap((list) async {
           final response = await _client
               .from('orders')
-              .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+              .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
               .or('status.eq.preparing,status.eq.confirmed')
               .isFilter('assigned_delivery_person', null)
               .order('created_at', ascending: false);
@@ -266,7 +266,7 @@ class OrderRepository {
         .asyncMap((list) async {
           final response = await _client
               .from('orders')
-              .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+              .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
               .eq('assigned_delivery_person', driverId)
               .or('status.eq.out_for_delivery,status.eq.ready')
               .order('created_at', ascending: false);
@@ -284,7 +284,7 @@ class OrderRepository {
         .asyncMap((list) async {
           final response = await _client
               .from('orders')
-              .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+              .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
               .eq('assigned_delivery_person', driverId)
               .or('status.eq.delivered,status.eq.cancelled')
               .order('created_at', ascending: false);
@@ -302,7 +302,7 @@ class OrderRepository {
     try {
       var dbQuery = _client
           .from('orders')
-          .select('*, customer:profiles!user_id(*), order_items(*, product:products(product_translations(*)))')
+          .select('*, customer:profiles!user_id(*), delivery_person:profiles!assigned_delivery_person(*), order_items(*, product:products(product_translations(*)))')
           .eq('assigned_delivery_person', driverId);
 
       if (status != null) {

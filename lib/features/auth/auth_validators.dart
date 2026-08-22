@@ -6,7 +6,7 @@ class AuthValidators {
   static const int maxNameLength = 100;
 
   /// Minimum length for password
-  static const int minPasswordLength = 8;
+  static const int minPasswordLength = 4;
 
   /// Maximum length for password
   static const int maxPasswordLength = 128;
@@ -64,10 +64,6 @@ class AuthValidators {
 
     if (password.length > maxPasswordLength) {
       return 'password_too_long'; // Key for localization (optional)
-    }
-
-    if (!_passwordRegex.hasMatch(password)) {
-      return 'password_requirements'; // Key for localization
     }
 
     return null;

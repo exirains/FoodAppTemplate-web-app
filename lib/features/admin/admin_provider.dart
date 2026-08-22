@@ -1,8 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/order.dart';
 import '../../services/order_repository.dart';
 import '../../services/lifecycle_service.dart';
+import '../../core/localization/locale_provider.dart';
 
 export '../../services/order_repository.dart';
 
@@ -28,60 +29,143 @@ final adminOrderDetailProvider = FutureProvider.family<OrderModel?, String>((ref
   return response;
 });
 
+final revenueDateRangeProvider = StateProvider<DateTimeRange>((ref) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  return DateTimeRange(start: today, end: today.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)));
+});
+
 final adminStatsProvider = Provider<AsyncValue<AdminStats>>((ref) {
   final ordersAsync = ref.watch(adminOrdersProvider);
+  final filterRange = ref.watch(revenueDateRangeProvider);
+  final lang = ref.watch(localeProvider).languageCode;
   
   return ordersAsync.whenData((orders) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     
-    double totalRevenue = 0;
+    double filteredRevenue = 0;
+    int filteredOrdersCount = 0;
+    
+    // Weekly Trend (last 7 days fixed for chart context, or dynamic based on filter?)
+    // Requirement says "inspect revenue for any specific period", so we'll make the chart dynamic
+    final int daysInRange = filterRange.duration.inDays.abs() + 1;
+    Map<DateTime, double> trendRevenue = {};
+    
+    // To prevent giant charts, we'll cap trend data or group by week/month if range is large
+    // For now, let's stick to daily breakdown for the selected range
+    for (int i = 0; i < daysInRange; i++) {
+      final day = DateTime(filterRange.start.year, filterRange.start.month, filterRange.start.day).add(Duration(days: i));
+      if (day.isBefore(filterRange.end) || day.isAtSameMomentAs(DateTime(filterRange.end.year, filterRange.end.month, filterRange.end.day))) {
+        trendRevenue[day] = 0.0;
+      }
+    }
+
     int pendingCount = 0;
     int preparingCount = 0;
+    int confirmedCount = 0;
     int readyCount = 0;
+    int outForDeliveryCount = 0;
     int deliveredCount = 0;
-    int todayOrdersCount = 0;
+    int cancelledCount = 0;
+
+    int activeOrdersCount = 0;
+    double totalDeliveryTimeMinutes = 0;
+    int deliveredCountForAvg = 0;
+    
+    Map<String, int> productSales = {};
+    Map<String, double> paymentBreakdown = {};
 
     for (var o in orders) {
       final localCreatedAt = o.createdAt.toLocal();
-      // Compare ignoring time, just date
-      final isToday = localCreatedAt.year == today.year && 
-                     localCreatedAt.month == today.month && 
-                     localCreatedAt.day == today.day;
+      final isInRange = localCreatedAt.isAfter(filterRange.start.subtract(const Duration(seconds: 1))) && 
+                       localCreatedAt.isBefore(filterRange.end.add(const Duration(seconds: 1)));
 
-      if (isToday) {
-        todayOrdersCount++;
+      if (isInRange) {
         if (o.status != OrderStatus.cancelled) {
-          totalRevenue += o.totalPrice;
+          filteredRevenue += o.totalPrice;
+          filteredOrdersCount++;
+          
+          final orderDay = DateTime(localCreatedAt.year, localCreatedAt.month, localCreatedAt.day);
+          if (trendRevenue.containsKey(orderDay)) {
+            trendRevenue[orderDay] = (trendRevenue[orderDay] ?? 0) + o.totalPrice;
+          }
+          
+          // Top Products
+          if (o.items != null) {
+            for (var item in o.items!) {
+              final localizedName = item.localizedName(lang);
+              productSales[localizedName] = (productSales[localizedName] ?? 0) + item.quantity;
+            }
+          }
+          
+          // Payment Breakdown
+          paymentBreakdown[o.paymentMethod] = (paymentBreakdown[o.paymentMethod] ?? 0) + o.totalPrice;
         }
       }
       
+      // Global live stats (always current)
       switch (o.status) {
         case OrderStatus.pending:
           pendingCount++;
+          activeOrdersCount++;
+          break;
+        case OrderStatus.confirmed:
+          confirmedCount++;
+          activeOrdersCount++;
           break;
         case OrderStatus.preparing:
-        case OrderStatus.confirmed:
           preparingCount++;
+          activeOrdersCount++;
           break;
         case OrderStatus.ready:
           readyCount++;
+          activeOrdersCount++;
+          break;
+        case OrderStatus.outForDelivery:
+          outForDeliveryCount++;
+          activeOrdersCount++;
           break;
         case OrderStatus.delivered:
           deliveredCount++;
+          if (localCreatedAt.year == today.year && localCreatedAt.month == today.month && localCreatedAt.day == today.day) {
+             final diff = o.updatedAt.difference(o.createdAt).inMinutes;
+             if (diff > 0) {
+               totalDeliveryTimeMinutes += diff;
+               deliveredCountForAvg++;
+             }
+          }
           break;
-        default:
+        case OrderStatus.cancelled:
+          cancelledCount++;
           break;
       }
     }
 
+    final topProducts = productSales.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
     return AdminStats(
-      todayTotalOrders: todayOrdersCount,
-      todayRevenue: totalRevenue,
+      todayTotalOrders: filteredOrdersCount, // Renamed in usage to "Period Orders"
+      todayRevenue: filteredRevenue, // Renamed in usage to "Period Revenue"
       pendingCount: pendingCount,
-      preparingCount: preparingCount,
+      preparingCount: preparingCount + confirmedCount,
       readyCount: readyCount,
       deliveredCount: deliveredCount,
+      weeklyRevenue: trendRevenue,
+      activeOrdersCount: activeOrdersCount,
+      averageDeliveryTimeMinutes: deliveredCountForAvg > 0 ? totalDeliveryTimeMinutes / deliveredCountForAvg : 0.0,
+      statusBreakdown: {
+        OrderStatus.pending: pendingCount,
+        OrderStatus.confirmed: confirmedCount,
+        OrderStatus.preparing: preparingCount,
+        OrderStatus.ready: readyCount,
+        OrderStatus.outForDelivery: outForDeliveryCount,
+        OrderStatus.delivered: deliveredCount,
+        OrderStatus.cancelled: cancelledCount,
+      },
+      topSellingProducts: topProducts.take(5).map((e) => MapEntry(e.key, e.value)).toList(),
+      paymentBreakdown: paymentBreakdown,
     );
   });
 });
@@ -93,6 +177,12 @@ class AdminStats {
   final int preparingCount;
   final int readyCount;
   final int deliveredCount;
+  final Map<DateTime, double> weeklyRevenue;
+  final int activeOrdersCount;
+  final double averageDeliveryTimeMinutes;
+  final Map<OrderStatus, int> statusBreakdown;
+  final List<MapEntry<String, int>> topSellingProducts;
+  final Map<String, double> paymentBreakdown;
 
   AdminStats({
     required this.todayTotalOrders,
@@ -101,6 +191,12 @@ class AdminStats {
     required this.preparingCount,
     required this.readyCount,
     required this.deliveredCount,
+    required this.weeklyRevenue,
+    required this.activeOrdersCount,
+    required this.averageDeliveryTimeMinutes,
+    required this.statusBreakdown,
+    required this.topSellingProducts,
+    required this.paymentBreakdown,
   });
 }
 

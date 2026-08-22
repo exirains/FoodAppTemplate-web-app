@@ -826,7 +826,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to clear your entire basket?';
 
   @override
-  String get passwordRequirementLength => 'At least 8 characters';
+  String get passwordRequirementLength => 'At least 4 characters';
 
   @override
   String get passwordRequirementUppercase =>
@@ -1626,4 +1626,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assignedToYou => 'Assigned to You';
+
+  @override
+  String get agreeToTermsAndPrivacy =>
+      'By continuing, you agree to our Terms & Privacy Policy.';
+
+  @override
+  String get haveInvitationCode => 'Have an invitation code?';
+
+  @override
+  String get noOrderHistory => 'No order history yet';
+
+  @override
+  String get noCompletedOrders => 'No completed orders yet';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String get customRange => 'Custom Range';
+
+  @override
+  String get averageOrderValue => 'Avg. Order Value';
+
+  @override
+  String get topProducts => 'Top Products';
+
+  @override
+  String get paymentStatus => 'Payment Status';
+
+  @override
+  String get revenueDashboard => 'Revenue Dashboard';
+
+  @override
+  String get weeklySalesTrends => 'Weekly Sales Trends';
+
+  @override
+  String get activeOrders => 'Active Orders';
+
+  @override
+  String get avgDeliveryTime => 'Avg. Delivery Time';
+
+  @override
+  String get liveOrderProgress => 'Live Order Progress';
+
+  @override
+  String get unassigned => 'Unassigned';
+
+  @override
+  String get appDomain => 'App Domain';
 }

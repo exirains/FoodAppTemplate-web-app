@@ -42,8 +42,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
               onPressed: () => context.go('/home'),
             ),
             title: Text(
-              _currentIndex == 0 ? l10n.kitchenPanel : 
-              _currentIndex == 1 ? l10n.ordersHistory : l10n.staffProfile,
+              _currentIndex == 0 ? l10n.kitchenPanel : l10n.ordersHistory,
               style: SangakTypography.h3(context),
             ),
             centerTitle: true,
@@ -68,8 +67,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       index: _currentIndex,
       children: [
         const _StaffOrdersView(),
-        _buildPlaceholder(l10n.ordersHistory),
-        _buildPlaceholder(l10n.staffProfile),
+        const _StaffHistoryView(),
       ],
     );
   }
@@ -99,10 +97,6 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
               icon: const Icon(Icons.history_rounded),
               label: Text(l10n.ordersHistory),
             ),
-            NavigationRailDestination(
-              icon: const Icon(Icons.person_outline_rounded),
-              label: Text(l10n.profile),
-            ),
           ],
         ),
         const VerticalDivider(width: 1, thickness: 1, color: SangakColors.border),
@@ -117,8 +111,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
                   index: _currentIndex,
                   children: [
                     const _StaffOrdersView(),
-                    _buildPlaceholder(l10n.ordersHistory),
-                    _buildPlaceholder(l10n.staffProfile),
+                    const _StaffHistoryView(),
                   ],
                 ),
               ),
@@ -142,8 +135,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       child: Row(
         children: [
           Text(
-            _currentIndex == 0 ? l10n.kitchenPanel : 
-            _currentIndex == 1 ? l10n.ordersHistory : l10n.staffProfile,
+            _currentIndex == 0 ? l10n.kitchenPanel : l10n.ordersHistory,
             style: SangakTypography.h2(context),
           ),
           const Spacer(),
@@ -191,10 +183,6 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
             icon: const Icon(Icons.history_rounded),
             label: l10n.ordersHistory,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person_outline_rounded),
-            label: l10n.profile,
-          ),
         ],
       ),
     );
@@ -206,6 +194,77 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
         'Coming Soon: $title',
         style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
       ),
+    );
+  }
+}
+
+class _StaffHistoryView extends ConsumerWidget {
+  const _StaffHistoryView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ordersAsync = ref.watch(staffOrdersProvider);
+    final l10n = AppLocalizations.of(context);
+    final isWide = MediaQuery.of(context).size.width > 600;
+
+    return ordersAsync.when(
+      data: (orders) {
+        final history = orders.where((o) => 
+          o.status == OrderStatus.delivered || 
+          o.status == OrderStatus.cancelled
+        ).toList();
+
+        if (history.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.history_rounded, size: 80, color: SangakColors.border),
+                const SizedBox(height: 24),
+                Text(l10n.noOrderHistory ?? 'No order history yet', style: SangakTypography.h2(context)),
+                const SizedBox(height: 8),
+                Text(l10n.allCaughtUp, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
+              ],
+            ),
+          );
+        }
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: isWide 
+            ? _buildHistoryGrid(context, history, l10n)
+            : _buildHistoryList(context, history, l10n),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, s) => Center(child: Text(l10n.errorOccurred)),
+    );
+  }
+
+  Widget _buildHistoryList(BuildContext context, List<OrderModel> history, AppLocalizations l10n) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      itemCount: history.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 24),
+      itemBuilder: (context, index) => StaffOrderCard(order: history[index]),
+    );
+  }
+
+  Widget _buildHistoryGrid(BuildContext context, List<OrderModel> history, AppLocalizations l10n) {
+    final width = MediaQuery.of(context).size.width;
+    final crossAxisCount = width > 1600 ? 4 : (width > 1100 ? 3 : (width > 700 ? 2 : 1));
+    final aspectRatio = width > 700 ? 1.6 : 1.3;
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(24),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        childAspectRatio: aspectRatio,
+      ),
+      itemCount: history.length,
+      itemBuilder: (context, index) => StaffOrderCard(order: history[index]),
     );
   }
 }
@@ -302,10 +361,11 @@ class _StaffOrdersView extends ConsumerWidget {
 
   Widget _buildGridView(BuildContext context, List<OrderModel> pending, List<OrderModel> preparing, List<OrderModel> ready, AppLocalizations l10n) {
     final width = MediaQuery.of(context).size.width;
-    final crossAxisCount = width > 1400 ? 3 : (width > 900 ? 2 : 1);
+    final crossAxisCount = width > 1600 ? 4 : (width > 1100 ? 3 : (width > 700 ? 2 : 1));
+    final aspectRatio = width > 700 ? 1.6 : 1.3;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -316,14 +376,14 @@ class _StaffOrdersView extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 24,
-                mainAxisSpacing: 24,
-                childAspectRatio: 1.1,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: aspectRatio,
               ),
               itemCount: pending.length,
               itemBuilder: (context, index) => StaffOrderCard(order: pending[index], isNew: true),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 32),
           ],
           if (preparing.isNotEmpty) ...[
             _SectionHeader(title: l10n.preparing.toUpperCase(), color: SangakColors.info),
@@ -332,14 +392,14 @@ class _StaffOrdersView extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 24,
-                mainAxisSpacing: 24,
-                childAspectRatio: 1.1,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: aspectRatio,
               ),
               itemCount: preparing.length,
               itemBuilder: (context, index) => StaffOrderCard(order: preparing[index]),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 32),
           ],
           if (ready.isNotEmpty) ...[
             _SectionHeader(title: l10n.ready.toUpperCase(), color: SangakColors.success),
@@ -348,14 +408,14 @@ class _StaffOrdersView extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 24,
-                mainAxisSpacing: 24,
-                childAspectRatio: 1.1,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: aspectRatio,
               ),
               itemCount: ready.length,
               itemBuilder: (context, index) => StaffOrderCard(order: ready[index]),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 32),
           ],
         ],
       ),

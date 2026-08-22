@@ -7,7 +7,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sangak/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_links/app_links.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'firebase_options.dart';
 import 'core/localization/locale_provider.dart';
@@ -44,9 +43,6 @@ final cacheServiceProvider = Provider<CacheService>((ref) {
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    
-    // Enable clean path routing (removes # from URL on Web)
-    usePathUrlStrategy();
     
     debugPrint('SANGAK: Initializing app...');
 

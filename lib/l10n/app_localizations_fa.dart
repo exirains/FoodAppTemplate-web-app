@@ -815,7 +815,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'آیا از خالی کردن کل سبد خرید اطمینان دارید؟';
 
   @override
-  String get passwordRequirementLength => 'حداقل ۸ کاراکتر';
+  String get passwordRequirementLength => 'حداقل ۴ کاراکتر';
 
   @override
   String get passwordRequirementUppercase => 'حداقل یک حرف بزرگ (A-Z)';
@@ -1603,4 +1603,53 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get assignedToYou => 'به شما واگذار شد';
+
+  @override
+  String get agreeToTermsAndPrivacy =>
+      'با ادامه کار، شما با شرایط و قوانین و سیاست حریم خصوصی ما موافقت می‌کنید.';
+
+  @override
+  String get haveInvitationCode => 'کد دعوت دارید؟';
+
+  @override
+  String get noOrderHistory => 'هنوز سابقه سفارشی وجود ندارد';
+
+  @override
+  String get noCompletedOrders => 'هنوز سفارش تکمیل شده‌ای وجود ندارد';
+
+  @override
+  String get thisMonth => 'این ماه';
+
+  @override
+  String get customRange => 'بازه دلخواه';
+
+  @override
+  String get averageOrderValue => 'میانگین ارزش سفارش';
+
+  @override
+  String get topProducts => 'محصولات پرفروش';
+
+  @override
+  String get paymentStatus => 'وضعیت پرداخت';
+
+  @override
+  String get revenueDashboard => 'داشبورد درآمد';
+
+  @override
+  String get weeklySalesTrends => 'روند فروش هفتگی';
+
+  @override
+  String get activeOrders => 'سفارش‌های فعال';
+
+  @override
+  String get avgDeliveryTime => 'میانگین زمان تحویل';
+
+  @override
+  String get liveOrderProgress => 'وضعیت سفارش‌های زنده';
+
+  @override
+  String get unassigned => 'تخصیص داده نشده';
+
+  @override
+  String get appDomain => 'دامنه اپلیکیشن';
 }

@@ -80,6 +80,8 @@ class AdminDashboardScreen extends ConsumerWidget {
                     const SizedBox(height: SangakDimens.spacing48),
                     Text(l10n.quickActions, style: SangakTypography.h3(context)),
                     const SizedBox(height: SangakDimens.spacing16),
+                    _buildQuickAction(context, l10n.revenueDashboard ?? 'Revenue Dashboard', Icons.bar_chart_rounded, () => context.push('/admin/revenue')),
+                    const SizedBox(height: SangakDimens.spacing12),
                     _buildQuickAction(context, l10n.manageOrders, Icons.list_alt_rounded, () => context.push('/admin/orders')),
                     const SizedBox(height: SangakDimens.spacing12),
                     _buildQuickAction(context, l10n.productManagement, Icons.breakfast_dining_rounded, () => context.push('/admin/products')),
@@ -112,17 +114,32 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildRevenueCard(BuildContext context, double revenue, String lang, AppLocalizations l10n) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
-      decoration: BoxDecoration(color: SangakColors.ink, borderRadius: BorderRadius.circular(SangakDimens.radiusXL), boxShadow: SangakDimens.shadowMedium),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.todaysRevenue, style: SangakTypography.bodySmall(context).copyWith(color: Colors.white70)),
-          const SizedBox(height: SangakDimens.spacing8),
-          Text(SangakNumberFormatter.formatCurrency(revenue, lang), style: SangakTypography.display(context).copyWith(color: Colors.white, fontSize: 36)),
-        ],
+    return InkWell(
+      onTap: () => context.push('/admin/revenue'),
+      borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+      child: Ink(
+        width: double.infinity,
+        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        decoration: BoxDecoration(
+          color: SangakColors.ink,
+          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+          boxShadow: SangakDimens.shadowMedium,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.todaysRevenue, style: SangakTypography.bodySmall(context).copyWith(color: Colors.white70)),
+                  const SizedBox(height: SangakDimens.spacing8),
+                  Text(SangakNumberFormatter.formatCurrency(revenue, lang), style: SangakTypography.display(context).copyWith(color: Colors.white, fontSize: 36)),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 20),
+          ],
+        ),
       ),
     );
   }

@@ -227,9 +227,9 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerName = order.userProfile?['full_name'] ?? 'User';
-    final itemsCount = order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
     final l10n = AppLocalizations.of(context);
+    final courierName = order.deliveryProfile?['full_name'] ?? (l10n.unassigned ?? 'Unassigned');
+    final itemsCount = order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
 
     return InkWell(
       onTap: () => context.push('/admin/orders/${order.id}'),
@@ -281,7 +281,7 @@ class _OrderCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(customerName, style: SangakTypography.h3(context).copyWith(fontSize: 16)),
+            Text(courierName, style: SangakTypography.h3(context).copyWith(fontSize: 16)),
             const SizedBox(height: 4),
             Text(
               SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
@@ -302,7 +302,13 @@ class _OrderCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   const Icon(Icons.delivery_dining_outlined, size: 14, color: SangakColors.primary),
                   const SizedBox(width: 4),
-                  Text(l10n.assigned, style: SangakTypography.caption(context).copyWith(color: SangakColors.primary)),
+                  Text(
+                    courierName, 
+                    style: SangakTypography.caption(context).copyWith(
+                      color: SangakColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
                 const Spacer(),
                 Text(l10n.openDetails, style: SangakTypography.button(context).copyWith(fontSize: 12, color: SangakColors.primary)),

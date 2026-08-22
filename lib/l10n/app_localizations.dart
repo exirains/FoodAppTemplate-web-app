@@ -1675,7 +1675,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordRequirementLength.
   ///
   /// In en, this message translates to:
-  /// **'At least 8 characters'**
+  /// **'At least 4 characters'**
   String get passwordRequirementLength;
 
   /// No description provided for @passwordRequirementUppercase.
@@ -3147,6 +3147,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Assigned to You'**
   String get assignedToYou;
+
+  /// No description provided for @agreeToTermsAndPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our Terms & Privacy Policy.'**
+  String get agreeToTermsAndPrivacy;
+
+  /// No description provided for @haveInvitationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Have an invitation code?'**
+  String get haveInvitationCode;
+
+  /// No description provided for @noOrderHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No order history yet'**
+  String get noOrderHistory;
+
+  /// No description provided for @noCompletedOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed orders yet'**
+  String get noCompletedOrders;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @customRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Range'**
+  String get customRange;
+
+  /// No description provided for @averageOrderValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Order Value'**
+  String get averageOrderValue;
+
+  /// No description provided for @topProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Products'**
+  String get topProducts;
+
+  /// No description provided for @paymentStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Status'**
+  String get paymentStatus;
+
+  /// No description provided for @revenueDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue Dashboard'**
+  String get revenueDashboard;
+
+  /// No description provided for @weeklySalesTrends.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Sales Trends'**
+  String get weeklySalesTrends;
+
+  /// No description provided for @activeOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Orders'**
+  String get activeOrders;
+
+  /// No description provided for @avgDeliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Delivery Time'**
+  String get avgDeliveryTime;
+
+  /// No description provided for @liveOrderProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Order Progress'**
+  String get liveOrderProgress;
+
+  /// No description provided for @unassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get unassigned;
+
+  /// No description provided for @appDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'App Domain'**
+  String get appDomain;
 }
 
 class _AppLocalizationsDelegate
