@@ -119,11 +119,6 @@ class _RequirementsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasMinLength = password.length >= AuthValidators.minPasswordLength;
-    final hasUpperCase = RegExp(r'[A-Z]').hasMatch(password);
-    final hasLowerCase = RegExp(r'[a-z]').hasMatch(password);
-    final hasNumber = RegExp(r'\d').hasMatch(password);
-    final hasSpecialChar =
-        RegExp(r"[!@#$%^&*()_+\-=\[\]{};:',.<>?/\\|`~]").hasMatch(password);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,27 +126,6 @@ class _RequirementsList extends StatelessWidget {
         _RequirementItem(
           text: l10n.passwordRequirementLength,
           isMet: hasMinLength,
-        ),
-        const SizedBox(height: SangakDimens.spacing8),
-        _RequirementItem(
-          text: l10n.passwordRequirementUppercase,
-          isMet: hasUpperCase,
-        ),
-        const SizedBox(height: SangakDimens.spacing8),
-        _RequirementItem(
-          text: l10n.passwordRequirementLowercase,
-          isMet: hasLowerCase,
-        ),
-        const SizedBox(height: SangakDimens.spacing8),
-        _RequirementItem(
-          text: l10n.passwordRequirementNumber,
-          isMet: hasNumber,
-        ),
-        const SizedBox(height: SangakDimens.spacing8),
-        _RequirementItem(
-          text: l10n.passwordRequirementSpecial,
-          isMet: hasSpecialChar,
-          isOptional: true,
         ),
       ],
     );

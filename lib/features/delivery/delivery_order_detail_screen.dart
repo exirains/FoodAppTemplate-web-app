@@ -93,6 +93,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         paymentMethod: '',
         totalPrice: 0,
         createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
     );
     

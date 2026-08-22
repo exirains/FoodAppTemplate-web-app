@@ -20,6 +20,7 @@ import '../../features/orders/order_history_screen.dart';
 import '../../features/orders/order_tracking_screen.dart';
 import '../../features/favorites/favorites_screen.dart';
 import '../../features/admin/admin_dashboard_screen.dart';
+import '../../features/admin/revenue_dashboard_screen.dart';
 import '../../features/admin/order_management_screen.dart';
 import '../../features/admin/admin_order_detail_screen.dart';
 import '../../features/admin/product_management_screen.dart';
@@ -288,6 +289,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const AdminDashboardScreen(),
         ),
         routes: [
+          GoRoute(
+            path: 'revenue',
+            pageBuilder: (context, state) => _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const RevenueDashboardScreen(),
+            ),
+          ),
           GoRoute(
             path: 'orders',
             pageBuilder: (context, state) {

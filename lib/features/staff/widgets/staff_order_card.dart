@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -12,6 +13,7 @@ import '../../../shared/widgets/cancel_order_dialog.dart';
 import '../../auth/auth_provider.dart';
 import '../../admin/admin_provider.dart';
 import '../../../core/localization/locale_provider.dart';
+import '../../../core/localization/sangak_number_formatter.dart';
 
 class StaffOrderCard extends ConsumerStatefulWidget {
   final OrderModel order;
@@ -74,11 +76,12 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
     final items = widget.order.items ?? [];
     final isWide = MediaQuery.of(context).size.width > 600;
     
-    // Responsive Dimensions
-    final padding = isWide ? 20.0 : 24.0;
-    final actionHeight = isWide ? 64.0 : 72.0;
-    final titleSize = isWide ? 20.0 : 24.0;
-    final itemTitleSize = isWide ? 18.0 : 22.0;
+    // Highly Optimized Proportions
+    final padding = isWide ? 12.0 : 16.0;
+    final actionHeight = isWide ? 40.0 : 48.0;
+    final titleSize = isWide ? 14.0 : 16.0;
+    final itemTitleSize = isWide ? 12.0 : 14.0;
+    final thumbnailSize = isWide ? 28.0 : 32.0;
 
     Widget card = Container(
       decoration: BoxDecoration(
@@ -92,10 +95,11 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // ALLOW DYNAMIC HEIGHT
         children: [
           // Header
           Padding(
-            padding: EdgeInsets.all(padding),
+            padding: EdgeInsets.fromLTRB(padding, padding, padding, padding * 0.5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -133,12 +137,22 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       ),
                   ],
                 ),
-                Text(
-                  _formatTime(widget.order.createdAt, l10n),
-                  style: SangakTypography.h3(context).copyWith(
-                    color: SangakColors.primary,
-                    fontSize: isWide ? 16 : 20,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      _formatTime(widget.order.createdAt, l10n),
+                      style: SangakTypography.h3(context).copyWith(
+                        color: SangakColors.primary,
+                        fontSize: isWide ? 16 : 20,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      SangakNumberFormatter.formatCurrency(widget.order.totalPrice, lang),
+                      style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold, color: SangakColors.ink),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -146,82 +160,160 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
           const Divider(height: 1),
           
           // Items
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: items.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          // ignore: deprecated_member_use
-                          color: SangakColors.ink.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${item.quantity}x',
-                          style: SangakTypography.title(context).copyWith(
-                            color: SangakColors.ink,
-                            fontWeight: FontWeight.bold,
-                            fontSize: isWide ? 14 : 18,
-                          ),
+          Padding(
+            padding: EdgeInsets.all(padding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: items.map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: CachedNetworkImage(
+                        imageUrl: item.imageSnapshot,
+                        width: thumbnailSize,
+                        height: thumbnailSize,
+                        fit: BoxFit.cover,
+                        errorWidget: (_, __, ___) => Container(
+                          width: thumbnailSize,
+                          height: thumbnailSize,
+                          color: SangakColors.border, 
+                          child: Icon(Icons.breakfast_dining, size: thumbnailSize * 0.5, color: SangakColors.inkLight),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          item.localizedName(lang),
-                          style: SangakTypography.h3(context).copyWith(
-                            fontSize: itemTitleSize,
-                          ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
+                        color: SangakColors.ink.withOpacity(0.06),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '${item.quantity}x',
+                        style: SangakTypography.title(context).copyWith(
+                          color: SangakColors.ink,
+                          fontWeight: FontWeight.bold,
+                          fontSize: isWide ? 12 : 14,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        item.localizedName(lang),
+                        style: SangakTypography.h3(context).copyWith(
+                          fontSize: itemTitleSize,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )).toList(),
+            ),
+          ),
+          
+          // Rich Footer
+          const Divider(height: 1),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    _FooterBadge(
+                      icon: widget.order.addressSnapshot['type'] == 'pickup' ? Icons.store_outlined : Icons.delivery_dining_outlined,
+                      label: widget.order.addressSnapshot['type'] == 'pickup' ? 'Pick-up' : 'Delivery',
+                      color: SangakColors.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    _FooterBadge(
+                      icon: Icons.payments_outlined,
+                      label: widget.order.paymentMethod == 'cash' ? 'Cash' : 'Paid',
+                      color: widget.order.paymentMethod == 'cash' ? SangakColors.warning : SangakColors.success,
+                    ),
+                    if (widget.order.deliveryProfile != null) ...[
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: _FooterBadge(
+                          icon: Icons.person_outline,
+                          label: widget.order.deliveryProfile!['full_name'] ?? 'Courier',
+                          color: SangakColors.info,
                         ),
                       ),
                     ],
-                  ),
-                )).toList(),
-              ),
-            ),
-          ),
-          
-          const Divider(height: 1),
-          
-          // Actions
-          Padding(
-            padding: EdgeInsets.all(padding),
-            child: Row(
-              children: [
-                // Quick Cancel
-                SizedBox(
-                  width: actionHeight,
-                  height: actionHeight,
-                  child: SangakButton.outlined(
-                    label: '',
-                    icon: Icons.close_rounded,
-                    foregroundColor: SangakColors.error,
-                    borderColor: SangakColors.error,
-                    onPressed: () => CancelOrderDialog.show(
-                      context,
-                      onConfirm: (reason) => _updateStatus(OrderStatus.cancelled),
+                  ],
+                ),
+                if (widget.order.addressSnapshot['note']?.toString().isNotEmpty ?? false) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.sticky_note_2_outlined, size: 14, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            widget.order.addressSnapshot['note'],
+                            style: SangakTypography.caption(context).copyWith(fontStyle: FontStyle.italic, fontSize: 11),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                
-                // Primary Action
-                Expanded(
-                  child: SizedBox(
-                    height: actionHeight,
-                    child: _buildActionButton(l10n),
-                  ),
-                ),
+                ],
               ],
             ),
           ),
+
+          if (widget.order.status != OrderStatus.delivered && widget.order.status != OrderStatus.cancelled) ...[
+            const Divider(height: 1),
+            
+            // Actions
+            Padding(
+              padding: EdgeInsets.fromLTRB(padding, padding * 0.5, padding, padding),
+              child: Row(
+                children: [
+                  // Quick Cancel
+                  SizedBox(
+                    width: actionHeight,
+                    height: actionHeight,
+                    child: SangakButton.outlined(
+                      label: '',
+                      icon: Icons.close_rounded,
+                      foregroundColor: SangakColors.error,
+                      borderColor: SangakColors.error,
+                      onPressed: () => CancelOrderDialog.show(
+                        context,
+                        onConfirm: (reason) => _updateStatus(OrderStatus.cancelled),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  
+                  // Primary Action
+                  Expanded(
+                    child: SizedBox(
+                      height: actionHeight,
+                      child: _buildActionButton(l10n),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -281,5 +373,43 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
     if (diff.inMinutes < 1) return l10n.justNow;
     if (diff.inMinutes < 60) return '${diff.inMinutes}${l10n.minutesShort} ${l10n.ago}';
     return '${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  }
+}
+
+class _FooterBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _FooterBadge({required this.icon, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              style: SangakTypography.caption(context).copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

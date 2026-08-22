@@ -1,13 +1,15 @@
 {
   "_comment": "DO NOT FORGET TO ALSO UPDATE THE VERSION IN pubspec.yaml!!!!!!!",
   "app_name": "Sangak",
-  "version": "1.3.5",
-  "build_number": 13,
+  "version": "1.3.6",
+  "build_number": 14,
   "force_update": false,
   "notes": [
-    "Stability updates and major bug fixes",
-    "Staff and admin UI updates and improvements",
-    "Quality of life improvements and additions"
+    "New comprehensive Revenue & Analytics Dashboard with date filtering",
+    "Simplified Customer Sign-up with relaxed validation and cleaner UI",
+    "Redesigned Staff Panel with compact dynamic cards and rich item details",
+    "Enhanced Courier visibility in Admin Order Management",
+    "Updated Settings modal with domain details and multi-language support"
   ],
-  "apk_url": "https://github.com/exirains/sangak-app/releases/download/v1.3.5/Sangak_v1.3.5.apk"
+  "apk_url": "https://github.com/exirains/sangak-app/releases/download/v1.3.6/Sangak_v1.3.6.apk"
 }

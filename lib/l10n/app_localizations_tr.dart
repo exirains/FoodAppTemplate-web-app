@@ -823,7 +823,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Tüm sepetinizi temizlemek istediğinizden emin misiniz?';
 
   @override
-  String get passwordRequirementLength => 'En az 8 karakter';
+  String get passwordRequirementLength => 'En az 4 karakter';
 
   @override
   String get passwordRequirementUppercase => 'En az bir büyük harf (A-Z)';
@@ -1613,4 +1613,53 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get assignedToYou => 'Size Atandı';
+
+  @override
+  String get agreeToTermsAndPrivacy =>
+      'Devam ederek Kullanım Şartları ve Gizlilik Politikamızı kabul etmiş olursunuz.';
+
+  @override
+  String get haveInvitationCode => 'Davet kodunuz mu var?';
+
+  @override
+  String get noOrderHistory => 'Henüz sipariş geçmişi yok';
+
+  @override
+  String get noCompletedOrders => 'Henüz tamamlanmış sipariş yok';
+
+  @override
+  String get thisMonth => 'Bu Ay';
+
+  @override
+  String get customRange => 'Özel Aralık';
+
+  @override
+  String get averageOrderValue => 'Ort. Sipariş Tutarı';
+
+  @override
+  String get topProducts => 'En Çok Satanlar';
+
+  @override
+  String get paymentStatus => 'Ödeme Durumu';
+
+  @override
+  String get revenueDashboard => 'Gelir Paneli';
+
+  @override
+  String get weeklySalesTrends => 'Haftalık Satış Eğilimleri';
+
+  @override
+  String get activeOrders => 'Aktif Siparişler';
+
+  @override
+  String get avgDeliveryTime => 'Ort. Teslimat Süresi';
+
+  @override
+  String get liveOrderProgress => 'Canlı Sipariş İlerlemesi';
+
+  @override
+  String get unassigned => 'Atanmamış';
+
+  @override
+  String get appDomain => 'Uygulama Alan Adı';
 }

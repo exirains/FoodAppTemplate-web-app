@@ -31,18 +31,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
   final _referralController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _passwordFocus = FocusNode();
-  final _confirmPasswordFocus = FocusNode();
   
-  bool _agreedToTerms = false;
   bool _isSubmitting = false;
   bool _showPassword = false;
-  bool _showConfirmPassword = false;
+  bool _showInvitationCode = false;
 
   @override
   void initState() {
@@ -62,12 +59,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     _referralController.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _passwordFocus.dispose();
-    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
@@ -135,26 +130,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         return l10n.requiredField;
       } else if (error == 'password_too_short') {
         return l10n.passwordTooShort;
-      } else if (error == 'password_requirements') {
-        return l10n.passwordRequirements;
       }
-    }
-
-    return null;
-  }
-
-  /// Validate confirm password
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context).requiredField;
-    }
-
-    final error = AuthValidators.validatePasswordMatch(
-      _passwordController.text,
-      value,
-    );
-    if (error != null) {
-      return AppLocalizations.of(context).passwordsDoNotMatch;
     }
 
     return null;
@@ -166,12 +142,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     // Validate form
     if (!_formKey.currentState!.validate()) return;
-
-    // Check terms agreement
-    if (!_agreedToTerms) {
-      SangakToast.show(context, l10n.pleaseAgreeToTerms);
-      return;
-    }
 
     // Prevent double submission
     if (_isSubmitting) return;
@@ -295,9 +265,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final isFormValid = _nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _phoneController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty &&
-        _confirmPasswordController.text.isNotEmpty &&
-        _agreedToTerms;
+        _passwordController.text.isNotEmpty;
     final isButtonDisabled = isLoading || _isSubmitting || !isFormValid;
 
     return Scaffold(
@@ -385,7 +353,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   onEditingComplete: () {
                     _passwordFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_confirmPasswordFocus);
                   },
                   onChanged: (_) {
                     setState(() {}); // Rebuild to update strength indicator
@@ -397,54 +364,38 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   PasswordStrengthIndicator(
                     password: _passwordController.text,
                     showLabel: true,
-                    showRequirements: true,
+                    showRequirements: false,
                   ),
                 ],
-                const SizedBox(height: SangakDimens.spacing16),
-                // Confirm password field
-                 SangakTextField(
-                  label: l10n.confirmPassword,
-                  hintText: l10n.reEnterPassword,
-                  controller: _confirmPasswordController,
-                  focusNode: _confirmPasswordFocus,
-                  isPassword: !_showConfirmPassword,
-                  leadingIcon: Icons.lock_outline,
-                  trailingIcon: _showConfirmPassword ? Icons.visibility_off : Icons.visibility,
-                  onTrailingIconPressed: () {
-                    setState(() => _showConfirmPassword = !_showConfirmPassword);
-                  },
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () {
-                    _confirmPasswordFocus.unfocus();
-                  },
-                  validator: _validateConfirmPassword,
-                ),
-                const SizedBox(height: SangakDimens.spacing16),
-                // Referral Code field (Optional)
-                SangakTextField(
-                  label: l10n.invitationCode,
-                  hintText: l10n.invitationCodeOptional,
-                  controller: _referralController,
-                  leadingIcon: Icons.card_giftcard,
-                  textInputAction: TextInputAction.done,
-                ),
-                const SizedBox(height: SangakDimens.spacing16),
-                // Terms agreement checkbox
-                Row(
-                  children: [
-                    Checkbox(
-                      value: _agreedToTerms,
-                      onChanged: (v) => setState(() => _agreedToTerms = v ?? false),
-                      activeColor: SangakColors.primary,
-                    ),
-                    Expanded(
+                const SizedBox(height: SangakDimens.spacing24),
+                
+                // Invitation Code Toggle
+                if (!_showInvitationCode)
+                  GestureDetector(
+                    onTap: () => setState(() => _showInvitationCode = true),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        l10n.iAgreeToTerms,
-                        style: SangakTypography.bodySmall(context),
+                        l10n.haveInvitationCode ?? 'Have an invitation code?',
+                        style: SangakTypography.bodySmall(context).copyWith(
+                          color: SangakColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                
+                if (_showInvitationCode) ...[
+                  // Referral Code field (Optional)
+                  SangakTextField(
+                    label: l10n.invitationCode,
+                    hintText: l10n.invitationCodeOptional,
+                    controller: _referralController,
+                    leadingIcon: Icons.card_giftcard,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ],
+                
                 const SizedBox(height: SangakDimens.spacing32),
                 // Create account button
                 SangakButton.primary(
@@ -452,6 +403,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   width: double.infinity,
                   isLoading: isLoading || _isSubmitting,
                   onPressed: isButtonDisabled ? null : _register,
+                ),
+                const SizedBox(height: 12),
+                // Agreement Text
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      l10n.agreeToTermsAndPrivacy ?? 'By continuing, you agree to our Terms & Privacy Policy.',
+                      textAlign: TextAlign.center,
+                      style: SangakTypography.caption(context).copyWith(
+                        color: SangakColors.inkLight,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: SangakDimens.spacing24),
                 // Sign in link

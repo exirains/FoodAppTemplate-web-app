@@ -88,13 +88,28 @@ class SettingsBottomSheet extends ConsumerWidget {
             builder: (context, snapshot) {
               final version = snapshot.data?.version ?? VersionConfig.version;
               final formattedVersion = SangakNumberFormatter.format(version, currentLocale.languageCode);
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return Column(
                 children: [
-                  Text(l10n.appVersion, style: SangakTypography.bodyMedium(context)),
-                  Text(
-                    'Sangak v$formattedVersion',
-                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(l10n.appDomain ?? 'App Domain', style: SangakTypography.bodyMedium(context)),
+                      Text(
+                        'www.sangak.tr',
+                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: SangakDimens.spacing16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(l10n.appVersion, style: SangakTypography.bodyMedium(context)),
+                      Text(
+                        'Sangak v$formattedVersion',
+                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                      ),
+                    ],
                   ),
                 ],
               );

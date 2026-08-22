@@ -68,6 +68,7 @@ class OrderModel {
   final String? assignedDeliveryPerson;
   final String? deliveryCode;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final List<OrderItem>? items;
   final Map<String, dynamic>? userProfile; // Joined customer info
   final Map<String, dynamic>? deliveryProfile; // Joined delivery person info
@@ -83,6 +84,7 @@ class OrderModel {
     this.assignedDeliveryPerson,
     this.deliveryCode,
     required this.createdAt,
+    required this.updatedAt,
     this.items,
     this.userProfile,
     this.deliveryProfile,
@@ -110,6 +112,7 @@ class OrderModel {
       assignedDeliveryPerson: json['assigned_delivery_person'] as String?,
       deliveryCode: json['delivery_code']?.toString(),
       createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] ?? json['created_at'] as String),
       items: json['order_items'] != null
           ? (json['order_items'] as List)
               .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
@@ -131,6 +134,7 @@ class OrderModel {
       'estimated_prep_time': estimatedPrepTime,
       'assigned_delivery_person': assignedDeliveryPerson,
       'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
