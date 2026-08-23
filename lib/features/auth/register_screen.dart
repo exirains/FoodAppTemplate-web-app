@@ -177,6 +177,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             _passwordController.text,
             name,
             phone: phone,
+            referralCode: referralCode.isNotEmpty ? referralCode : null,
           );
 
       if (!mounted) return;
@@ -210,7 +211,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!mounted) return;
 
       // Handle different error types
-      String errorMessage = l10n.invalidCredentials;
+      String errorMessage = l10n.errorOccurred; // Generic registration error
 
       if (e is AuthException) {
         if (e.isLocalizedKey) {
@@ -244,8 +245,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         return l10n.tooManyAttempts;
       case 'invalidPhoneNumber':
         return l10n.invalidPhoneNumber;
-      default:
+      case 'invalidCredentials':
+        // If we get this during registration, it usually means something went wrong 
+        // with the auth service or the user somehow landed on a login flow.
         return l10n.invalidCredentials;
+      default:
+        return l10n.errorOccurred;
     }
   }
 

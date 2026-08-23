@@ -103,13 +103,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     }
   }
 
-  /// Sign up with email, password, name, and optional phone
+  /// Sign up with email, password, name, and optional phone/referral
   /// Includes validation and friendly error handling
   Future<User?> signUp(
     String email,
     String password,
     String fullName, {
     String? phone,
+    String? referralCode,
   }) async {
     state = const AsyncValue.loading();
     
@@ -131,7 +132,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 
       final data = {
         'full_name': fullName,
-        ...?phone == null ? null : {'phone': phone},
+        if (phone != null) 'phone': phone,
+        if (referralCode != null) 'referral_code': referralCode,
       };
       
       final response = await SupabaseService.client.auth.signUp(
@@ -144,7 +146,9 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
       authRateLimiter.recordSuccess(email);
       
       if (response.user != null) {
-        await _handlePendingReferral(response.user!.id);
+        // We still call this for immediate reward processing if the DB trigger didn't handle it
+        // or for backwards compatibility.
+        await _handlePendingReferral(response.user!.id, manualCode: referralCode);
       }
       
       state = AsyncValue.data(response.user);
@@ -277,8 +281,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   }
 
   /// Processes a pending referral code for a newly created user
-  Future<void> _handlePendingReferral(String userId) async {
-    final referralCode = _ref.read(pendingReferralProvider);
+  Future<void> _handlePendingReferral(String userId, {String? manualCode}) async {
+    final referralCode = manualCode ?? _ref.read(pendingReferralProvider);
     if (referralCode == null || referralCode.isEmpty) return;
 
     try {

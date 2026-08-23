@@ -36,7 +36,9 @@ class AuthErrorHandler {
     if (errorString.contains('user already exists') ||
         errorString.contains('duplicate') ||
         errorString.contains('email already in use') ||
-        errorString.contains('user_already_exists')) {
+        errorString.contains('user_already_exists') ||
+        errorString.contains('phone number already registered') ||
+        errorString.contains('phone_number_already_registered')) {
       return (false, 'emailAlreadyInUse');
     }
 
