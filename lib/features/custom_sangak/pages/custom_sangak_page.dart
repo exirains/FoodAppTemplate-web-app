@@ -19,19 +19,19 @@ import '../../../core/localization/sangak_number_formatter.dart';
 import '../../../core/localization/locale_provider.dart';
 import '../../../services/options_repository.dart';
 
-class CustomSangakPage extends ConsumerStatefulWidget {
+class CustomBabkaPage extends ConsumerStatefulWidget {
   final Bread initialBread;
 
-  const CustomSangakPage({
+  const CustomBabkaPage({
     super.key,
     required this.initialBread,
   });
 
   @override
-  ConsumerState<CustomSangakPage> createState() => _CustomSangakPageState();
+  ConsumerState<CustomBabkaPage> createState() => _CustomBabkaPageState();
 }
 
-class _CustomSangakPageState extends ConsumerState<CustomSangakPage> {
+class _CustomBabkaPageState extends ConsumerState<CustomBabkaPage> {
   late Bread _currentBaseBread;
 
   @override
@@ -59,18 +59,18 @@ class _CustomSangakPageState extends ConsumerState<CustomSangakPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.auto_awesome_outlined, size: 64, color: SangakColors.inkLight),
+              const Icon(Icons.auto_awesome_outlined, size: 64, color: BabkaColors.inkLight),
               const SizedBox(height: 16),
               Text(
                 l10n.comingSoon,
-                style: SangakTypography.h2(context),
+                style: BabkaTypography.h2(context),
               ),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48),
                 child: Text(
                   l10n.featureUnavailable,
-                  style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                  style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -91,17 +91,17 @@ class _CustomSangakPageState extends ConsumerState<CustomSangakPage> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(SangakDimens.spacing24),
+                  padding: const EdgeInsets.all(BabkaDimens.spacing24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         l10n.buildYourSangak,
-                        style: SangakTypography.h1(context),
+                        style: BabkaTypography.h1(context),
                       ),
-                      const SizedBox(height: SangakDimens.spacing24),
+                      const SizedBox(height: BabkaDimens.spacing24),
                       SangakPreview(baseBread: _currentBaseBread),
-                      const SizedBox(height: SangakDimens.spacing32),
+                      const SizedBox(height: BabkaDimens.spacing32),
                       
                       // Base Selection
                       CustomizationSection(
@@ -111,7 +111,7 @@ class _CustomSangakPageState extends ConsumerState<CustomSangakPage> {
                             height: 120,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+                              padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing24),
                               children: [
                                 BaseSelectionCard(
                                   bread: widget.initialBread,
@@ -188,16 +188,16 @@ class _PriceBottomBar extends ConsumerWidget {
     
     return Container(
       padding: EdgeInsets.only(
-        left: SangakDimens.spacing24,
-        right: SangakDimens.spacing24,
-        top: SangakDimens.spacing16,
-        bottom: SangakDimens.spacing16 + MediaQuery.of(context).padding.bottom,
+        left: BabkaDimens.spacing24,
+        right: BabkaDimens.spacing24,
+        top: BabkaDimens.spacing16,
+        bottom: BabkaDimens.spacing16 + MediaQuery.of(context).padding.bottom,
       ),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
+        color: BabkaColors.surface,
         boxShadow: [
           BoxShadow(
-            color: SangakColors.ink.withValues(alpha: 0.1),
+            color: BabkaColors.ink.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -212,17 +212,17 @@ class _PriceBottomBar extends ConsumerWidget {
             children: [
               Text(
                 l10n.total,
-                style: SangakTypography.bodySmall(context),
+                style: BabkaTypography.bodySmall(context),
               ),
               Text(
-                SangakNumberFormatter.formatCurrency(customization.totalPrice, languageCode),
-                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+                BabkaNumberFormatter.formatCurrency(customization.totalPrice, languageCode),
+                style: BabkaTypography.h2(context).copyWith(color: BabkaColors.primary),
               ),
             ],
           ),
-          const SizedBox(width: SangakDimens.spacing24),
+          const SizedBox(width: BabkaDimens.spacing24),
           Expanded(
-            child: SangakButton.primary(
+            child: BabkaButton.primary(
               label: l10n.addToBasket,
               onPressed: () {
                 final basketItem = BasketItem(

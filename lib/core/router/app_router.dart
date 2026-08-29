@@ -85,7 +85,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ref.read(pendingReferralProvider.notifier).state = referralCode;
           // Persist to storage for cold starts/reloads
           storage.setReferralCode(referralCode);
-          debugPrint('SANGAK: Referral code detected and persisted: $referralCode');
+          debugPrint('BABKA: Referral code detected and persisted: $referralCode');
           
           // Reset handled state when a new referral code is detected
           ref.read(referralRedirectHandledProvider.notifier).state = false;
@@ -112,7 +112,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final hasRedirected = ref.read(referralRedirectHandledProvider);
       if (referralCode != null && referralCode.isNotEmpty && !isAuth && !hasRedirected) {
         ref.read(referralRedirectHandledProvider.notifier).state = true;
-        debugPrint('SANGAK: Auto-redirecting to signup-choice for referral link');
+        debugPrint('BABKA: Auto-redirecting to signup-choice for referral link');
         return '/signup-choice';
       }
 
@@ -455,7 +455,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return _buildPageWithTransition(
             context: context,
             state: state,
-            child: CustomSangakPage(initialBread: bread),
+            child: CustomBabkaPage(initialBread: bread),
           );
         },
       ),

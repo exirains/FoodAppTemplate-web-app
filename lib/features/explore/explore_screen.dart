@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -50,7 +50,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     final lang = locale.languageCode;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.explore),
         bottom: PreferredSize(
@@ -59,16 +59,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
             child: Container(
               decoration: BoxDecoration(
-                color: SangakColors.surface,
+                color: BabkaColors.surface,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: SangakDimens.shadowLow,
+                boxShadow: BabkaDimens.shadowLow,
               ),
               child: TextField(
                 controller: _searchController,
                 onChanged: (v) => setState(() => _searchQuery = v),
                 decoration: InputDecoration(
                   hintText: l10n.searchBreads,
-                  prefixIcon: const Icon(Icons.search_rounded, color: SangakColors.inkLight),
+                  prefixIcon: const Icon(Icons.search_rounded, color: BabkaColors.inkLight),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -103,18 +103,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                         child: Ink(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            color: isSelected ? SangakColors.primary : Colors.transparent,
+                            color: isSelected ? BabkaColors.primary : Colors.transparent,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: isSelected ? SangakColors.primary : SangakColors.border,
+                              color: isSelected ? BabkaColors.primary : BabkaColors.border,
                             ),
                           ),
                           child: Center(
                             child: Text(
                               isAll ? l10n.all : category!.localizedName(lang),
-                              style: SangakTypography.title(context).copyWith(
+                              style: BabkaTypography.title(context).copyWith(
                                 fontSize: 13,
-                                color: isSelected ? Colors.white : SangakColors.inkLight,
+                                color: isSelected ? Colors.white : BabkaColors.inkLight,
                               ),
                             ),
                           ),
@@ -143,7 +143,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                   return Center(
                     child: Text(
                       l10n.noProductsFound,
-                      style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
+                      style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight),
                     ),
                   );
                 }
@@ -186,7 +186,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                           ref,
                           action: () {
                             ref.read(basketProvider.notifier).addItem(bread);
-                            SangakToast.show(context, l10n.addedToBasket(displayName));
+                            BabkaToast.show(context, l10n.addedToBasket(displayName));
                           },
                         );
                       },

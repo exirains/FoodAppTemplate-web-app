@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
@@ -15,7 +15,7 @@ class BasketGuestView extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(SangakDimens.spacing32),
@@ -26,23 +26,23 @@ class BasketGuestView extends StatelessWidget {
               const SizedBox(height: SangakDimens.spacing32),
               Text(
                 l10n.yourBasketIsWaiting,
-                style: SangakTypography.h2(context),
+                style: BabkaTypography.h2(context),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing12),
               Text(
                 l10n.basketGuestMessage,
-                style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
+                style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: SangakDimens.spacing40),
-              SangakButton.primary(
+              BabkaButton.primary(
                 label: l10n.createAccount,
                 width: double.infinity,
                 onPressed: () => context.push('/signup-choice'),
               ),
               const SizedBox(height: SangakDimens.spacing12),
-              SangakButton.ghost(
+              BabkaButton.ghost(
                 label: l10n.signIn,
                 width: double.infinity,
                 onPressed: () => context.push('/login'),

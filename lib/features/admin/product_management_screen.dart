@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -31,7 +31,7 @@ class ProductManagementScreen extends ConsumerWidget {
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.productManagement),
           actions: [
@@ -45,7 +45,7 @@ class ProductManagementScreen extends ConsumerWidget {
           data: (breads) => breads.isEmpty 
             ? Center(child: Text(l10n.noProductsFound))
             : ListView.separated(
-                padding: const EdgeInsets.all(SangakDimens.spacing24),
+                padding: const EdgeInsets.all(BabkaDimens.spacing24),
                 itemCount: breads.length,
                 separatorBuilder: (context, index) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
@@ -81,10 +81,10 @@ class _ProductCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowMedium,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowMedium,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
@@ -98,8 +98,8 @@ class _ProductCard extends ConsumerWidget {
               errorWidget: (context, url, error) => Container(
                 width: 80,
                 height: 80,
-                color: SangakColors.background,
-                child: const Icon(Icons.image_not_supported_outlined, color: SangakColors.border),
+                color: BabkaColors.background,
+                child: const Icon(Icons.image_not_supported_outlined, color: BabkaColors.border),
               ),
             ),
           ),
@@ -113,7 +113,7 @@ class _ProductCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       bread.localizedName(lang),
-                      style: SangakTypography.h3(context).copyWith(fontSize: 16),
+                      style: BabkaTypography.h3(context).copyWith(fontSize: 16),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -126,8 +126,8 @@ class _ProductCard extends ConsumerWidget {
               ),
                 const SizedBox(height: 4),
                 Text(
-                  SangakNumberFormatter.formatCurrency(bread.price, lang),
-                  style: SangakTypography.price(context),
+                  BabkaNumberFormatter.formatCurrency(bread.price, lang),
+                  style: BabkaTypography.price(context),
                 ),
                 const SizedBox(height: 8),
                 Material(
@@ -138,12 +138,12 @@ class _ProductCard extends ConsumerWidget {
                         await ref.read(breadRepositoryProvider).updateAvailability(bread.id, !bread.available);
                         await ref.read(cacheServiceProvider).clear();
                         ref.invalidate(breadsProvider);
-                        if (context.mounted) SangakToast.show(context, l10n.productStatusUpdated);
+                        if (context.mounted) BabkaToast.show(context, l10n.productStatusUpdated);
                       } catch (e) {
-                        if (context.mounted) SangakToast.show(context, l10n.errorOccurred);
+                        if (context.mounted) BabkaToast.show(context, l10n.errorOccurred);
                       }
                     },
-                    borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+                    borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
                     child: _StatusChip(isActive: bread.available, l10n: l10n),
                   ),
                 ),
@@ -158,7 +158,7 @@ class _ProductCard extends ConsumerWidget {
                 height: 44,
                 child: IconButton(
                   onPressed: () => _showEditProductDialog(context, ref, bread),
-                  icon: const Icon(Icons.edit_outlined, color: SangakColors.primary, size: 20),
+                  icon: const Icon(Icons.edit_outlined, color: BabkaColors.primary, size: 20),
                   padding: EdgeInsets.zero,
                   splashRadius: 22,
                 ),
@@ -169,7 +169,7 @@ class _ProductCard extends ConsumerWidget {
                 height: 44,
                 child: IconButton(
                   onPressed: () => _confirmDelete(context, ref, bread),
-                  icon: const Icon(Icons.delete_outline_rounded, color: SangakColors.error, size: 20),
+                  icon: const Icon(Icons.delete_outline_rounded, color: BabkaColors.error, size: 20),
                   padding: EdgeInsets.zero,
                   splashRadius: 22,
                 ),
@@ -190,7 +190,7 @@ class _ProductCard extends ConsumerWidget {
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref, Bread bread) {
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: l10n.deleteProduct,
       message: l10n.confirmDeleteProduct,
@@ -201,9 +201,9 @@ class _ProductCard extends ConsumerWidget {
           await ref.read(breadRepositoryProvider).deleteProduct(bread.id);
           await ref.read(cacheServiceProvider).clear();
           ref.invalidate(breadsProvider);
-          if (context.mounted) SangakToast.show(context, 'Product deleted');
+          if (context.mounted) BabkaToast.show(context, 'Product deleted');
         } catch (e) {
-          if (context.mounted) SangakToast.show(context, 'Error: $e');
+          if (context.mounted) BabkaToast.show(context, 'Error: $e');
         }
       },
       isDestructive: true,
@@ -218,12 +218,12 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? SangakColors.success : SangakColors.error;
+    final color = isActive ? BabkaColors.success : BabkaColors.error;
     return Ink(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
@@ -320,7 +320,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
   void _onCancel() {
     final l10n = AppLocalizations.of(context);
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: l10n.cancel,
       message: l10n.discardChanges,
@@ -335,7 +335,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     if (!_formKey.currentState!.validate()) return;
     
     final l10n = AppLocalizations.of(context);
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: widget.bread != null ? l10n.saveChanges : l10n.addProduct,
       message: l10n.confirmSaveProduct,
@@ -396,11 +396,11 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
       ref.invalidate(popularBreadsProvider);
       
       if (mounted) {
-        SangakToast.show(context, l10n.productSavedSuccess);
+        BabkaToast.show(context, l10n.productSavedSuccess);
         Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
+      if (mounted) BabkaToast.show(context, 'Error: $e');
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -443,9 +443,9 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                   width: double.infinity,
                   height: 150,
                   decoration: BoxDecoration(
-                    color: SangakColors.background,
+                    color: BabkaColors.background,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: SangakColors.border),
+                    border: Border.all(color: BabkaColors.border),
                   ),
                   child: _previewBytes != null
                      ? Image.memory(_previewBytes!, fit: BoxFit.cover)
@@ -454,7 +454,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.add_a_photo_outlined, size: 40, color: SangakColors.primary),
+                              const Icon(Icons.add_a_photo_outlined, size: 40, color: BabkaColors.primary),
                               const SizedBox(height: 8),
                               Text(l10n.imageUrl),
                             ],
@@ -488,7 +488,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                   Switch(
                     value: _available,
                     onChanged: (v) => setState(() => _available = v),
-                    activeThumbColor: SangakColors.primary,
+                    activeThumbColor: BabkaColors.primary,
                   ),
                 ],
               ),
@@ -501,7 +501,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                 Switch(
                   value: _isOrganic,
                   onChanged: (v) => setState(() => _isOrganic = v),
-                  activeThumbColor: SangakColors.primary,
+                  activeThumbColor: BabkaColors.primary,
                 ),
               ],
             ),
@@ -516,7 +516,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               onChanged: (v) => setState(() => _selectedTag = v),
             ),
             const SizedBox(height: 12),
-            SangakTextField(
+            BabkaTextField(
               label: l10n.price, 
               controller: _priceController, 
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -527,7 +527,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
             Row(
               children: [
                 Expanded(
-                  child: SangakTextField(
+                  child: BabkaTextField(
                     label: l10n.prepTimeLabel, 
                     controller: _prepTimeController, 
                     keyboardType: TextInputType.number,
@@ -537,7 +537,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: SangakTextField(
+                  child: BabkaTextField(
                     label: l10n.caloriesLabel, 
                     controller: _caloriesController, 
                     keyboardType: TextInputType.number,
@@ -550,14 +550,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
               
               const SizedBox(height: 24),
               _buildSectionTitle(l10n.originalName),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Name (EN)', 
                 controller: _nameEnController,
                 inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Description (EN)', 
                 controller: _descEnController, 
                 maxLines: 3,
@@ -567,14 +567,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
               const SizedBox(height: 24),
               _buildSectionTitle(l10n.turkishTranslations),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Name (TR)', 
                 controller: _nameTrController,
                 inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Description (TR)', 
                 controller: _descTrController, 
                 maxLines: 3,
@@ -584,14 +584,14 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
 
               const SizedBox(height: 24),
               _buildSectionTitle(l10n.persianTranslations),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Name (FA)', 
                 controller: _nameFaController,
                 inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 validator: (v) => (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
               ),
               const SizedBox(height: 12),
-              SangakTextField(
+              BabkaTextField(
                 label: 'Description (FA)', 
                 controller: _descFaController, 
                 maxLines: 3,
@@ -604,7 +604,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
       ),
       actions: [
         TextButton(onPressed: _onCancel, child: Text(l10n.cancel)),
-        SangakButton.primary(
+        BabkaButton.primary(
           label: widget.bread != null ? l10n.save : l10n.add, 
           width: 140, // Increased width to prevent Turkish Kaydet cut-off
           isLoading: _isSaving,
@@ -621,7 +621,7 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
         alignment: AlignmentDirectional.centerStart,
         child: Text(
           title.toUpperCase(), 
-          style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
+          style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
         ),
       ),
     );

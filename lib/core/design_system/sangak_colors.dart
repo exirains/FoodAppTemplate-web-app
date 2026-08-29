@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 /// Sangak Design System Colors (v1.0.0)
 ///
 /// Follows the "Artisanal Precision" philosophy.
-class SangakColors {
+class BabkaColors {
   // Brand Colors
-  static const Color primary = Color(0xFFC68A2B); // Golden Crust
-  static const Color secondary = Color(0xFF7D4F39); // Oven Stone
-  static const Color accent = Color(0xFF919D7E); // Olive Sage
+  static const Color primary = Color(0xFF1F3C44); // Deep Dark Slate Teal
+  static const Color secondary = Color(0xFF23393F); // Alternative Teal
+  static const Color accent = Color(0xFF919D7E); // Olive Sage (keep for now or adjust)
 
   // Neutral Colors
-  static const Color background = Color(0xFFFBF6EE); // Warm parchment
-  static const Color surface = Color(0xFFFFFFFF);    // Flour white
-  static const Color ink = Color(0xFF2A241E); // Primary Text
+  static const Color background = Color(0xFFF8F6F0); // Warm Cream
+  static const Color surface = Color(0xFFF8F6F0);    // Warm Cream
+  static const Color ink = Color(0xFF1A1A1A); // Dark Charcoal
   static const Color inkLight = Color(0xFF6D675F); // Secondary Text
   static const Color border = Color(0xFFE8E4D9); // Subtle Divider/Border
   

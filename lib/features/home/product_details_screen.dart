@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -48,27 +48,27 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
 
     final displayName = widget.bread.localizedName(languageCode);
     final displayDescription = widget.bread.localizedDescription(languageCode);
-    final formattedPrice = SangakNumberFormatter.formatCurrency(widget.bread.price, languageCode);
+    final formattedPrice = BabkaNumberFormatter.formatCurrency(widget.bread.price, languageCode);
     
     final optionsAsync = ref.watch(appOptionsProvider);
     final isCustomSangakEnabled = optionsAsync.value?['custom_sangak_enabled'] == true || 
                                  optionsAsync.value?['custom_sangak_enabled'] == 'true';
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       body: CustomScrollView(
         slivers: [
           // Hero Image Area
           SliverAppBar(
             expandedHeight: 400,
             pinned: true,
-            backgroundColor: SangakColors.background,
+            backgroundColor: BabkaColors.background,
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new, size: 18, color: SangakColors.ink),
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 18, color: BabkaColors.ink),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -82,7 +82,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       size: 20,
-                      color: isFavorite ? SangakColors.error : SangakColors.ink,
+                      color: isFavorite ? BabkaColors.error : BabkaColors.ink,
                     ),
                     onPressed: () {
                       if (!ActionGuard.check(context, ref)) return;
@@ -111,13 +111,13 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Wrap(
-                    spacing: SangakDimens.spacing8,
-                    runSpacing: SangakDimens.spacing8,
+                    spacing: BabkaDimens.spacing8,
+                    runSpacing: BabkaDimens.spacing8,
                     children: [
                       if (widget.bread.isOrganic)
                         ProductTag(label: l10n.organic, type: ProductTagType.organic),
@@ -127,7 +127,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         FreshnessBadge(token: widget.bread.freshness!),
                     ],
                   ),
-                  const SizedBox(height: SangakDimens.spacing12),
+                  const SizedBox(height: BabkaDimens.spacing12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,7 +135,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       Expanded(
                         child: Text(
                           displayName, 
-                          style: SangakTypography.h1(context).copyWith(fontSize: 24),
+                          style: BabkaTypography.h1(context).copyWith(fontSize: 24),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -143,51 +143,51 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       const SizedBox(width: 16),
                       Text(
                         formattedPrice, 
-                        style: SangakTypography.h1(context).copyWith(
-                          color: SangakColors.primary,
+                        style: BabkaTypography.h1(context).copyWith(
+                          color: BabkaColors.primary,
                           fontSize: 24,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: SangakDimens.spacing8),
+                  const SizedBox(height: BabkaDimens.spacing8),
                   Row(
                     children: [
                       const Icon(Icons.star, color: Color(0xFFFFB800), size: 20),
                       const SizedBox(width: 4),
-                      Text(widget.bread.rating.toString(), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                      Text(widget.bread.rating.toString(), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: SangakColors.ink.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-                          border: Border.all(color: SangakColors.border),
+                          color: BabkaColors.ink.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
+                          border: Border.all(color: BabkaColors.border),
                         ),
                         child: Text(
                           l10n.reviewsCount(widget.bread.reviews),
-                          style: SangakTypography.bodySmall(context).copyWith(
+                          style: BabkaTypography.bodySmall(context).copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
-                            color: SangakColors.inkLight,
+                            color: BabkaColors.inkLight,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: SangakDimens.spacing24),
-                  Text(l10n.description, style: SangakTypography.title(context)),
-                  const SizedBox(height: SangakDimens.spacing8),
+                  const SizedBox(height: BabkaDimens.spacing24),
+                  Text(l10n.description, style: BabkaTypography.title(context)),
+                  const SizedBox(height: BabkaDimens.spacing8),
                   Text(
                     displayDescription,
-                    style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
+                    style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight),
                   ),
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: BabkaDimens.spacing32),
                   
                   if (isCustomSangakEnabled && widget.bread.name.toLowerCase().contains('sangak'))
                     Padding(
-                      padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
-                      child: SangakButton.outlined(
+                      padding: const EdgeInsets.only(bottom: BabkaDimens.spacing16),
+                      child: BabkaButton.outlined(
                         label: l10n.customizeYourSangak,
                         icon: Icons.auto_awesome_outlined,
                         onPressed: () => context.push('/custom-sangak', extra: widget.bread),
@@ -218,11 +218,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         ],
       ),
       bottomSheet: Container(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         decoration: BoxDecoration(
-          color: SangakColors.surface,
-          boxShadow: SangakDimens.shadowHigh,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+          color: BabkaColors.surface,
+          boxShadow: BabkaDimens.shadowHigh,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
         ),
         child: inBasketQuantity > 0
             ? Row(
@@ -258,9 +258,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     onIncrement: () => setState(() => _localQuantity++),
                     onDecrement: _localQuantity > 1 ? () => setState(() => _localQuantity--) : () {},
                   ),
-                  const SizedBox(width: SangakDimens.spacing16),
+                  const SizedBox(width: BabkaDimens.spacing16),
                   Expanded(
-                    child: SangakButton.primary(
+                    child: BabkaButton.primary(
                       label: l10n.addToBasket,
                       onPressed: () {
                         if (!ActionGuard.check(context, ref)) return;
@@ -269,7 +269,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           ref,
                           action: () {
                             ref.read(basketProvider.notifier).addItem(widget.bread, quantity: _localQuantity);
-                            SangakToast.show(context, l10n.addedToBasket(displayName));
+                            BabkaToast.show(context, l10n.addedToBasket(displayName));
                           },
                         );
                       },
@@ -285,15 +285,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: SangakColors.primary),
+          Icon(icon, size: 18, color: BabkaColors.primary),
           const SizedBox(width: 8),
-          Text(label, style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.w600)),
+          Text(label, style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.w600)),
         ],
       ),
     );

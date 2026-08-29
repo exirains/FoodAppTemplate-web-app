@@ -1,4 +1,4 @@
-package com.sangak.app
+package com.foodapp.template
 
 import io.flutter.embedding.android.FlutterActivity
 

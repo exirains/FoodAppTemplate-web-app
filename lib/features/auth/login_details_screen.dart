@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -131,10 +131,10 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing48,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing48,
           ),
           child: Form(
             key: _formKey,
@@ -143,9 +143,9 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
               children: [
                 const Center(child: AppLogo.medium()),
                 const SizedBox(height: 48),
-                Text(l10n.welcomeBack, style: SangakTypography.h1(context)),
+                Text(l10n.welcomeBack, style: BabkaTypography.h1(context)),
                 const SizedBox(height: 32),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.email,
                   hintText: l10n.enterEmail,
                   controller: _emailController,
@@ -158,7 +158,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
                   validator: _validateEmail,
                 ),
                 const SizedBox(height: 24),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.password,
                   hintText: l10n.enterPassword,
                   controller: _passwordController,
@@ -174,7 +174,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
                   validator: _validatePassword,
                 ),
                 const SizedBox(height: 32),
-                SangakButton.primary(
+                BabkaButton.primary(
                   label: l10n.login,
                   width: double.infinity,
                   isLoading: isLoading || _isSubmitting,
@@ -185,13 +185,13 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l10n.dontHaveAccount, style: SangakTypography.bodyMedium(context)),
+                      Text(l10n.dontHaveAccount, style: BabkaTypography.bodyMedium(context)),
                       GestureDetector(
                         onTap: () => context.push('/signup-choice'),
                         child: Text(
                           l10n.createOne,
-                          style: SangakTypography.title(context).copyWith(
-                            color: SangakColors.primary,
+                          style: BabkaTypography.title(context).copyWith(
+                            color: BabkaColors.primary,
                             fontSize: 14,
                           ),
                         ),
@@ -199,7 +199,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: SangakDimens.spacing48),
+                const SizedBox(height: BabkaDimens.spacing48),
               ],
             ),
           ),

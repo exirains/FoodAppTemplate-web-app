@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -31,21 +31,21 @@ class LoginScreen extends ConsumerWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing48,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing48,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(child: AppLogo.medium()),
               const SizedBox(height: 48),
-              Text(l10n.welcomeBack, style: SangakTypography.h1(context)),
+              Text(l10n.welcomeBack, style: BabkaTypography.h1(context)),
               const SizedBox(height: 8),
               Text(
                 l10n.signInSubtitle,
-                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
               ),
               const SizedBox(height: 48),
               
@@ -81,13 +81,13 @@ class LoginScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(l10n.dontHaveAccount, style: SangakTypography.bodyMedium(context)),
+                    Text(l10n.dontHaveAccount, style: BabkaTypography.bodyMedium(context)),
                     GestureDetector(
                       onTap: () => context.push('/signup-choice'),
                       child: Text(
                         l10n.createOne,
-                        style: SangakTypography.title(context).copyWith(
-                          color: SangakColors.primary,
+                        style: BabkaTypography.title(context).copyWith(
+                          color: BabkaColors.primary,
                           fontSize: 14,
                         ),
                       ),

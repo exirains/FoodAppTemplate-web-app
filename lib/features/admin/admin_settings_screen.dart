@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -60,11 +60,11 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
       await ref.read(optionsRepositoryProvider).updateOptions(updates);
       
       if (mounted) {
-        SangakToast.show(context, l10n.settingsSaved);
+        BabkaToast.show(context, l10n.settingsSaved);
       }
     } catch (e) {
       if (mounted) {
-        SangakToast.show(context, '${l10n.errorOccurred}: $e');
+        BabkaToast.show(context, '${l10n.errorOccurred}: $e');
       }
     } finally {
       if (mounted) {

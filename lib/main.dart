@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -170,7 +170,7 @@ class _SangakAppState extends ConsumerState<SangakApp> {
     return MaterialApp.router(
       title: 'Sangak',
       debugShowCheckedModeBanner: false,
-      theme: SangakTheme.light(locale),
+      theme: BabkaTheme.light(locale),
       routerConfig: router,
       locale: locale,
       localizationsDelegates: [

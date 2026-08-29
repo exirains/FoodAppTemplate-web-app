@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/sangak_text_field.dart';
 import '../../shared/utils/sangak_toast.dart';
-import 'package:sangak/services/supabase_service.dart';
+import 'package:babka/services/supabase_service.dart';
 import '../home/tab_provider.dart';
 import '../../core/localization/locale_provider.dart';
 import 'auth_provider.dart';
@@ -279,16 +279,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => context.pop(),
         ),
-        title: Text(l10n.createAccount, style: SangakTypography.h3(context)),
+        title: Text(l10n.createAccount, style: BabkaTypography.h3(context)),
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing48,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing48,
           ),
           child: Form(
             key: _formKey,
@@ -296,7 +296,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Full name field
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.fullName,
                   hintText: l10n.enterFullName,
                   controller: _nameController,
@@ -307,9 +307,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   },
                   validator: _validateName,
                 ),
-                const SizedBox(height: SangakDimens.spacing16),
+                const SizedBox(height: BabkaDimens.spacing16),
                 // Email field
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.email,
                   hintText: l10n.enterEmail,
                   controller: _emailController,
@@ -323,9 +323,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   },
                   validator: _validateEmail,
                 ),
-                const SizedBox(height: SangakDimens.spacing16),
+                const SizedBox(height: BabkaDimens.spacing16),
                 // Phone number field
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.phoneNumber,
                   hintText: '+90 5XX XXX XX XX',
                   controller: _phoneController,
@@ -342,9 +342,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   },
                   validator: _validatePhone,
                 ),
-                const SizedBox(height: SangakDimens.spacing16),
+                const SizedBox(height: BabkaDimens.spacing16),
                 // Password field
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.password,
                   hintText: l10n.enterPassword,
                   controller: _passwordController,
@@ -365,14 +365,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   validator: _validatePassword,
                 ),
                 if (_passwordController.text.isNotEmpty) ...[
-                  const SizedBox(height: SangakDimens.spacing12),
+                  const SizedBox(height: BabkaDimens.spacing12),
                   PasswordStrengthIndicator(
                     password: _passwordController.text,
                     showLabel: true,
                     showRequirements: false,
                   ),
                 ],
-                const SizedBox(height: SangakDimens.spacing24),
+                const SizedBox(height: BabkaDimens.spacing24),
                 
                 // Invitation Code Toggle
                 if (!_showInvitationCode)
@@ -382,8 +382,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         l10n.haveInvitationCode,
-                        style: SangakTypography.bodySmall(context).copyWith(
-                          color: SangakColors.primary,
+                        style: BabkaTypography.bodySmall(context).copyWith(
+                          color: BabkaColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -392,7 +392,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 
                 if (_showInvitationCode) ...[
                   // Referral Code field (Optional)
-                  SangakTextField(
+                  BabkaTextField(
                     label: l10n.invitationCode,
                     hintText: l10n.invitationCodeOptional,
                     controller: _referralController,
@@ -401,9 +401,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ],
                 
-                const SizedBox(height: SangakDimens.spacing32),
+                const SizedBox(height: BabkaDimens.spacing32),
                 // Create account button
-                SangakButton.primary(
+                BabkaButton.primary(
                   label: l10n.createAccount,
                   width: double.infinity,
                   isLoading: isLoading || _isSubmitting,
@@ -417,26 +417,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: Text(
                       l10n.agreeToTermsAndPrivacy,
                       textAlign: TextAlign.center,
-                      style: SangakTypography.caption(context).copyWith(
-                        color: SangakColors.inkLight,
+                      style: BabkaTypography.caption(context).copyWith(
+                        color: BabkaColors.inkLight,
                         fontSize: 11,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: SangakDimens.spacing24),
+                const SizedBox(height: BabkaDimens.spacing24),
                 // Sign in link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(l10n.alreadyHaveAccount, style: SangakTypography.bodyMedium(context)),
+                    Text(l10n.alreadyHaveAccount, style: BabkaTypography.bodyMedium(context)),
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => context.push('/login'),
                       child: Text(
                         l10n.signIn,
-                        style: SangakTypography.title(context).copyWith(
-                          color: SangakColors.primary,
+                        style: BabkaTypography.title(context).copyWith(
+                          color: BabkaColors.primary,
                           fontSize: 14,
                         ),
                       ),

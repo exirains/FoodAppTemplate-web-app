@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -33,9 +33,9 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       allowedRoles: const ['admin', 'staff'],
       child: SangakBackHandler(
         child: Scaffold(
-          backgroundColor: SangakColors.background,
+          backgroundColor: BabkaColors.background,
           appBar: isWide ? null : AppBar(
-            backgroundColor: SangakColors.surface,
+            backgroundColor: BabkaColors.surface,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -43,12 +43,12 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
             ),
             title: Text(
               _currentIndex == 0 ? l10n.kitchenPanel : l10n.ordersHistory,
-              style: SangakTypography.h3(context),
+              style: BabkaTypography.h3(context),
             ),
             centerTitle: true,
             bottom: const PreferredSize(
               preferredSize: Size.fromHeight(1),
-              child: Divider(height: 1, thickness: 1, color: SangakColors.border),
+              child: Divider(height: 1, thickness: 1, color: BabkaColors.border),
             ),
           ),
           body: SafeArea(
@@ -79,10 +79,10 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
         NavigationRail(
           selectedIndex: _currentIndex,
           onDestinationSelected: (index) => setState(() => _currentIndex = index),
-          backgroundColor: SangakColors.surface,
-          indicatorColor: SangakColors.primary.withValues(alpha: 0.1),
-          selectedIconTheme: const IconThemeData(color: SangakColors.primary),
-          unselectedIconTheme: const IconThemeData(color: SangakColors.inkLight),
+          backgroundColor: BabkaColors.surface,
+          indicatorColor: BabkaColors.primary.withValues(alpha: 0.1),
+          selectedIconTheme: const IconThemeData(color: BabkaColors.primary),
+          unselectedIconTheme: const IconThemeData(color: BabkaColors.inkLight),
           labelType: NavigationRailLabelType.all,
           leading: const Padding(
             padding: EdgeInsets.symmetric(vertical: 24),
@@ -99,7 +99,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
             ),
           ],
         ),
-        const VerticalDivider(width: 1, thickness: 1, color: SangakColors.border),
+        const VerticalDivider(width: 1, thickness: 1, color: BabkaColors.border),
         
         // Main Workspace
         Expanded(
@@ -129,20 +129,20 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 32),
       decoration: const BoxDecoration(
-        color: SangakColors.surface,
-        border: Border(bottom: BorderSide(color: SangakColors.border)),
+        color: BabkaColors.surface,
+        border: Border(bottom: BorderSide(color: BabkaColors.border)),
       ),
       child: Row(
         children: [
           Text(
             _currentIndex == 0 ? l10n.kitchenPanel : l10n.ordersHistory,
-            style: SangakTypography.h2(context),
+            style: BabkaTypography.h2(context),
           ),
           const Spacer(),
           if (userProfile != null) ...[
             Text(
               userProfile.fullName ?? '',
-              style: SangakTypography.title(context),
+              style: BabkaTypography.title(context),
             ),
             const SizedBox(width: 16),
           ],
@@ -163,14 +163,14 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
   Widget _buildBottomNav(AppLocalizations l10n) {
     return Container(
       decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: SangakColors.border, width: 1)),
+        border: Border(top: BorderSide(color: BabkaColors.border, width: 1)),
       ),
       child: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        selectedItemColor: SangakColors.primary,
-        unselectedItemColor: SangakColors.inkLight,
-        backgroundColor: SangakColors.surface,
+        selectedItemColor: BabkaColors.primary,
+        unselectedItemColor: BabkaColors.inkLight,
+        backgroundColor: BabkaColors.surface,
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         unselectedLabelStyle: const TextStyle(fontSize: 12),
@@ -210,11 +210,11 @@ class _StaffHistoryView extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.history_rounded, size: 80, color: SangakColors.border),
+                const Icon(Icons.history_rounded, size: 80, color: BabkaColors.border),
                 const SizedBox(height: 24),
-                Text(l10n.noOrderHistory, style: SangakTypography.h2(context)),
+                Text(l10n.noOrderHistory, style: BabkaTypography.h2(context)),
                 const SizedBox(height: 8),
-                Text(l10n.allCaughtUp, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
+                Text(l10n.allCaughtUp, style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight)),
               ],
             ),
           );
@@ -234,7 +234,7 @@ class _StaffHistoryView extends ConsumerWidget {
 
   Widget _buildHistoryList(BuildContext context, List<OrderModel> history, AppLocalizations l10n) {
     return ListView.separated(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       itemCount: history.length,
       separatorBuilder: (context, index) => const SizedBox(height: 24),
       itemBuilder: (context, index) => StaffOrderCard(order: history[index]),
@@ -284,7 +284,7 @@ class _StaffOrdersView extends ConsumerWidget {
             if (newCount > 0)
               Container(
                 width: double.infinity,
-                color: SangakColors.warning,
+                color: BabkaColors.warning,
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 child: Row(
                   children: [
@@ -322,24 +322,24 @@ class _StaffOrdersView extends ConsumerWidget {
 
   Widget _buildListView(BuildContext context, List<OrderModel> pending, List<OrderModel> preparing, List<OrderModel> ready, AppLocalizations l10n) {
     return ListView(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       children: [
         if (pending.isNotEmpty) ...[
-          _SectionHeader(title: l10n.newLabel.toUpperCase(), color: SangakColors.warning),
+          _SectionHeader(title: l10n.newLabel.toUpperCase(), color: BabkaColors.warning),
           ...pending.map((o) => Padding(
             padding: const EdgeInsets.only(bottom: 24),
             child: StaffOrderCard(order: o, isNew: true),
           )),
         ],
         if (preparing.isNotEmpty) ...[
-          _SectionHeader(title: l10n.preparing.toUpperCase(), color: SangakColors.info),
+          _SectionHeader(title: l10n.preparing.toUpperCase(), color: BabkaColors.info),
           ...preparing.map((o) => Padding(
             padding: const EdgeInsets.only(bottom: 24),
             child: StaffOrderCard(order: o),
           )),
         ],
         if (ready.isNotEmpty) ...[
-          _SectionHeader(title: l10n.ready.toUpperCase(), color: SangakColors.success),
+          _SectionHeader(title: l10n.ready.toUpperCase(), color: BabkaColors.success),
           ...ready.map((o) => Padding(
             padding: const EdgeInsets.only(bottom: 24),
             child: StaffOrderCard(order: o),
@@ -361,7 +361,7 @@ class _StaffOrdersView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (pending.isNotEmpty) ...[
-            _SectionHeader(title: l10n.newLabel.toUpperCase(), color: SangakColors.warning),
+            _SectionHeader(title: l10n.newLabel.toUpperCase(), color: BabkaColors.warning),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -377,7 +377,7 @@ class _StaffOrdersView extends ConsumerWidget {
             const SizedBox(height: 32),
           ],
           if (preparing.isNotEmpty) ...[
-            _SectionHeader(title: l10n.preparing.toUpperCase(), color: SangakColors.info),
+            _SectionHeader(title: l10n.preparing.toUpperCase(), color: BabkaColors.info),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -393,7 +393,7 @@ class _StaffOrdersView extends ConsumerWidget {
             const SizedBox(height: 32),
           ],
           if (ready.isNotEmpty) ...[
-            _SectionHeader(title: l10n.ready.toUpperCase(), color: SangakColors.success),
+            _SectionHeader(title: l10n.ready.toUpperCase(), color: BabkaColors.success),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -418,11 +418,11 @@ class _StaffOrdersView extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.bakery_dining_outlined, size: 80, color: SangakColors.border),
+          const Icon(Icons.bakery_dining_outlined, size: 80, color: BabkaColors.border),
           const SizedBox(height: 24),
-          Text(l10n.allCaughtUp, style: SangakTypography.h2(context)),
+          Text(l10n.allCaughtUp, style: BabkaTypography.h2(context)),
           const SizedBox(height: 8),
-          Text(l10n.noOrdersToPrepare, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
+          Text(l10n.noOrdersToPrepare, style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight)),
         ],
       ),
     );
@@ -451,7 +451,7 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             title,
-            style: SangakTypography.h3(context).copyWith(
+            style: BabkaTypography.h3(context).copyWith(
               color: color,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.1,

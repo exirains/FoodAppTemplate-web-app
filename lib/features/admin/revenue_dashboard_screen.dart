@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -27,7 +27,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
       allowedRoles: const ['admin'],
       child: SangakBackHandler(
         child: Scaffold(
-          backgroundColor: SangakColors.background,
+          backgroundColor: BabkaColors.background,
           appBar: AppBar(
             title: Text(l10n.revenueDashboard),
             leading: IconButton(
@@ -39,7 +39,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
             data: (stats) => RefreshIndicator(
               onRefresh: () => ref.refresh(adminOrdersProvider.future),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(SangakDimens.spacing24),
+                padding: const EdgeInsets.all(BabkaDimens.spacing24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -125,9 +125,9 @@ class RevenueDashboardScreen extends ConsumerWidget {
       children: [
         _MetricCard(
           title: revenueTitle,
-          value: SangakNumberFormatter.formatCurrency(stats.todayRevenue, lang),
+          value: BabkaNumberFormatter.formatCurrency(stats.todayRevenue, lang),
           icon: Icons.payments_outlined,
-          color: SangakColors.primary,
+          color: BabkaColors.primary,
           isLarge: true,
         ),
         const SizedBox(height: 16),
@@ -138,16 +138,16 @@ class RevenueDashboardScreen extends ConsumerWidget {
                 title: l10n.activeOrders,
                 value: '${stats.activeOrdersCount}',
                 icon: Icons.shopping_basket_outlined,
-                color: SangakColors.info,
+                color: BabkaColors.info,
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: _MetricCard(
                 title: l10n.averageOrderValue,
-                value: SangakNumberFormatter.formatCurrency(aov, lang),
+                value: BabkaNumberFormatter.formatCurrency(aov, lang),
                 icon: Icons.analytics_outlined,
-                color: SangakColors.accent,
+                color: BabkaColors.accent,
               ),
             ),
           ],
@@ -176,15 +176,15 @@ class RevenueDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(chartTitle, style: SangakTypography.h3(context)),
+          Text(chartTitle, style: BabkaTypography.h3(context)),
           const SizedBox(height: 24),
           SizedBox(
             height: 200,
@@ -201,14 +201,14 @@ class RevenueDashboardScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Tooltip(
-                        message: '${DateFormat('MMM dd').format(day)}: ${SangakNumberFormatter.formatCurrency(revenue, lang)}',
+                        message: '${DateFormat('MMM dd').format(day)}: ${BabkaNumberFormatter.formatCurrency(revenue, lang)}',
                         child: Container(
                           width: isCompact ? 10 : 20,
                           height: (heightFactor * 140).clamp(4, 140).toDouble(),
                           decoration: BoxDecoration(
                             color: day.day == DateTime.now().day 
-                                ? SangakColors.primary 
-                                : SangakColors.primary.withValues(alpha: 0.3),
+                                ? BabkaColors.primary 
+                                : BabkaColors.primary.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -216,7 +216,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
                       const SizedBox(height: 8),
                       Text(
                         dayName,
-                        style: SangakTypography.caption(context).copyWith(
+                        style: BabkaTypography.caption(context).copyWith(
                           fontSize: 9,
                           fontWeight: day.day == DateTime.now().day ? FontWeight.bold : FontWeight.normal,
                         ),
@@ -236,33 +236,33 @@ class RevenueDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.topProducts, style: SangakTypography.h3(context)),
+          Text(l10n.topProducts, style: BabkaTypography.h3(context)),
           const SizedBox(height: 20),
           if (stats.topSellingProducts.isEmpty)
-            Center(child: Text(l10n.noProductsFound, style: SangakTypography.bodySmall(context)))
+            Center(child: Text(l10n.noProductsFound, style: BabkaTypography.bodySmall(context)))
           else
             ...stats.topSellingProducts.map((e) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(e.key, style: SangakTypography.bodyMedium(context)),
+                    child: Text(e.key, style: BabkaTypography.bodyMedium(context)),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: SangakColors.primary.withValues(alpha: 0.1),
+                      color: BabkaColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Text('${e.value}x', style: SangakTypography.title(context).copyWith(fontSize: 12, color: SangakColors.primary)),
+                    child: Text('${e.value}x', style: BabkaTypography.title(context).copyWith(fontSize: 12, color: BabkaColors.primary)),
                   ),
                 ],
               ),
@@ -278,10 +278,10 @@ class RevenueDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,24 +289,24 @@ class RevenueDashboardScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.liveOrderProgress, style: SangakTypography.h3(context)),
+              Text(l10n.liveOrderProgress, style: BabkaTypography.h3(context)),
               _MetricCard(
                 title: l10n.avgDeliveryTime,
                 value: '${stats.averageDeliveryTimeMinutes.toStringAsFixed(1)} ${l10n.minutesShort}',
                 icon: Icons.timer_outlined,
-                color: SangakColors.warning,
+                color: BabkaColors.warning,
                 isSmall: true,
               ),
             ],
           ),
           const SizedBox(height: 24),
-          _buildProgressItem(context, l10n.statusPending, stats.statusBreakdown[OrderStatus.pending] ?? 0, total, SangakColors.warning),
+          _buildProgressItem(context, l10n.statusPending, stats.statusBreakdown[OrderStatus.pending] ?? 0, total, BabkaColors.warning),
           const SizedBox(height: 16),
-          _buildProgressItem(context, l10n.statusPreparing, (stats.statusBreakdown[OrderStatus.preparing] ?? 0) + (stats.statusBreakdown[OrderStatus.confirmed] ?? 0), total, SangakColors.info),
+          _buildProgressItem(context, l10n.statusPreparing, (stats.statusBreakdown[OrderStatus.preparing] ?? 0) + (stats.statusBreakdown[OrderStatus.confirmed] ?? 0), total, BabkaColors.info),
           const SizedBox(height: 16),
-          _buildProgressItem(context, l10n.statusReady, stats.statusBreakdown[OrderStatus.ready] ?? 0, total, SangakColors.accent),
+          _buildProgressItem(context, l10n.statusReady, stats.statusBreakdown[OrderStatus.ready] ?? 0, total, BabkaColors.accent),
           const SizedBox(height: 16),
-          _buildProgressItem(context, l10n.outForDelivery, stats.statusBreakdown[OrderStatus.outForDelivery] ?? 0, total, SangakColors.primary),
+          _buildProgressItem(context, l10n.outForDelivery, stats.statusBreakdown[OrderStatus.outForDelivery] ?? 0, total, BabkaColors.primary),
         ],
       ),
     );
@@ -320,8 +320,8 @@ class RevenueDashboardScreen extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: SangakTypography.bodyMedium(context)),
-            Text('$count', style: SangakTypography.title(context).copyWith(color: color)),
+            Text(label, style: BabkaTypography.bodyMedium(context)),
+            Text('$count', style: BabkaTypography.title(context).copyWith(color: color)),
           ],
         ),
         const SizedBox(height: 8),
@@ -342,16 +342,16 @@ class RevenueDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: SangakColors.ink,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowMedium,
+        color: BabkaColors.ink,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowMedium,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.orderSummary,
-            style: SangakTypography.h3(context).copyWith(color: Colors.white),
+            style: BabkaTypography.h3(context).copyWith(color: Colors.white),
           ),
           const SizedBox(height: 24),
           Row(
@@ -404,7 +404,7 @@ class _MetricCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
           border: Border.all(color: color.withValues(alpha: 0.3)),
         ),
         child: Row(
@@ -412,7 +412,7 @@ class _MetricCard extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 14),
             const SizedBox(width: 8),
-            Text(value, style: SangakTypography.title(context).copyWith(fontSize: 12, color: color)),
+            Text(value, style: BabkaTypography.title(context).copyWith(fontSize: 12, color: color)),
           ],
         ),
       );
@@ -421,10 +421,10 @@ class _MetricCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(isLarge ? 24 : 16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
@@ -443,15 +443,15 @@ class _MetricCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                  style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   value,
                   style: isLarge 
-                      ? SangakTypography.display(context).copyWith(fontSize: 28, color: SangakColors.ink)
-                      : SangakTypography.h2(context).copyWith(fontSize: 20),
+                      ? BabkaTypography.display(context).copyWith(fontSize: 28, color: BabkaColors.ink)
+                      : BabkaTypography.h2(context).copyWith(fontSize: 20),
                 ),
               ],
             ),
@@ -496,8 +496,8 @@ class _RangeSelector extends ConsumerWidget {
       onSelected: (val) {
         if (val) ref.read(revenueDateRangeProvider.notifier).state = range;
       },
-      selectedColor: SangakColors.primary.withValues(alpha: 0.1),
-      labelStyle: TextStyle(color: isSelected ? SangakColors.primary : SangakColors.ink, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+      selectedColor: BabkaColors.primary.withValues(alpha: 0.1),
+      labelStyle: TextStyle(color: isSelected ? BabkaColors.primary : BabkaColors.ink, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
     );
   }
 

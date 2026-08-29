@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../shared/widgets/sangak_button.dart';
@@ -99,9 +99,9 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.rateExperience, style: SangakTypography.h2(context)),
+              Text(l10n.rateExperience, style: BabkaTypography.h2(context)),
               const SizedBox(height: 8),
-              Text(l10n.rateOrderMessage, style: SangakTypography.bodySmall(context)),
+              Text(l10n.rateOrderMessage, style: BabkaTypography.bodySmall(context)),
               const SizedBox(height: 24),
               
               _buildStarRating(l10n.breadQuality, _quality, (v) => setState(() => _quality = v)),
@@ -117,7 +117,7 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
                 hintText: l10n.reviewHint,
               ),
               const SizedBox(height: 32),
-              SangakButton.primary(
+              BabkaButton.primary(
                 label: l10n.confirmButton,
                 onPressed: _submit,
                 isLoading: _isSubmitting,
@@ -136,14 +136,14 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: SangakTypography.bodyMedium(context)),
+          Text(label, style: BabkaTypography.bodyMedium(context)),
           Row(
             children: List.generate(5, (index) {
               return GestureDetector(
                 onTap: () => onChanged(index + 1),
                 child: Icon(
                   index < value ? Icons.star_rounded : Icons.star_outline_rounded,
-                  color: SangakColors.primary,
+                  color: BabkaColors.primary,
                   size: 28,
                 ),
               );

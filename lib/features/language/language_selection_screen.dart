@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../shared/widgets/sangak_button.dart';
 import '../../shared/widgets/language_card.dart';
@@ -51,7 +51,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
               const SizedBox(height: 32),
               Text(
                 l10n.chooseLanguage,
-                style: SangakTypography.h2(context).copyWith(fontSize: 24, fontWeight: FontWeight.w800),
+                style: BabkaTypography.h2(context).copyWith(fontSize: 24, fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
@@ -75,7 +75,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                     },
                   )),
               const SizedBox(height: 32),
-              SangakButton.primary(
+              BabkaButton.primary(
                 label: l10n.continueButton,
                 width: double.infinity,
                 onPressed: _selectedCode == null

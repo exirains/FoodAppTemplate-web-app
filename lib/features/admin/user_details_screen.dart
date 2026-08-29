@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../services/supabase_service.dart';
@@ -93,7 +93,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
   Future<void> _pickAndUploadAvatar(String userId) async {
     final l10n = AppLocalizations.of(context);
     
-    final confirmed = await SangakConfirmDialog.show(
+    final confirmed = await BabkaConfirmDialog.show(
       context,
       title: l10n.editProfile,
       message: l10n.confirmChangeAvatar,
@@ -128,14 +128,14 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
       await SupabaseService.client.from('profiles').update({'avatar_url': avatarUrl}).eq('id', userId);
 
       if (mounted) {
-        SangakToast.show(context, l10n.profilePictureUpdated);
+        BabkaToast.show(context, l10n.profilePictureUpdated);
         ref.invalidate(userDetailProvider(widget.userId));
         ref.invalidate(usersProvider);
       }
     } catch (e) {
       debugPrint('Error uploading avatar: $e');
       if (mounted) {
-        SangakToast.show(context, l10n.failedToUpdateProfilePicture);
+        BabkaToast.show(context, l10n.failedToUpdateProfilePicture);
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -172,7 +172,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.profile),
           actions: [
@@ -205,9 +205,9 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
                 TabBar(
                   controller: _tabController,
                   isScrollable: isDriver,
-                  labelColor: SangakColors.primary,
-                  unselectedLabelColor: SangakColors.inkLight,
-                  indicatorColor: SangakColors.primary,
+                  labelColor: BabkaColors.primary,
+                  unselectedLabelColor: BabkaColors.inkLight,
+                  indicatorColor: BabkaColors.primary,
                   tabs: [
                     if (isDriver) Tab(text: l10n.myTasks),
                     Tab(text: l10n.orders),
@@ -249,7 +249,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
     final fullName = profile['full_name'] ?? l10n.guest;
 
     return Container(
-      color: SangakColors.surface,
+      color: BabkaColors.surface,
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
@@ -261,14 +261,14 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: SangakColors.background,
+                      color: BabkaColors.background,
                       shape: BoxShape.circle,
-                      border: Border.all(color: SangakColors.border),
+                      border: Border.all(color: BabkaColors.border),
                     ),
                     child: ClipOval(
                       child: avatarUrl != null
                           ? CachedNetworkImage(imageUrl: avatarUrl, fit: BoxFit.cover)
-                          : Center(child: Text(fullName.isNotEmpty ? fullName[0].toUpperCase() : '?', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: SangakColors.primary))),
+                          : Center(child: Text(fullName.isNotEmpty ? fullName[0].toUpperCase() : '?', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: BabkaColors.primary))),
                     ),
                   ),
                   Positioned(
@@ -278,7 +278,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
                       onTap: _isUploading ? null : () => _pickAndUploadAvatar(profile['id']),
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: SangakColors.primary, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(color: BabkaColors.primary, shape: BoxShape.circle),
                         child: _isUploading 
                           ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                           : const Icon(Icons.camera_alt_rounded, size: 12, color: Colors.white),
@@ -292,8 +292,8 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(fullName, style: SangakTypography.h2(context)),
-                    Text(profile['email'] ?? '', style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight)),
+                    Text(fullName, style: BabkaTypography.h2(context)),
+                    Text(profile['email'] ?? '', style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight)),
                     const SizedBox(height: 4),
                     Row(
                       children: [
@@ -313,8 +313,8 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.joinedDate, style: SangakTypography.caption(context)),
-              Text(joinedDate, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+              Text(l10n.joinedDate, style: BabkaTypography.caption(context)),
+              Text(joinedDate, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
             ],
           ),
         ],
@@ -324,7 +324,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
 
   Widget _buildStatusChip(bool isActive) {
     final l10n = AppLocalizations.of(context);
-    final color = isActive ? SangakColors.success : SangakColors.error;
+    final color = isActive ? BabkaColors.success : BabkaColors.error;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -381,13 +381,13 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
       padding: const EdgeInsets.all(16),
       children: [
         if (saved.isNotEmpty) ...[
-          Text(l10n.userAddresses.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
+          Text(l10n.userAddresses.toUpperCase(), style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           ...saved.map((addr) => _buildAddressCard(addr)),
           const SizedBox(height: 24),
         ],
         if (recent.isNotEmpty) ...[
-          Text(l10n.lastUsedAddresses.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
+          Text(l10n.lastUsedAddresses.toUpperCase(), style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           ...recent.map((addr) => _buildAddressCard(addr, isRecent: true)),
         ],
@@ -401,14 +401,14 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: isRecent ? SangakColors.border.withValues(alpha: 0.5) : SangakColors.border),
+        side: BorderSide(color: isRecent ? BabkaColors.border.withValues(alpha: 0.5) : BabkaColors.border),
       ),
       child: ListTile(
         leading: Icon(
           isRecent ? Icons.history_rounded : Icons.location_on_outlined, 
-          color: isRecent ? SangakColors.inkLight : SangakColors.primary,
+          color: isRecent ? BabkaColors.inkLight : BabkaColors.primary,
         ),
-        title: Text(addr.title, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+        title: Text(addr.title, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
         subtitle: Text(addr.fullAddress, maxLines: 2, overflow: TextOverflow.ellipsis),
       ),
     );
@@ -430,14 +430,14 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: SangakColors.border),
+            side: const BorderSide(color: BabkaColors.border),
           ),
           child: ListTile(
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(imageUrl: bread.imageUrl, width: 48, height: 48, fit: BoxFit.cover),
             ),
-            title: Text(bread.localizedName(lang), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+            title: Text(bread.localizedName(lang), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
             subtitle: Text(SangakNumberFormatter.formatCurrency(bread.price, lang)),
             onTap: () => context.push('/product-details', extra: bread),
           ),
@@ -455,7 +455,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
         padding: const EdgeInsets.all(16.0),
         child: SangakButton.primary(
           label: isActive ? l10n.disableAccount : l10n.enableAccount,
-          backgroundColor: isActive ? SangakColors.error : SangakColors.success,
+          backgroundColor: isActive ? BabkaColors.error : BabkaColors.success,
           onPressed: () => _confirmStatusChange(profile, !isActive),
         ),
       ),
@@ -466,7 +466,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
     final l10n = AppLocalizations.of(context);
     final statusText = newStatus ? l10n.enable : l10n.disable;
     
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: newStatus ? l10n.enableAccount : l10n.disableAccount,
       message: l10n.confirmStatusChange(statusText, user['full_name'] ?? 'User'),
@@ -480,9 +480,9 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
               .eq('id', user['id']);
           ref.invalidate(userDetailProvider(widget.userId));
           ref.invalidate(usersProvider);
-          if (mounted) SangakToast.show(context, l10n.userStatusUpdated);
+          if (mounted) BabkaToast.show(context, l10n.userStatusUpdated);
         } catch (e) {
-          if (mounted) SangakToast.show(context, 'Error: $e');
+          if (mounted) BabkaToast.show(context, 'Error: $e');
         }
       },
       isDestructive: !newStatus,
@@ -521,22 +521,22 @@ class _OrderCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: SangakColors.border),
+        side: const BorderSide(color: BabkaColors.border),
       ),
       child: ListTile(
         onTap: () => context.push('/admin/orders/${order.id}'),
         title: Row(
           children: [
-            Text(order.orderNumber, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+            Text(order.orderNumber, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
             if (isAssigned) ...[
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: SangakColors.primary.withValues(alpha: 0.1),
+                  color: BabkaColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Text(l10n.driver.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: SangakColors.primary)),
+                child: Text(l10n.driver.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: BabkaColors.primary)),
               ),
             ],
           ],
@@ -564,13 +564,13 @@ class _StatusChip extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     Color color;
     switch (status) {
-      case OrderStatus.pending: color = SangakColors.warning; break;
+      case OrderStatus.pending: color = BabkaColors.warning; break;
       case OrderStatus.preparing:
-      case OrderStatus.confirmed: color = SangakColors.info; break;
-      case OrderStatus.ready: color = SangakColors.accent; break;
-      case OrderStatus.outForDelivery: color = SangakColors.primary; break;
-      case OrderStatus.delivered: color = SangakColors.success; break;
-      case OrderStatus.cancelled: color = SangakColors.error; break;
+      case OrderStatus.confirmed: color = BabkaColors.info; break;
+      case OrderStatus.ready: color = BabkaColors.accent; break;
+      case OrderStatus.outForDelivery: color = BabkaColors.primary; break;
+      case OrderStatus.delivered: color = BabkaColors.success; break;
+      case OrderStatus.cancelled: color = BabkaColors.error; break;
     }
 
     return Text(
@@ -627,14 +627,14 @@ class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
             const SizedBox(height: 24),
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.roleSwitch.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
+              child: Text(l10n.roleSwitch.toUpperCase(), style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: SangakColors.border),
+                border: Border.all(color: BabkaColors.border),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -665,11 +665,11 @@ class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
               
               widget.onRefresh();
               if (context.mounted) {
-                SangakToast.show(context, l10n.profileUpdated);
+                BabkaToast.show(context, l10n.profileUpdated);
                 Navigator.pop(context);
               }
             } catch (e) {
-              if (context.mounted) SangakToast.show(context, 'Error: $e');
+              if (context.mounted) BabkaToast.show(context, 'Error: $e');
             } finally {
               if (mounted) setState(() => _isSaving = false);
             }

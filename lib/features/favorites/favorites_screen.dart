@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/product_card.dart';
@@ -23,7 +23,7 @@ class FavoritesScreen extends ConsumerWidget {
     final lang = ref.watch(localeProvider).languageCode;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.favorites),
         leading: IconButton(
@@ -51,7 +51,7 @@ class FavoritesScreen extends ConsumerWidget {
               final favoritedBreads = allBreads.where((b) => favoriteIds.contains(b.id)).toList();
 
               return GridView.builder(
-                padding: const EdgeInsets.all(SangakDimens.spacing24),
+                padding: const EdgeInsets.all(BabkaDimens.spacing24),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 24,

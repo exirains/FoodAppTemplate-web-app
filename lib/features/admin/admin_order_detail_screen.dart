@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -130,14 +130,14 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     return RoleGuard(
       allowedRoles: const ['admin', 'staff'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(title: Text(l10n.orderSummary)),
         body: orderAsync.when(
           data: (order) {
             if (order == null) return Center(child: Text(l10n.noProductsFound));
   
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -178,10 +178,10 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(order.orderNumber, style: SangakTypography.h2(context)),
+            Text(order.orderNumber, style: BabkaTypography.h2(context)),
             Text(
               '${l10n.placedAtLabel} ${_formatDateTime(order.createdAt)}',
-              style: SangakTypography.caption(context),
+              style: BabkaTypography.caption(context),
             ),
           ],
         ),
@@ -206,29 +206,29 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: SangakColors.surface,
-            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-            border: Border.all(color: SangakColors.border),
+            color: BabkaColors.surface,
+            borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+            border: Border.all(color: BabkaColors.border),
           ),
           child: Row(
             children: [
               CircleAvatar(
                 radius: 24,
-                backgroundColor: SangakColors.border,
+                backgroundColor: BabkaColors.border,
                 backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty) ? CachedNetworkImageProvider(avatarUrl) : null,
-                child: (avatarUrl == null || avatarUrl.isEmpty) ? const Icon(Icons.person, color: SangakColors.inkLight) : null,
+                child: (avatarUrl == null || avatarUrl.isEmpty) ? const Icon(Icons.person, color: BabkaColors.inkLight) : null,
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(fullName, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                    Text(fullName, style: BabkaTypography.title(context).copyWith(fontSize: 16)),
                     const SizedBox(height: 2),
-                    Text(email, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight)),
+                    Text(email, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight)),
                     if (phone != null && phone.isNotEmpty) ...[
                       const SizedBox(height: 4),
-                      Text(phone, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold)),
+                      Text(phone, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.primary, fontWeight: FontWeight.bold)),
                     ],
                   ],
                 ),
@@ -236,7 +236,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
               if (phone != null && phone.isNotEmpty)
                 IconButton(
                   onPressed: () => _callCustomer(phone),
-                  icon: const Icon(Icons.phone_outlined, color: SangakColors.primary),
+                  icon: const Icon(Icons.phone_outlined, color: BabkaColors.primary),
                 ),
             ],
           ),
@@ -266,16 +266,16 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: SangakColors.surface,
-            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-            border: Border.all(color: SangakColors.border),
+            color: BabkaColors.surface,
+            borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+            border: Border.all(color: BabkaColors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(addr['label'] ?? l10n.home, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+              Text(addr['label'] ?? l10n.home, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
               const SizedBox(height: 4),
-              Text(addr['address'] ?? '', style: SangakTypography.bodyMedium(context)),
+              Text(addr['address'] ?? '', style: BabkaTypography.bodyMedium(context)),
               const SizedBox(height: 8),
               _buildAddressLine(l10n.city, '${addr['city']}, ${addr['district']}'),
               _buildAddressLine(l10n.street, addr['street'] ?? '-'),
@@ -285,17 +285,17 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: SangakColors.warning.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                    color: BabkaColors.warning.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.note_alt_outlined, size: 16, color: SangakColors.warning),
+                      const Icon(Icons.note_alt_outlined, size: 16, color: BabkaColors.warning),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           addr['delivery_note'],
-                          style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.secondary),
+                          style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.secondary),
                         ),
                       ),
                     ],
@@ -314,8 +314,8 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       padding: const EdgeInsets.only(bottom: 2),
       child: Row(
         children: [
-          Text('$label: ', style: SangakTypography.caption(context)),
-          Text(value, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.ink)),
+          Text('$label: ', style: BabkaTypography.caption(context)),
+          Text(value, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.ink)),
         ],
       ),
     );
@@ -338,7 +338,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
             return Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                  borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                   child: CachedNetworkImage(
                     imageUrl: item.imageSnapshot,
                     width: 50,
@@ -351,19 +351,19 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.localizedName(lang), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                      Text(item.localizedName(lang), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                             decoration: BoxDecoration(
-                              color: SangakColors.primary.withValues(alpha: 0.1),
+                              color: BabkaColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               '${item.quantity}x',
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: SangakColors.primary),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: BabkaColors.primary),
                             ),
                           ),
                         ],
@@ -373,7 +373,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                 ),
                 Text(
                   SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang),
-                  style: SangakTypography.bodyMedium(context).copyWith(fontWeight: FontWeight.w600),
+                  style: BabkaTypography.bodyMedium(context).copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             );
@@ -383,13 +383,13 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l10n.deliveryFeeLabel, style: SangakTypography.bodySmall(context)),
+            Text(l10n.deliveryFeeLabel, style: BabkaTypography.bodySmall(context)),
             Consumer(builder: (context, ref, _) {
               final options = ref.watch(appOptionsProvider).value ?? {};
               final fee = double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0;
               return Text(
                 SangakNumberFormatter.formatCurrency(fee, lang),
-                style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
+                style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
               );
             }),
           ],
@@ -406,18 +406,18 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l10n.paymentMethod, style: SangakTypography.bodyMedium(context)),
-            Text(order.paymentMethod.toUpperCase(), style: SangakTypography.title(context).copyWith(fontSize: 14)),
+            Text(l10n.paymentMethod, style: BabkaTypography.bodyMedium(context)),
+            Text(order.paymentMethod.toUpperCase(), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
           ],
         ),
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l10n.grandTotal, style: SangakTypography.h3(context)),
+            Text(l10n.grandTotal, style: BabkaTypography.h3(context)),
             Text(
               SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
-              style: SangakTypography.h3(context).copyWith(color: SangakColors.primary),
+              style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary),
             ),
           ],
         ),
@@ -443,7 +443,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         mainAction = Expanded(
           child: SangakButton.primary(
             label: l10n.startPreparing,
-            backgroundColor: SangakColors.info,
+            backgroundColor: BabkaColors.info,
             onPressed: () => _updateStatus(OrderStatus.preparing),
             isLoading: _isUpdating,
           ),
@@ -453,7 +453,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         mainAction = Expanded(
           child: SangakButton.primary(
             label: l10n.markAsReady,
-            backgroundColor: SangakColors.success,
+            backgroundColor: BabkaColors.success,
             onPressed: () => _updateStatus(OrderStatus.ready),
             isLoading: _isUpdating,
           ),
@@ -464,7 +464,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           child: SangakButton.primary(
             label: l10n.assignToDelivery,
             icon: Icons.person_search_rounded,
-            backgroundColor: SangakColors.primary,
+            backgroundColor: BabkaColors.primary,
             onPressed: () => _showDeliveryPicker(context, l10n),
             isLoading: _isUpdating,
           ),
@@ -475,7 +475,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           child: SangakButton.outlined(
             label: l10n.outForDelivery,
             onPressed: null,
-            foregroundColor: SangakColors.primary,
+            foregroundColor: BabkaColors.primary,
           ),
         );
         break;
@@ -484,7 +484,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           child: SangakButton.outlined(
             label: l10n.statusDelivered,
             onPressed: null,
-            foregroundColor: SangakColors.success,
+            foregroundColor: BabkaColors.success,
           ),
         );
         break;
@@ -493,11 +493,11 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     }
 
     return Container(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        boxShadow: SangakDimens.shadowHigh,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+        color: BabkaColors.surface,
+        boxShadow: BabkaDimens.shadowHigh,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
       ),
       child: SafeArea(
         child: Row(
@@ -509,8 +509,8 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                 child: SangakButton.outlined(
                   label: '',
                   icon: Icons.cancel_outlined,
-                  foregroundColor: SangakColors.error,
-                  borderColor: SangakColors.error,
+                  foregroundColor: BabkaColors.error,
+                  borderColor: BabkaColors.error,
                   onPressed: () => CancelOrderDialog.show(
                     context, 
                     onConfirm: (reason) => _cancelOrder(reason),
@@ -537,7 +537,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(l10n.confirmPickup, style: SangakTypography.h3(context)),
+              Text(l10n.confirmPickup, style: BabkaTypography.h3(context)),
               const SizedBox(height: 24),
               staffAsync.when(
                 data: (staff) {
@@ -546,9 +546,9 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                        padding: const EdgeInsets.symmetric(vertical: 32),
                        child: Column(
                          children: [
-                           const Icon(Icons.person_off_outlined, size: 48, color: SangakColors.inkLight),
+                           const Icon(Icons.person_off_outlined, size: 48, color: BabkaColors.inkLight),
                            const SizedBox(height: 16),
-                           Text(l10n.noDeliveryPersonFound, style: SangakTypography.bodyMedium(context)),
+                           Text(l10n.noDeliveryPersonFound, style: BabkaTypography.bodyMedium(context)),
                          ],
                        ),
                      );
@@ -617,7 +617,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title.toUpperCase(),
-      style: SangakTypography.caption(context).copyWith(letterSpacing: 1.2, fontWeight: FontWeight.w800),
+      style: BabkaTypography.caption(context).copyWith(letterSpacing: 1.2, fontWeight: FontWeight.w800),
     );
   }
 
@@ -639,28 +639,28 @@ class _StatusBadge extends StatelessWidget {
 
     switch (status) {
       case OrderStatus.pending:
-        color = SangakColors.warning;
+        color = BabkaColors.warning;
         label = l10n.statusPending.toUpperCase();
         break;
       case OrderStatus.confirmed:
       case OrderStatus.preparing:
-        color = SangakColors.info;
+        color = BabkaColors.info;
         label = l10n.statusPreparing.toUpperCase();
         break;
       case OrderStatus.ready:
-        color = SangakColors.accent;
+        color = BabkaColors.accent;
         label = l10n.statusReady.toUpperCase();
         break;
       case OrderStatus.outForDelivery:
-        color = SangakColors.primary;
+        color = BabkaColors.primary;
         label = l10n.outForDelivery.toUpperCase();
         break;
       case OrderStatus.delivered:
-        color = SangakColors.success;
+        color = BabkaColors.success;
         label = l10n.statusDelivered.toUpperCase();
         break;
       case OrderStatus.cancelled:
-        color = SangakColors.error;
+        color = BabkaColors.error;
         label = l10n.statusCancelled.toUpperCase();
         break;
     }
@@ -669,12 +669,12 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
         border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
         label,
-        style: SangakTypography.caption(context).copyWith(
+        style: BabkaTypography.caption(context).copyWith(
           color: color,
           fontWeight: FontWeight.bold,
           fontSize: 12,

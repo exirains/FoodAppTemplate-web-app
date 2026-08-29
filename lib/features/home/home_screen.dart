@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -45,14 +45,14 @@ class HomeScreen extends ConsumerWidget {
     final lang = locale.languageCode;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       body: CustomScrollView(
         slivers: [
           // Custom App Bar with Search
           SliverAppBar(
             floating: true,
             expandedHeight: 88,
-            backgroundColor: SangakColors.background,
+            backgroundColor: BabkaColors.background,
             surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
@@ -65,14 +65,14 @@ class HomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(GreetingService.getGreeting(context), style: SangakTypography.bodySmall(context)),
+                        Text(GreetingService.getGreeting(context), style: BabkaTypography.bodySmall(context)),
                         const SizedBox(height: 1),
                         if (!isGuest)
                           Row(
                             children: [
                               Text(
                                 user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                                style: SangakTypography.h3(context),
+                                style: BabkaTypography.h3(context),
                               ),
                               const SizedBox(width: 8),
                               UserRoleTag(role: ref.watch(userProfileProvider).value?.role ?? 'customer'),
@@ -84,13 +84,13 @@ class HomeScreen extends ConsumerWidget {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
                               decoration: BoxDecoration(
-                                color: SangakColors.primary.withValues(alpha: 0.1),
+                                color: BabkaColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 l10n.guest.toUpperCase(),
-                                style: SangakTypography.caption(context).copyWith(
-                                  color: SangakColors.primary,
+                                style: BabkaTypography.caption(context).copyWith(
+                                  color: BabkaColors.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -104,11 +104,11 @@ class HomeScreen extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(9),
                         decoration: BoxDecoration(
-                          color: SangakColors.surface,
+                          color: BabkaColors.surface,
                           shape: BoxShape.circle,
-                          boxShadow: SangakDimens.shadowLow,
+                          boxShadow: BabkaDimens.shadowLow,
                         ),
-                        child: const Icon(Icons.settings_outlined, color: SangakColors.ink, size: 20),
+                        child: const Icon(Icons.settings_outlined, color: BabkaColors.ink, size: 20),
                       ),
                     ),
                   ],
@@ -119,7 +119,7 @@ class HomeScreen extends ConsumerWidget {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -129,10 +129,10 @@ class HomeScreen extends ConsumerWidget {
                     subtitle: l10n.heroSubtitle,
                     imageUrl: 'https://obealvlqkffozfigtobc.supabase.co/storage/v1/object/public/branding/top_banner_dark.jpg',
                   ),
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: BabkaDimens.spacing24),
 
                   const PromotionBanners(),
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: BabkaDimens.spacing24),
 
                   // Phone Number Warning Banner
                   if (!isGuest && 
@@ -140,20 +140,20 @@ class HomeScreen extends ConsumerWidget {
                       !AuthValidators.hasValidPhoneNumber(ref.watch(userProfileProvider).value?.phoneNumber) &&
                       !AuthValidators.hasValidPhoneNumber(user.userMetadata?['phone'] as String?))
                     Padding(
-                      padding: const EdgeInsets.only(bottom: SangakDimens.spacing24),
+                      padding: const EdgeInsets.only(bottom: BabkaDimens.spacing24),
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: SangakColors.warning.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                          border: Border.all(color: SangakColors.warning.withValues(alpha: 0.3)),
+                          color: BabkaColors.warning.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+                          border: Border.all(color: BabkaColors.warning.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: const BoxDecoration(
-                                color: SangakColors.warning,
+                                color: BabkaColors.warning,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.phone_iphone_rounded, color: Colors.white, size: 20),
@@ -165,17 +165,17 @@ class HomeScreen extends ConsumerWidget {
                                 children: [
                                   Text(
                                     l10n.completeYourProfile,
-                                    style: SangakTypography.title(context).copyWith(fontSize: 14),
+                                    style: BabkaTypography.title(context).copyWith(fontSize: 14),
                                   ),
                                   Text(
                                     l10n.addPhoneToOrder,
-                                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                                    style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight),
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(width: 8),
-                            SangakButton.primary(
+                            BabkaButton.primary(
                               label: l10n.add,
                               width: 80,
                               onPressed: () => ref.read(tabProvider.notifier).state = 3, // Go to Profile
@@ -186,8 +186,8 @@ class HomeScreen extends ConsumerWidget {
                     ),
 
                   // Categories
-                  Text(l10n.categories, style: SangakTypography.h3(context)),
-                  const SizedBox(height: SangakDimens.spacing16),
+                  Text(l10n.categories, style: BabkaTypography.h3(context)),
+                  const SizedBox(height: BabkaDimens.spacing16),
                   categoriesAsync.when(
                     data: (categories) => SizedBox(
                       height: 50,
@@ -195,7 +195,7 @@ class HomeScreen extends ConsumerWidget {
                         scrollDirection: Axis.horizontal,
                         padding: EdgeInsets.zero, // Reset padding
                         itemCount: categories.length + 1,
-                        separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing12),
+                        separatorBuilder: (context, index) => const SizedBox(width: BabkaDimens.spacing12),
                         itemBuilder: (context, index) {
                           if (index == 0) {
                             return Padding(
@@ -219,22 +219,22 @@ class HomeScreen extends ConsumerWidget {
                     loading: () => const SizedBox(height: 50, child: Center(child: CircularProgressIndicator())),
                     error: (error, stack) => Text(l10n.errorLoadingCategories),
                   ),
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: BabkaDimens.spacing32),
 
                   // Popular Today
                   if (popularBreadsAsync.value?.isNotEmpty ?? true)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(l10n.popularToday, style: SangakTypography.h3(context)),
+                        Text(l10n.popularToday, style: BabkaTypography.h3(context)),
                         TextButton(
                           onPressed: () => ref.read(tabProvider.notifier).state = 1,
-                          child: Text(l10n.seeAll, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                          child: Text(l10n.seeAll, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.primary)),
                         ),
                       ],
                     ),
                   if (popularBreadsAsync.value?.isNotEmpty ?? true)
-                    const SizedBox(height: SangakDimens.spacing16),
+                    const SizedBox(height: BabkaDimens.spacing16),
                 ],
               ),
             ),
@@ -247,10 +247,10 @@ class HomeScreen extends ConsumerWidget {
                 height: 292, // Further reduced to prevent excessive height
                 child: popularBreadsAsync.when(
                 data: (breads) => ListView.separated(
-                  padding: const EdgeInsetsDirectional.symmetric(horizontal: SangakDimens.spacing24),
+                  padding: const EdgeInsetsDirectional.symmetric(horizontal: BabkaDimens.spacing24),
                   scrollDirection: Axis.horizontal,
                   itemCount: breads.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
+                  separatorBuilder: (context, index) => const SizedBox(width: BabkaDimens.spacing16),
                   itemBuilder: (context, index) {
                     final bread = breads[index];
                     final displayName = bread.localizedName(lang);
@@ -281,7 +281,7 @@ class HomeScreen extends ConsumerWidget {
                           ref,
                           action: () {
                             ref.read(basketProvider.notifier).addItem(bread);
-                            SangakToast.show(context, l10n.addedToBasket(displayName));
+                            BabkaToast.show(context, l10n.addedToBasket(displayName));
                           },
                         );
                       },
@@ -289,10 +289,10 @@ class HomeScreen extends ConsumerWidget {
                   },
                 ),
                 loading: () => ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+                  padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing24),
                   scrollDirection: Axis.horizontal,
                   itemCount: 3,
-                  separatorBuilder: (context, index) => const SizedBox(width: SangakDimens.spacing16),
+                  separatorBuilder: (context, index) => const SizedBox(width: BabkaDimens.spacing16),
                   itemBuilder: (context, index) => const ProductCardSkeleton(),
                 ),
                 error: (error, stack) => Center(child: Text(l10n.errorLoadingBreads)),
@@ -300,17 +300,17 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: SangakDimens.spacing32)),
+          const SliverToBoxAdapter(child: SizedBox(height: BabkaDimens.spacing32)),
 
           // Today's Specials (Vertical List)
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+            padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing24),
             sliver: SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.traditionalFavorites, style: SangakTypography.h3(context)),
-                  const SizedBox(height: SangakDimens.spacing16),
+                  Text(l10n.traditionalFavorites, style: BabkaTypography.h3(context)),
+                  const SizedBox(height: BabkaDimens.spacing16),
                 ],
               ),
             ),
@@ -318,7 +318,7 @@ class HomeScreen extends ConsumerWidget {
 
           breadsAsync.when(
             data: (breads) => SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing24),
+              padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing24),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -327,25 +327,25 @@ class HomeScreen extends ConsumerWidget {
                     final bool isAvailable = bread.available;
                     
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
+                      padding: const EdgeInsets.only(bottom: BabkaDimens.spacing16),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: isAvailable ? () => context.push('/product-details', extra: bread) : null,
-                          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+                          borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
                           child: Opacity(
                             opacity: isAvailable ? 1.0 : 0.6,
                             child: Ink(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: SangakColors.surface,
-                                borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                                boxShadow: SangakDimens.shadowLow,
+                                color: BabkaColors.surface,
+                                borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+                                boxShadow: BabkaDimens.shadowLow,
                               ),
                               child: Row(
                                 children: [
                                   ClipRRect(
-                                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                    borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                                     child: ColorFiltered(
                                       colorFilter: isAvailable 
                                           ? const ColorFilter.mode(Colors.transparent, BlendMode.multiply)
@@ -359,7 +359,7 @@ class HomeScreen extends ConsumerWidget {
                                         placeholder: (context, url) => Container(
                                           width: 80,
                                           height: 80,
-                                          color: SangakColors.border,
+                                          color: BabkaColors.border,
                                           child: const Center(
                                             child: SizedBox(
                                               width: 24,
@@ -371,13 +371,13 @@ class HomeScreen extends ConsumerWidget {
                                         errorWidget: (context, url, error) => Container(
                                           width: 80,
                                           height: 80,
-                                          color: SangakColors.border,
-                                          child: const Icon(Icons.breakfast_dining, color: SangakColors.inkLight),
+                                          color: BabkaColors.border,
+                                          child: const Icon(Icons.breakfast_dining, color: BabkaColors.inkLight),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: SangakDimens.spacing16),
+                                  const SizedBox(width: BabkaDimens.spacing16),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,9 +385,9 @@ class HomeScreen extends ConsumerWidget {
                                       children: [
                                         Text(
                                           displayName,
-                                          style: SangakTypography.title(context).copyWith(
+                                          style: BabkaTypography.title(context).copyWith(
                                             fontSize: 16,
-                                            color: isAvailable ? SangakColors.ink : SangakColors.inkLight,
+                                            color: isAvailable ? BabkaColors.ink : BabkaColors.inkLight,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -395,8 +395,8 @@ class HomeScreen extends ConsumerWidget {
                                         const SizedBox(height: 2),
                                         Text(
                                           bread.localizedDescription(lang),
-                                          style: SangakTypography.bodySmall(context).copyWith(
-                                            color: SangakColors.inkLight,
+                                          style: BabkaTypography.bodySmall(context).copyWith(
+                                            color: BabkaColors.inkLight,
                                             height: 1.2,
                                           ),
                                           maxLines: 1,
@@ -405,10 +405,10 @@ class HomeScreen extends ConsumerWidget {
                                         const SizedBox(height: 12),
                                         Text(
                                           SangakNumberFormatter.formatCurrency(bread.price, lang),
-                                          style: SangakTypography.price(context).copyWith(
+                                          style: BabkaTypography.price(context).copyWith(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w800,
-                                            color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                                            color: isAvailable ? BabkaColors.primary : BabkaColors.inkLight,
                                           ),
                                         ),
                                       ],
@@ -438,7 +438,7 @@ class HomeScreen extends ConsumerWidget {
                                             },
                                             icon: Icon(
                                               isFavorite ? Icons.favorite : Icons.favorite_border,
-                                              color: isFavorite ? SangakColors.error : SangakColors.inkLight,
+                                              color: isFavorite ? BabkaColors.error : BabkaColors.inkLight,
                                               size: 20,
                                             ),
                                           ),
@@ -499,13 +499,13 @@ class HomeScreen extends ConsumerWidget {
                                                 ref,
                                                 action: () {
                                                   ref.read(basketProvider.notifier).addItem(bread);
-                                                  SangakToast.show(context, l10n.addedToBasket(displayName));
+                                                  BabkaToast.show(context, l10n.addedToBasket(displayName));
                                                 },
                                               );
                                             } : null,
                                             icon: Icon(
                                               Icons.add_circle, 
-                                              color: isAvailable ? SangakColors.primary : SangakColors.border, 
+                                              color: isAvailable ? BabkaColors.primary : BabkaColors.border, 
                                               size: 28,
                                             ),
                                           ),
@@ -529,7 +529,7 @@ class HomeScreen extends ConsumerWidget {
             error: (error, stack) => SliverToBoxAdapter(child: Center(child: Text(l10n.errorLoadingBreads))),
           ),
           
-          const SliverToBoxAdapter(child: SizedBox(height: SangakDimens.spacing64)),
+          const SliverToBoxAdapter(child: SizedBox(height: BabkaDimens.spacing64)),
         ],
       ),
     );

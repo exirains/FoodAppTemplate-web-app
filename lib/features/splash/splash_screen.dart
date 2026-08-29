@@ -143,14 +143,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                   child: AppLogo.large(),
                 ),
                 const SizedBox(height: 56), 
+                /*
                 Text(
                   l10n.appName.toUpperCase(),
-                  style: SangakTypography.display(context).copyWith(
+                  style: BabkaTypography.display(context).copyWith(
                     letterSpacing: 8, 
-                    color: SangakColors.primary,
+                    color: BabkaColors.primary,
                     fontSize: 48, 
                   ),
                 ),
+                */
                 const SizedBox(height: 12),
                 Text(
                   l10n.bakerySubtitle.toUpperCase(),

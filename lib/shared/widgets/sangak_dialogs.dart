@@ -4,7 +4,7 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import 'sangak_button.dart';
 
-class SangakConfirmDialog extends StatelessWidget {
+class BabkaConfirmDialog extends StatelessWidget {
   final String title;
   final String message;
   final String confirmLabel;
@@ -12,7 +12,7 @@ class SangakConfirmDialog extends StatelessWidget {
   final VoidCallback onConfirm;
   final bool isDestructive;
 
-  const SangakConfirmDialog({
+  const BabkaConfirmDialog({
     super.key,
     required this.title,
     required this.message,
@@ -33,7 +33,7 @@ class SangakConfirmDialog extends StatelessWidget {
   }) {
     return showDialog<bool>(
       context: context,
-      builder: (context) => SangakConfirmDialog(
+      builder: (context) => BabkaConfirmDialog(
         title: title,
         message: message,
         confirmLabel: confirmLabel,
@@ -48,41 +48,41 @@ class SangakConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
       ),
-      backgroundColor: SangakColors.surface,
+      backgroundColor: BabkaColors.surface,
       child: Padding(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               title,
-              style: SangakTypography.h3(context),
+              style: BabkaTypography.h3(context),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: SangakDimens.spacing12),
+            const SizedBox(height: BabkaDimens.spacing12),
             Text(
               message,
-              style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+              style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: SangakDimens.spacing32),
+            const SizedBox(height: BabkaDimens.spacing32),
             Row(
               children: [
                 Expanded(
-                  child: SangakButton.ghost(
+                  child: BabkaButton.ghost(
                     label: cancelLabel,
-                    padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing12),
+                    padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing12),
                     onPressed: () => Navigator.pop(context, false),
                   ),
                 ),
-                const SizedBox(width: SangakDimens.spacing12),
+                const SizedBox(width: BabkaDimens.spacing12),
                 Expanded(
-                  child: SangakButton.primary(
+                  child: BabkaButton.primary(
                     label: confirmLabel,
-                    padding: const EdgeInsets.symmetric(horizontal: SangakDimens.spacing12),
-                    backgroundColor: isDestructive ? SangakColors.error : null,
+                    padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing12),
+                    backgroundColor: isDestructive ? BabkaColors.error : null,
                     onPressed: () {
                       onConfirm();
                       Navigator.pop(context, true);

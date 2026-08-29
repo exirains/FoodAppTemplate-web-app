@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -25,7 +25,7 @@ class LoyaltyCenterScreen extends ConsumerWidget {
     final historyAsync = ref.watch(pointsHistoryProvider);
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.loyaltyCenter),
         centerTitle: true,
@@ -38,7 +38,7 @@ class LoyaltyCenterScreen extends ConsumerWidget {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(SangakDimens.spacing24),
+          padding: const EdgeInsets.all(BabkaDimens.spacing24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -53,12 +53,12 @@ class LoyaltyCenterScreen extends ConsumerWidget {
               const ReferralSection(),
               const SizedBox(height: 40),
 
-              Text(l10n.rewards, style: SangakTypography.h3(context)),
+              Text(l10n.rewards, style: BabkaTypography.h3(context)),
               const SizedBox(height: 16),
               _buildRewardsGrid(context, ref, rewardsAsync, loyaltyAsync, l10n),
               
               const SizedBox(height: 40),
-              Text(l10n.activity, style: SangakTypography.h3(context)),
+              Text(l10n.activity, style: BabkaTypography.h3(context)),
               const SizedBox(height: 16),
               _buildHistoryList(context, historyAsync, l10n),
             ],
@@ -80,27 +80,27 @@ class LoyaltyCenterScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [SangakColors.ink, SangakColors.ink.withValues(alpha: 0.8)],
+              colors: [BabkaColors.ink, BabkaColors.ink.withValues(alpha: 0.8)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24),
-            boxShadow: SangakDimens.shadowMedium,
+            boxShadow: BabkaDimens.shadowMedium,
           ),
           child: Column(
             children: [
               Text(
                 '🥖 ${l10n.loyaltyCenter}'.toUpperCase(),
-                style: SangakTypography.caption(context).copyWith(color: Colors.white70, fontWeight: FontWeight.bold),
+                style: BabkaTypography.caption(context).copyWith(color: Colors.white70, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               Text(
                 '$points',
-                style: SangakTypography.display(context).copyWith(color: Colors.white, fontSize: 48),
+                style: BabkaTypography.display(context).copyWith(color: Colors.white, fontSize: 48),
               ),
               Text(
                 l10n.points,
-                style: SangakTypography.bodySmall(context).copyWith(color: Colors.white70),
+                style: BabkaTypography.bodySmall(context).copyWith(color: Colors.white70),
               ),
               const SizedBox(height: 20),
               Row(
@@ -130,7 +130,7 @@ class LoyaltyCenterScreen extends ConsumerWidget {
       ),
       child: Text(
         label,
-        style: SangakTypography.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+        style: BabkaTypography.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -160,8 +160,8 @@ class LoyaltyCenterScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(l10n.memberLevel(level), style: SangakTypography.title(context)),
-                Text('$points / $nextLevelPoints', style: SangakTypography.bodySmall(context)),
+                Text(l10n.memberLevel(level), style: BabkaTypography.title(context)),
+                Text('$points / $nextLevelPoints', style: BabkaTypography.bodySmall(context)),
               ],
             ),
             const SizedBox(height: 12),
@@ -170,14 +170,14 @@ class LoyaltyCenterScreen extends ConsumerWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 10,
-                backgroundColor: SangakColors.border,
-                valueColor: const AlwaysStoppedAnimation<Color>(SangakColors.primary),
+                backgroundColor: BabkaColors.border,
+                valueColor: const AlwaysStoppedAnimation<Color>(BabkaColors.primary),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.pointsUntilLevel(remaining, nextLevel),
-              style: SangakTypography.caption(context).copyWith(color: SangakColors.inkLight),
+              style: BabkaTypography.caption(context).copyWith(color: BabkaColors.inkLight),
             ),
           ],
         );
@@ -220,20 +220,20 @@ class LoyaltyCenterScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.warning.withValues(alpha: 0.1),
+        color: BabkaColors.warning.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: SangakColors.warning.withValues(alpha: 0.2)),
+        border: Border.all(color: BabkaColors.warning.withValues(alpha: 0.2)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, color: SangakColors.warning, size: 20),
+          const Icon(Icons.info_outline_rounded, color: BabkaColors.warning, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               l10n.loyaltySystemDisclaimer,
-              style: SangakTypography.bodySmall(context).copyWith(
-                color: SangakColors.ink,
+              style: BabkaTypography.bodySmall(context).copyWith(
+                color: BabkaColors.ink,
                 height: 1.4,
               ),
             ),
@@ -262,24 +262,24 @@ class LoyaltyCenterScreen extends ConsumerWidget {
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: (isEarn ? Colors.green : SangakColors.error).withValues(alpha: 0.1),
+                  color: (isEarn ? Colors.green : BabkaColors.error).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isEarn ? Icons.add_rounded : Icons.remove_rounded,
-                  color: isEarn ? Colors.green : SangakColors.error,
+                  color: isEarn ? Colors.green : BabkaColors.error,
                   size: 20,
                 ),
               ),
-              title: Text(tx.reason, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+              title: Text(tx.reason, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
               subtitle: Text(
                 '${tx.createdAt.day}/${tx.createdAt.month}/${tx.createdAt.year}',
-                style: SangakTypography.caption(context),
+                style: BabkaTypography.caption(context),
               ),
               trailing: Text(
                 '${isEarn ? "+" : ""}${tx.amount}',
-                style: SangakTypography.title(context).copyWith(
-                  color: isEarn ? Colors.green : SangakColors.error,
+                style: BabkaTypography.title(context).copyWith(
+                  color: isEarn ? Colors.green : BabkaColors.error,
                 ),
               ),
             );
@@ -304,9 +304,9 @@ class _RewardCard extends ConsumerWidget {
     
     return Container(
       decoration: BoxDecoration(
-        color: SangakColors.surface,
+        color: BabkaColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: SangakColors.border),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,10 +315,10 @@ class _RewardCard extends ConsumerWidget {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: SangakColors.background,
+                color: BabkaColors.background,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              child: const Icon(Icons.card_giftcard_rounded, size: 40, color: SangakColors.primary),
+              child: const Icon(Icons.card_giftcard_rounded, size: 40, color: BabkaColors.primary),
             ),
           ),
           Padding(
@@ -326,11 +326,11 @@ class _RewardCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(reward.title, style: SangakTypography.title(context).copyWith(fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(reward.title, style: BabkaTypography.title(context).copyWith(fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 4),
-                Text('${reward.pointsCost} ${l10n.pts}', style: SangakTypography.caption(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold)),
+                Text('${reward.pointsCost} ${l10n.pts}', style: BabkaTypography.caption(context).copyWith(color: BabkaColors.primary, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
-                SangakButton.primary(
+                BabkaButton.primary(
                   label: l10n.redeem,
                   onPressed: canAfford ? () => _redeem(context, ref, l10n) : null,
                   width: double.infinity,
@@ -347,7 +347,7 @@ class _RewardCard extends ConsumerWidget {
     final user = ref.read(userProfileProvider).asData?.value;
     if (user == null) return;
 
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: l10n.redeemReward,
       message: l10n.confirmRedeem(reward.pointsCost, reward.title),
@@ -363,9 +363,9 @@ class _RewardCard extends ConsumerWidget {
           );
           ref.invalidate(userLoyaltyProvider);
           ref.invalidate(pointsHistoryProvider);
-          if (context.mounted) SangakToast.show(context, l10n.rewardRedeemed);
+          if (context.mounted) BabkaToast.show(context, l10n.rewardRedeemed);
         } catch (e) {
-          if (context.mounted) SangakToast.show(context, '${l10n.errorOccurred}: $e');
+          if (context.mounted) BabkaToast.show(context, '${l10n.errorOccurred}: $e');
         }
       },
     );

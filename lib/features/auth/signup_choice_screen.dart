@@ -151,25 +151,25 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing48,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing48,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.joinTheFamily, style: SangakTypography.h1(context)),
+              Text(l10n.joinTheFamily, style: BabkaTypography.h1(context)),
               const SizedBox(height: 8),
               Text(
                 l10n.profileGuestMessage,
-                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
               ),
               const SizedBox(height: 48),
               
               if (!_showAuthChoices) ...[
                 // Step 1: Referral Code
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.invitationCode,
                   hintText: l10n.invitationCodeOptional,
                   controller: _referralController,
@@ -178,7 +178,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                   enabled: !_isValidating,
                 ),
                 const SizedBox(height: 24),
-                SangakButton.primary(
+                BabkaButton.primary(
                   label: l10n.continueButton,
                   width: double.infinity,
                   isLoading: _isValidating,
@@ -190,7 +190,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                     onPressed: _isValidating ? null : () => setState(() => _showAuthChoices = true),
                     child: Text(
                       l10n.skip,
-                      style: SangakTypography.button(context).copyWith(color: SangakColors.inkLight),
+                      style: BabkaTypography.button(context).copyWith(color: BabkaColors.inkLight),
                     ),
                   ),
                 ),
@@ -200,17 +200,17 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                    Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: SangakColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                      color: BabkaColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle, color: SangakColors.primary),
+                        const Icon(Icons.check_circle, color: BabkaColors.primary),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             l10n.invitationCodeApplied,
-                            style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontSize: 14),
+                            style: BabkaTypography.title(context).copyWith(color: BabkaColors.primary, fontSize: 14),
                           ),
                         ),
                         TextButton(
@@ -222,7 +222,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                               _referralController.clear();
                             });
                           },
-                          child: Text(l10n.clear, style: const TextStyle(color: SangakColors.primary)),
+                          child: Text(l10n.clear, style: const TextStyle(color: BabkaColors.primary)),
                         ),
                       ],
                     ),
@@ -230,7 +230,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                   const SizedBox(height: 32),
                 ],
                 
-                SangakButton.outlined(
+                BabkaButton.outlined(
                   label: l10n.continueWithGoogle,
                   width: double.infinity,
                   leading: const GoogleMark(),
@@ -238,7 +238,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                   onPressed: isLoading ? null : _handleGoogleSignup,
                 ),
                 const SizedBox(height: 16),
-                SangakButton.primary(
+                BabkaButton.primary(
                   label: l10n.email,
                   width: double.infinity,
                   icon: Icons.email_outlined,
@@ -250,13 +250,13 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l10n.alreadyHaveAccount, style: SangakTypography.bodyMedium(context)),
+                      Text(l10n.alreadyHaveAccount, style: BabkaTypography.bodyMedium(context)),
                       GestureDetector(
                         onTap: () => context.push('/login'),
                         child: Text(
                           l10n.signIn,
-                          style: SangakTypography.title(context).copyWith(
-                            color: SangakColors.primary,
+                          style: BabkaTypography.title(context).copyWith(
+                            color: BabkaColors.primary,
                             fontSize: 14,
                           ),
                         ),
@@ -265,7 +265,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: SangakDimens.spacing48),
+              const SizedBox(height: BabkaDimens.spacing48),
             ],
           ),
         ),

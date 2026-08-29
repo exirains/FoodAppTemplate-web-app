@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Sangak Design System Dimensions (v1.0.0)
 ///
 /// Based on an 8pt grid system.
-class SangakDimens {
+class BabkaDimens {
   // Spacing
   static const double spacing4 = 4.0;
   static const double spacing8 = 8.0;

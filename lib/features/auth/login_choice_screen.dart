@@ -29,21 +29,21 @@ class LoginChoiceScreen extends ConsumerWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing24,
-            SangakDimens.spacing48,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing24,
+            BabkaDimens.spacing48,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(child: AppLogo.medium()),
               const SizedBox(height: 48),
-              Text(l10n.welcomeBack, style: SangakTypography.h1(context)),
+              Text(l10n.welcomeBack, style: BabkaTypography.h1(context)),
               const SizedBox(height: 8),
               Text(
                 l10n.signInSubtitle,
-                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
               ),
               const SizedBox(height: 48),
               
@@ -77,13 +77,13 @@ class LoginChoiceScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(l10n.dontHaveAccount, style: SangakTypography.bodyMedium(context)),
+                    Text(l10n.dontHaveAccount, style: BabkaTypography.bodyMedium(context)),
                     GestureDetector(
                       onTap: () => context.push('/signup-choice'),
                       child: Text(
                         l10n.createOne,
-                        style: SangakTypography.title(context).copyWith(
-                          color: SangakColors.primary,
+                        style: BabkaTypography.title(context).copyWith(
+                          color: BabkaColors.primary,
                           fontSize: 14,
                         ),
                       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -95,7 +95,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
     final lang = ref.watch(localeProvider).languageCode;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.history),
         centerTitle: true,
@@ -149,9 +149,9 @@ class DeliveryHistoryScreen extends ConsumerWidget {
       margin: const EdgeInsets.fromLTRB(24, 0, 24, 8),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: SangakColors.ink,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        boxShadow: SangakDimens.shadowMedium,
+        color: BabkaColors.ink,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        boxShadow: BabkaDimens.shadowMedium,
       ),
       child: Row(
         children: [
@@ -161,7 +161,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
               children: [
                 Text(
                   l10n.totalEarnings.toUpperCase(),
-                  style: SangakTypography.caption(context).copyWith(
+                  style: BabkaTypography.caption(context).copyWith(
                     color: Colors.white.withValues(alpha: 0.6),
                     letterSpacing: 1.2,
                     fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
                 const SizedBox(height: 4),
                 Text(
                   SangakNumberFormatter.formatCurrency(totalEarnings, lang),
-                  style: SangakTypography.h2(context).copyWith(color: Colors.white),
+                  style: BabkaTypography.h2(context).copyWith(color: Colors.white),
                 ),
               ],
             ),
@@ -179,13 +179,13 @@ class DeliveryHistoryScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
             ),
             child: Column(
               children: [
                 Text(
                   deliveredOrders.length.toString(),
-                  style: SangakTypography.h3(context).copyWith(color: SangakColors.primary),
+                  style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary),
                 ),
                 Text(
                   l10n.statusDelivered.toUpperCase(),
@@ -207,7 +207,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: SangakTextField(
+                child: BabkaTextField(
                   label: l10n.explore,
                   hintText: l10n.searchPlaceholder,
                   leadingIcon: Icons.search_rounded,
@@ -221,7 +221,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
                   onPressed: () {
                     ref.read(historyFilterProvider.notifier).state = HistoryFilterState();
                   },
-                  icon: const Icon(Icons.filter_alt_off_rounded, color: SangakColors.error),
+                  icon: const Icon(Icons.filter_alt_off_rounded, color: BabkaColors.error),
                   tooltip: l10n.resetFilters,
                 ),
               ),
@@ -266,10 +266,10 @@ class DeliveryHistoryScreen extends ConsumerWidget {
                         return Theme(
                           data: Theme.of(context).copyWith(
                             colorScheme: ColorScheme.light(
-                              primary: SangakColors.primary,
+                              primary: BabkaColors.primary,
                               onPrimary: Colors.white,
-                              surface: SangakColors.surface,
-                              onSurface: SangakColors.ink,
+                              surface: BabkaColors.surface,
+                              onSurface: BabkaColors.ink,
                             ),
                           ),
                           child: child!,
@@ -319,7 +319,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 16),
-          Text(l10n.sortBy, style: SangakTypography.h3(context)),
+          Text(l10n.sortBy, style: BabkaTypography.h3(context)),
           const SizedBox(height: 8),
           _buildSortTile(context, ref, filters, HistorySortOrder.newest, l10n.newestFirst),
           _buildSortTile(context, ref, filters, HistorySortOrder.oldest, l10n.oldestFirst),
@@ -336,9 +336,9 @@ class DeliveryHistoryScreen extends ConsumerWidget {
     return ListTile(
       title: Text(label, style: TextStyle(
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        color: isSelected ? SangakColors.primary : SangakColors.ink,
+        color: isSelected ? BabkaColors.primary : BabkaColors.ink,
       )),
-      trailing: isSelected ? const Icon(Icons.check_rounded, color: SangakColors.primary) : null,
+      trailing: isSelected ? const Icon(Icons.check_rounded, color: BabkaColors.primary) : null,
       onTap: () {
         ref.read(historyFilterProvider.notifier).state = filters.copyWith(sort: sort);
         Navigator.pop(context);
@@ -361,14 +361,14 @@ class _FilterChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? SangakColors.primary : SangakColors.surface,
-          borderRadius: BorderRadius.circular( SangakDimens.radiusPill),
-          border: Border.all(color: isSelected ? SangakColors.primary : SangakColors.border),
+          color: isSelected ? BabkaColors.primary : BabkaColors.surface,
+          borderRadius: BorderRadius.circular( BabkaDimens.radiusPill),
+          border: Border.all(color: isSelected ? BabkaColors.primary : BabkaColors.border),
         ),
         child: Text(
           label,
-          style: SangakTypography.caption(context).copyWith(
-            color: isSelected ? Colors.white : SangakColors.ink,
+          style: BabkaTypography.caption(context).copyWith(
+            color: isSelected ? Colors.white : BabkaColors.ink,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -387,19 +387,19 @@ class _ActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+      borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: SangakColors.background,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
-          border: Border.all(color: SangakColors.border),
+          color: BabkaColors.background,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
+          border: Border.all(color: BabkaColors.border),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 14, color: SangakColors.primary),
+            Icon(icon, size: 14, color: BabkaColors.primary),
             const SizedBox(width: 6),
-            Text(label, style: SangakTypography.caption(context)),
+            Text(label, style: BabkaTypography.caption(context)),
           ],
         ),
       ),
@@ -415,15 +415,15 @@ class _HistoryOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = order.status == OrderStatus.delivered ? SangakColors.success : SangakColors.error;
+    final statusColor = order.status == OrderStatus.delivered ? BabkaColors.success : BabkaColors.error;
     final dateStr = DateFormat('MMM dd, yyyy • HH:mm').format(order.createdAt.toLocal());
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border.withValues(alpha: 0.5)),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -446,28 +446,28 @@ class _HistoryOrderCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(order.orderNumber, style: SangakTypography.title(context).copyWith(fontSize: 14)),
+                    Text(order.orderNumber, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
                     Text(
                       SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
-                      style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontSize: 14),
+                      style: BabkaTypography.title(context).copyWith(color: BabkaColors.primary, fontSize: 14),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   order.userProfile?['full_name'] ?? l10n.customer,
-                  style: SangakTypography.bodySmall(context),
+                  style: BabkaTypography.bodySmall(context),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   dateStr,
-                  style: SangakTypography.caption(context).copyWith(color: SangakColors.inkLight),
+                  style: BabkaTypography.caption(context).copyWith(color: BabkaColors.inkLight),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.chevron_right_rounded, color: SangakColors.border),
+          const Icon(Icons.chevron_right_rounded, color: BabkaColors.border),
         ],
       ),
     );

@@ -5,24 +5,24 @@ import 'sangak_colors.dart';
 /// Sangak Design System Tokens (v1.1.0)
 ///
 /// Semantic mappings for statuses and animations.
-class SangakTokens {
+class BabkaTokens {
   // --- Freshness System ---
   
   static FreshnessToken get freshToday => const FreshnessToken(
     type: FreshnessType.freshToday,
-    color: SangakColors.freshToday,
+    color: BabkaColors.freshToday,
     icon: Icons.eco_outlined,
   );
 
   static FreshnessToken get outOfOven => const FreshnessToken(
     type: FreshnessType.outOfOven,
-    color: SangakColors.outOfOven,
+    color: BabkaColors.outOfOven,
     icon: Icons.local_fire_department_outlined,
   );
 
   static FreshnessToken get limitedQuantity => const FreshnessToken(
     type: FreshnessType.limitedQuantity,
-    color: SangakColors.limited,
+    color: BabkaColors.limited,
     icon: Icons.alarm_outlined,
   );
 

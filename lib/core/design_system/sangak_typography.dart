@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// This class now acts as a bridge to the [ThemeData.textTheme],
 /// ensuring that the correct font family (Fraunces/Jakarta or IranYekan)
 /// is applied automatically based on the current locale.
-class SangakTypography {
+class BabkaTypography {
   static TextTheme _of(BuildContext context) => Theme.of(context).textTheme;
 
   static TextStyle display(BuildContext context) => _of(context).displayLarge!;

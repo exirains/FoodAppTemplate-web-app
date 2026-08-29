@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -76,7 +76,7 @@ class UserManagementScreen extends ConsumerWidget {
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.userManagement),
           elevation: 0,
@@ -93,16 +93,16 @@ class UserManagementScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.people_outline_rounded, size: 64, color: SangakColors.border),
+                          const Icon(Icons.people_outline_rounded, size: 64, color: BabkaColors.border),
                           const SizedBox(height: 16),
-                          Text(l10n.noUsersFound, style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight)),
+                          Text(l10n.noUsersFound, style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight)),
                         ],
                       ),
                     );
                   }
 
                   return ListView.separated(
-                    padding: const EdgeInsets.all(SangakDimens.spacing24),
+                    padding: const EdgeInsets.all(BabkaDimens.spacing24),
                     itemCount: filteredUsers.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 16),
                     itemBuilder: (context, index) => _UserListItem(
@@ -122,7 +122,7 @@ class UserManagementScreen extends ConsumerWidget {
 
   Widget _buildSearchAndFilters(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
     return Container(
-      color: SangakColors.surface,
+      color: BabkaColors.surface,
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
       child: Column(
         children: [
@@ -131,15 +131,15 @@ class UserManagementScreen extends ConsumerWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: SangakColors.background,
+                    color: BabkaColors.background,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: SangakColors.border),
+                    border: Border.all(color: BabkaColors.border),
                   ),
                   child: TextField(
                     onChanged: (v) => ref.read(userSearchQueryProvider.notifier).state = v,
                     decoration: InputDecoration(
                       hintText: l10n.searchByPlaceholder,
-                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: SangakColors.inkLight),
+                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: BabkaColors.inkLight),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     ),
@@ -154,7 +154,7 @@ class UserManagementScreen extends ConsumerWidget {
                   ref.read(userDisabledFilterProvider.notifier).state = false;
                   ref.read(userSortOptionProvider.notifier).state = UserSortOption.newestFirst;
                 },
-                icon: const Icon(Icons.filter_alt_off_rounded, color: SangakColors.error),
+                icon: const Icon(Icons.filter_alt_off_rounded, color: BabkaColors.error),
                 tooltip: l10n.resetFilters,
               ),
             ],
@@ -163,17 +163,17 @@ class UserManagementScreen extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text(l10n.categories.toUpperCase(), style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
+                child: Text(l10n.categories.toUpperCase(), style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold)),
               ),
               IconButton(
-                icon: const Icon(Icons.sort_rounded, color: SangakColors.primary, size: 20),
+                icon: const Icon(Icons.sort_rounded, color: BabkaColors.primary, size: 20),
                 onPressed: () => _showSortDialog(context, ref, l10n),
                 tooltip: l10n.sortBy,
               ),
               IconButton(
                 icon: Icon(
                   ref.watch(userDisabledFilterProvider) ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  color: ref.watch(userDisabledFilterProvider) ? SangakColors.error : SangakColors.inkLight,
+                  color: ref.watch(userDisabledFilterProvider) ? BabkaColors.error : BabkaColors.inkLight,
                   size: 20,
                 ),
                 onPressed: () => ref.read(userDisabledFilterProvider.notifier).update((s) => !s),
@@ -205,18 +205,18 @@ class UserManagementScreen extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        border: Border(bottom: BorderSide(color: SangakColors.border, width: 0.5)),
+        color: BabkaColors.surface,
+        border: Border(bottom: BorderSide(color: BabkaColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: SangakColors.primary.withValues(alpha: 0.1),
+              color: BabkaColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.people_rounded, color: SangakColors.primary, size: 24),
+            child: const Icon(Icons.people_rounded, color: BabkaColors.primary, size: 24),
           ),
           const SizedBox(width: 16),
           Column(
@@ -224,11 +224,11 @@ class UserManagementScreen extends ConsumerWidget {
             children: [
               Text(
                 l10n.totalUsers,
-                style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
+                style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 count.toString(),
-                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+                style: BabkaTypography.h2(context).copyWith(color: BabkaColors.primary),
               ),
             ],
           ),
@@ -247,7 +247,7 @@ class UserManagementScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.sortBy, style: SangakTypography.h3(context)),
+            Text(l10n.sortBy, style: BabkaTypography.h3(context)),
             const SizedBox(height: 16),
             _SortTile(label: l10n.newestFirst, value: UserSortOption.newestFirst),
             _SortTile(label: l10n.oldestFirst, value: UserSortOption.oldestFirst),
@@ -275,14 +275,14 @@ class _RoleFilterChip extends ConsumerWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? SangakColors.primary : Colors.transparent,
+          color: isSelected ? BabkaColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? SangakColors.primary : SangakColors.border),
+          border: Border.all(color: isSelected ? BabkaColors.primary : BabkaColors.border),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : SangakColors.inkLight,
+            color: isSelected ? Colors.white : BabkaColors.inkLight,
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
@@ -302,7 +302,7 @@ class _SortTile extends ConsumerWidget {
     final selected = ref.watch(userSortOptionProvider);
     return ListTile(
       title: Text(label),
-      trailing: selected == value ? const Icon(Icons.check_circle, color: SangakColors.primary) : null,
+      trailing: selected == value ? const Icon(Icons.check_circle, color: BabkaColors.primary) : null,
       onTap: () {
         ref.read(userSortOptionProvider.notifier).state = value;
         Navigator.pop(context);
@@ -325,10 +325,10 @@ class _UserListItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
-        border: Border.all(color: isActive ? SangakColors.border : SangakColors.error.withValues(alpha: 0.3)),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
+        border: Border.all(color: isActive ? BabkaColors.border : BabkaColors.error.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -339,21 +339,21 @@ class _UserListItem extends StatelessWidget {
                 width: 54,
                 height: 54,
                 decoration: BoxDecoration(
-                  color: SangakColors.background,
+                  color: BabkaColors.background,
                   shape: BoxShape.circle,
-                  border: Border.all(color: SangakColors.border),
+                  border: Border.all(color: BabkaColors.border),
                 ),
                 child: ClipOval(
                   child: avatarUrl != null
                       ? CachedNetworkImage(
                           imageUrl: avatarUrl,
                           fit: BoxFit.cover,
-                          errorWidget: (c, u, e) => const Icon(Icons.person, color: SangakColors.border),
+                          errorWidget: (c, u, e) => const Icon(Icons.person, color: BabkaColors.border),
                         )
                       : Center(
                           child: Text(
                             fullName[0].toUpperCase(),
-                            style: const TextStyle(color: SangakColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
+                            style: const TextStyle(color: BabkaColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                         ),
                 ),
@@ -369,7 +369,7 @@ class _UserListItem extends StatelessWidget {
                         Flexible(
                           child: Text(
                             fullName, 
-                            style: SangakTypography.h3(context).copyWith(fontSize: 16),
+                            style: BabkaTypography.h3(context).copyWith(fontSize: 16),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -380,7 +380,7 @@ class _UserListItem extends StatelessWidget {
                     ),
                     Text(
                       user['email'] ?? '', 
-                      style: SangakTypography.caption(context),
+                      style: BabkaTypography.caption(context),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -403,7 +403,7 @@ class _UserListItem extends StatelessWidget {
               icon: const Icon(Icons.info_outline_rounded, size: 18),
               label: Text(l10n.viewInformation),
               style: TextButton.styleFrom(
-                foregroundColor: SangakColors.primary,
+                foregroundColor: BabkaColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -427,7 +427,7 @@ class _StatusLabel extends StatelessWidget {
       style: TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w800,
-        color: isActive ? SangakColors.success : SangakColors.error,
+        color: isActive ? BabkaColors.success : BabkaColors.error,
         letterSpacing: 0.5,
       ),
     );

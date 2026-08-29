@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -34,7 +34,7 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.reviewManagement),
         ),
@@ -44,7 +44,7 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
               : RefreshIndicator(
                   onRefresh: () => ref.refresh(_ratingsProvider.future),
                   child: ListView.separated(
-                    padding: const EdgeInsets.all(SangakDimens.spacing24),
+                    padding: const EdgeInsets.all(BabkaDimens.spacing24),
                     itemCount: ratings.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
@@ -70,15 +70,15 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
     try {
       await ref.read(ratingRepositoryProvider).approveRating(ratingId);
       ref.invalidate(_ratingsProvider);
-      if (mounted) SangakToast.show(context, l10n.reviewApproved);
+      if (mounted) BabkaToast.show(context, l10n.reviewApproved);
     } catch (e) {
-      if (mounted) SangakToast.show(context, '${l10n.errorOccurred}: $e');
+      if (mounted) BabkaToast.show(context, '${l10n.errorOccurred}: $e');
     }
   }
 
   Future<void> _deleteReview(String ratingId) async {
     final l10n = AppLocalizations.of(context);
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: l10n.deleteReview,
       message: l10n.confirmDeleteReview,
@@ -88,9 +88,9 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
         try {
           await ref.read(ratingRepositoryProvider).deleteRating(ratingId);
           ref.invalidate(_ratingsProvider);
-          if (mounted) SangakToast.show(context, l10n.reviewDeleted);
+          if (mounted) BabkaToast.show(context, l10n.reviewDeleted);
         } catch (e) {
-          if (mounted) SangakToast.show(context, '${l10n.errorOccurred}: $e');
+          if (mounted) BabkaToast.show(context, '${l10n.errorOccurred}: $e');
         }
       },
       isDestructive: true,
@@ -117,10 +117,10 @@ class _ReviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowMedium,
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowMedium,
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,11 +133,11 @@ class _ReviewCard extends StatelessWidget {
                 children: [
                   Text(
                     rating.customer?['full_name'] ?? l10n.guest,
-                    style: SangakTypography.title(context).copyWith(fontSize: 16),
+                    style: BabkaTypography.title(context).copyWith(fontSize: 16),
                   ),
                   Text(
                     l10n.orderIdLabel(rating.orderId.substring(0, 5).toUpperCase()),
-                    style: SangakTypography.caption(context),
+                    style: BabkaTypography.caption(context),
                   ),
                 ],
               ),
@@ -151,15 +151,15 @@ class _ReviewCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '${rating.overallRating}.0',
-                style: SangakTypography.h3(context).copyWith(fontSize: 18),
+                style: BabkaTypography.h3(context).copyWith(fontSize: 18),
               ),
               const Spacer(),
               Text(
-                SangakNumberFormatter.format(
+                BabkaNumberFormatter.format(
                   rating.createdAt.toString().substring(0, 10),
                   lang,
                 ),
-                style: SangakTypography.caption(context),
+                style: BabkaTypography.caption(context),
               ),
             ],
           ),
@@ -174,12 +174,12 @@ class _ReviewCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: SangakColors.background,
+                color: BabkaColors.background,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 rating.reviewText!,
-                style: SangakTypography.bodySmall(context).copyWith(fontStyle: FontStyle.italic),
+                style: BabkaTypography.bodySmall(context).copyWith(fontStyle: FontStyle.italic),
               ),
             ),
           ],
@@ -188,18 +188,18 @@ class _ReviewCard extends StatelessWidget {
             children: [
               if (!rating.isApproved)
                 Expanded(
-                  child: SangakButton.primary(
+                  child: BabkaButton.primary(
                     label: l10n.approve,
                     onPressed: onApprove,
                   ),
                 ),
               if (!rating.isApproved) const SizedBox(width: 12),
               Expanded(
-                child: SangakButton.outlined(
+                child: BabkaButton.outlined(
                   label: l10n.delete,
                   onPressed: onDelete,
-                  foregroundColor: SangakColors.error,
-                  borderColor: SangakColors.error,
+                  foregroundColor: BabkaColors.error,
+                  borderColor: BabkaColors.error,
                 ),
               ),
             ],
@@ -215,12 +215,12 @@ class _ReviewCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: SangakTypography.caption(context)),
+          Text(label, style: BabkaTypography.caption(context)),
           Row(
             children: List.generate(5, (index) {
               return Icon(
                 index < value ? Icons.star_rounded : Icons.star_outline_rounded,
-                color: SangakColors.primary,
+                color: BabkaColors.primary,
                 size: 14,
               );
             }),
@@ -238,12 +238,12 @@ class _ApprovalBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final color = isApproved ? SangakColors.success : SangakColors.warning;
+    final color = isApproved ? BabkaColors.success : BabkaColors.warning;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular( SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular( BabkaDimens.radiusPill),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(

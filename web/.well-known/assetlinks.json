@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.sangak.app",
+      "package_name": "com.foodapp.template",
       "sha256_cert_fingerprints": [
         "30:08:BC:31:91:F5:86:73:5B:61:15:0B:D0:00:98:DC:2F:14:ED:E8:1B:61:8E:AE:FE:73:59:BD:74:76:10:84",
         "11:FE:2E:76:6C:20:EA:29:6A:B9:BF:3A:1D:51:B0:4A:38:7B:10:98:11:05:D0:FE:E9:C8:C2:D3:36:DA:16:23"

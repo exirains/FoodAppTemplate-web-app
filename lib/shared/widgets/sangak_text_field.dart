@@ -5,7 +5,7 @@ import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 
 /// Sangak Design System TextField (v2.1.0)
-class SangakTextField extends StatefulWidget {
+class BabkaTextField extends StatefulWidget {
   final String label;
   final String? hintText;
   final String? errorText;
@@ -24,7 +24,7 @@ class SangakTextField extends StatefulWidget {
   final bool enabled;
   final int maxLines;
 
-  const SangakTextField({
+  const BabkaTextField({
     super.key,
     required this.label,
     this.hintText,
@@ -46,10 +46,10 @@ class SangakTextField extends StatefulWidget {
   });
 
   @override
-  State<SangakTextField> createState() => _SangakTextFieldState();
+  State<BabkaTextField> createState() => _BabkaTextFieldState();
 }
 
-class _SangakTextFieldState extends State<SangakTextField> {
+class _BabkaTextFieldState extends State<BabkaTextField> {
   bool _obscureText = true;
   late FocusNode _focusNode;
   late bool _ownsFocusNode;
@@ -61,7 +61,7 @@ class _SangakTextFieldState extends State<SangakTextField> {
   }
 
   @override
-  void didUpdateWidget(covariant SangakTextField oldWidget) {
+  void didUpdateWidget(covariant BabkaTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.focusNode != widget.focusNode) {
       _focusNode.removeListener(_handleFocusChange);
@@ -100,9 +100,9 @@ class _SangakTextFieldState extends State<SangakTextField> {
       children: [
         Text(
           widget.label,
-          style: SangakTypography.title(context).copyWith(fontSize: 14),
+          style: BabkaTypography.title(context).copyWith(fontSize: 14),
         ),
-        const SizedBox(height: SangakDimens.spacing8),
+        const SizedBox(height: BabkaDimens.spacing8),
         TextFormField(
           controller: widget.controller,
           focusNode: _focusNode,
@@ -115,7 +115,7 @@ class _SangakTextFieldState extends State<SangakTextField> {
           onChanged: widget.onChanged,
           onEditingComplete: widget.onEditingComplete,
           maxLines: widget.maxLines,
-          style: SangakTypography.bodyLarge(context),
+          style: BabkaTypography.bodyLarge(context),
           textAlign: (widget.keyboardType == TextInputType.phone || 
                       widget.keyboardType == TextInputType.emailAddress ||
                       widget.isPassword) 
@@ -128,43 +128,43 @@ class _SangakTextFieldState extends State<SangakTextField> {
               : null,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            hintStyle: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+            hintStyle: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
             filled: true,
-            fillColor: widget.enabled ? SangakColors.surface : Colors.grey.shade100,
+            fillColor: widget.enabled ? BabkaColors.surface : Colors.grey.shade100,
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: SangakDimens.spacing16,
+              horizontal: BabkaDimens.spacing16,
               vertical: 16,
             ),
             prefixIcon: widget.leadingIcon != null
-                ? Icon(widget.leadingIcon, color: SangakColors.inkLight)
+                ? Icon(widget.leadingIcon, color: BabkaColors.inkLight)
                 : null,
             suffixIcon: _buildSuffixIcon(),
             errorText: widget.errorText,
             errorMaxLines: 1,
-            errorStyle: SangakTypography.bodySmall(context).copyWith(
-              color: SangakColors.error,
+            errorStyle: BabkaTypography.bodySmall(context).copyWith(
+              color: BabkaColors.error,
               height: 0.8,
               fontSize: 11,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              borderSide: const BorderSide(color: SangakColors.border),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              borderSide: const BorderSide(color: BabkaColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              borderSide: const BorderSide(color: SangakColors.border),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              borderSide: const BorderSide(color: BabkaColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              borderSide: const BorderSide(color: SangakColors.primary, width: 1.5),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              borderSide: const BorderSide(color: BabkaColors.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              borderSide: const BorderSide(color: SangakColors.error, width: 1.5),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              borderSide: const BorderSide(color: BabkaColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              borderSide: const BorderSide(color: SangakColors.error, width: 1.5),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              borderSide: const BorderSide(color: BabkaColors.error, width: 1.5),
             ),
           ),
         ),
@@ -177,7 +177,7 @@ class _SangakTextFieldState extends State<SangakTextField> {
       return IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-          color: SangakColors.inkLight,
+          color: BabkaColors.inkLight,
         ),
         onPressed: () => setState(() => _obscureText = !_obscureText),
       );
@@ -185,7 +185,7 @@ class _SangakTextFieldState extends State<SangakTextField> {
 
     if (widget.trailingIcon != null) {
       return IconButton(
-        icon: Icon(widget.trailingIcon, color: SangakColors.inkLight),
+        icon: Icon(widget.trailingIcon, color: BabkaColors.inkLight),
         onPressed: widget.onTrailingIconPressed,
       );
     }

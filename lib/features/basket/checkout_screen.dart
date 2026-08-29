@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -33,7 +33,7 @@ class CheckoutScreen extends ConsumerWidget {
     final deliveryFee = double.tryParse(options['delivery_fee']?.toString() ?? '0.0') ?? 0.0;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.orderSummary),
         leading: IconButton(
@@ -42,7 +42,7 @@ class CheckoutScreen extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -66,29 +66,29 @@ class CheckoutScreen extends ConsumerWidget {
   }
 
   Widget _buildSectionHeader(String title, BuildContext context) {
-    return Text(title, style: SangakTypography.h3(context));
+    return Text(title, style: BabkaTypography.h3(context));
   }
 
   Widget _buildAddressCard(Address? address, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.location_on_outlined, color: SangakColors.primary),
+          const Icon(Icons.location_on_outlined, color: BabkaColors.primary),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(address?.title ?? AppLocalizations.of(context).address, style: SangakTypography.title(context)),
+                Text(address?.title ?? AppLocalizations.of(context).address, style: BabkaTypography.title(context)),
                 Text(
                   address?.fullAddress ?? AppLocalizations.of(context).noAddressSelected,
-                  style: SangakTypography.bodySmall(context),
+                  style: BabkaTypography.bodySmall(context),
                 ),
               ],
             ),
@@ -103,9 +103,9 @@ class CheckoutScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         children: [
@@ -116,12 +116,12 @@ class CheckoutScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${SangakNumberFormatter.format(item.quantity, lang)}x ${item.bread.localizedName(lang)}',
-                    style: SangakTypography.bodyMedium(context),
+                    '${BabkaNumberFormatter.format(item.quantity, lang)}x ${item.bread.localizedName(lang)}',
+                    style: BabkaTypography.bodyMedium(context),
                   ),
                   Text(
-                    SangakNumberFormatter.formatCurrency(item.total, lang),
-                    style: SangakTypography.title(context).copyWith(fontSize: 14),
+                    BabkaNumberFormatter.formatCurrency(item.total, lang),
+                    style: BabkaTypography.title(context).copyWith(fontSize: 14),
                   ),
                 ],
               ),
@@ -132,12 +132,12 @@ class CheckoutScreen extends ConsumerWidget {
             children: [
               Text(
                 l10n.deliveryFeeLabel,
-                style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
               ),
               if (deliveryFee == 0)
                 Text(
                   l10n.freeDelivery,
-                  style: SangakTypography.title(context).copyWith(
+                  style: BabkaTypography.title(context).copyWith(
                     fontSize: 14,
                     color: Colors.green.shade700,
                     fontWeight: FontWeight.bold,
@@ -145,8 +145,8 @@ class CheckoutScreen extends ConsumerWidget {
                 )
               else
                 Text(
-                  SangakNumberFormatter.formatCurrency(deliveryFee, lang),
-                  style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.inkLight),
+                  BabkaNumberFormatter.formatCurrency(deliveryFee, lang),
+                  style: BabkaTypography.title(context).copyWith(fontSize: 14, color: BabkaColors.inkLight),
                 ),
             ],
           ),
@@ -159,18 +159,18 @@ class CheckoutScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.payments_outlined, color: SangakColors.primary),
+          const Icon(Icons.payments_outlined, color: BabkaColors.primary),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
               method == PaymentMethod.cash ? l10n.cashOnDelivery : l10n.creditCard,
-              style: SangakTypography.title(context),
+              style: BabkaTypography.title(context),
             ),
           ),
         ],
@@ -185,11 +185,11 @@ class CheckoutScreen extends ConsumerWidget {
     final lang = locale.languageCode;
 
     return Container(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        boxShadow: SangakDimens.shadowHigh,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+        color: BabkaColors.surface,
+        boxShadow: BabkaDimens.shadowHigh,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -200,16 +200,16 @@ class CheckoutScreen extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.total, style: SangakTypography.caption(context)),
+                  Text(l10n.total, style: BabkaTypography.caption(context)),
                   Text(
-                    SangakNumberFormatter.formatCurrency(grandTotal, lang),
-                    style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+                    BabkaNumberFormatter.formatCurrency(grandTotal, lang),
+                    style: BabkaTypography.h2(context).copyWith(color: BabkaColors.primary),
                   ),
                 ],
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: SangakButton.primary(
+                child: BabkaButton.primary(
                   label: l10n.confirmOrder,
                   isLoading: checkoutState.isSubmitting,
                   onPressed: () {

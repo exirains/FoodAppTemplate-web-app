@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -46,7 +46,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
     return RoleGuard(
       allowedRoles: const ['admin', 'staff'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.manageOrders),
           actions: [
@@ -55,7 +55,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
               child: DropdownButton<bool>(
                 value: isTodayOnly,
                 underline: const SizedBox(),
-                icon: const Icon(Icons.filter_list, color: SangakColors.primary),
+                icon: const Icon(Icons.filter_list, color: BabkaColors.primary),
                 items: [
                   DropdownMenuItem(value: true, child: Text(l10n.today)),
                   DropdownMenuItem(value: false, child: Text(l10n.allTime)),
@@ -102,11 +102,11 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: SangakColors.error),
+                  const Icon(Icons.error_outline, size: 48, color: BabkaColors.error),
                   const SizedBox(height: 16),
                   Text('Error loading orders: $e', textAlign: TextAlign.center),
                   const SizedBox(height: 16),
-                  SangakButton.primary(
+                  BabkaButton.primary(
                     label: 'Retry', 
                     width: 150,
                     onPressed: () => ref.invalidate(adminOrdersProvider),
@@ -129,7 +129,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen> w
     final lang = ref.watch(localeProvider).languageCode;
 
     return ListView.separated(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       itemCount: orders.length,
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
@@ -171,11 +171,11 @@ class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
       controller: tabController,
       isScrollable: true,
       tabAlignment: TabAlignment.start,
-      labelColor: SangakColors.primary,
-      unselectedLabelColor: SangakColors.inkLight,
-      indicatorColor: SangakColors.primary,
+      labelColor: BabkaColors.primary,
+      unselectedLabelColor: BabkaColors.inkLight,
+      indicatorColor: BabkaColors.primary,
       indicatorWeight: 3,
-      labelStyle: SangakTypography.title(context).copyWith(fontSize: 13),
+      labelStyle: BabkaTypography.title(context).copyWith(fontSize: 13),
       tabs: [
         _buildTab(l10n.statusPending, newCount),
         _buildTab(l10n.statusPreparing, prepCount),
@@ -197,7 +197,7 @@ class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
-                color: SangakColors.primary.withValues(alpha: 0.1),
+                color: BabkaColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -205,7 +205,7 @@ class _CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
                 style: const TextStyle(
                   fontSize: 9, 
                   fontWeight: FontWeight.w900,
-                  color: SangakColors.primary,
+                  color: BabkaColors.primary,
                 ),
               ),
             ),
@@ -228,19 +228,20 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final customerName = order.userProfile?['full_name'] ?? l10n.guest;
     final courierName = order.deliveryProfile?['full_name'] ?? l10n.unassigned;
     final itemsCount = order.items?.fold<int>(0, (sum, item) => sum + item.quantity) ?? 0;
 
     return InkWell(
       onTap: () => context.push('/admin/orders/${order.id}'),
-      borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+      borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
       child: Ink(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: SangakColors.surface,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-          boxShadow: SangakDimens.shadowLow,
-          border: Border.all(color: SangakColors.border),
+          color: BabkaColors.surface,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+          boxShadow: BabkaDimens.shadowLow,
+          border: Border.all(color: BabkaColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,7 +254,7 @@ class _OrderCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           order.orderNumber, 
-                          style: SangakTypography.title(context).copyWith(fontSize: 14),
+                          style: BabkaTypography.title(context).copyWith(fontSize: 14),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -261,13 +262,13 @@ class _OrderCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                         decoration: BoxDecoration(
-                          color: SangakColors.primary.withValues(alpha: 0.1),
+                          color: BabkaColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           l10n.itemsCount(itemsCount),
-                          style: SangakTypography.caption(context).copyWith(
-                            color: SangakColors.primary,
+                          style: BabkaTypography.caption(context).copyWith(
+                            color: BabkaColors.primary,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -281,37 +282,37 @@ class _OrderCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(courierName, style: SangakTypography.h3(context).copyWith(fontSize: 16)),
+            Text(customerName, style: BabkaTypography.h3(context).copyWith(fontSize: 16)),
             const SizedBox(height: 4),
             Text(
               SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
-              style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
+              style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             const Divider(),
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.access_time, size: 14, color: SangakColors.inkLight),
+                const Icon(Icons.access_time, size: 14, color: BabkaColors.inkLight),
                 const SizedBox(width: 4),
                 Text(
                   _formatDate(order.createdAt),
-                  style: SangakTypography.caption(context),
+                  style: BabkaTypography.caption(context),
                 ),
                 if (order.assignedDeliveryPerson != null) ...[
                   const SizedBox(width: 12),
-                  const Icon(Icons.delivery_dining_outlined, size: 14, color: SangakColors.primary),
+                  const Icon(Icons.delivery_dining_outlined, size: 14, color: BabkaColors.primary),
                   const SizedBox(width: 4),
                   Text(
                     courierName, 
-                    style: SangakTypography.caption(context).copyWith(
-                      color: SangakColors.primary,
+                    style: BabkaTypography.caption(context).copyWith(
+                      color: BabkaColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
                 const Spacer(),
-                Text(l10n.openDetails, style: SangakTypography.button(context).copyWith(fontSize: 12, color: SangakColors.primary)),
+                Text(l10n.openDetails, style: BabkaTypography.button(context).copyWith(fontSize: 12, color: BabkaColors.primary)),
               ],
             ),
           ],
@@ -338,28 +339,28 @@ class _StatusBadge extends StatelessWidget {
 
     switch (status) {
       case OrderStatus.pending:
-        color = SangakColors.warning;
+        color = BabkaColors.warning;
         badgeLabel = l10n.statusPending.toUpperCase();
         break;
       case OrderStatus.confirmed:
       case OrderStatus.preparing:
-        color = SangakColors.info;
+        color = BabkaColors.info;
         badgeLabel = l10n.statusPreparing.toUpperCase();
         break;
       case OrderStatus.ready:
-        color = SangakColors.accent;
+        color = BabkaColors.accent;
         badgeLabel = l10n.statusReady.toUpperCase();
         break;
       case OrderStatus.outForDelivery:
-        color = SangakColors.primary;
+        color = BabkaColors.primary;
         badgeLabel = l10n.outForDelivery.toUpperCase();
         break;
       case OrderStatus.delivered:
-        color = SangakColors.success;
+        color = BabkaColors.success;
         badgeLabel = l10n.statusDelivered.toUpperCase();
         break;
       case OrderStatus.cancelled:
-        color = SangakColors.error;
+        color = BabkaColors.error;
         badgeLabel = l10n.statusCancelled.toUpperCase();
         break;
     }
@@ -368,12 +369,12 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
         border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
         badgeLabel,
-        style: SangakTypography.caption(context).copyWith(
+        style: BabkaTypography.caption(context).copyWith(
           color: color,
           fontWeight: FontWeight.bold,
           fontSize: 10,

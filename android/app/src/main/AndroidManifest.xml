@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:scheme="com.sangak.app"
+                    android:scheme="com.foodapp.template"
                     android:host="login-callback"/>
             </intent-filter>
 

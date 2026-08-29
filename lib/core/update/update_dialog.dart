@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../design_system/sangak_colors.dart';
 import '../design_system/sangak_typography.dart';
 import '../design_system/sangak_dimens.dart';
@@ -30,28 +30,28 @@ class UpdateDialog extends StatelessWidget {
       child: Dialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
         ),
-        backgroundColor: SangakColors.surface,
+        backgroundColor: BabkaColors.surface,
         child: Padding(
-          padding: const EdgeInsets.all(SangakDimens.spacing24),
+          padding: const EdgeInsets.all(BabkaDimens.spacing24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 l10n.newUpdateAvailable,
-                style: SangakTypography.h2(context),
+                style: BabkaTypography.h2(context),
               ),
-              const SizedBox(height: SangakDimens.spacing16),
+              const SizedBox(height: BabkaDimens.spacing16),
               _buildVersionInfo(l10n, context),
-              const SizedBox(height: SangakDimens.spacing24),
+              const SizedBox(height: BabkaDimens.spacing24),
               if (updateInfo.notes.isNotEmpty) ...[
                 Text(
                   l10n.whatsNew,
-                  style: SangakTypography.title(context).copyWith(fontSize: 14),
+                  style: BabkaTypography.title(context).copyWith(fontSize: 14),
                 ),
-                const SizedBox(height: SangakDimens.spacing8),
+                const SizedBox(height: BabkaDimens.spacing8),
                 Container(
                   constraints: const BoxConstraints(maxHeight: 200),
                   child: ListView.builder(
@@ -66,7 +66,7 @@ class UpdateDialog extends StatelessWidget {
                           Expanded(
                             child: Text(
                               updateInfo.notes[index],
-                              style: SangakTypography.bodySmall(context),
+                              style: BabkaTypography.bodySmall(context),
                             ),
                           ),
                         ],
@@ -75,19 +75,19 @@ class UpdateDialog extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(height: SangakDimens.spacing32),
+              const SizedBox(height: BabkaDimens.spacing32),
               Row(
                 children: [
                   if (!isMandatory)
                     Expanded(
-                      child: SangakButton.ghost(
+                      child: BabkaButton.ghost(
                         label: l10n.later,
                         onPressed: onDismiss ?? () => Navigator.pop(context),
                       ),
                     ),
                   if (!isMandatory) const SizedBox(width: 12),
                   Expanded(
-                    child: SangakButton.primary(
+                    child: BabkaButton.primary(
                       label: l10n.updateNow,
                       onPressed: onUpdate,
                     ),
@@ -103,15 +103,15 @@ class UpdateDialog extends StatelessWidget {
 
   Widget _buildVersionInfo(AppLocalizations l10n, BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: SangakDimens.spacing12, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: BabkaDimens.spacing12, horizontal: 8),
       decoration: BoxDecoration(
-        color: SangakColors.background,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        color: BabkaColors.background,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
       ),
       child: Row(
         children: [
           Expanded(child: _buildVersionColumn(l10n.currentVersion, currentVersion, context)),
-          Icon(Icons.arrow_forward, size: 16, color: SangakColors.inkLight.withValues(alpha: 0.5)),
+          Icon(Icons.arrow_forward, size: 16, color: BabkaColors.inkLight.withValues(alpha: 0.5)),
           Expanded(child: _buildVersionColumn(l10n.newVersion, updateInfo.version, context)),
         ],
       ),
@@ -122,13 +122,13 @@ class UpdateDialog extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: SangakTypography.caption(context), textAlign: TextAlign.center),
+        Text(label, style: BabkaTypography.caption(context), textAlign: TextAlign.center),
         const SizedBox(height: 2),
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
             version,
-            style: SangakTypography.title(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
+            style: BabkaTypography.title(context).copyWith(color: BabkaColors.primary, fontWeight: FontWeight.bold),
           ),
         ),
       ],

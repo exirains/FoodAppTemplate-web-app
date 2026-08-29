@@ -3,15 +3,15 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 
-enum SangakButtonVariant { primary, outlined, ghost }
+enum BabkaButtonVariant { primary, outlined, ghost }
 
 /// Sangak Design System Buttons (v4.1.0)
 ///
 /// Refined color application and hit-testing.
-class SangakButton extends StatelessWidget {
+class BabkaButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
-  final SangakButtonVariant variant;
+  final BabkaButtonVariant variant;
   final bool isLoading;
   final IconData? icon;
   final Widget? leading;
@@ -21,7 +21,7 @@ class SangakButton extends StatelessWidget {
   final Color? foregroundColor;
   final Color? borderColor;
 
-  const SangakButton.primary({
+  const BabkaButton.primary({
     super.key,
     required this.label,
     this.onPressed,
@@ -33,9 +33,9 @@ class SangakButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
-  }) : variant = SangakButtonVariant.primary;
+  }) : variant = BabkaButtonVariant.primary;
 
-  const SangakButton.outlined({
+  const BabkaButton.outlined({
     super.key,
     required this.label,
     this.onPressed,
@@ -47,9 +47,9 @@ class SangakButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
-  }) : variant = SangakButtonVariant.outlined;
+  }) : variant = BabkaButtonVariant.outlined;
 
-  const SangakButton.ghost({
+  const BabkaButton.ghost({
     super.key,
     required this.label,
     this.onPressed,
@@ -61,22 +61,22 @@ class SangakButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.borderColor,
-  }) : variant = SangakButtonVariant.ghost;
+  }) : variant = BabkaButtonVariant.ghost;
 
   bool get _isEnabled => onPressed != null && !isLoading;
 
   @override
   Widget build(BuildContext context) {
-    final bool isPrimary = variant == SangakButtonVariant.primary;
-    final bool isOutlined = variant == SangakButtonVariant.outlined;
+    final bool isPrimary = variant == BabkaButtonVariant.primary;
+    final bool isOutlined = variant == BabkaButtonVariant.outlined;
 
     final Color effectiveBgColor = _isEnabled
-        ? (backgroundColor ?? (isPrimary ? SangakColors.primary : Colors.transparent))
-        : (isPrimary ? SangakColors.border : Colors.transparent);
+        ? (backgroundColor ?? (isPrimary ? BabkaColors.primary : Colors.transparent))
+        : (isPrimary ? BabkaColors.border : Colors.transparent);
 
     final Color effectiveFgColor = _isEnabled
-        ? (foregroundColor ?? (isPrimary ? Colors.white : SangakColors.primary))
-        : SangakColors.inkLight;
+        ? (foregroundColor ?? (isPrimary ? Colors.white : BabkaColors.primary))
+        : BabkaColors.inkLight;
 
     final Widget child = isLoading
         ? SizedBox(
@@ -93,11 +93,11 @@ class SangakButton extends StatelessWidget {
             children: [
               if (leading != null) ...[
                 leading!,
-                const SizedBox(width: SangakDimens.spacing8),
+                const SizedBox(width: BabkaDimens.spacing8),
               ],
               if (icon != null) ...[
                 Icon(icon, size: 20, color: effectiveFgColor),
-                if (label.isNotEmpty) const SizedBox(width: SangakDimens.spacing8),
+                if (label.isNotEmpty) const SizedBox(width: BabkaDimens.spacing8),
               ],
               if (label.isNotEmpty)
                 Flexible(
@@ -105,7 +105,7 @@ class SangakButton extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       label,
-                      style: SangakTypography.button(context).copyWith(
+                      style: BabkaTypography.button(context).copyWith(
                         fontWeight: FontWeight.w700,
                         color: effectiveFgColor,
                       ),
@@ -116,17 +116,17 @@ class SangakButton extends StatelessWidget {
             ],
           );
 
-    final ButtonStyle style = (isOutlined || variant == SangakButtonVariant.ghost)
+    final ButtonStyle style = (isOutlined || variant == BabkaButtonVariant.ghost)
         ? TextButton.styleFrom(
             backgroundColor: effectiveBgColor,
             foregroundColor: effectiveFgColor,
             minimumSize: Size(width ?? double.infinity, 54),
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
               side: isOutlined
                   ? BorderSide(
-                      color: _isEnabled ? (borderColor ?? SangakColors.primary) : SangakColors.border,
+                      color: _isEnabled ? (borderColor ?? BabkaColors.primary) : BabkaColors.border,
                       width: 1.5,
                     )
                   : BorderSide.none,
@@ -135,13 +135,13 @@ class SangakButton extends StatelessWidget {
         : ElevatedButton.styleFrom(
             backgroundColor: effectiveBgColor,
             foregroundColor: effectiveFgColor,
-            disabledBackgroundColor: SangakColors.border,
-            disabledForegroundColor: SangakColors.inkLight,
+            disabledBackgroundColor: BabkaColors.border,
+            disabledForegroundColor: BabkaColors.inkLight,
             elevation: _isEnabled ? 2 : 0,
             minimumSize: Size(width ?? double.infinity, 54),
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
             ),
           );
 

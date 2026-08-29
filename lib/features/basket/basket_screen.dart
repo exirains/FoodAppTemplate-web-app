@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -44,7 +44,7 @@ class BasketScreen extends ConsumerWidget {
 
     if (basket.isEmpty) {
       return Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(title: Text(l10n.basket)),
         body: SangakEmptyState(
           title: l10n.yourBasketIsWaiting,
@@ -57,14 +57,14 @@ class BasketScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.basket),
         actions: [
           IconButton(
             onPressed: () {
               if (!ActionGuard.check(context, ref)) return;
-              SangakConfirmDialog.show(
+              BabkaConfirmDialog.show(
                 context,
                 title: l10n.clearBasket,
                 message: l10n.confirmClearBasket,
@@ -74,7 +74,7 @@ class BasketScreen extends ConsumerWidget {
                 isDestructive: true,
               );
             },
-            icon: const Icon(Icons.delete_outline, color: SangakColors.error),
+            icon: const Icon(Icons.delete_outline, color: BabkaColors.error),
           ),
         ],
       ),
@@ -82,22 +82,22 @@ class BasketScreen extends ConsumerWidget {
         children: [
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               itemCount: basket.length,
-              separatorBuilder: (context, index) => const SizedBox(height: SangakDimens.spacing16),
+              separatorBuilder: (context, index) => const SizedBox(height: BabkaDimens.spacing16),
               itemBuilder: (context, index) {
                 final item = basket[index];
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: SangakColors.surface,
-                    borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                    boxShadow: SangakDimens.shadowLow,
+                    color: BabkaColors.surface,
+                    borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+                    boxShadow: BabkaDimens.shadowLow,
                   ),
                   child: Row(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                         child: CachedNetworkImage(
                           imageUrl: item.bread.imageUrl,
                           width: 64,
@@ -106,7 +106,7 @@ class BasketScreen extends ConsumerWidget {
                           placeholder: (context, url) => Container(
                             width: 64,
                             height: 64,
-                            color: SangakColors.border,
+                            color: BabkaColors.border,
                             child: const Center(
                               child: SizedBox(
                                 width: 20,
@@ -118,8 +118,8 @@ class BasketScreen extends ConsumerWidget {
                           errorWidget: (context, url, error) => Container(
                             width: 64,
                             height: 64,
-                            color: SangakColors.border,
-                            child: const Icon(Icons.broken_image_outlined, color: SangakColors.inkLight),
+                            color: BabkaColors.border,
+                            child: const Icon(Icons.broken_image_outlined, color: BabkaColors.inkLight),
                           ),
                         ),
                       ),
@@ -130,7 +130,7 @@ class BasketScreen extends ConsumerWidget {
                           children: [
                             Text(
                               item.bread.localizedName(lang), 
-                              style: SangakTypography.title(context).copyWith(fontSize: 15),
+                              style: BabkaTypography.title(context).copyWith(fontSize: 15),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -139,9 +139,9 @@ class BasketScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.only(top: 2.0),
                                 child: Text(
                                   _getCustomizationSummary(item.customization!),
-                                  style: SangakTypography.bodySmall(context).copyWith(
+                                  style: BabkaTypography.bodySmall(context).copyWith(
                                     fontSize: 12,
-                                    color: SangakColors.primary,
+                                    color: BabkaColors.primary,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -149,8 +149,8 @@ class BasketScreen extends ConsumerWidget {
                               ),
                             const SizedBox(height: 4),
                             Text(
-                              SangakNumberFormatter.formatCurrency(item.bread.price, lang),
-                              style: SangakTypography.price(context).copyWith(fontSize: 14),
+                              BabkaNumberFormatter.formatCurrency(item.bread.price, lang),
+                              style: BabkaTypography.price(context).copyWith(fontSize: 14),
                             ),
                           ],
                         ),
@@ -169,7 +169,7 @@ class BasketScreen extends ConsumerWidget {
                           onDecrement: () {
                             if (!ActionGuard.check(context, ref)) return;
                             if (item.quantity == 1) {
-                              SangakConfirmDialog.show(
+                              BabkaConfirmDialog.show(
                                 context,
                                 title: l10n.remove,
                                 message: l10n.removeItemFromBasket,
@@ -184,7 +184,7 @@ class BasketScreen extends ConsumerWidget {
                           },
                           onDelete: () {
                             if (!ActionGuard.check(context, ref)) return;
-                            SangakConfirmDialog.show(
+                            BabkaConfirmDialog.show(
                               context,
                               title: l10n.remove,
                               message: l10n.removeItemFromBasket,
@@ -233,11 +233,11 @@ class BasketScreen extends ConsumerWidget {
     final bool isBelowLimit = total < minLimit;
 
     return Container(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
-        boxShadow: SangakDimens.shadowHigh,
+        color: BabkaColors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
+        boxShadow: BabkaDimens.shadowHigh,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -249,19 +249,19 @@ class BasketScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: SangakColors.error.withValues(alpha: 0.1),
+                  color: BabkaColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: SangakColors.error.withValues(alpha: 0.3)),
+                  border: Border.all(color: BabkaColors.error.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.lock_person_outlined, color: SangakColors.error, size: 20),
+                    const Icon(Icons.lock_person_outlined, color: BabkaColors.error, size: 20),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         l10n.accountDisabledTitle,
-                        style: SangakTypography.bodySmall(context).copyWith(
-                          color: SangakColors.error,
+                        style: BabkaTypography.bodySmall(context).copyWith(
+                          color: BabkaColors.error,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -278,19 +278,19 @@ class BasketScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: SangakColors.error.withValues(alpha: 0.1),
+                  color: BabkaColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: SangakColors.error.withValues(alpha: 0.2)),
+                  border: Border.all(color: BabkaColors.error.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline_rounded, color: SangakColors.error, size: 18),
+                    const Icon(Icons.info_outline_rounded, color: BabkaColors.error, size: 18),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         l10n.minOrderLimitError(minLimit),
-                        style: SangakTypography.caption(context).copyWith(
-                          color: SangakColors.error,
+                        style: BabkaTypography.caption(context).copyWith(
+                          color: BabkaColors.error,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -306,17 +306,17 @@ class BasketScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 l10n.phoneNumberRequired,
-                style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.error, fontWeight: FontWeight.bold),
+                style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.error, fontWeight: FontWeight.bold),
               ),
             ),
           
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.subtotal, style: SangakTypography.bodyMedium(context)),
+              Text(l10n.subtotal, style: BabkaTypography.bodyMedium(context)),
               Text(
-                SangakNumberFormatter.formatCurrency(total, lang),
-                style: SangakTypography.title(context),
+                BabkaNumberFormatter.formatCurrency(total, lang),
+                style: BabkaTypography.title(context),
               ),
             ],
           ),
@@ -324,16 +324,16 @@ class BasketScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.deliveryFeeLabel, style: SangakTypography.bodyMedium(context)),
+              Text(l10n.deliveryFeeLabel, style: BabkaTypography.bodyMedium(context)),
               if (deliveryFee == 0)
                 Text(
                   l10n.freeDelivery,
-                  style: SangakTypography.title(context).copyWith(color: Colors.green.shade700),
+                  style: BabkaTypography.title(context).copyWith(color: Colors.green.shade700),
                 )
               else
                 Text(
-                  SangakNumberFormatter.formatCurrency(deliveryFee, lang),
-                  style: SangakTypography.title(context),
+                  BabkaNumberFormatter.formatCurrency(deliveryFee, lang),
+                  style: BabkaTypography.title(context),
                 ),
             ],
           ),
@@ -344,15 +344,15 @@ class BasketScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.total, style: SangakTypography.h3(context)),
+              Text(l10n.total, style: BabkaTypography.h3(context)),
               Text(
-                SangakNumberFormatter.formatCurrency(grandTotal, lang),
-                style: SangakTypography.h2(context).copyWith(color: SangakColors.primary),
+                BabkaNumberFormatter.formatCurrency(grandTotal, lang),
+                style: BabkaTypography.h2(context).copyWith(color: BabkaColors.primary),
               ),
             ],
           ),
-          const SizedBox(height: SangakDimens.spacing24),
-          SangakButton.primary(
+          const SizedBox(height: BabkaDimens.spacing24),
+          BabkaButton.primary(
             label: l10n.proceedToCheckout,
             width: double.infinity,
             isLoading: optionsAsync.isLoading,

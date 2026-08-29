@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -105,9 +105,9 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
           child: Container(
             width: widget.width,
             decoration: BoxDecoration(
-              color: SangakColors.surface,
-              borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-              boxShadow: SangakDimens.shadowMedium,
+              color: BabkaColors.surface,
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+              boxShadow: BabkaDimens.shadowMedium,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min, // Fix vertical overflow
@@ -116,7 +116,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
                       child: ColorFiltered(
                         colorFilter: isAvailable 
                             ? const ColorFilter.mode(Colors.transparent, BlendMode.multiply)
@@ -128,7 +128,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                             fit: BoxFit.cover,
                             memCacheHeight: 400,
                             placeholder: (context, url) => Container(
-                              color: SangakColors.border,
+                              color: BabkaColors.border,
                               child: const Center(
                                 child: SizedBox(
                                   width: 24,
@@ -138,8 +138,8 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
-                              color: SangakColors.border,
-                              child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: SangakColors.inkLight),
+                              color: BabkaColors.border,
+                              child: const Icon(Icons.breakfast_dining_outlined, size: 48, color: BabkaColors.inkLight),
                             ),
                           ),
                         ),
@@ -150,15 +150,15 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.4),
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
                           ),
                           child: Center(
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: SangakColors.ink.withValues(alpha: 0.8),
-                                borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                                boxShadow: SangakDimens.shadowLow,
+                                color: BabkaColors.ink.withValues(alpha: 0.8),
+                                borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+                                boxShadow: BabkaDimens.shadowLow,
                               ),
                               child: Text(
                                 l10n.outOfStock.toUpperCase(),
@@ -175,13 +175,13 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                       ),
                     if (widget.bread?.tag != null)
                       Positioned(
-                        top: SangakDimens.spacing12,
-                        left: SangakDimens.spacing12,
+                        top: BabkaDimens.spacing12,
+                        left: BabkaDimens.spacing12,
                         child: ProductTag.fromText(widget.bread!.tag!, context: context),
                       ),
                     Positioned(
-                      top: SangakDimens.spacing8,
-                      right: SangakDimens.spacing8,
+                      top: BabkaDimens.spacing8,
+                      right: BabkaDimens.spacing8,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque, // FIX: Ensure entire circle is clickable
                         onTap: () {
@@ -200,7 +200,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                               isFavorite ? Icons.favorite : Icons.favorite_border,
                               key: ValueKey(isFavorite),
                               size: 18,
-                              color: isFavorite ? SangakColors.error : SangakColors.inkLight,
+                              color: isFavorite ? BabkaColors.error : BabkaColors.inkLight,
                             ),
                           ),
                         ),
@@ -208,8 +208,8 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                     ),
                     if (widget.freshness != null)
                       Positioned(
-                        bottom: SangakDimens.spacing8,
-                        left: SangakDimens.spacing8,
+                        bottom: BabkaDimens.spacing8,
+                        left: BabkaDimens.spacing8,
                         child: FreshnessBadge(token: widget.freshness!),
                       ),
                   ],
@@ -224,9 +224,9 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         height: 18,
                         child: Text(
                           displayName,
-                          style: SangakTypography.title(context).copyWith(
+                          style: BabkaTypography.title(context).copyWith(
                             fontSize: 14,
-                            color: isAvailable ? SangakColors.ink : SangakColors.inkLight,
+                            color: isAvailable ? BabkaColors.ink : BabkaColors.inkLight,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -237,10 +237,10 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                         height: widget.compact ? 0 : 14, // Hide description in super compact mode if needed
                         child: widget.compact ? null : Text(
                           displayDescription,
-                          style: SangakTypography.bodySmall(context).copyWith(
+                          style: BabkaTypography.bodySmall(context).copyWith(
                             fontSize: 10,
                             height: 1.1,
-                            color: SangakColors.inkLight,
+                            color: BabkaColors.inkLight,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -260,10 +260,10 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     formattedPrice,
-                                    style: SangakTypography.price(context).copyWith(
+                                    style: BabkaTypography.price(context).copyWith(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w800,
-                                      color: isAvailable ? SangakColors.primary : SangakColors.inkLight,
+                                      color: isAvailable ? BabkaColors.primary : BabkaColors.inkLight,
                                     ),
                                   ),
                                 ),
@@ -275,9 +275,9 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                       const SizedBox(width: 2),
                                       Text(
                                         '${SangakNumberFormatter.format(widget.bread!.rating, languageCode)} (${SangakNumberFormatter.format(widget.bread!.reviews, languageCode)})',
-                                        style: SangakTypography.caption(context).copyWith(
+                                        style: BabkaTypography.caption(context).copyWith(
                                           fontSize: 10,
-                                          color: SangakColors.inkLight,
+                                          color: BabkaColors.inkLight,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -325,12 +325,12 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                         widget.onAddToBasket();
                                       } : null,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: isAvailable ? SangakColors.primary : SangakColors.border,
+                                        backgroundColor: isAvailable ? BabkaColors.primary : BabkaColors.border,
                                         foregroundColor: Colors.white,
                                         elevation: 0,
                                         padding: const EdgeInsets.symmetric(horizontal: 14),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+                                          borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
                                         ),
                                       ),
                                       child: Text(l10n.add, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),

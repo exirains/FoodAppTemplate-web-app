@@ -11,8 +11,8 @@ class SupabaseService {
     }
     
     // Prioritize .env, then fallback to your specific project values
-    final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? 'https://obealvlqkffozfigtobc.supabase.co';
-    final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'] ?? 'sb_publishable_TNlYa89a1LyOQ4Z3janYFQ_1lc5gkSk';
+    final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? 'https://oaxgcbuqmhdvmmkrusrv.supabase.co';
+    final supabaseKey = dotenv.env['SUPABASE_PUBLISHABLE_KEY'] ?? 'sb_publishable_0BKyasZ1vCjfm_82735_dw_R6B1Fwgl';
 
     if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
       throw Exception('Missing Supabase configuration.');
@@ -21,6 +21,7 @@ class SupabaseService {
     // CRITICAL: Ensure we don't pass the key name as part of the URL
     final cleanUrl = supabaseUrl.contains('=') ? supabaseUrl.split('=').last.trim() : supabaseUrl;
     final cleanKey = supabaseKey.contains('=') ? supabaseKey.split('=').last.trim() : supabaseKey;
+
 
     await Supabase.initialize(
       url: cleanUrl,

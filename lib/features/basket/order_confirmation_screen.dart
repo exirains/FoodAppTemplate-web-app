@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -35,11 +35,11 @@ class OrderConfirmationScreen extends ConsumerWidget {
         : checkoutState.estimatedPrepMinutes;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(SangakDimens.spacing24),
+            padding: const EdgeInsets.all(BabkaDimens.spacing24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -47,7 +47,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: const BoxDecoration(
-                    color: SangakColors.primary,
+                    color: BabkaColors.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.check_rounded, size: 64, color: Colors.white),
@@ -55,13 +55,13 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 const SizedBox(height: 32),
                 Text(
                   l10n.orderReceived,
-                  style: SangakTypography.h1(context),
+                  style: BabkaTypography.h1(context),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   l10n.thankYouSangak,
-                  style: SangakTypography.bodyLarge(context).copyWith(color: SangakColors.inkLight),
+                  style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
@@ -78,7 +78,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 const SizedBox(height: 48),
                 
                 if (orderId != null) ...[
-                  SangakButton.primary(
+                  BabkaButton.primary(
                     label: l10n.trackOrder,
                     icon: Icons.map_outlined,
                     width: double.infinity,
@@ -87,7 +87,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                 ],
                 
-                SangakButton.outlined(
+                BabkaButton.outlined(
                   label: l10n.backToHome,
                   width: double.infinity,
                   onPressed: () => context.go('/home'),
@@ -104,12 +104,12 @@ class OrderConfirmationScreen extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: SangakTypography.bodyMedium(context)),
+        Text(label, style: BabkaTypography.bodyMedium(context)),
         const SizedBox(width: 24),
         Expanded(
           child: Text(
             value,
-            style: SangakTypography.title(context).copyWith(fontSize: 14),
+            style: BabkaTypography.title(context).copyWith(fontSize: 14),
             textAlign: TextAlign.right,
           ),
         ),

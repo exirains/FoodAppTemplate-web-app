@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sangak.app"
+    namespace = "com.foodapp.template"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.sangak.app"
+        applicationId = "com.foodapp.template"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode

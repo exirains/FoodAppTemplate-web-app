@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_dimens.dart';
 import '../../shared/widgets/sangak_button.dart';
@@ -53,7 +53,7 @@ class _RewardManagementScreenState extends ConsumerState<RewardManagementScreen>
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.rewardsManagement),
           actions: [
@@ -78,9 +78,9 @@ class _RewardManagementScreenState extends ConsumerState<RewardManagementScreen>
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.all(SangakDimens.spacing16),
+              padding: const EdgeInsets.all(BabkaDimens.spacing16),
               itemCount: rewards.length,
-              separatorBuilder: (_, _) => const SizedBox(height: SangakDimens.spacing12),
+              separatorBuilder: (_, _) => const SizedBox(height: BabkaDimens.spacing12),
               itemBuilder: (context, index) {
                 final reward = rewards[index];
                 return Card(
@@ -91,11 +91,11 @@ class _RewardManagementScreenState extends ConsumerState<RewardManagementScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit_rounded, color: SangakColors.primary),
+                          icon: const Icon(Icons.edit_rounded, color: BabkaColors.primary),
                           onPressed: () => _showRewardDialog(reward),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_rounded, color: SangakColors.error),
+                          icon: const Icon(Icons.delete_rounded, color: BabkaColors.error),
                           onPressed: () async {
                             await ref.read(rewardRepositoryProvider).deleteReward(reward.id);
                             _refreshRewards();
@@ -202,7 +202,7 @@ class _RewardDialogState extends ConsumerState<RewardDialog> {
               widget.onSave();
             } catch (e) {
               if (mounted && context.mounted) {
-                SangakToast.show(context, '${l10n.errorOccurred}: $e');
+                BabkaToast.show(context, '${l10n.errorOccurred}: $e');
               }
             } finally {
               if (mounted) {

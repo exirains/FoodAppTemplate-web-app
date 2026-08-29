@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
@@ -45,7 +45,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
     ];
 
     if (!allowedStatuses.contains(newStatus)) {
-      if (mounted) SangakToast.show(context, 'Unauthorized status change', icon: Icons.error_outline);
+      if (mounted) BabkaToast.show(context, 'Unauthorized status change', icon: Icons.error_outline);
       return;
     }
 
@@ -60,10 +60,10 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
           );
       
       if (mounted) {
-        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
+        BabkaToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error updating status', icon: Icons.error_outline);
+      if (mounted) BabkaToast.show(context, 'Error updating status', icon: Icons.error_outline);
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -85,11 +85,11 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
 
     Widget card = Container(
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowMedium,
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowMedium,
         border: Border.all(
-          color: widget.isNew ? SangakColors.warning : SangakColors.border,
+          color: widget.isNew ? BabkaColors.warning : BabkaColors.border,
           width: widget.isNew ? 3 : 1,
         ),
       ),
@@ -111,7 +111,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       locale: const Locale('en', 'US'),
                       child: Text(
                         widget.order.orderNumber,
-                        style: SangakTypography.h2(context).copyWith(
+                        style: BabkaTypography.h2(context).copyWith(
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.2,
                           fontSize: titleSize,
@@ -123,7 +123,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                         margin: const EdgeInsets.only(top: 4),
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: SangakColors.warning,
+                          color: BabkaColors.warning,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -142,15 +142,15 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                   children: [
                     Text(
                       _formatTime(widget.order.createdAt, l10n),
-                      style: SangakTypography.h3(context).copyWith(
-                        color: SangakColors.primary,
+                      style: BabkaTypography.h3(context).copyWith(
+                        color: BabkaColors.primary,
                         fontSize: isWide ? 16 : 20,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       SangakNumberFormatter.formatCurrency(widget.order.totalPrice, lang),
-                      style: SangakTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold, color: SangakColors.ink),
+                      style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold, color: BabkaColors.ink),
                     ),
                   ],
                 ),
@@ -180,8 +180,8 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                         errorWidget: (context, url, error) => Container(
                           width: thumbnailSize,
                           height: thumbnailSize,
-                          color: SangakColors.border, 
-                          child: Icon(Icons.breakfast_dining, size: thumbnailSize * 0.5, color: SangakColors.inkLight),
+                          color: BabkaColors.border, 
+                          child: Icon(Icons.breakfast_dining, size: thumbnailSize * 0.5, color: BabkaColors.inkLight),
                         ),
                       ),
                     ),
@@ -190,13 +190,13 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         // ignore: deprecated_member_use
-                        color: SangakColors.ink.withOpacity(0.06),
+                        color: BabkaColors.ink.withOpacity(0.06),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         '${item.quantity}x',
-                        style: SangakTypography.title(context).copyWith(
-                          color: SangakColors.ink,
+                        style: BabkaTypography.title(context).copyWith(
+                          color: BabkaColors.ink,
                           fontWeight: FontWeight.bold,
                           fontSize: isWide ? 12 : 14,
                         ),
@@ -206,7 +206,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                     Expanded(
                       child: Text(
                         item.localizedName(lang),
-                        style: SangakTypography.h3(context).copyWith(
+                        style: BabkaTypography.h3(context).copyWith(
                           fontSize: itemTitleSize,
                         ),
                       ),
@@ -229,13 +229,13 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                     _FooterBadge(
                       icon: widget.order.addressSnapshot['type'] == 'pickup' ? Icons.store_outlined : Icons.delivery_dining_outlined,
                       label: widget.order.addressSnapshot['type'] == 'pickup' ? 'Pick-up' : 'Delivery',
-                      color: SangakColors.primary,
+                      color: BabkaColors.primary,
                     ),
                     const SizedBox(width: 4),
                     _FooterBadge(
                       icon: Icons.payments_outlined,
                       label: widget.order.paymentMethod == 'cash' ? 'Cash' : 'Paid',
-                      color: widget.order.paymentMethod == 'cash' ? SangakColors.warning : SangakColors.success,
+                      color: widget.order.paymentMethod == 'cash' ? BabkaColors.warning : BabkaColors.success,
                     ),
                     if (widget.order.deliveryProfile != null) ...[
                       const SizedBox(width: 4),
@@ -243,7 +243,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                         child: _FooterBadge(
                           icon: Icons.person_outline,
                           label: widget.order.deliveryProfile!['full_name'] ?? 'Courier',
-                          color: SangakColors.info,
+                          color: BabkaColors.info,
                         ),
                       ),
                     ],
@@ -267,7 +267,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                         Expanded(
                           child: Text(
                             widget.order.addressSnapshot['note'],
-                            style: SangakTypography.caption(context).copyWith(fontStyle: FontStyle.italic, fontSize: 11),
+                            style: BabkaTypography.caption(context).copyWith(fontStyle: FontStyle.italic, fontSize: 11),
                           ),
                         ),
                       ],
@@ -290,11 +290,11 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                   SizedBox(
                     width: actionHeight,
                     height: actionHeight,
-                    child: SangakButton.outlined(
+                    child: BabkaButton.outlined(
                       label: '',
                       icon: Icons.close_rounded,
-                      foregroundColor: SangakColors.error,
-                      borderColor: SangakColors.error,
+                      foregroundColor: BabkaColors.error,
+                      borderColor: BabkaColors.error,
                       onPressed: () => CancelOrderDialog.show(
                         context,
                         onConfirm: (reason) => _updateStatus(OrderStatus.cancelled),
@@ -324,10 +324,10 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
       ).shimmer(
         duration: 2.seconds,
         // ignore: deprecated_member_use
-        color: SangakColors.warning.withOpacity(0.1),
+        color: BabkaColors.warning.withOpacity(0.1),
       ).boxShadow(
-        begin: BoxShadow(color: SangakColors.warning.withValues(alpha: 0.1), blurRadius: 10, spreadRadius: 2),
-        end: BoxShadow(color: SangakColors.warning.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5),
+        begin: BoxShadow(color: BabkaColors.warning.withValues(alpha: 0.1), blurRadius: 10, spreadRadius: 2),
+        end: BoxShadow(color: BabkaColors.warning.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5),
         duration: 1.seconds,
         curve: Curves.easeInOut,
       );
@@ -339,27 +339,27 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
   Widget _buildActionButton(AppLocalizations l10n) {
     switch (widget.order.status) {
       case OrderStatus.pending:
-        return SangakButton.primary(
+        return BabkaButton.primary(
           label: l10n.acceptOrder.toUpperCase(),
           onPressed: () => _updateStatus(OrderStatus.confirmed),
           isLoading: _isUpdating,
         );
       case OrderStatus.confirmed:
-        return SangakButton.primary(
+        return BabkaButton.primary(
           label: l10n.startPreparing.toUpperCase(),
-          backgroundColor: SangakColors.info,
+          backgroundColor: BabkaColors.info,
           onPressed: () => _updateStatus(OrderStatus.preparing),
           isLoading: _isUpdating,
         );
       case OrderStatus.preparing:
-        return SangakButton.primary(
+        return BabkaButton.primary(
           label: l10n.markReady.toUpperCase(),
-          backgroundColor: SangakColors.success,
+          backgroundColor: BabkaColors.success,
           onPressed: () => _updateStatus(OrderStatus.ready),
           isLoading: _isUpdating,
         );
       case OrderStatus.ready:
-        return SangakButton.outlined(
+        return BabkaButton.outlined(
           label: l10n.waitingForPickup.toUpperCase(),
           onPressed: null,
         );
@@ -400,7 +400,7 @@ class _FooterBadge extends StatelessWidget {
           Flexible(
             child: Text(
               label,
-              style: SangakTypography.caption(context).copyWith(
+              style: BabkaTypography.caption(context).copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,
                 fontSize: 10,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -19,7 +19,7 @@ class PaymentSelectionScreen extends ConsumerWidget {
     final selectedMethod = ref.watch(checkoutProvider).paymentMethod;
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.paymentMethod),
         leading: IconButton(
@@ -28,11 +28,11 @@ class PaymentSelectionScreen extends ConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.selectPaymentMethod, style: SangakTypography.h3(context)),
+            Text(l10n.selectPaymentMethod, style: BabkaTypography.h3(context)),
             const SizedBox(height: 16),
             _buildPaymentMethodItem(
               context,
@@ -58,13 +58,13 @@ class PaymentSelectionScreen extends ConsumerWidget {
         ),
       ),
       bottomSheet: Container(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         decoration: BoxDecoration(
-          color: SangakColors.surface,
-          boxShadow: SangakDimens.shadowHigh,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+          color: BabkaColors.surface,
+          boxShadow: BabkaDimens.shadowHigh,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
         ),
-        child: SangakButton.primary(
+        child: BabkaButton.primary(
           label: l10n.continueButton,
           width: double.infinity,
           onPressed: () {
@@ -98,28 +98,28 @@ class PaymentSelectionScreen extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: SangakColors.surface,
-            borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+            color: BabkaColors.surface,
+            borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
             border: Border.all(
-              color: isSelected ? SangakColors.primary : SangakColors.border,
+              color: isSelected ? BabkaColors.primary : BabkaColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
           child: Row(
             children: [
-              Icon(icon, color: isSelected ? SangakColors.primary : SangakColors.inkLight),
+              Icon(icon, color: isSelected ? BabkaColors.primary : BabkaColors.inkLight),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: SangakTypography.title(context)),
-                    Text(subtitle, style: SangakTypography.bodySmall(context)),
+                    Text(title, style: BabkaTypography.title(context)),
+                    Text(subtitle, style: BabkaTypography.bodySmall(context)),
                   ],
                 ),
               ),
               if (isSelected)
-                const Icon(Icons.check_circle, color: SangakColors.primary),
+                const Icon(Icons.check_circle, color: BabkaColors.primary),
             ],
           ),
         ),

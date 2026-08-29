@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
@@ -69,11 +69,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       await ref.read(authProvider.notifier).updateMetadata({'avatar_url': avatarUrl});
 
       if (mounted) {
-        SangakToast.show(context, l10n.profilePictureUpdated);
+        BabkaToast.show(context, l10n.profilePictureUpdated);
       }
     } catch (e) {
       if (mounted) {
-        SangakToast.show(context, l10n.failedToUpdateProfilePicture);
+        BabkaToast.show(context, l10n.failedToUpdateProfilePicture);
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -82,7 +82,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   void _signOut() {
     final l10n = AppLocalizations.of(context);
-    SangakConfirmDialog.show(
+    BabkaConfirmDialog.show(
       context,
       title: l10n.signOut,
       message: l10n.signOutConfirmation,
@@ -111,7 +111,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             
             return Container(
               decoration: const BoxDecoration(
-                color: SangakColors.background,
+                color: BabkaColors.background,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
               padding: EdgeInsets.only(bottom: viewInsets.bottom),
@@ -120,7 +120,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   maxHeight: MediaQuery.of(context).size.height * 0.85,
                 ),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(SangakDimens.spacing32),
+                  padding: const EdgeInsets.all(BabkaDimens.spacing32),
                   child: Form(
                     key: formKey,
                     child: Column(
@@ -132,7 +132,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             width: 40,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: SangakColors.border,
+                              color: BabkaColors.border,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -143,13 +143,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: SangakColors.primary.withValues(alpha: 0.1),
+                                color: BabkaColors.primary.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.person_outline_rounded, color: SangakColors.primary, size: 24),
+                              child: const Icon(Icons.person_outline_rounded, color: BabkaColors.primary, size: 24),
                             ),
                             const SizedBox(width: 16),
-                            Text(l10n.editProfile, style: SangakTypography.h2(context)),
+                            Text(l10n.editProfile, style: BabkaTypography.h2(context)),
                           ],
                         ),
                         const SizedBox(height: 32),
@@ -180,7 +180,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           },
                         ),
                         const SizedBox(height: 40),
-                        SangakButton.primary(
+                        BabkaButton.primary(
                           label: l10n.saveChanges,
                           width: double.infinity,
                           isLoading: isSaving,
@@ -203,13 +203,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               if (modalContext.mounted) {
                                 Navigator.of(modalContext).pop();
                                 if (mounted) {
-                                  SangakToast.show(context, l10n.profileUpdated);
+                                  BabkaToast.show(context, l10n.profileUpdated);
                                 }
                               }
                             } catch (e) {
                               debugPrint('Error updating profile: $e');
                               if (modalContext.mounted) {
-                                SangakToast.show(modalContext, l10n.networkError);
+                                BabkaToast.show(modalContext, l10n.networkError);
                               }
                             } finally {
                               if (modalContext.mounted) {
@@ -252,7 +252,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final canSwitchRole = role != 'customer';
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.profile),
         actions: [
@@ -269,7 +269,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -283,7 +283,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     children: [
                       Text(
                         user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                        style: SangakTypography.h2(context),
+                        style: BabkaTypography.h2(context),
                       ),
                       const SizedBox(width: 8),
                       UserRoleTag(role: profile?.role ?? 'customer'),
@@ -291,7 +291,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                   Text(
                     user.email ?? '',
-                    style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+                    style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
                   ),
                 ],
               ),
@@ -302,7 +302,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildLoyaltyBar(context, ref),
             const SizedBox(height: 32),
             
-            Text(l10n.activity, style: SangakTypography.title(context)),
+            Text(l10n.activity, style: BabkaTypography.title(context)),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -314,7 +314,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             
             const SizedBox(height: 32),
             
-            Text(l10n.account, style: SangakTypography.title(context)),
+            Text(l10n.account, style: BabkaTypography.title(context)),
             const SizedBox(height: 16),
             if (!AuthValidators.hasValidPhoneNumber(user.userMetadata?['phone'] as String?))
               Padding(
@@ -322,19 +322,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: SangakColors.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                    border: Border.all(color: SangakColors.error.withValues(alpha: 0.3)),
+                    color: BabkaColors.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+                    border: Border.all(color: BabkaColors.error.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline_rounded, color: SangakColors.error, size: 20),
+                      const Icon(Icons.error_outline_rounded, color: BabkaColors.error, size: 20),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           l10n.addPhoneToOrder,
-                          style: SangakTypography.bodySmall(context).copyWith(
-                            color: SangakColors.error,
+                          style: BabkaTypography.bodySmall(context).copyWith(
+                            color: BabkaColors.error,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -358,7 +358,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             
             const SizedBox(height: 32),
             if (role == 'admin' || role == 'staff') ...[
-              Text(l10n.notifications, style: SangakTypography.title(context)),
+              Text(l10n.notifications, style: BabkaTypography.title(context)),
               const SizedBox(height: 16),
               _buildNotificationToggle(
                 l10n.newOrders,
@@ -372,7 +372,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         .eq('id', profile.id);
                     if (!context.mounted) return;
                     if (mounted) {
-                      SangakToast.show(context, l10n.settingsSaved);
+                      BabkaToast.show(context, l10n.settingsSaved);
                     }
                   } catch (e) {
                     debugPrint('🚨 NOTIFICATION TOGGLE ERROR: $e');
@@ -384,7 +384,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     }
                     if (mounted) {
                       if (!context.mounted) return;
-                      SangakToast.show(context, l10n.errorOccurred);
+                      BabkaToast.show(context, l10n.errorOccurred);
                     }
                   }
                 },
@@ -398,11 +398,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const ReferralSection(),
 
             const SizedBox(height: 48),
-            SangakButton.outlined(
+            BabkaButton.outlined(
               label: l10n.signOut,
               width: double.infinity,
-              foregroundColor: SangakColors.error,
-              borderColor: SangakColors.error.withValues(alpha: 0.3),
+              foregroundColor: BabkaColors.error,
+              borderColor: BabkaColors.error.withValues(alpha: 0.3),
               onPressed: _signOut,
             ),
             const SizedBox(height: 40),
@@ -437,9 +437,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: SangakColors.ink,
+          color: BabkaColors.ink,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: SangakDimens.shadowMedium,
+          boxShadow: BabkaDimens.shadowMedium,
         ),
         child: Row(
           children: [
@@ -448,11 +448,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 Text(
                   '🔥 ${l10n.streakDay(streak)}',
-                  style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+                  style: BabkaTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
                 ),
                 Text(
                   l10n.memberLevel(level),
-                  style: SangakTypography.caption(context).copyWith(color: Colors.white70),
+                  style: BabkaTypography.caption(context).copyWith(color: Colors.white70),
                 ),
               ],
             ),
@@ -460,7 +460,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: SangakColors.primary,
+                color: BabkaColors.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -472,7 +472,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   else
                     Text(
                       '$points ${l10n.pts}',
-                      style: SangakTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
+                      style: BabkaTypography.title(context).copyWith(color: Colors.white, fontSize: 14),
                     ),
                 ],
               ),
@@ -486,23 +486,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildActivityCard(IconData icon, String label, String value, BuildContext context, {VoidCallback? onTap}) {
     return Container(
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        boxShadow: SangakDimens.shadowLow,
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        boxShadow: BabkaDimens.shadowLow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                Icon(icon, color: SangakColors.primary),
+                Icon(icon, color: BabkaColors.primary),
                 const SizedBox(height: 8),
-                Text(value, style: SangakTypography.h3(context)),
-                Text(label, style: SangakTypography.caption(context)),
+                Text(value, style: BabkaTypography.h3(context)),
+                Text(label, style: BabkaTypography.caption(context)),
               ],
             ),
           ),
@@ -518,27 +518,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
           child: Ink(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: SangakColors.surface,
-              borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-              border: Border.all(color: SangakColors.border),
+              color: BabkaColors.surface,
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+              border: Border.all(color: BabkaColors.border),
             ),
             child: Row(
               children: [
-                Icon(icon, color: SangakColors.primary, size: 22),
+                Icon(icon, color: BabkaColors.primary, size: 22),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                    Text(label, style: BabkaTypography.title(context).copyWith(fontSize: 16)),
                     if (value != null)
                       Text(
                         value,
                         textDirection: isPhone ? TextDirection.ltr : null,
-                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                        style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight),
                       ),
                   ],
                 ),
@@ -547,7 +547,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Directionality.of(context) == TextDirection.rtl 
                       ? Icons.chevron_left 
                       : Icons.chevron_right, 
-                  color: SangakColors.inkLight, 
+                  color: BabkaColors.inkLight, 
                   size: 20,
                 ),
               ],
@@ -562,21 +562,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.notifications_active_outlined, color: SangakColors.primary, size: 22),
+          const Icon(Icons.notifications_active_outlined, color: BabkaColors.primary, size: 22),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(label, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+            child: Text(label, style: BabkaTypography.title(context).copyWith(fontSize: 16)),
           ),
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeTrackColor: SangakColors.primary,
+            activeTrackColor: BabkaColors.primary,
           ),
         ],
       ),
@@ -593,10 +593,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: SangakColors.surface,
+              color: BabkaColors.surface,
               shape: BoxShape.circle,
-              boxShadow: SangakDimens.shadowMedium,
-              border: Border.all(color: SangakColors.primary, width: 2),
+              boxShadow: BabkaDimens.shadowMedium,
+              border: Border.all(color: BabkaColors.primary, width: 2),
             ),
             child: ClipOval(
               child: avatarUrl != null
@@ -604,9 +604,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       imageUrl: avatarUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => const Icon(Icons.person_rounded, size: 64, color: SangakColors.border),
+                      errorWidget: (context, url, error) => const Icon(Icons.person_rounded, size: 64, color: BabkaColors.border),
                     )
-                  : const Icon(Icons.person_rounded, size: 64, color: SangakColors.border),
+                  : const Icon(Icons.person_rounded, size: 64, color: BabkaColors.border),
             ),
           ),
           if (_isUploading)
@@ -622,7 +622,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: SangakColors.primary,
+                  color: BabkaColors.primary,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 3),
                   boxShadow: [

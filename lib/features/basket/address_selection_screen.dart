@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -127,7 +127,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
             _addressController.text = locationData.formattedAddress ?? '';
             _showAutoFillPrompt = true;
           });
-          SangakToast.show(context, l10n.locationCaptured);
+          BabkaToast.show(context, l10n.locationCaptured);
           
           // Scroll to bottom after state update
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -161,7 +161,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         } else if (errorKey.contains('locationPermissionPermanentlyDenied')) {
           message = l10n.locationPermissionPermanentlyDenied;
         }
-        SangakToast.show(context, message);
+        BabkaToast.show(context, message);
       }
     } finally {
       if (mounted) setState(() => _isLoadingLocation = false);
@@ -247,7 +247,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       ref.read(checkoutProvider.notifier).selectAddress(currentAddressWithNote);
       context.push('/payment-selection?from=checkout');
     } else {
-      SangakToast.show(context, AppLocalizations.of(context).profileUpdated);
+      BabkaToast.show(context, AppLocalizations.of(context).profileUpdated);
       context.pop();
     }
   }
@@ -287,7 +287,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                             _selectedLabelKey == 'work' ? l10n.work :
                             _selectedLabelKey == 'school' ? l10n.school : address.title;
                             
-    SangakToast.show(context, l10n.successfullySelected(localizedSelected));
+    BabkaToast.show(context, l10n.successfullySelected(localizedSelected));
   }
 
   @override
@@ -319,7 +319,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
     final savedAddresses = mergedMap.values.toList().reversed.toList();
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.deliveryAddress),
         leading: IconButton(
@@ -337,14 +337,14 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         onRefresh: () async => ref.invalidate(addressListProvider),
         child: SingleChildScrollView(
           controller: _scrollController,
-          padding: const EdgeInsets.all(SangakDimens.spacing24),
+          padding: const EdgeInsets.all(BabkaDimens.spacing24),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (savedAddresses.isNotEmpty) ...[
-                  Text(l10n.lastUsedAddresses, style: SangakTypography.h3(context)),
+                  Text(l10n.lastUsedAddresses, style: BabkaTypography.h3(context)),
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 110,
@@ -361,10 +361,10 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                             width: 220,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: SangakColors.surface,
-                              borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-                              border: Border.all(color: SangakColors.border),
-                              boxShadow: SangakDimens.shadowLow,
+                              color: BabkaColors.surface,
+                              borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+                              border: Border.all(color: BabkaColors.border),
+                              boxShadow: BabkaDimens.shadowLow,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,12 +372,12 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                               children: [
                                 Row(
                                   children: [
-                                    Icon(_getIconForLabel(addr.title), size: 16, color: SangakColors.primary),
+                                    Icon(_getIconForLabel(addr.title), size: 16, color: BabkaColors.primary),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         addr.title,
-                                        style: SangakTypography.title(context).copyWith(fontSize: 15),
+                                        style: BabkaTypography.title(context).copyWith(fontSize: 15),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -387,7 +387,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                                 const SizedBox(height: 6),
                                 Text(
                                   addr.fullAddress,
-                                  style: SangakTypography.bodySmall(context).copyWith(fontSize: 12, color: SangakColors.inkLight),
+                                  style: BabkaTypography.bodySmall(context).copyWith(fontSize: 12, color: BabkaColors.inkLight),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -401,7 +401,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   const SizedBox(height: 32),
                 ],
                 
-                SangakButton.outlined(
+                BabkaButton.outlined(
                   label: l10n.useCurrentLocation,
                   width: double.infinity,
                   icon: Icons.my_location_rounded,
@@ -414,12 +414,12 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 Row(
                   children: [
                     Expanded(
-                      child: Text(l10n.addressName, style: SangakTypography.h3(context)),
+                      child: Text(l10n.addressName, style: BabkaTypography.h3(context)),
                     ),
                     TextButton.icon(
                       onPressed: _clearForm,
                       icon: const Icon(Icons.refresh_rounded, size: 16),
-                      label: Text(l10n.clear, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary)),
+                      label: Text(l10n.clear, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.primary)),
                     ),
                   ],
                 ),
@@ -473,7 +473,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   ],
                 ),
                 const SizedBox(height: 16),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.customName,
                   hintText: l10n.customName,
                   controller: _labelController,
@@ -482,9 +482,9 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 ),
                 
                 const SizedBox(height: 32),
-                Text(l10n.address, style: SangakTypography.h3(context)),
+                Text(l10n.address, style: BabkaTypography.h3(context)),
                 const SizedBox(height: 16),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.address,
                   hintText: l10n.address,
                   controller: _addressController,
@@ -496,7 +496,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 Row(
                   children: [
                     Expanded(
-                      child: SangakTextField(
+                      child: BabkaTextField(
                         label: l10n.city,
                         controller: _cityController,
                         focusNode: _cityFocus,
@@ -509,7 +509,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: SangakTextField(
+                      child: BabkaTextField(
                         label: l10n.district,
                         controller: _districtController,
                         focusNode: _districtFocus,
@@ -523,7 +523,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   ],
                 ),
                 const SizedBox(height: 16),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.street,
                   controller: _streetController,
                   focusNode: _streetFocus,
@@ -536,13 +536,13 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline_rounded, size: 16, color: SangakColors.primary),
+                        const Icon(Icons.info_outline_rounded, size: 16, color: BabkaColors.primary),
                         const SizedBox(width: 8),
                         Text(
                           l10n.pleaseFillFloorDoor,
-                          style: SangakTypography.title(context).copyWith(
+                          style: BabkaTypography.title(context).copyWith(
                             fontSize: 12,
-                            color: SangakColors.primary,
+                            color: BabkaColors.primary,
                           ),
                         ),
                       ],
@@ -551,7 +551,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                 Row(
                   children: [
                     Expanded(
-                      child: SangakTextField(
+                      child: BabkaTextField(
                         label: l10n.building,
                         controller: _buildingController,
                         focusNode: _buildingFocus,
@@ -561,7 +561,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: SangakTextField(
+                      child: BabkaTextField(
                         label: l10n.floor,
                         controller: _floorController,
                         inputFormatters: [LengthLimitingTextInputFormatter(8)],
@@ -572,7 +572,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: SangakTextField(
+                      child: BabkaTextField(
                         label: l10n.door,
                         controller: _doorController,
                         focusNode: _doorFocus,
@@ -586,7 +586,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
                   ],
                 ),
                 const SizedBox(height: 16),
-                SangakTextField(
+                BabkaTextField(
                   label: l10n.addDeliveryNote,
                   hintText: l10n.addDeliveryNote,
                   controller: _noteController,
@@ -599,13 +599,13 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
         ),
       ),
       bottomSheet: Container(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         decoration: BoxDecoration(
-          color: SangakColors.surface,
-          boxShadow: SangakDimens.shadowHigh,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+          color: BabkaColors.surface,
+          boxShadow: BabkaDimens.shadowHigh,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
         ),
-        child: SangakButton.primary(
+        child: BabkaButton.primary(
           label: l10n.continueButton,
           width: double.infinity,
           onPressed: _onSave,
@@ -645,22 +645,22 @@ class _LabelChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? SangakColors.primary : SangakColors.surface,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+          color: isSelected ? BabkaColors.primary : BabkaColors.surface,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
           border: Border.all(
-            color: isSelected ? SangakColors.primary : SangakColors.border,
+            color: isSelected ? BabkaColors.primary : BabkaColors.border,
           ),
-          boxShadow: isSelected ? SangakDimens.shadowLow : null,
+          boxShadow: isSelected ? BabkaDimens.shadowLow : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: isSelected ? Colors.white : SangakColors.inkLight),
+            Icon(icon, size: 16, color: isSelected ? Colors.white : BabkaColors.inkLight),
             const SizedBox(width: 6),
             Text(
               label,
-              style: SangakTypography.bodySmall(context).copyWith(
-                color: isSelected ? Colors.white : SangakColors.inkLight,
+              style: BabkaTypography.bodySmall(context).copyWith(
+                color: isSelected ? Colors.white : BabkaColors.inkLight,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

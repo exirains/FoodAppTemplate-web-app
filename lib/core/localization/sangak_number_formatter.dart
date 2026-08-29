@@ -1,4 +1,4 @@
-class SangakNumberFormatter {
+class BabkaNumberFormatter {
   static String format(dynamic value, String languageCode) {
     String stringValue = value.toString();
     if (languageCode == 'fa') {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../../core/design_system/sangak_colors.dart';
 import '../../../core/design_system/sangak_typography.dart';
 import '../../../core/design_system/sangak_dimens.dart';
@@ -35,14 +36,14 @@ class SettingsBottomSheet extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
       ),
       padding: const EdgeInsets.fromLTRB(
-        SangakDimens.spacing24,
-        SangakDimens.spacing16,
-        SangakDimens.spacing24,
-        SangakDimens.spacing48,
+        BabkaDimens.spacing24,
+        BabkaDimens.spacing16,
+        BabkaDimens.spacing24,
+        BabkaDimens.spacing48,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -51,26 +52,26 @@ class SettingsBottomSheet extends ConsumerWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: SangakColors.border,
+              color: BabkaColors.border,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: SangakDimens.spacing32),
+          const SizedBox(height: BabkaDimens.spacing32),
           Text(
             l10n.settings,
-            style: SangakTypography.h2(context),
+            style: BabkaTypography.h2(context),
           ),
-          const SizedBox(height: SangakDimens.spacing32),
+          const SizedBox(height: BabkaDimens.spacing32),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
               l10n.language,
-              style: SangakTypography.title(context),
+              style: BabkaTypography.title(context),
             ),
           ),
-          const SizedBox(height: SangakDimens.spacing16),
+          const SizedBox(height: BabkaDimens.spacing16),
           ...languages.map((lang) => Padding(
-                padding: const EdgeInsets.only(bottom: SangakDimens.spacing12),
+                padding: const EdgeInsets.only(bottom: BabkaDimens.spacing12),
                 child: LanguageCard(
                   label: lang['label']!,
                   flag: lang['flag']!,
@@ -80,36 +81,33 @@ class SettingsBottomSheet extends ConsumerWidget {
                   },
                 ),
               )),
-          const SizedBox(height: SangakDimens.spacing32),
+          const SizedBox(height: BabkaDimens.spacing32),
           const Divider(),
-          const SizedBox(height: SangakDimens.spacing16),
+          const SizedBox(height: BabkaDimens.spacing16),
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {
               final version = snapshot.data?.version ?? VersionConfig.version;
               final formattedVersion = SangakNumberFormatter.format(version, currentLocale.languageCode);
-              return Column(
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(l10n.appDomain, style: SangakTypography.bodyMedium(context)),
-                      Text(
-                        'www.sangak.tr',
-                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.primary, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  Text(
+                    'v$formattedVersion',
+                    style: BabkaTypography.caption(context).copyWith(color: BabkaColors.inkLight),
                   ),
-                  const SizedBox(height: SangakDimens.spacing16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(l10n.appVersion, style: SangakTypography.bodyMedium(context)),
-                      Text(
-                        'Sangak v$formattedVersion',
-                        style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                  const SizedBox(width: 24),
+                  GestureDetector(
+                    onTap: () => launchUrl(Uri.parse('https://www.sangak.tr'), mode: LaunchMode.externalApplication),
+                    child: Text(
+                      'www.sangak.tr',
+                      style: BabkaTypography.caption(context).copyWith(
+                        color: BabkaColors.primary,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        decorationColor: BabkaColors.primary,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               );

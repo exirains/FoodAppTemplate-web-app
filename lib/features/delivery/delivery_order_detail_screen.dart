@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -32,7 +32,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     try {
       await ref.read(deliveryDashboardProvider.notifier).pickupOrder(order.id);
       if (mounted) {
-        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
+        BabkaToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
       }
     } catch (e) {
       if (mounted) {
@@ -40,7 +40,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         if (msg.contains('orderAlreadyAssigned')) {
           msg = l10n.orderAlreadyAssigned;
         }
-        SangakToast.show(context, msg);
+        BabkaToast.show(context, msg);
       }
     } finally {
       if (mounted) setState(() => _isUpdating = false);
@@ -56,17 +56,17 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
-        if (mounted) SangakToast.show(context, AppLocalizations.of(context).locationError);
+        if (mounted) BabkaToast.show(context, AppLocalizations.of(context).locationError);
       }
     } else {
-      if (mounted) SangakToast.show(context, AppLocalizations.of(context).locationError);
+      if (mounted) BabkaToast.show(context, AppLocalizations.of(context).locationError);
     }
   }
 
   Future<void> _callCustomer(String? phone) async {
     final l10n = AppLocalizations.of(context);
     if (phone == null || phone.isEmpty) {
-      if (mounted) SangakToast.show(context, l10n.noPhoneNumberAvailable);
+      if (mounted) BabkaToast.show(context, l10n.noPhoneNumberAvailable);
       return;
     }
     
@@ -76,7 +76,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     try {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
-      if (mounted) SangakToast.show(context, l10n.couldNotOpenPhoneDialer);
+      if (mounted) BabkaToast.show(context, l10n.couldNotOpenPhoneDialer);
     }
   }
 
@@ -108,7 +108,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     }
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.deliveryDetails),
         elevation: 0,
@@ -118,7 +118,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           _buildStatusBanner(context, order),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -161,19 +161,19 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     
     switch (order.status) {
       case OrderStatus.ready:
-        bgColor = SangakColors.info;
+        bgColor = BabkaColors.info;
         icon = Icons.inventory_2_outlined;
         break;
       case OrderStatus.outForDelivery:
-        bgColor = SangakColors.primary;
+        bgColor = BabkaColors.primary;
         icon = Icons.delivery_dining;
         break;
       case OrderStatus.delivered:
-        bgColor = SangakColors.success;
+        bgColor = BabkaColors.success;
         icon = Icons.check_circle_outline;
         break;
       default:
-        bgColor = SangakColors.inkLight;
+        bgColor = BabkaColors.inkLight;
         icon = Icons.help_outline;
     }
 
@@ -187,7 +187,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           const SizedBox(width: 12),
           Text(
             statusText,
-            style: SangakTypography.title(context).copyWith(
+            style: BabkaTypography.title(context).copyWith(
               color: bgColor,
               fontSize: 14,
               letterSpacing: 1.1,
@@ -196,7 +196,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
           const Spacer(),
           Text(
             order.orderNumber,
-            style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
+            style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -209,14 +209,14 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       children: [
         Row(
           children: [
-            Icon(icon, size: 18, color: SangakColors.inkLight),
+            Icon(icon, size: 18, color: BabkaColors.inkLight),
             const SizedBox(width: 8),
             Text(
               title.toUpperCase(),
-              style: SangakTypography.caption(context).copyWith(
+              style: BabkaTypography.caption(context).copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-                color: SangakColors.inkLight,
+                color: BabkaColors.inkLight,
               ),
             ),
           ],
@@ -236,9 +236,9 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Row(
         children: [
@@ -246,22 +246,22 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(fullName, style: SangakTypography.h3(context).copyWith(fontSize: 18)),
+                Text(fullName, style: BabkaTypography.h3(context).copyWith(fontSize: 18)),
                 if (phone != null)
-                  Text(phone, style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight)),
+                  Text(phone, style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight)),
               ],
             ),
           ),
           if (phone != null)
             Material(
-              color: SangakColors.primary.withValues(alpha: 0.1),
+              color: BabkaColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 onTap: () => _callCustomer(phone),
                 borderRadius: BorderRadius.circular(12),
                 child: const Padding(
                   padding: EdgeInsets.all(12),
-                  child: Icon(Icons.phone_forwarded_rounded, color: SangakColors.primary),
+                  child: Icon(Icons.phone_forwarded_rounded, color: BabkaColors.primary),
                 ),
               ),
             ),
@@ -277,23 +277,23 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(addr['address'] ?? '', style: SangakTypography.bodyLarge(context)),
+          Text(addr['address'] ?? '', style: BabkaTypography.bodyLarge(context)),
           const SizedBox(height: 8),
           Text(
             '${addr['district']}, ${addr['city']}',
-            style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.inkLight),
+            style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.inkLight),
           ),
           const SizedBox(height: 4),
           Text(
             '${l10n.building}: ${addr['building_number'] ?? '-'} • ${l10n.floor}: ${addr['floor'] ?? '-'} • ${l10n.door}: ${addr['door_number'] ?? '-'}',
-            style: SangakTypography.bodySmall(context),
+            style: BabkaTypography.bodySmall(context),
           ),
           if (deliveryNote != null && deliveryNote.isNotEmpty) ...[
             const SizedBox(height: 16),
@@ -301,19 +301,19 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: SangakColors.warning.withValues(alpha: 0.05),
+                color: BabkaColors.warning.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: SangakColors.warning.withValues(alpha: 0.2)),
+                border: Border.all(color: BabkaColors.warning.withValues(alpha: 0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline, size: 18, color: SangakColors.warning),
+                  const Icon(Icons.info_outline, size: 18, color: BabkaColors.warning),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       deliveryNote,
-                      style: SangakTypography.bodyMedium(context).copyWith(color: SangakColors.secondary),
+                      style: BabkaTypography.bodyMedium(context).copyWith(color: BabkaColors.secondary),
                     ),
                   ),
                 ],
@@ -321,7 +321,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
             ),
           ],
           const SizedBox(height: 20),
-          SangakButton.outlined(
+          BabkaButton.outlined(
             label: l10n.openMap,
             icon: Icons.directions_rounded,
             width: double.infinity,
@@ -337,9 +337,9 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
-        border: Border.all(color: SangakColors.border),
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         children: [
@@ -350,18 +350,18 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: SangakColors.background,
+                    color: BabkaColors.background,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     '${item.quantity}x',
-                    style: SangakTypography.title(context).copyWith(fontSize: 14, color: SangakColors.primary),
+                    style: BabkaTypography.title(context).copyWith(fontSize: 14, color: BabkaColors.primary),
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text(item.localizedName(lang), style: SangakTypography.bodyMedium(context))),
+                Expanded(child: Text(item.localizedName(lang), style: BabkaTypography.bodyMedium(context))),
                 Text(SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang), 
-                  style: SangakTypography.bodySmall(context)),
+                  style: BabkaTypography.bodySmall(context)),
               ],
             ),
           )),
@@ -371,11 +371,11 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
             children: [
               Text(
                 l10n.totalToCollect.toUpperCase(), 
-                style: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.bold, color: SangakColors.primary),
+                style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold, color: BabkaColors.primary),
               ),
               Text(
                 SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
-                style: SangakTypography.h3(context).copyWith(color: SangakColors.primary),
+                style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary),
               ),
             ],
           ),
@@ -394,7 +394,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         title: Column(
           children: [
-            const Icon(Icons.verified_user_outlined, color: SangakColors.primary, size: 48),
+            const Icon(Icons.verified_user_outlined, color: BabkaColors.primary, size: 48),
             const SizedBox(height: 16),
             Text(l10n.deliveryVerification, textAlign: TextAlign.center),
           ],
@@ -412,23 +412,23 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                 autofocus: true,
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                style: SangakTypography.h1(context).copyWith(
+                style: BabkaTypography.h1(context).copyWith(
                   fontSize: 48, 
                   letterSpacing: 16,
-                  color: SangakColors.primary,
+                  color: BabkaColors.primary,
                 ),
                 decoration: InputDecoration(
                   hintText: "00",
-                  hintStyle: TextStyle(color: SangakColors.border.withValues(alpha: 0.5)),
+                  hintStyle: TextStyle(color: BabkaColors.border.withValues(alpha: 0.5)),
                   counterText: "",
                   contentPadding: const EdgeInsets.symmetric(vertical: 16),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: SangakColors.primary, width: 2),
+                    borderSide: const BorderSide(color: BabkaColors.primary, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: SangakColors.primary, width: 3),
+                    borderSide: const BorderSide(color: BabkaColors.primary, width: 3),
                   ),
                 ),
               ),
@@ -438,16 +438,16 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false), 
-            child: Text(l10n.cancel, style: const TextStyle(color: SangakColors.inkLight)),
+            child: Text(l10n.cancel, style: const TextStyle(color: BabkaColors.inkLight)),
           ),
-          SangakButton.primary(
+          BabkaButton.primary(
             label: l10n.confirmButton,
             width: 120,
             onPressed: () {
               if (controller.text == (order.deliveryCode ?? "00")) {
                 Navigator.pop(context, true);
               } else {
-                SangakToast.show(context, l10n.invalidVerificationCode);
+                BabkaToast.show(context, l10n.invalidVerificationCode);
               }
             },
           ),
@@ -469,12 +469,12 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
         ref.read(analyticsServiceProvider).logDeliveryCompleted(orderId: order.id);
 
         if (mounted) {
-          SangakToast.show(context, l10n.deliveredStep);
+          BabkaToast.show(context, l10n.deliveredStep);
           Navigator.pop(context);
         }
       } catch (e) {
         if (mounted) {
-          SangakToast.show(context, l10n.errorOccurred);
+          BabkaToast.show(context, l10n.errorOccurred);
         }
       } finally {
         if (mounted) setState(() => _isUpdating = false);
@@ -489,7 +489,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
 
     if (order.status == OrderStatus.outForDelivery && isAssignedToMe) {
       mainAction = Expanded(
-        child: SangakButton.primary(
+        child: BabkaButton.primary(
           label: l10n.markDelivered,
           onPressed: () => _showVerificationDialog(order),
           isLoading: _isUpdating,
@@ -497,7 +497,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       );
     } else if (order.status == OrderStatus.ready) {
       mainAction = Expanded(
-        child: SangakButton.primary(
+        child: BabkaButton.primary(
           label: l10n.pickupOrder,
           onPressed: () => _updateStatus(order, OrderStatus.outForDelivery),
           isLoading: _isUpdating,
@@ -508,11 +508,11 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     }
 
     return Container(
-      padding: const EdgeInsets.all(SangakDimens.spacing24),
+      padding: const EdgeInsets.all(BabkaDimens.spacing24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        boxShadow: SangakDimens.shadowHigh,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(SangakDimens.radiusXL)),
+        color: BabkaColors.surface,
+        boxShadow: BabkaDimens.shadowHigh,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(BabkaDimens.radiusXL)),
       ),
       child: SafeArea(
         child: Row(

@@ -3,7 +3,7 @@ import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
 
-class SangakToast {
+class BabkaToast {
   static OverlayEntry? _activeEntry;
 
   static void show(BuildContext context, String message, {IconData icon = Icons.check_circle_rounded}) {
@@ -105,13 +105,13 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
     // Dynamically adjust position based on keyboard (viewInsets)
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     final bottomPosition = bottomInset > 0 
-        ? bottomInset + SangakDimens.spacing24 
+        ? bottomInset + BabkaDimens.spacing24 
         : 110.0;
 
     return Positioned(
       bottom: bottomPosition,
-      left: SangakDimens.spacing24,
-      right: SangakDimens.spacing24,
+      left: BabkaDimens.spacing24,
+      right: BabkaDimens.spacing24,
       // IgnorePointer ensures that while the toast is fading out, 
       // it doesn't block touches to widgets behind it.
       child: IgnorePointer(
@@ -126,7 +126,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                   decoration: BoxDecoration(
-                    color: SangakColors.ink.withValues(alpha: 0.98),
+                    color: BabkaColors.ink.withValues(alpha: 0.98),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -136,19 +136,19 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                       ),
                     ],
                     border: Border.all(
-                      color: SangakColors.primary.withValues(alpha: 0.3),
+                      color: BabkaColors.primary.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(widget.icon, color: SangakColors.primary, size: 20),
+                      Icon(widget.icon, color: BabkaColors.primary, size: 20),
                       const SizedBox(width: 12),
                       Flexible(
                         child: Text(
                           widget.message,
-                          style: SangakTypography.bodyMedium(context).copyWith(
+                          style: BabkaTypography.bodyMedium(context).copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                           ),
