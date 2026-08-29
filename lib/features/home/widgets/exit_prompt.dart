@@ -71,8 +71,8 @@ class _ExitPromptState extends State<ExitPrompt> with SingleTickerProviderStateM
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                     decoration: BoxDecoration(
-                      color: SangakColors.ink.withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+                      color: BabkaColors.ink.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.2),
@@ -81,18 +81,18 @@ class _ExitPromptState extends State<ExitPrompt> with SingleTickerProviderStateM
                         ),
                       ],
                       border: Border.all(
-                        color: SangakColors.primary.withValues(alpha: 0.5),
+                        color: BabkaColors.primary.withValues(alpha: 0.5),
                         width: 1.5,
                       ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.exit_to_app_rounded, color: SangakColors.primary, size: 20),
+                        const Icon(Icons.exit_to_app_rounded, color: BabkaColors.primary, size: 20),
                         const SizedBox(width: 12),
                         Text(
                           widget.message,
-                          style: SangakTypography.title(context).copyWith(
+                          style: BabkaTypography.title(context).copyWith(
                             color: Colors.white,
                             fontSize: 14,
                             letterSpacing: 0.2,

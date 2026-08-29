@@ -133,7 +133,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                 children: [
                   Text(l10n.todaysRevenue, style: BabkaTypography.bodySmall(context).copyWith(color: Colors.white70)),
                   const SizedBox(height: BabkaDimens.spacing8),
-                  Text(SangakNumberFormatter.formatCurrency(revenue, lang), style: BabkaTypography.display(context).copyWith(color: Colors.white, fontSize: 36)),
+                  Text(BabkaNumberFormatter.formatCurrency(revenue, lang), style: BabkaTypography.display(context).copyWith(color: Colors.white, fontSize: 36)),
                 ],
               ),
             ),

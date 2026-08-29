@@ -27,33 +27,33 @@ class ReferralSection extends ConsumerWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: () => _showReferralDetails(context, referralCode.code, statsAsync, l10n),
-            borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+            borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
             child: Ink(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: SangakColors.surface,
-                borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-                border: Border.all(color: SangakColors.border),
+                color: BabkaColors.surface,
+                borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+                border: Border.all(color: BabkaColors.border),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: SangakColors.primary.withValues(alpha: 0.1),
+                      color: BabkaColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.card_giftcard_rounded, color: SangakColors.primary, size: 20),
+                    child: const Icon(Icons.card_giftcard_rounded, color: BabkaColors.primary, size: 20),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.referralSystemTitle, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+                        Text(l10n.referralSystemTitle, style: BabkaTypography.title(context).copyWith(fontSize: 16)),
                         Text(
                           l10n.referralSystemDesc,
-                          style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                          style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight),
                         ),
                       ],
                     ),
@@ -62,7 +62,7 @@ class ReferralSection extends ConsumerWidget {
                     Directionality.of(context) == TextDirection.rtl 
                         ? Icons.chevron_left 
                         : Icons.chevron_right, 
-                    color: SangakColors.inkLight, 
+                    color: BabkaColors.inkLight, 
                     size: 20,
                   ),
                 ],
@@ -97,24 +97,24 @@ class _ReferralDetailsSheet extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        color: SangakColors.background,
+        color: BabkaColors.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
       padding: EdgeInsets.only(
-        left: SangakDimens.spacing32,
-        right: SangakDimens.spacing32,
-        top: SangakDimens.spacing32,
-        bottom: MediaQuery.of(context).padding.bottom + SangakDimens.spacing32,
+        left: BabkaDimens.spacing32,
+        right: BabkaDimens.spacing32,
+        top: BabkaDimens.spacing32,
+        bottom: MediaQuery.of(context).padding.bottom + BabkaDimens.spacing32,
       ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(width: 40, height: 4, decoration: BoxDecoration(color: SangakColors.border, borderRadius: BorderRadius.circular(2))),
+            Container(width: 40, height: 4, decoration: BoxDecoration(color: BabkaColors.border, borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 24),
-            Text(l10n.referralSystemTitle, style: SangakTypography.h2(context)),
+            Text(l10n.referralSystemTitle, style: BabkaTypography.h2(context)),
             const SizedBox(height: 12),
-            Text(l10n.referralSystemDesc, textAlign: TextAlign.center, style: SangakTypography.bodyMedium(context)),
+            Text(l10n.referralSystemDesc, textAlign: TextAlign.center, style: BabkaTypography.bodyMedium(context)),
             const SizedBox(height: 32),
             _buildCodeDisplay(context, code, l10n),
             const SizedBox(height: 32),
@@ -147,7 +147,7 @@ class _ReferralDetailsSheet extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.referralStats, style: SangakTypography.title(context)),
+        Text(l10n.referralStats, style: BabkaTypography.title(context)),
         const SizedBox(height: 16),
         ListView.separated(
           shrinkWrap: true,
@@ -163,27 +163,27 @@ class _ReferralDetailsSheet extends ConsumerWidget {
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: (isRewarded ? Colors.green : SangakColors.inkLight).withValues(alpha: 0.1),
+                  color: (isRewarded ? Colors.green : BabkaColors.inkLight).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isRewarded ? Icons.check_circle_outline_rounded : Icons.pending_outlined,
-                  color: isRewarded ? Colors.green : SangakColors.inkLight,
+                  color: isRewarded ? Colors.green : BabkaColors.inkLight,
                   size: 20,
                 ),
               ),
               title: Text(
                 referral.referredUserName ?? 'New User',
-                style: SangakTypography.title(context).copyWith(fontSize: 14),
+                style: BabkaTypography.title(context).copyWith(fontSize: 14),
               ),
               subtitle: Text(
                 '${referral.createdAt.day}/${referral.createdAt.month}/${referral.createdAt.year}',
-                style: SangakTypography.caption(context),
+                style: BabkaTypography.caption(context),
               ),
               trailing: Text(
                 isRewarded ? l10n.referralStatusRewarded : l10n.referralStatusPending,
-                style: SangakTypography.bodySmall(context).copyWith(
-                  color: isRewarded ? Colors.green : SangakColors.inkLight,
+                style: BabkaTypography.bodySmall(context).copyWith(
+                  color: isRewarded ? Colors.green : BabkaColors.inkLight,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -198,24 +198,24 @@ class _ReferralDetailsSheet extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: SangakColors.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
-        border: Border.all(color: SangakColors.primary.withValues(alpha: 0.2)),
+        color: BabkaColors.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+        border: Border.all(color: BabkaColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
-          Text(l10n.invitationCodeLabel, style: SangakTypography.caption(context)),
+          Text(l10n.invitationCodeLabel, style: BabkaTypography.caption(context)),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(code, style: SangakTypography.h2(context).copyWith(color: SangakColors.primary, letterSpacing: 4)),
+              Text(code, style: BabkaTypography.h2(context).copyWith(color: BabkaColors.primary, letterSpacing: 4)),
               const SizedBox(width: 12),
               IconButton(
-                icon: const Icon(Icons.copy_rounded, color: SangakColors.primary),
+                icon: const Icon(Icons.copy_rounded, color: BabkaColors.primary),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: code));
-                  SangakToast.show(context, l10n.copySuccess);
+                  BabkaToast.show(context, l10n.copySuccess);
                 },
               ),
             ],
@@ -227,9 +227,9 @@ class _ReferralDetailsSheet extends ConsumerWidget {
             icon: const Icon(Icons.share_rounded),
             label: Text(l10n.shareCode),
             style: ElevatedButton.styleFrom(
-              backgroundColor: SangakColors.primary,
+              backgroundColor: BabkaColors.primary,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SangakDimens.radiusM)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BabkaDimens.radiusM)),
             ),
           ),
         ],
@@ -251,9 +251,9 @@ class _ReferralDetailsSheet extends ConsumerWidget {
   Widget _buildStatBox(BuildContext context, String value, String label) {
     return Column(
       children: [
-        Text(value, style: SangakTypography.h3(context)),
+        Text(value, style: BabkaTypography.h3(context)),
         const SizedBox(height: 4),
-        Text(label, style: SangakTypography.caption(context), textAlign: TextAlign.center),
+        Text(label, style: BabkaTypography.caption(context), textAlign: TextAlign.center),
       ],
     );
   }

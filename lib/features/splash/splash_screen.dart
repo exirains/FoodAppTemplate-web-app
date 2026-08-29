@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_tokens.dart';
@@ -40,7 +40,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     _scaleAnimation = Tween<double>(begin: 0.98, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: SangakTokens.curveEmphasized,
+        curve: BabkaTokens.curveEmphasized,
       ),
     );
 
@@ -129,7 +129,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -156,10 +156,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 const SizedBox(height: 12),
                 Text(
                   l10n.bakerySubtitle.toUpperCase(),
-                  style: SangakTypography.subtitle(context).copyWith(
+                  style: BabkaTypography.subtitle(context).copyWith(
                     letterSpacing: 4,
                     fontSize: 16,
-                    color: SangakColors.inkLight,
+                    color: BabkaColors.inkLight,
                   ),
                 ),
               ],

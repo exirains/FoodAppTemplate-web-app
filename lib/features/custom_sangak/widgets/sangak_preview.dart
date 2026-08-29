@@ -23,18 +23,18 @@ class SangakPreview extends ConsumerWidget {
       width: double.infinity,
       height: 350,
       decoration: BoxDecoration(
-        color: SangakColors.background,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+        color: BabkaColors.background,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
         boxShadow: [
           BoxShadow(
-            color: SangakColors.ink.withValues(alpha: 0.05),
+            color: BabkaColors.ink.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(SangakDimens.radiusL),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusL),
         child: Stack(
           alignment: Alignment.center,
           fit: StackFit.expand,

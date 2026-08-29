@@ -146,7 +146,7 @@ class _AddressSelectionScreenState extends ConsumerState<AddressSelectionScreen>
       final errorKey = e.toString();
       
       if (errorKey.contains('locationServiceDisabled')) {
-        SangakConfirmDialog.show(
+        BabkaConfirmDialog.show(
           context,
           title: l10n.locationServiceOffTitle,
           message: l10n.locationServiceOffMessage,

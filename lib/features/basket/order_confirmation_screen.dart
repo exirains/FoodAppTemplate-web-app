@@ -28,7 +28,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
         ? 'SNK-${orderId!.substring(0, 4).toUpperCase()}'
         : 'SNK-${DateTime.now().millisecondsSinceEpoch.toString().substring(9)}';
         
-    final formattedOrderNumber = SangakNumberFormatter.format(orderNumber, lang);
+    final formattedOrderNumber = BabkaNumberFormatter.format(orderNumber, lang);
     
     final prepMinutes = checkoutState.estimatedPrepMinutes == 0
         ? 25

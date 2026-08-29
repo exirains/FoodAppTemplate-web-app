@@ -83,12 +83,12 @@ class _OrderCard extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(SangakNumberFormatter.format(order.orderNumber, lang), style: BabkaTypography.title(context).copyWith(fontSize: 16)),
+              Text(BabkaNumberFormatter.format(order.orderNumber, lang), style: BabkaTypography.title(context).copyWith(fontSize: 16)),
               _StatusBadge(status: order.status),
             ],
           ),
           const SizedBox(height: 8),
-          Text(SangakNumberFormatter.format(dateStr, lang), style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight)),
+          Text(BabkaNumberFormatter.format(dateStr, lang), style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight)),
           const Divider(height: 24),
           if (order.items != null)
             ...order.items!.map((item) => Padding(
@@ -96,8 +96,8 @@ class _OrderCard extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${SangakNumberFormatter.format(item.quantity, lang)}x ${item.localizedName(lang)}', style: BabkaTypography.bodyMedium(context)),
-                  Text(SangakNumberFormatter.formatCurrency(item.total, lang), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
+                  Text('${BabkaNumberFormatter.format(item.quantity, lang)}x ${item.localizedName(lang)}', style: BabkaTypography.bodyMedium(context)),
+                  Text(BabkaNumberFormatter.formatCurrency(item.total, lang), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
                 ],
               ),
             )),
@@ -109,7 +109,7 @@ class _OrderCard extends ConsumerWidget {
               Consumer(builder: (context, ref, child) {
                 final options = ref.watch(appOptionsProvider).value ?? {};
                 final fee = double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0;
-                return Text(SangakNumberFormatter.formatCurrency(fee, lang), style: BabkaTypography.title(context).copyWith(fontSize: 14, color: BabkaColors.inkLight));
+                return Text(BabkaNumberFormatter.formatCurrency(fee, lang), style: BabkaTypography.title(context).copyWith(fontSize: 14, color: BabkaColors.inkLight));
               }),
             ],
           ),
@@ -118,7 +118,7 @@ class _OrderCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.total, style: BabkaTypography.title(context)),
-              Text(SangakNumberFormatter.formatCurrency(order.totalPrice, lang), style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary)),
+              Text(BabkaNumberFormatter.formatCurrency(order.totalPrice, lang), style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary)),
             ],
           ),
           

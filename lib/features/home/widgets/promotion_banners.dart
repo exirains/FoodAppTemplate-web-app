@@ -28,7 +28,7 @@ class PromotionBanners extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+                    borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
                     image: promo.imageUrl != null
                         ? DecorationImage(
                             image: CachedNetworkImageProvider(promo.imageUrl!),
@@ -36,7 +36,7 @@ class PromotionBanners extends ConsumerWidget {
                             colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.3), BlendMode.darken),
                           )
                         : null,
-                    color: SangakColors.ink,
+                    color: BabkaColors.ink,
                   ),
                   child: Stack(
                     children: [
@@ -48,12 +48,12 @@ class PromotionBanners extends ConsumerWidget {
                           children: [
                             Text(
                               promo.title,
-                              style: SangakTypography.h3(context).copyWith(color: Colors.white),
+                              style: BabkaTypography.h3(context).copyWith(color: Colors.white),
                             ),
                             if (promo.description != null)
                               Text(
                                 promo.description!,
-                                style: SangakTypography.bodySmall(context).copyWith(color: Colors.white70),
+                                style: BabkaTypography.bodySmall(context).copyWith(color: Colors.white70),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -72,8 +72,8 @@ class PromotionBanners extends ConsumerWidget {
         height: 160,
         margin: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
-          color: SangakColors.border.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+          color: BabkaColors.border.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
         ),
       ),
       error: (_, _) => const SizedBox.shrink(),

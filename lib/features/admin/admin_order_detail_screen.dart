@@ -46,11 +46,11 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
+        BabkaToast.show(context, '${l10n.status}: ${newStatus.localizedLabel(l10n)}');
       }
     } catch (e) {
       if (mounted) {
-        SangakToast.show(context, 'Error updating order: $e');
+        BabkaToast.show(context, 'Error updating order: $e');
       }
     } finally {
       if (mounted) setState(() => _isUpdating = false);
@@ -71,12 +71,12 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        SangakToast.show(context, l10n.orderCancelled);
+        BabkaToast.show(context, l10n.orderCancelled);
         ref.invalidate(adminOrderDetailProvider(widget.orderId));
         ref.invalidate(adminOrdersProvider);
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, 'Error: $e');
+      if (mounted) BabkaToast.show(context, 'Error: $e');
     } finally {
       if (mounted) setState(() => _isUpdating = false);
     }
@@ -91,18 +91,18 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
-        if (mounted) SangakToast.show(context, AppLocalizations.of(context).locationError);
+        if (mounted) BabkaToast.show(context, AppLocalizations.of(context).locationError);
       }
     } else {
       if (mounted) {
-        SangakToast.show(context, AppLocalizations.of(context).locationError);
+        BabkaToast.show(context, AppLocalizations.of(context).locationError);
       }
     }
   }
 
   Future<void> _callCustomer(String? phone) async {
     if (phone == null || phone.isEmpty) {
-      if (mounted) SangakToast.show(context, AppLocalizations.of(context).phoneNumberRequired);
+      if (mounted) BabkaToast.show(context, AppLocalizations.of(context).phoneNumberRequired);
       return;
     }
     
@@ -117,7 +117,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
       debugPrint('🚨 Admin call failed: $e');
-      if (mounted) SangakToast.show(context, 'Could not open phone dialer');
+      if (mounted) BabkaToast.show(context, 'Could not open phone dialer');
     }
   }
 
@@ -372,7 +372,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                   ),
                 ),
                 Text(
-                  SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang),
+                  BabkaNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang),
                   style: BabkaTypography.bodyMedium(context).copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
@@ -388,7 +388,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
               final options = ref.watch(appOptionsProvider).value ?? {};
               final fee = double.tryParse(options['delivery_fee']?.toString() ?? '0') ?? 0.0;
               return Text(
-                SangakNumberFormatter.formatCurrency(fee, lang),
+                BabkaNumberFormatter.formatCurrency(fee, lang),
                 style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
               );
             }),
@@ -416,7 +416,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
           children: [
             Text(l10n.grandTotal, style: BabkaTypography.h3(context)),
             Text(
-              SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
+              BabkaNumberFormatter.formatCurrency(order.totalPrice, lang),
               style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary),
             ),
           ],
@@ -432,7 +432,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
     switch (order.status) {
       case OrderStatus.pending:
         mainAction = Expanded(
-          child: SangakButton.primary(
+          child: BabkaButton.primary(
             label: l10n.acceptAndConfirm,
             onPressed: () => _updateStatus(OrderStatus.confirmed),
             isLoading: _isUpdating,
@@ -441,7 +441,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         break;
       case OrderStatus.confirmed:
         mainAction = Expanded(
-          child: SangakButton.primary(
+          child: BabkaButton.primary(
             label: l10n.startPreparing,
             backgroundColor: BabkaColors.info,
             onPressed: () => _updateStatus(OrderStatus.preparing),
@@ -451,7 +451,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         break;
       case OrderStatus.preparing:
         mainAction = Expanded(
-          child: SangakButton.primary(
+          child: BabkaButton.primary(
             label: l10n.markAsReady,
             backgroundColor: BabkaColors.success,
             onPressed: () => _updateStatus(OrderStatus.ready),
@@ -461,7 +461,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         break;
       case OrderStatus.ready:
         mainAction = Expanded(
-          child: SangakButton.primary(
+          child: BabkaButton.primary(
             label: l10n.assignToDelivery,
             icon: Icons.person_search_rounded,
             backgroundColor: BabkaColors.primary,
@@ -472,7 +472,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         break;
       case OrderStatus.outForDelivery:
         mainAction = Expanded(
-          child: SangakButton.outlined(
+          child: BabkaButton.outlined(
             label: l10n.outForDelivery,
             onPressed: null,
             foregroundColor: BabkaColors.primary,
@@ -481,7 +481,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
         break;
       case OrderStatus.delivered:
         mainAction = Expanded(
-          child: SangakButton.outlined(
+          child: BabkaButton.outlined(
             label: l10n.statusDelivered,
             onPressed: null,
             foregroundColor: BabkaColors.success,
@@ -506,7 +506,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
               SizedBox(
                 width: 56,
                 height: 56,
-                child: SangakButton.outlined(
+                child: BabkaButton.outlined(
                   label: '',
                   icon: Icons.cancel_outlined,
                   foregroundColor: BabkaColors.error,
@@ -582,13 +582,13 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                                 
                                 // 4. Show success toast (using existing keys or newly added if possible)
                                 // For now, stick to the clear confirmation requested
-                                SangakToast.show(this.context, l10n.orderAssignedSuccessfully);
+                                BabkaToast.show(this.context, l10n.orderAssignedSuccessfully);
                               }
                               ref.invalidate(adminOrderDetailProvider(widget.orderId));
                             } catch (e) {
                               debugPrint('Error assigning delivery person: $e');
                               if (mounted) {
-                                SangakToast.show(
+                                BabkaToast.show(
                                   this.context, 
                                   l10n.errorOccurred, 
                                   icon: Icons.error_outline_rounded,

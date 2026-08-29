@@ -362,7 +362,7 @@ class BasketScreen extends ConsumerWidget {
               
               // Priority 2: Check Minimum Order Limit
               if (isBelowLimit) {
-                SangakToast.show(context, l10n.minOrderLimitError(minLimit));
+                BabkaToast.show(context, l10n.minOrderLimitError(minLimit));
                 return;
               }
 
@@ -370,7 +370,7 @@ class BasketScreen extends ConsumerWidget {
               if (hasPhone) {
                 context.push('/address-selection?from=checkout');
               } else {
-                SangakToast.show(context, l10n.addPhoneToOrder);
+                BabkaToast.show(context, l10n.addPhoneToOrder);
                 ref.read(tabProvider.notifier).state = 3;
               }
             },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../core/design_system/sangak_colors.dart';
 import '../../core/design_system/sangak_typography.dart';
 import '../../core/design_system/sangak_dimens.dart';
@@ -57,13 +57,13 @@ class AuthPromptBottomSheet extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(SangakDimens.spacing24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(BabkaDimens.spacing24)),
       ),
       padding: EdgeInsets.fromLTRB(
-        SangakDimens.spacing24,
-        SangakDimens.spacing16,
-        SangakDimens.spacing24,
-        mediaQuery.viewInsets.bottom + SangakDimens.spacing24,
+        BabkaDimens.spacing24,
+        BabkaDimens.spacing16,
+        BabkaDimens.spacing24,
+        mediaQuery.viewInsets.bottom + BabkaDimens.spacing24,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -79,7 +79,7 @@ class AuthPromptBottomSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: SangakDimens.spacing24),
+            const SizedBox(height: BabkaDimens.spacing24),
             // Logo or Icon
             if (showLogo)
               const AppLogo.medium()
@@ -95,43 +95,43 @@ class AuthPromptBottomSheet extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: SangakColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(SangakDimens.spacing16),
+                  color: BabkaColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(BabkaDimens.spacing16),
                 ),
                 child: Icon(
                   Icons.favorite_outline,
                   size: 40,
-                  color: SangakColors.primary,
+                  color: BabkaColors.primary,
                 ),
               ),
-            const SizedBox(height: SangakDimens.spacing24),
+            const SizedBox(height: BabkaDimens.spacing24),
             // Title
             Text(
               title ?? l10n.createAccount,
-              style: SangakTypography.h2(context),
+              style: BabkaTypography.h2(context),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: SangakDimens.spacing12),
+            const SizedBox(height: BabkaDimens.spacing12),
             // Message
             Text(
               message ?? l10n.basketGuestMessage,
-              style: SangakTypography.bodyLarge(context).copyWith(
+              style: BabkaTypography.bodyLarge(context).copyWith(
                 color: Colors.grey.shade600,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: SangakDimens.spacing40),
+            const SizedBox(height: BabkaDimens.spacing40),
             // Create Account button
-            SangakButton.primary(
+            BabkaButton.primary(
               label: l10n.createAccount,
               width: double.infinity,
               onPressed: () {
                 context.pop('register');
               },
             ),
-            const SizedBox(height: SangakDimens.spacing12),
+            const SizedBox(height: BabkaDimens.spacing12),
             // Sign In button
-            SangakButton.outlined(
+            BabkaButton.outlined(
               label: l10n.signIn,
               width: double.infinity,
               onPressed: () {
@@ -139,7 +139,7 @@ class AuthPromptBottomSheet extends StatelessWidget {
               },
             ),
             if (showMaybeLater) ...[
-              const SizedBox(height: SangakDimens.spacing12),
+              const SizedBox(height: BabkaDimens.spacing12),
               TextButton(
                 onPressed: () {
                   onMaybeLater?.call();
@@ -147,7 +147,7 @@ class AuthPromptBottomSheet extends StatelessWidget {
                 },
                 child: Text(
                   l10n.maybeLater,
-                  style: SangakTypography.bodyMedium(context).copyWith(
+                  style: BabkaTypography.bodyMedium(context).copyWith(
                     color: Colors.grey.shade600,
                   ),
                 ),

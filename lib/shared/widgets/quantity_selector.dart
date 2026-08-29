@@ -30,7 +30,7 @@ class QuantitySelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCode = ref.watch(localeProvider).languageCode;
-    final formattedQuantity = SangakNumberFormatter.format(quantity, languageCode);
+    final formattedQuantity = BabkaNumberFormatter.format(quantity, languageCode);
     final canIncrement = maxQuantity == null || quantity < maxQuantity!;
 
     return GestureDetector(
@@ -39,8 +39,8 @@ class QuantitySelector extends ConsumerWidget {
       child: Container(
         height: compact ? 34 : 36,
         decoration: BoxDecoration(
-          color: SangakColors.primary,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+          color: BabkaColors.primary,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class QuantitySelector extends ConsumerWidget {
                 child: Text(
                   formattedQuantity,
                   textAlign: TextAlign.center,
-                  style: SangakTypography.title(context).copyWith(
+                  style: BabkaTypography.title(context).copyWith(
                     color: Colors.white,
                     fontSize: compact ? 13 : 14,
                     fontWeight: FontWeight.w800,
@@ -98,7 +98,7 @@ class _IconButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
         child: Ink(
           padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 8),
           child: Icon(

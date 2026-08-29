@@ -153,7 +153,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
-                        SangakTextField(
+                        BabkaTextField(
                           label: l10n.fullName,
                           hintText: l10n.enterFullName,
                           controller: nameController,
@@ -165,7 +165,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           },
                         ),
                         const SizedBox(height: 24),
-                        SangakTextField(
+                        BabkaTextField(
                           label: l10n.phoneNumber,
                           hintText: '+90 5XX XXX XX XX',
                           controller: phoneController,

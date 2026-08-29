@@ -77,10 +77,10 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
         Navigator.pop(context);
-        SangakToast.show(context, l10n.feedbackThankYou(pointsForReview));
+        BabkaToast.show(context, l10n.feedbackThankYou(pointsForReview));
       }
     } catch (e) {
-      if (mounted) SangakToast.show(context, '${AppLocalizations.of(context).errorOccurred}: $e');
+      if (mounted) BabkaToast.show(context, '${AppLocalizations.of(context).errorOccurred}: $e');
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
@@ -110,7 +110,7 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
               _buildStarRating(l10n.deliveryService, _delivery, (v) => setState(() => _delivery = v)),
               
               const SizedBox(height: 24),
-              SangakTextField(
+              BabkaTextField(
                 label: l10n.writtenReview,
                 controller: _reviewController,
                 maxLines: 3,

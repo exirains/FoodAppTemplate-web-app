@@ -93,7 +93,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   type: 'earn',
                 );
             if (mounted) {
-              SangakToast.show(
+              BabkaToast.show(
                 context,
                 '🔥 $newStreak Day Streak! +$bonus Pts',
               );

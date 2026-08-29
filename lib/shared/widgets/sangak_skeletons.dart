@@ -12,7 +12,7 @@ class SangakSkeleton extends StatefulWidget {
     super.key,
     required this.width,
     required this.height,
-    this.borderRadius = SangakDimens.radiusM,
+    this.borderRadius = BabkaDimens.radiusM,
   });
 
   @override
@@ -48,7 +48,7 @@ class _SangakSkeletonState extends State<SangakSkeleton>
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
-          color: SangakColors.border,
+          color: BabkaColors.border,
           borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
       ),
@@ -71,9 +71,9 @@ class ProductCardSkeleton extends StatelessWidget {
     return Container(
       width: width,
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-        boxShadow: SangakDimens.shadowLow,
+        color: BabkaColors.surface,
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+        boxShadow: BabkaDimens.shadowLow,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -84,7 +84,7 @@ class ProductCardSkeleton extends StatelessWidget {
             child: SangakSkeleton(
               width: width,
               height: width / imageAspectRatio,
-              borderRadius: SangakDimens.radiusXL,
+              borderRadius: BabkaDimens.radiusXL,
             ),
           ),
           Padding(
@@ -101,7 +101,7 @@ class ProductCardSkeleton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     SangakSkeleton(width: 50, height: 18),
-                    SangakSkeleton(width: 70, height: 32, borderRadius: SangakDimens.radiusM),
+                    SangakSkeleton(width: 70, height: 32, borderRadius: BabkaDimens.radiusM),
                   ],
                 ),
               ],

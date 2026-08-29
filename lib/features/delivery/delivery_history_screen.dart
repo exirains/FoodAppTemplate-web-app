@@ -169,7 +169,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  SangakNumberFormatter.formatCurrency(totalEarnings, lang),
+                  BabkaNumberFormatter.formatCurrency(totalEarnings, lang),
                   style: BabkaTypography.h2(context).copyWith(color: Colors.white),
                 ),
               ],
@@ -448,7 +448,7 @@ class _HistoryOrderCard extends StatelessWidget {
                   children: [
                     Text(order.orderNumber, style: BabkaTypography.title(context).copyWith(fontSize: 14)),
                     Text(
-                      SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
+                      BabkaNumberFormatter.formatCurrency(order.totalPrice, lang),
                       style: BabkaTypography.title(context).copyWith(color: BabkaColors.primary, fontSize: 14),
                     ),
                   ],

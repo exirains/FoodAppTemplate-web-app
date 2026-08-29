@@ -97,7 +97,7 @@ class ProductTag extends StatelessWidget {
           ],
           Text(
             label, // Removed .toUpperCase()
-            style: SangakTypography.caption(context).copyWith(
+            style: BabkaTypography.caption(context).copyWith(
               color: Colors.white, // Creamy white for better contrast
               fontWeight: FontWeight.w600,
               fontSize: 11,
@@ -132,7 +132,7 @@ class ProductTag extends StatelessWidget {
           icon: null,
         );
       case ProductTagType.general:
-        return _TagTheme(color: SangakColors.accent);
+        return _TagTheme(color: BabkaColors.accent);
     }
   }
 }

@@ -77,7 +77,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
     if (!authRateLimiter.isAllowed(email)) {
       final secondsLeft = authRateLimiter.getSecondsUntilRetry(email);
       setState(() => _error = l10n.tooManyAttempts);
-      SangakToast.show(context, '${l10n.tooManyAttempts} ($secondsLeft${l10n.secondsShort})');
+      BabkaToast.show(context, '${l10n.tooManyAttempts} ($secondsLeft${l10n.secondsShort})');
       return;
     }
     
@@ -90,7 +90,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
       final user = await ref.read(authProvider.notifier).signIn(email, _passwordController.text);
       if (!mounted) return;
       if (user != null) {
-        SangakToast.show(context, l10n.loginSuccessful);
+        BabkaToast.show(context, l10n.loginSuccessful);
         ref.read(tabProvider.notifier).state = 0;
         context.go('/home');
       }
@@ -99,7 +99,7 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
       final (_, messageKey) = AuthErrorHandler.handleAuthError(e);
       final errorMessage = _getLocalizedError(messageKey, l10n);
       setState(() => _error = errorMessage);
-      SangakToast.show(context, errorMessage);
+      BabkaToast.show(context, errorMessage);
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }

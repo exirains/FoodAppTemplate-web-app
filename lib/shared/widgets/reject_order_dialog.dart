@@ -32,7 +32,7 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Row(
         children: [
-          const Icon(Icons.warning_amber_rounded, color: SangakColors.error),
+          const Icon(Icons.warning_amber_rounded, color: BabkaColors.error),
           const SizedBox(width: 12),
           Text(l10n.rejectOrder),
         ],
@@ -42,7 +42,7 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
         children: [
           Text(
             l10n.confirmRejectMessage,
-            style: SangakTypography.bodyMedium(context),
+            style: BabkaTypography.bodyMedium(context),
           ),
           const SizedBox(height: 32),
           // SLIDE TO REJECT MECHANISM
@@ -50,9 +50,9 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
             height: 64,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: SangakColors.background,
+              color: BabkaColors.background,
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: SangakColors.border),
+              border: Border.all(color: BabkaColors.border),
             ),
             child: Stack(
               children: [
@@ -60,7 +60,7 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
                   child: Text(
                     _isConfirmed ? l10n.rejected : l10n.slidetoReject,
                     style: TextStyle(
-                      color: _isConfirmed ? SangakColors.error : SangakColors.inkLight,
+                      color: _isConfirmed ? BabkaColors.error : BabkaColors.inkLight,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -72,9 +72,9 @@ class _RejectOrderDialogState extends State<RejectOrderDialog> {
                       trackShape: _FullWidthTrackShape(),
                       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 28, elevation: 4),
                       overlayShape: SliderComponentShape.noOverlay,
-                      activeTrackColor: SangakColors.error.withValues(alpha: 0.2),
+                      activeTrackColor: BabkaColors.error.withValues(alpha: 0.2),
                       inactiveTrackColor: Colors.transparent,
-                      thumbColor: SangakColors.error,
+                      thumbColor: BabkaColors.error,
                     ),
                     child: Slider(
                       value: _sliderValue,

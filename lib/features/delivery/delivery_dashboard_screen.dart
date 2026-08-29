@@ -351,7 +351,7 @@ class _DeliveryOrderCardState extends ConsumerState<_DeliveryOrderCard> {
                       _buildMetaItem(context, Icons.shopping_bag_outlined, l10n.itemsCount(itemsCount)),
                       const Spacer(),
                       Text(
-                        SangakNumberFormatter.formatCurrency(widget.order.totalPrice, ref.watch(localeProvider).languageCode), 
+                        BabkaNumberFormatter.formatCurrency(widget.order.totalPrice, ref.watch(localeProvider).languageCode), 
                         style: BabkaTypography.title(context).copyWith(color: BabkaColors.primary, fontWeight: FontWeight.w900)
                       ),
                     ],

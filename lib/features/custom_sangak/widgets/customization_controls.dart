@@ -27,18 +27,18 @@ class CustomizationSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: SangakDimens.spacing24,
+            horizontal: BabkaDimens.spacing24,
           ),
           child: Text(
             title,
-            style: SangakTypography.h3(
+            style: BabkaTypography.h3(
               context,
-            ).copyWith(color: SangakColors.primary),
+            ).copyWith(color: BabkaColors.primary),
           ),
         ),
-        const SizedBox(height: SangakDimens.spacing16),
+        const SizedBox(height: BabkaDimens.spacing16),
         ...children,
-        const SizedBox(height: SangakDimens.spacing32),
+        const SizedBox(height: BabkaDimens.spacing32),
       ],
     );
   }
@@ -62,8 +62,8 @@ class CustomizationOptionRow extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: SangakDimens.spacing24,
-        vertical: SangakDimens.spacing8,
+        horizontal: BabkaDimens.spacing24,
+        vertical: BabkaDimens.spacing8,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,15 +74,15 @@ class CustomizationOptionRow extends ConsumerWidget {
               children: [
                 Text(
                   option.name,
-                  style: SangakTypography.bodyLarge(
+                  style: BabkaTypography.bodyLarge(
                     context,
                   ).copyWith(fontWeight: FontWeight.w600),
                 ),
                 if (option.price > 0)
                   Text(
-                    '+${SangakNumberFormatter.formatCurrency(option.price, languageCode)}',
-                    style: SangakTypography.bodySmall(context).copyWith(
-                      color: SangakColors.primary,
+                    '+${BabkaNumberFormatter.formatCurrency(option.price, languageCode)}',
+                    style: BabkaTypography.bodySmall(context).copyWith(
+                      color: BabkaColors.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -127,22 +127,22 @@ class BaseSelectionCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 120,
-        margin: const EdgeInsets.only(right: SangakDimens.spacing12),
-        padding: const EdgeInsets.all(SangakDimens.spacing12),
+        margin: const EdgeInsets.only(right: BabkaDimens.spacing12),
+        padding: const EdgeInsets.all(BabkaDimens.spacing12),
         decoration: BoxDecoration(
           color: isSelected
-              ? SangakColors.primary.withValues(alpha: 0.1)
-              : SangakColors.surface,
-          borderRadius: BorderRadius.circular(SangakDimens.radiusM),
+              ? BabkaColors.primary.withValues(alpha: 0.1)
+              : BabkaColors.surface,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
           border: Border.all(
-            color: isSelected ? SangakColors.primary : SangakColors.border,
+            color: isSelected ? BabkaColors.primary : BabkaColors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(SangakDimens.radiusS),
+              borderRadius: BorderRadius.circular(BabkaDimens.radiusS),
               child: Image.network(
                 bread.imageUrl,
                 gaplessPlayback: true,
@@ -152,10 +152,10 @@ class BaseSelectionCard extends StatelessWidget {
                 errorBuilder: (_, _, _) => Container(
                   height: 60,
                   width: 60,
-                  color: SangakColors.border,
+                  color: BabkaColors.border,
                   child: const Icon(
                     Icons.bakery_dining,
-                    color: SangakColors.inkLight,
+                    color: BabkaColors.inkLight,
                   ),
                 ),
               ),
@@ -163,9 +163,9 @@ class BaseSelectionCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               bread.name,
-              style: SangakTypography.bodySmall(context).copyWith(
+              style: BabkaTypography.bodySmall(context).copyWith(
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? SangakColors.primary : SangakColors.ink,
+                color: isSelected ? BabkaColors.primary : BabkaColors.ink,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

@@ -72,7 +72,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
           _isReferralApplied = true;
           _showAuthChoices = true;
         });
-        SangakToast.show(context, AppLocalizations.of(context).invitationCodeApplied);
+        BabkaToast.show(context, AppLocalizations.of(context).invitationCodeApplied);
       } else {
         setState(() {
           _referralError = _getLocalizedError(result['error']);
@@ -82,7 +82,7 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
       }
     } catch (e) {
       if (mounted) {
-        SangakToast.show(context, AppLocalizations.of(context).errorOccurred);
+        BabkaToast.show(context, AppLocalizations.of(context).errorOccurred);
       }
     } finally {
       if (mounted) {
@@ -110,13 +110,13 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
     try {
       final user = await ref.read(authProvider.notifier).signInWithGoogle();
       if (user != null && mounted) {
-        SangakToast.show(context, l10n.registeredSuccessfully);
+        BabkaToast.show(context, l10n.registeredSuccessfully);
         ref.read(tabProvider.notifier).state = 0;
         context.go('/home');
       }
     } catch (e) {
       if (mounted) {
-        SangakToast.show(context, e.toString());
+        BabkaToast.show(context, e.toString());
       }
     }
   }

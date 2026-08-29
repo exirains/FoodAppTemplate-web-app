@@ -158,17 +158,17 @@ class _RewardDialogState extends ConsumerState<RewardDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SangakTextField(
+            BabkaTextField(
               label: l10n.rewardTitle,
               controller: _titleController,
             ),
             const SizedBox(height: 16),
-            SangakTextField(
+            BabkaTextField(
               label: l10n.description,
               controller: _descController,
             ),
             const SizedBox(height: 16),
-            SangakTextField(
+            BabkaTextField(
               label: l10n.pointsCost,
               controller: _pointsController,
               keyboardType: TextInputType.number,
@@ -181,7 +181,7 @@ class _RewardDialogState extends ConsumerState<RewardDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(l10n.cancel),
         ),
-        SangakButton.primary(
+        BabkaButton.primary(
           label: l10n.save,
           isLoading: _isSaving,
           onPressed: () async {

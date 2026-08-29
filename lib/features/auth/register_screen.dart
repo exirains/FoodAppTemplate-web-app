@@ -160,7 +160,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // Check rate limiting
     if (!authRateLimiter.isAllowed(email)) {
       final secondsLeft = authRateLimiter.getSecondsUntilRetry(email);
-      SangakToast.show(
+      BabkaToast.show(
         context,
         '${l10n.tooManyAttempts} ($secondsLeft${l10n.secondsShort})',
       );
@@ -203,7 +203,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         
         if (!mounted) return;
 
-        SangakToast.show(context, l10n.registeredSuccessfully);
+        BabkaToast.show(context, l10n.registeredSuccessfully);
         ref.read(tabProvider.notifier).state = 0; // Go to Home tab
         context.go('/home');
       }
@@ -224,7 +224,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         errorMessage = _getLocalizedError(messageKey, l10n);
       }
 
-      SangakToast.show(context, errorMessage);
+      BabkaToast.show(context, errorMessage);
     } finally {
       if (mounted) {
         setState(() => _isSubmitting = false);

@@ -88,7 +88,7 @@ class SettingsBottomSheet extends ConsumerWidget {
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {
               final version = snapshot.data?.version ?? VersionConfig.version;
-              final formattedVersion = SangakNumberFormatter.format(version, currentLocale.languageCode);
+              final formattedVersion = BabkaNumberFormatter.format(version, currentLocale.languageCode);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

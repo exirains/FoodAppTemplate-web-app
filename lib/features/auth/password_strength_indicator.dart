@@ -45,7 +45,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
         barColor = const Color(0xFF2ECC71); // Green
         break;
       default:
-        barColor = SangakColors.primary;
+        barColor = BabkaColors.primary;
     }
 
     return Column(
@@ -53,7 +53,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
       children: [
         // Strength indicator bar
         ClipRRect(
-          borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
           child: LinearProgressIndicator(
             value: strength,
             minHeight: 6,
@@ -62,19 +62,19 @@ class PasswordStrengthIndicator extends StatelessWidget {
           ),
         ),
         if (showLabel) ...[
-          const SizedBox(height: SangakDimens.spacing8),
+          const SizedBox(height: BabkaDimens.spacing8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 l10n.passwordStrength,
-                style: SangakTypography.caption(context).copyWith(
+                style: BabkaTypography.caption(context).copyWith(
                   color: Colors.grey.shade600,
                 ),
               ),
               Text(
                 _getLabelText(strengthLabel, l10n),
-                style: SangakTypography.bodySmall(context).copyWith(
+                style: BabkaTypography.bodySmall(context).copyWith(
                   color: barColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -83,7 +83,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
           ),
         ],
         if (showRequirements) ...[
-          const SizedBox(height: SangakDimens.spacing16),
+          const SizedBox(height: BabkaDimens.spacing16),
           _RequirementsList(password: password, l10n: l10n),
         ],
       ],
@@ -168,11 +168,11 @@ class _RequirementItem extends StatelessWidget {
                 )
               : null,
         ),
-        const SizedBox(width: SangakDimens.spacing12),
+        const SizedBox(width: BabkaDimens.spacing12),
         Expanded(
           child: Text(
             text,
-            style: SangakTypography.bodySmall(context).copyWith(
+            style: BabkaTypography.bodySmall(context).copyWith(
               color: isMet ? Colors.grey.shade700 : Colors.grey.shade400,
               fontWeight: isMet ? FontWeight.w500 : FontWeight.normal,
             ),

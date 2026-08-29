@@ -33,13 +33,13 @@ class LanguageCard extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isSelected 
-                  ? SangakColors.primary.withValues(alpha: 0.1) 
+                  ? BabkaColors.primary.withValues(alpha: 0.1) 
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isSelected 
-                    ? SangakColors.primary 
-                    : SangakColors.border.withValues(alpha: 0.5),
+                    ? BabkaColors.primary 
+                    : BabkaColors.border.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -50,17 +50,17 @@ class LanguageCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     label,
-                    style: SangakTypography.title(context).copyWith(
+                    style: BabkaTypography.title(context).copyWith(
                       fontSize: 18,
                       fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                      color: isSelected ? SangakColors.primary : SangakColors.ink,
+                      color: isSelected ? BabkaColors.primary : BabkaColors.ink,
                     ),
                   ),
                 ),
                 if (isSelected)
                   const Icon(
                     Icons.check_circle_rounded,
-                    color: SangakColors.primary,
+                    color: BabkaColors.primary,
                   ),
               ],
             ),

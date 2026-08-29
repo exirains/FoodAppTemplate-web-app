@@ -42,7 +42,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Row(
         children: [
-          const Icon(Icons.cancel_outlined, color: SangakColors.error),
+          const Icon(Icons.cancel_outlined, color: BabkaColors.error),
           const SizedBox(width: 12),
           Text(l10n.cancelOrder),
         ],
@@ -54,7 +54,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
             if (!_isUnlocked) ...[
               Text(
                 l10n.unlockCancellation,
-                style: SangakTypography.bodyMedium(context),
+                style: BabkaTypography.bodyMedium(context),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -67,7 +67,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                   children: [
                     Text(
                       l10n.cancellationReason,
-                      style: SangakTypography.title(context).copyWith(fontSize: 14),
+                      style: BabkaTypography.title(context).copyWith(fontSize: 14),
                     ),
                     const SizedBox(height: 16),
                     _buildReasonOption(l10n.cancelReasonBusy),
@@ -87,7 +87,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: SangakColors.error),
+                            borderSide: const BorderSide(color: BabkaColors.error),
                           ),
                         ),
                         validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
@@ -103,13 +103,13 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), 
-          child: Text(l10n.cancel, style: const TextStyle(color: SangakColors.inkLight)),
+          child: Text(l10n.cancel, style: const TextStyle(color: BabkaColors.inkLight)),
         ),
         if (_isUnlocked)
           TextButton(
             onPressed: () {
               if (_selectedReason == null) {
-                SangakToast.show(context, 'Please select a reason');
+                BabkaToast.show(context, 'Please select a reason');
                 return;
               }
               
@@ -122,7 +122,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
               Navigator.pop(context);
               widget.onConfirm(finalReason);
             },
-            style: TextButton.styleFrom(foregroundColor: SangakColors.error),
+            style: TextButton.styleFrom(foregroundColor: BabkaColors.error),
             child: Text(l10n.confirmButton),
           ),
       ],
@@ -139,10 +139,10 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? SangakColors.error.withValues(alpha: 0.1) : Colors.transparent,
+            color: isSelected ? BabkaColors.error.withValues(alpha: 0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? SangakColors.error : SangakColors.border,
+              color: isSelected ? BabkaColors.error : BabkaColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -150,14 +150,14 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
             children: [
               Icon(
                 isSelected ? Icons.check_circle_rounded : Icons.circle_outlined,
-                color: isSelected ? SangakColors.error : SangakColors.inkLight,
+                color: isSelected ? BabkaColors.error : BabkaColors.inkLight,
                 size: 20,
               ),
               const SizedBox(width: 12),
               Text(
                 reason,
-                style: SangakTypography.bodyMedium(context).copyWith(
-                  color: isSelected ? SangakColors.ink : SangakColors.inkLight,
+                style: BabkaTypography.bodyMedium(context).copyWith(
+                  color: isSelected ? BabkaColors.ink : BabkaColors.inkLight,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -173,9 +173,9 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
       height: 56,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: SangakColors.background,
+        color: BabkaColors.background,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: SangakColors.border),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Stack(
         children: [
@@ -183,7 +183,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
             child: Text(
               l10n.slidetoReject,
               style: TextStyle(
-                color: SangakColors.inkLight.withValues(alpha: 0.6),
+                color: BabkaColors.inkLight.withValues(alpha: 0.6),
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
               ),
@@ -196,9 +196,9 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                 trackShape: _FullWidthTrackShape(),
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 24, elevation: 4),
                 overlayShape: SliderComponentShape.noOverlay,
-                activeTrackColor: SangakColors.error.withValues(alpha: 0.1),
+                activeTrackColor: BabkaColors.error.withValues(alpha: 0.1),
                 inactiveTrackColor: Colors.transparent,
-                thumbColor: SangakColors.error,
+                thumbColor: BabkaColors.error,
               ),
               child: Slider(
                 value: _sliderValue,

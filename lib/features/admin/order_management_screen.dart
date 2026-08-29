@@ -285,7 +285,7 @@ class _OrderCard extends StatelessWidget {
             Text(customerName, style: BabkaTypography.h3(context).copyWith(fontSize: 16)),
             const SizedBox(height: 4),
             Text(
-              SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
+              BabkaNumberFormatter.formatCurrency(order.totalPrice, lang),
               style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),

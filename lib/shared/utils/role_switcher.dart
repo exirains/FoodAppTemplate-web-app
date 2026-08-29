@@ -19,7 +19,7 @@ class RoleSwitcher {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            color: SangakColors.surface,
+            color: BabkaColors.surface,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -30,11 +30,11 @@ class RoleSwitcher {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
-                  color: SangakColors.border,
+                  color: BabkaColors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              Text(l10n.roleSwitch, style: SangakTypography.h3(context)),
+              Text(l10n.roleSwitch, style: BabkaTypography.h3(context)),
               const SizedBox(height: 24),
               
               // Everyone can see the Customer App
@@ -99,25 +99,25 @@ class RoleSwitcher {
             height: 64,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: isActive ? SangakColors.primary.withValues(alpha: 0.05) : SangakColors.surface,
+              color: isActive ? BabkaColors.primary.withValues(alpha: 0.05) : BabkaColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isActive ? SangakColors.primary.withValues(alpha: 0.2) : SangakColors.border,
+                color: isActive ? BabkaColors.primary.withValues(alpha: 0.2) : BabkaColors.border,
               ),
             ),
             child: Row(
               children: [
-                Icon(icon, color: isActive ? SangakColors.primary : SangakColors.inkLight),
+                Icon(icon, color: isActive ? BabkaColors.primary : BabkaColors.inkLight),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(label, style: SangakTypography.title(context).copyWith(
+                  child: Text(label, style: BabkaTypography.title(context).copyWith(
                     fontSize: 16,
-                    color: isActive ? SangakColors.ink : SangakColors.inkLight,
+                    color: isActive ? BabkaColors.ink : BabkaColors.inkLight,
                     fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                   )),
                 ),
                 if (isActive) 
-                  const Icon(Icons.check_circle, color: SangakColors.primary, size: 20),
+                  const Icon(Icons.check_circle, color: BabkaColors.primary, size: 20),
               ],
             ),
           ),

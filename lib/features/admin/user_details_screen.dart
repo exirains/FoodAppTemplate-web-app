@@ -438,7 +438,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
               child: CachedNetworkImage(imageUrl: bread.imageUrl, width: 48, height: 48, fit: BoxFit.cover),
             ),
             title: Text(bread.localizedName(lang), style: BabkaTypography.title(context).copyWith(fontSize: 14)),
-            subtitle: Text(SangakNumberFormatter.formatCurrency(bread.price, lang)),
+            subtitle: Text(BabkaNumberFormatter.formatCurrency(bread.price, lang)),
             onTap: () => context.push('/product-details', extra: bread),
           ),
         );
@@ -453,7 +453,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> with Tick
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SangakButton.primary(
+        child: BabkaButton.primary(
           label: isActive ? l10n.disableAccount : l10n.enableAccount,
           backgroundColor: isActive ? BabkaColors.error : BabkaColors.success,
           onPressed: () => _confirmStatusChange(profile, !isActive),
@@ -546,7 +546,7 @@ class _OrderCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(SangakNumberFormatter.formatCurrency(order.totalPrice, lang), style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(BabkaNumberFormatter.formatCurrency(order.totalPrice, lang), style: const TextStyle(fontWeight: FontWeight.bold)),
             _StatusChip(status: order.status),
           ],
         ),
@@ -621,9 +621,9 @@ class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SangakTextField(label: l10n.fullName, controller: _nameController),
+            BabkaTextField(label: l10n.fullName, controller: _nameController),
             const SizedBox(height: 16),
-            SangakTextField(label: l10n.phoneNumber, controller: _phoneController, keyboardType: TextInputType.phone),
+            BabkaTextField(label: l10n.phoneNumber, controller: _phoneController, keyboardType: TextInputType.phone),
             const SizedBox(height: 24),
             Align(
               alignment: AlignmentDirectional.centerStart,
@@ -650,7 +650,7 @@ class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
       ),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
-        SangakButton.primary(
+        BabkaButton.primary(
           label: l10n.save,
           width: 100,
           isLoading: _isSaving,

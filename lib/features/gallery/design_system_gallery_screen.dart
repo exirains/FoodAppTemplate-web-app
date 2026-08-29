@@ -29,20 +29,20 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
         title: const Text('Sangak Design System v1.0.0'),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(SangakDimens.spacing24),
+        padding: const EdgeInsets.all(BabkaDimens.spacing24),
         children: [
           _buildSection('Typography', [
-            Text('Display Heading', style: SangakTypography.display(context)),
+            Text('Display Heading', style: BabkaTypography.display(context)),
             const SizedBox(height: 8),
-            Text('Headline 1', style: SangakTypography.h1(context)),
+            Text('Headline 1', style: BabkaTypography.h1(context)),
             const SizedBox(height: 8),
-            Text('Headline 2', style: SangakTypography.h2(context)),
+            Text('Headline 2', style: BabkaTypography.h2(context)),
             const SizedBox(height: 8),
-            Text('Headline 3', style: SangakTypography.h3(context)),
+            Text('Headline 3', style: BabkaTypography.h3(context)),
             const SizedBox(height: 16),
-            Text('Body Large - Jakarta Sans', style: SangakTypography.bodyLarge(context)),
-            Text('Body Medium - Regular reading text', style: SangakTypography.bodyMedium(context)),
-            Text('Price Label: ₺80', style: SangakTypography.price(context)),
+            Text('Body Large - Jakarta Sans', style: BabkaTypography.bodyLarge(context)),
+            Text('Body Medium - Regular reading text', style: BabkaTypography.bodyMedium(context)),
+            Text('Price Label: ₺80', style: BabkaTypography.price(context)),
           ], context),
           
           _buildSection('Colors', [
@@ -50,46 +50,46 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
               spacing: 12,
               runSpacing: 12,
               children: [
-                _buildColorCircle(SangakColors.primary, 'Primary', context),
-                _buildColorCircle(SangakColors.secondary, 'Secondary', context),
-                _buildColorCircle(SangakColors.background, 'BG', context),
-                _buildColorCircle(SangakColors.accent, 'Accent', context),
-                _buildColorCircle(SangakColors.error, 'Error', context),
+                _buildColorCircle(BabkaColors.primary, 'Primary', context),
+                _buildColorCircle(BabkaColors.secondary, 'Secondary', context),
+                _buildColorCircle(BabkaColors.background, 'BG', context),
+                _buildColorCircle(BabkaColors.accent, 'Accent', context),
+                _buildColorCircle(BabkaColors.error, 'Error', context),
               ],
             ),
           ], context),
 
           _buildSection('Buttons', [
-            SangakButton.primary(
+            BabkaButton.primary(
               label: 'Primary Button',
               onPressed: () {},
             ),
             const SizedBox(height: 12),
-            SangakButton.outlined(
+            BabkaButton.outlined(
               label: 'Outlined Button',
               onPressed: () {},
             ),
             const SizedBox(height: 12),
-            SangakButton.primary(
+            BabkaButton.primary(
               label: 'Loading State',
               isLoading: true,
               onPressed: () {},
             ),
             const SizedBox(height: 12),
-            const SangakButton.primary(
+            const BabkaButton.primary(
               label: 'Disabled Button',
               onPressed: null,
             ),
           ], context),
 
           _buildSection('Inputs', [
-            const SangakTextField(
+            const BabkaTextField(
               label: 'Email Address',
               hintText: 'Enter your email',
               leadingIcon: Icons.email_outlined,
             ),
             const SizedBox(height: 16),
-            const SangakTextField(
+            const BabkaTextField(
               label: 'Password',
               hintText: 'Enter your password',
               isPassword: true,
@@ -132,7 +132,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
                 description: 'Stone-baked whole wheat flatbread, perfect for breakfast.',
                 price: 80,
                 imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?q=80&w=400',
-                freshness: SangakTokens.outOfOven,
+                freshness: BabkaTokens.outOfOven,
                 isFavorite: _isFavorite,
                 width: 220,
                 onFavoriteToggle: () => setState(() => _isFavorite = !_isFavorite),
@@ -154,7 +154,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: SangakTypography.h2(context)),
+              Text(title, style: BabkaTypography.h2(context)),
               const Divider(),
             ],
           ),
@@ -173,11 +173,11 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
-            border: Border.all(color: SangakColors.border),
+            border: Border.all(color: BabkaColors.border),
           ),
         ),
         const SizedBox(height: 4),
-        Text(label, style: SangakTypography.caption(context)),
+        Text(label, style: BabkaTypography.caption(context)),
       ],
     );
   }

@@ -47,7 +47,7 @@ class LoginChoiceScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 48),
               
-              SangakButton.outlined(
+              BabkaButton.outlined(
                 label: l10n.continueWithGoogle,
                 width: double.infinity,
                 leading: const GoogleMark(),
@@ -55,18 +55,18 @@ class LoginChoiceScreen extends ConsumerWidget {
                   try {
                     final user = await ref.read(authProvider.notifier).signInWithGoogle();
                     if (user != null && context.mounted) {
-                      SangakToast.show(context, l10n.loginSuccessful);
+                      BabkaToast.show(context, l10n.loginSuccessful);
                       context.go('/home');
                     }
                   } catch (e) {
                     if (context.mounted) {
-                      SangakToast.show(context, e.toString());
+                      BabkaToast.show(context, e.toString());
                     }
                   }
                 },
               ),
               const SizedBox(height: 16),
-              SangakButton.primary(
+              BabkaButton.primary(
                 label: l10n.email,
                 width: double.infinity,
                 icon: Icons.email_outlined,

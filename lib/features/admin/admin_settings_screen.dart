@@ -81,7 +81,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
     return RoleGuard(
       allowedRoles: const ['admin'],
       child: Scaffold(
-        backgroundColor: SangakColors.background,
+        backgroundColor: BabkaColors.background,
         appBar: AppBar(
           title: Text(l10n.adminSettings),
         ),
@@ -114,23 +114,23 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
             }
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(SangakDimens.spacing24),
+              padding: const EdgeInsets.all(BabkaDimens.spacing24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     l10n.adminSettings,
-                    style: SangakTypography.h2(context),
+                    style: BabkaTypography.h2(context),
                   ),
-                  const SizedBox(height: SangakDimens.spacing8),
+                  const SizedBox(height: BabkaDimens.spacing8),
                   Text(
                     l10n.changeSettingAnytime,
-                    style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight),
+                    style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight),
                   ),
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: BabkaDimens.spacing32),
                   
                   _buildSectionTitle(context, l10n.deliveryFeeLabel),
-                  SangakTextField(
+                  BabkaTextField(
                     label: l10n.minOrderLimitLabel,
                     controller: _minLimitController,
                     keyboardType: TextInputType.number,
@@ -138,9 +138,9 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     leadingIcon: Icons.shopping_cart_checkout_rounded,
                     hintText: '200',
                   ),
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: BabkaDimens.spacing24),
                   
-                  SangakTextField(
+                  BabkaTextField(
                     label: l10n.deliveryFeeSettingLabel,
                     controller: _deliveryFeeController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -151,20 +151,20 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     hintText: '0.0',
                   ),
                   
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: BabkaDimens.spacing32),
                   _buildSectionTitle(context, l10n.loyaltySettings),
                   
                   // Points Earning Rule Toggle
                   Text(
                     l10n.pointsEarningRule,
-                    style: SangakTypography.title(context).copyWith(fontSize: 14),
+                    style: BabkaTypography.title(context).copyWith(fontSize: 14),
                   ),
                   const SizedBox(height: 12),
                   Container(
                     decoration: BoxDecoration(
-                      color: SangakColors.surface,
+                      color: BabkaColors.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: SangakColors.border),
+                      border: Border.all(color: BabkaColors.border),
                     ),
                     child: RadioGroup<String>(
                       groupValue: _pointsEarningRule,
@@ -175,14 +175,14 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                             title: Text(l10n.totalSpentRule),
                             subtitle: Text(l10n.totalSpentSubtitle),
                             value: 'total_spent',
-                            activeColor: SangakColors.primary,
+                            activeColor: BabkaColors.primary,
                           ),
                           const Divider(height: 1),
                           RadioListTile<String>(
                             title: Text(l10n.fixedPointsRule),
                             subtitle: Text(l10n.pointsPerOrderLabel),
                             value: 'fixed',
-                            activeColor: SangakColors.primary,
+                            activeColor: BabkaColors.primary,
                           ),
                         ],
                       ),
@@ -191,7 +191,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                   const SizedBox(height: 24),
 
                   if (_pointsEarningRule == 'total_spent')
-                    SangakTextField(
+                    BabkaTextField(
                       label: l10n.pointsPerCurrencyLabel,
                       controller: _pointsPerCurrencyController,
                       keyboardType: TextInputType.number,
@@ -200,7 +200,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                       hintText: '1',
                     )
                   else
-                    SangakTextField(
+                    BabkaTextField(
                       label: l10n.pointsPerOrderLabel,
                       controller: _pointsPerOrderController,
                       keyboardType: TextInputType.number,
@@ -209,9 +209,9 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                       hintText: '10',
                     ),
                   
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: BabkaDimens.spacing24),
 
-                  SangakTextField(
+                  BabkaTextField(
                     label: l10n.streakBonusLabel,
                     controller: _streakBonusController,
                     keyboardType: TextInputType.number,
@@ -219,9 +219,9 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     leadingIcon: Icons.bolt_rounded,
                     hintText: '50',
                   ),
-                  const SizedBox(height: SangakDimens.spacing24),
+                  const SizedBox(height: BabkaDimens.spacing24),
 
-                  SangakTextField(
+                  BabkaTextField(
                     label: l10n.streakThresholdLabel,
                     controller: _streakThresholdController,
                     keyboardType: TextInputType.number,
@@ -230,7 +230,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     hintText: '3',
                   ),
 
-                  const SizedBox(height: SangakDimens.spacing32),
+                  const SizedBox(height: BabkaDimens.spacing32),
                   _buildSectionTitle(context, l10n.customization),
                   _buildFeatureToggle(
                     l10n.customSangak,
@@ -240,17 +240,17 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                     context,
                   ),
 
-                  const SizedBox(height: SangakDimens.spacing32),
-                  SangakButton.outlined(
+                  const SizedBox(height: BabkaDimens.spacing32),
+                  BabkaButton.outlined(
                     label: l10n.rewardsManagement,
                     onPressed: () => context.push('/admin/rewards'),
                     width: double.infinity,
                     icon: Icons.card_giftcard_rounded,
                   ),
                   
-                  const SizedBox(height: SangakDimens.spacing48),
+                  const SizedBox(height: BabkaDimens.spacing48),
                   
-                  SangakButton.primary(
+                  BabkaButton.primary(
                     label: l10n.save,
                     onPressed: _saveSettings,
                     isLoading: _isSaving,
@@ -271,9 +271,9 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
+        color: BabkaColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: SangakColors.border),
+        border: Border.all(color: BabkaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,16 +281,16 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: SangakTypography.title(context).copyWith(fontSize: 16)),
+              Text(title, style: BabkaTypography.title(context).copyWith(fontSize: 16)),
               Switch.adaptive(
                 value: value,
                 onChanged: onChanged,
-                activeTrackColor: SangakColors.primary,
+                activeTrackColor: BabkaColors.primary,
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(description, style: SangakTypography.bodySmall(context).copyWith(color: SangakColors.inkLight)),
+          Text(description, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.inkLight)),
         ],
       ),
     );
@@ -298,11 +298,11 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
 
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: SangakDimens.spacing16),
+      padding: const EdgeInsets.only(bottom: BabkaDimens.spacing16),
       child: Text(
         title.toUpperCase(),
-        style: SangakTypography.bodySmall(context).copyWith(
-          color: SangakColors.primary,
+        style: BabkaTypography.bodySmall(context).copyWith(
+          color: BabkaColors.primary,
           fontWeight: FontWeight.bold,
           letterSpacing: 1.2,
         ),

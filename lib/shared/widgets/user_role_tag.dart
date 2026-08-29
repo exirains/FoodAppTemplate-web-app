@@ -13,13 +13,13 @@ class UserRoleTag extends StatelessWidget {
     Color color;
     switch (role) {
       case 'admin':
-        color = SangakColors.error;
+        color = BabkaColors.error;
         break;
       case 'staff':
-        color = SangakColors.info;
+        color = BabkaColors.info;
         break;
       case 'delivery':
-        color = SangakColors.primary;
+        color = BabkaColors.primary;
         break;
       default:
         return const SizedBox.shrink();

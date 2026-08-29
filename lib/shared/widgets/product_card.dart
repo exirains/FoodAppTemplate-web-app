@@ -62,7 +62,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: SangakTokens.animFast,
+      duration: BabkaTokens.animFast,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
@@ -88,7 +88,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
 
     final displayName = widget.bread?.localizedName(languageCode) ?? widget.name;
     final displayDescription = widget.bread?.localizedDescription(languageCode) ?? widget.description;
-    final formattedPrice = SangakNumberFormatter.formatCurrency(widget.price, languageCode);
+    final formattedPrice = BabkaNumberFormatter.formatCurrency(widget.price, languageCode);
     
     final bool isAvailable = widget.bread?.available ?? true;
 
@@ -195,7 +195,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                             shape: BoxShape.circle,
                           ),
                           child: AnimatedSwitcher(
-                            duration: SangakTokens.animMedium,
+                            duration: BabkaTokens.animMedium,
                             child: Icon(
                               isFavorite ? Icons.favorite : Icons.favorite_border,
                               key: ValueKey(isFavorite),
@@ -274,7 +274,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                       const Icon(Icons.star_rounded, size: 12, color: Colors.amber),
                                       const SizedBox(width: 2),
                                       Text(
-                                        '${SangakNumberFormatter.format(widget.bread!.rating, languageCode)} (${SangakNumberFormatter.format(widget.bread!.reviews, languageCode)})',
+                                        '${BabkaNumberFormatter.format(widget.bread!.rating, languageCode)} (${BabkaNumberFormatter.format(widget.bread!.reviews, languageCode)})',
                                         style: BabkaTypography.caption(context).copyWith(
                                           fontSize: 10,
                                           color: BabkaColors.inkLight,
@@ -289,7 +289,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                           ),
                           const SizedBox(width: 8),
                           AnimatedSwitcher(
-                            duration: SangakTokens.animMedium,
+                            duration: BabkaTokens.animMedium,
                             child: quantity > 0
                                 ? QuantitySelector(
                                     key: const ValueKey('quantity'),
@@ -305,7 +305,7 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
                                     },
                                     onDelete: () {
                                       if (!ActionGuard.check(context, ref)) return;
-                                      SangakConfirmDialog.show(
+                                      BabkaConfirmDialog.show(
                                         context,
                                         title: l10n.remove,
                                         message: l10n.removeItemFromBasket,

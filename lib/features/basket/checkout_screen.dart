@@ -229,12 +229,12 @@ class CheckoutScreen extends ConsumerWidget {
                           final orderId = await ref.read(checkoutProvider.notifier).placeOrder();
                           
                           if (context.mounted) {
-                            SangakToast.show(context, l10n.orderPlacedSuccessfully);
+                            BabkaToast.show(context, l10n.orderPlacedSuccessfully);
                             context.pushReplacement('/order-confirmation', extra: orderId);
                           }
                         } catch (e) {
                           if (context.mounted) {
-                            SangakToast.show(context, e.toString());
+                            BabkaToast.show(context, e.toString());
                           }
                         }
                       },

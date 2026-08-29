@@ -71,7 +71,7 @@ class PaymentSelectionScreen extends ConsumerWidget {
             if (fromCheckout) {
               context.push('/checkout');
             } else {
-              SangakToast.show(context, l10n.profileUpdated);
+              BabkaToast.show(context, l10n.profileUpdated);
               context.pop();
             }
           },

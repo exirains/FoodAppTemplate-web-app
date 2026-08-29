@@ -149,7 +149,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      SangakNumberFormatter.formatCurrency(widget.order.totalPrice, lang),
+                      BabkaNumberFormatter.formatCurrency(widget.order.totalPrice, lang),
                       style: BabkaTypography.bodySmall(context).copyWith(fontWeight: FontWeight.bold, color: BabkaColors.ink),
                     ),
                   ],

@@ -404,7 +404,7 @@ class HomeScreen extends ConsumerWidget {
                                         ),
                                         const SizedBox(height: 12),
                                         Text(
-                                          SangakNumberFormatter.formatCurrency(bread.price, lang),
+                                          BabkaNumberFormatter.formatCurrency(bread.price, lang),
                                           style: BabkaTypography.price(context).copyWith(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w800,
@@ -460,7 +460,7 @@ class HomeScreen extends ConsumerWidget {
                                             onDecrement: () {
                                               if (!ActionGuard.check(context, ref)) return;
                                               if (quantity == 1) {
-                                                SangakConfirmDialog.show(
+                                                BabkaConfirmDialog.show(
                                                   context,
                                                   title: l10n.remove,
                                                   message: l10n.removeItemFromBasket,
@@ -475,7 +475,7 @@ class HomeScreen extends ConsumerWidget {
                                             },
                                             onDelete: () {
                                               if (!ActionGuard.check(context, ref)) return;
-                                              SangakConfirmDialog.show(
+                                              BabkaConfirmDialog.show(
                                                 context,
                                                 title: l10n.remove,
                                                 message: l10n.removeItemFromBasket,

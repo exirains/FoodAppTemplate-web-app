@@ -76,7 +76,7 @@ class FavoritesScreen extends ConsumerWidget {
                     },
                     onAddToBasket: () {
                       ref.read(basketProvider.notifier).addItem(bread);
-                      SangakToast.show(context, l10n.addedToBasket(displayName));
+                      BabkaToast.show(context, l10n.addedToBasket(displayName));
                     },
                   );
                 },

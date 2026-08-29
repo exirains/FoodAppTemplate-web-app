@@ -21,18 +21,18 @@ class SangakBottomNav extends StatelessWidget {
     
     return Container(
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        boxShadow: SangakDimens.shadowHigh,
+        color: BabkaColors.surface,
+        boxShadow: BabkaDimens.shadowHigh,
       ),
       child: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: onTap,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: SangakColors.surface,
-        selectedItemColor: SangakColors.primary,
-        unselectedItemColor: SangakColors.inkLight,
-        selectedLabelStyle: SangakTypography.caption(context).copyWith(fontWeight: FontWeight.w700),
-        unselectedLabelStyle: SangakTypography.caption(context),
+        backgroundColor: BabkaColors.surface,
+        selectedItemColor: BabkaColors.primary,
+        unselectedItemColor: BabkaColors.inkLight,
+        selectedLabelStyle: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.w700),
+        unselectedLabelStyle: BabkaTypography.caption(context),
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.breakfast_dining_outlined),

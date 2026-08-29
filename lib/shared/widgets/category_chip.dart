@@ -22,25 +22,25 @@ class CategoryChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
         child: Ink(
           padding: const EdgeInsets.symmetric(
-            horizontal: SangakDimens.spacing24,
-            vertical: SangakDimens.spacing12,
+            horizontal: BabkaDimens.spacing24,
+            vertical: BabkaDimens.spacing12,
           ),
           decoration: BoxDecoration(
-            color: isSelected ? SangakColors.primary : SangakColors.surface,
-            borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+            color: isSelected ? BabkaColors.primary : BabkaColors.surface,
+            borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
             border: Border.all(
-              color: isSelected ? SangakColors.primary : SangakColors.border,
+              color: isSelected ? BabkaColors.primary : BabkaColors.border,
               width: 1,
             ),
-            boxShadow: isSelected ? SangakDimens.shadowLow : null,
+            boxShadow: isSelected ? BabkaDimens.shadowLow : null,
           ),
           child: Text(
             label,
-            style: SangakTypography.title(context).copyWith(
-              color: isSelected ? Colors.white : SangakColors.inkLight,
+            style: BabkaTypography.title(context).copyWith(
+              color: isSelected ? Colors.white : BabkaColors.inkLight,
               fontSize: 14,
             ),
           ),

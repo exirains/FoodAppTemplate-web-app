@@ -18,30 +18,30 @@ class BasketGuestView extends StatelessWidget {
       backgroundColor: BabkaColors.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(SangakDimens.spacing32),
+          padding: const EdgeInsets.all(BabkaDimens.spacing32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const AppLogo.medium(),
-              const SizedBox(height: SangakDimens.spacing32),
+              const SizedBox(height: BabkaDimens.spacing32),
               Text(
                 l10n.yourBasketIsWaiting,
                 style: BabkaTypography.h2(context),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: SangakDimens.spacing12),
+              const SizedBox(height: BabkaDimens.spacing12),
               Text(
                 l10n.basketGuestMessage,
                 style: BabkaTypography.bodyLarge(context).copyWith(color: BabkaColors.inkLight),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: SangakDimens.spacing40),
+              const SizedBox(height: BabkaDimens.spacing40),
               BabkaButton.primary(
                 label: l10n.createAccount,
                 width: double.infinity,
                 onPressed: () => context.push('/signup-choice'),
               ),
-              const SizedBox(height: SangakDimens.spacing12),
+              const SizedBox(height: BabkaDimens.spacing12),
               BabkaButton.ghost(
                 label: l10n.signIn,
                 width: double.infinity,

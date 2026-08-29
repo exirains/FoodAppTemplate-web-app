@@ -360,7 +360,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(item.localizedName(lang), style: BabkaTypography.bodyMedium(context))),
-                Text(SangakNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang), 
+                Text(BabkaNumberFormatter.formatCurrency(item.priceAtPurchase * item.quantity, lang), 
                   style: BabkaTypography.bodySmall(context)),
               ],
             ),
@@ -374,7 +374,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
                 style: BabkaTypography.caption(context).copyWith(fontWeight: FontWeight.bold, color: BabkaColors.primary),
               ),
               Text(
-                SangakNumberFormatter.formatCurrency(order.totalPrice, lang),
+                BabkaNumberFormatter.formatCurrency(order.totalPrice, lang),
                 style: BabkaTypography.h3(context).copyWith(color: BabkaColors.primary),
               ),
             ],

@@ -41,7 +41,7 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
     final historyAsync = ref.watch(orderHistoryProvider(widget.orderId));
 
     return Scaffold(
-      backgroundColor: SangakColors.background,
+      backgroundColor: BabkaColors.background,
       appBar: AppBar(
         title: Text(l10n.orderTracking),
         leading: IconButton(
@@ -71,7 +71,7 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: SangakButton.primary(
+                    child: BabkaButton.primary(
                       label: l10n.rateOrder,
                       icon: Icons.star_outline_rounded,
                       width: double.infinity,
@@ -102,22 +102,22 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: Column(
           children: [
-            const Icon(Icons.check_circle_outline_rounded, color: SangakColors.success, size: 64),
+            const Icon(Icons.check_circle_outline_rounded, color: BabkaColors.success, size: 64),
             const SizedBox(height: 16),
-            Text(l10n.statusDelivered, style: SangakTypography.h2(context)),
+            Text(l10n.statusDelivered, style: BabkaTypography.h2(context)),
           ],
         ),
         content: Text(
           l10n.deliverySuccessMessage,
           textAlign: TextAlign.center,
-          style: SangakTypography.bodyMedium(context),
+          style: BabkaTypography.bodyMedium(context),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(l10n.cancel),
           ),
-          SangakButton.primary(
+          BabkaButton.primary(
             label: l10n.rateOrder,
             width: 120,
             onPressed: () {
@@ -137,8 +137,8 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: SangakColors.surface,
-        boxShadow: SangakDimens.shadowLow,
+        color: BabkaColors.surface,
+        boxShadow: BabkaDimens.shadowLow,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,10 +146,10 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(order.orderNumber, style: SangakTypography.h3(context)),
+              Text(order.orderNumber, style: BabkaTypography.h3(context)),
               Text(
-                '${order.items?.length ?? 0} items • ${SangakNumberFormatter.formatCurrency(order.totalPrice, lang)}',
-                style: SangakTypography.bodySmall(context),
+                '${order.items?.length ?? 0} items • ${BabkaNumberFormatter.formatCurrency(order.totalPrice, lang)}',
+                style: BabkaTypography.bodySmall(context),
               ),
             ],
           ),
@@ -165,14 +165,14 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [SangakColors.primary, SangakColors.primary.withValues(alpha: 0.8)],
+          colors: [BabkaColors.primary, BabkaColors.primary.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: SangakColors.primary.withValues(alpha: 0.3),
+            color: BabkaColors.primary.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           )
@@ -195,7 +195,7 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
               children: [
                 Text(
                   l10n.givePinToDriver,
-                  style: SangakTypography.bodySmall(context).copyWith(
+                  style: BabkaTypography.bodySmall(context).copyWith(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.bold,
                   ),
@@ -283,15 +283,15 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: isCompleted ? SangakColors.primary : SangakColors.background,
+                        color: isCompleted ? BabkaColors.primary : BabkaColors.background,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: isCompleted ? SangakColors.primary : SangakColors.border,
+                          color: isCompleted ? BabkaColors.primary : BabkaColors.border,
                           width: 2,
                         ),
                         boxShadow: isCurrent ? [
                           BoxShadow(
-                            color: SangakColors.primary.withValues(alpha: 0.3),
+                            color: BabkaColors.primary.withValues(alpha: 0.3),
                             blurRadius: 10,
                             spreadRadius: 2,
                           )
@@ -300,14 +300,14 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                       child: Icon(
                         isCompleted ? Icons.check : step.icon,
                         size: 18,
-                        color: isCompleted ? Colors.white : SangakColors.inkLight,
+                        color: isCompleted ? Colors.white : BabkaColors.inkLight,
                       ),
                     ),
                     if (!isLast)
                       Expanded(
                         child: Container(
                           width: 2,
-                          color: isCompleted ? SangakColors.primary : SangakColors.border,
+                          color: isCompleted ? BabkaColors.primary : BabkaColors.border,
                         ),
                       ),
                   ],
@@ -324,8 +324,8 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                         children: [
                           Text(
                             step.title,
-                            style: SangakTypography.title(context).copyWith(
-                              color: isCompleted ? SangakColors.ink : SangakColors.inkLight,
+                            style: BabkaTypography.title(context).copyWith(
+                              color: isCompleted ? BabkaColors.ink : BabkaColors.inkLight,
                               fontSize: 16,
                               fontWeight: isCurrent ? FontWeight.w900 : (isCompleted ? FontWeight.bold : FontWeight.w500),
                             ),
@@ -333,8 +333,8 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                           if (timeStr != null)
                             Text(
                               timeStr,
-                              style: SangakTypography.caption(context).copyWith(
-                                color: SangakColors.primary,
+                              style: BabkaTypography.caption(context).copyWith(
+                                color: BabkaColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -342,8 +342,8 @@ class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
                       ),
                       Text(
                         step.description,
-                        style: SangakTypography.bodySmall(context).copyWith(
-                          color: isCompleted ? SangakColors.inkLight : SangakColors.border,
+                        style: BabkaTypography.bodySmall(context).copyWith(
+                          color: isCompleted ? BabkaColors.inkLight : BabkaColors.border,
                           fontSize: 12,
                         ),
                       ),
@@ -383,15 +383,15 @@ class _StatusBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     Color color;
     switch (status) {
-      case OrderStatus.delivered: color = SangakColors.success; break;
-      case OrderStatus.cancelled: color = SangakColors.error; break;
-      default: color = SangakColors.warning;
+      case OrderStatus.delivered: color = BabkaColors.success; break;
+      case OrderStatus.cancelled: color = BabkaColors.error; break;
+      default: color = BabkaColors.warning;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(SangakDimens.radiusPill),
+        borderRadius: BorderRadius.circular(BabkaDimens.radiusPill),
       ),
       child: Text(
         status.localizedLabel(l10n),

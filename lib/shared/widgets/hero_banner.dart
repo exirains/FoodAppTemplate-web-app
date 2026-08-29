@@ -28,19 +28,19 @@ class HeroBanner extends StatelessWidget {
         height: 200,
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
-          boxShadow: SangakDimens.shadowMedium,
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
+          boxShadow: BabkaDimens.shadowMedium,
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(SangakDimens.radiusXL),
+          borderRadius: BorderRadius.circular(BabkaDimens.radiusXL),
           child: Stack(
             fit: StackFit.expand,
             children: [
               CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(color: SangakColors.border),
-                errorWidget: (context, url, error) => Container(color: SangakColors.border),
+                placeholder: (context, url) => Container(color: BabkaColors.border),
+                errorWidget: (context, url, error) => Container(color: BabkaColors.border),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -49,26 +49,26 @@ class HeroBanner extends StatelessWidget {
                     end: Alignment.topCenter,
                     stops: const [0.0, 0.6], // More controlled gradient
                     colors: [
-                      SangakColors.ink.withValues(alpha: 0.8),
+                      BabkaColors.ink.withValues(alpha: 0.8),
                       Colors.transparent,
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(SangakDimens.spacing24),
+                padding: const EdgeInsets.all(BabkaDimens.spacing24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end, // Align to bottom
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: SangakTypography.h2(context).copyWith(color: Colors.white),
+                      style: BabkaTypography.h2(context).copyWith(color: Colors.white),
                     ),
-                    const SizedBox(height: SangakDimens.spacing4),
+                    const SizedBox(height: BabkaDimens.spacing4),
                     Text(
                       subtitle,
-                      style: SangakTypography.bodyMedium(context).copyWith(color: Colors.white.withValues(alpha: 0.9)),
+                      style: BabkaTypography.bodyMedium(context).copyWith(color: Colors.white.withValues(alpha: 0.9)),
                     ),
                   ],
                 ),
