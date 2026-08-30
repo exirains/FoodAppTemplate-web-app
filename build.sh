@@ -12,11 +12,18 @@ fi
 
 export PATH="$PATH:$PWD/flutter/bin"
 
+echo "Configuring Flutter..."
+flutter config --no-analytics
+flutter config --enable-web
+
 echo "Pre-caching Flutter web binaries..."
 flutter precache --web
 
 echo "Installing dependencies..."
 flutter pub get
+
+echo "Generating localization..."
+flutter gen-l10n
 
 # Safely write .env
 write_env_var() {
@@ -38,47 +45,14 @@ write_env_var "GOOGLE_WEB_CLIENT_ID" "$GOOGLE_WEB_CLIENT_ID"
 write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
 
 echo "Building Flutter Web..."
-flutter build web --release --no-tree-shake-icons
+# 1. Use --web-renderer html for maximum compatibility in CI environments
+# 2. Use --no-pub because we already ran it
+# 3. Use --verbose to catch hidden errors if it fails again
+flutter build web --release --no-tree-shake-icons --web-renderer html --no-pub --verbose
 
-# Create web dir if flutter build didn't auto-create it
-mkdir -p build/web
-
-# Write PWA service worker
-cat > build/web/flutter_service_worker.js << 'EOF'
-const CACHE_NAME = 'Babka-v1';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
-  );
-});
-EOF
-
-# Copy manifest safely
-if [ -f "web/manifest.json" ]; then
+# Copy manifest safely if needed (Flutter usually handles this, but we'll ensure it)
+if [ -f "web/manifest.json" ] && [ -d "build/web" ]; then
   cp web/manifest.json build/web/manifest.json
-else
-  echo "Warning: web/manifest.json not found, skipping copy."
 fi
 
 echo "Build finished successfully!"
