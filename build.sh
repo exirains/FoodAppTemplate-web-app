@@ -1,10 +1,13 @@
 #!/bin/bash
 set -ex
 
+# Ensure a clean start for CI
+rm -rf build/web
+
 git config --global --add safe.directory '*'
 export PUB_CACHE="$PWD/.pub-cache"
 
-# Clone Flutter only if missing
+# Clone Flutter only if missing (Cloudflare might persist cache between builds)
 if [ ! -d "flutter" ]; then
   echo "Installing Flutter..."
   git clone https://github.com/flutter/flutter.git -b stable --depth 1
@@ -12,47 +15,28 @@ fi
 
 export PATH="$PATH:$PWD/flutter/bin"
 
-echo "Configuring Flutter..."
+echo "Setting up Flutter environment..."
 flutter config --no-analytics
 flutter config --enable-web
 
-echo "Pre-caching Flutter web binaries..."
-flutter precache --web
-
-echo "Installing dependencies..."
+echo "Fetching dependencies..."
+# Use --offline if you are sure they exist, but on CI we need to fetch
 flutter pub get
 
-echo "Generating localization..."
+echo "GENERATING LOCALIZATION..."
+# This is the critical step that usually causes 'Failed to compile'
+# if localization imports are missing.
 flutter gen-l10n
 
-# Safely write .env
-write_env_var() {
-  local var_name=$1
-  local var_val=$2
-  if [ -n "$var_val" ]; then
-    if [[ "$var_val" == "$var_name="* ]]; then
-      echo "$var_val" >> .env
-    else
-      echo "$var_name=$var_val" >> .env
-    fi
-  fi
-}
-
+# Build the .env file from Cloudflare Environment Variables
 printf "" > .env
-write_env_var "SUPABASE_URL" "$SUPABASE_URL"
-write_env_var "SUPABASE_PUBLISHABLE_KEY" "$SUPABASE_PUBLISHABLE_KEY"
-write_env_var "GOOGLE_WEB_CLIENT_ID" "$GOOGLE_WEB_CLIENT_ID"
-write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
+if [ -n "$SUPABASE_URL" ]; then echo "SUPABASE_URL=$SUPABASE_URL" >> .env; fi
+if [ -n "$SUPABASE_PUBLISHABLE_KEY" ]; then echo "SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY" >> .env; fi
+if [ -n "$GOOGLE_WEB_CLIENT_ID" ]; then echo "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID" >> .env; fi
+if [ -n "$GEOAPIFY_API_KEY" ]; then echo "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY" >> .env; fi
 
-echo "Building Flutter Web..."
-# 1. Use --web-renderer html for maximum compatibility in CI environments
-# 2. Use --no-pub because we already ran it
-# 3. Use --verbose to catch hidden errors if it fails again
+echo "COMPILING FOR WEB..."
+# --web-renderer html is lighter on memory, which prevents CI crashes.
 flutter build web --release --no-tree-shake-icons --web-renderer html --no-pub --verbose
-
-# Copy manifest safely if needed (Flutter usually handles this, but we'll ensure it)
-if [ -f "web/manifest.json" ] && [ -d "build/web" ]; then
-  cp web/manifest.json build/web/manifest.json
-fi
 
 echo "Build finished successfully!"
