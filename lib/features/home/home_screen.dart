@@ -133,7 +133,7 @@ class HomeScreen extends ConsumerWidget {
                   HeroBanner(
                     title: l10n.freshlyBakedArtisan.toUpperCase(),
                     subtitle: l10n.heroSubtitle,
-                    imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=1200',
+                    imageUrl: 'https://images.unsplash.com/photo-1540333563391-76671ab1d17a?auto=format&fit=crop&q=80&w=1200',
                     onTap: () => context.push('/explore'),
                   ),
                   const SizedBox(height: BabkaDimens.spacing24),
@@ -581,10 +581,10 @@ class HomeScreen extends ConsumerWidget {
                     itemCount: 4,
                     itemBuilder: (context, index) {
                       final galleryUrls = [
-                        'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600',
-                        'https://images.unsplash.com/photo-1540333563391-76671ab1d17a?w=600',
-                        'https://images.unsplash.com/photo-1585478259715-876a6a81fc08?w=600',
-                        'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600',
+                        'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=600',
+                        'https://images.unsplash.com/photo-1540333563391-76671ab1d17a?auto=format&fit=crop&q=80&w=600',
+                        'https://images.unsplash.com/photo-1585478259715-876a6a81fc08?auto=format&fit=crop&q=80&w=600',
+                        'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&q=80&w=600',
                       ];
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(BabkaDimens.radiusM),

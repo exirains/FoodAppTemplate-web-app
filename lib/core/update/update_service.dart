@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -13,11 +12,8 @@ class UpdateService {
     // Only Android should check for APK updates. Avoid Platform.isAndroid on Web.
     if (kIsWeb) return null;
     
-    try {
-      if (!Platform.isAndroid) return null;
-    } catch (_) {
-      return null;
-    }
+    // Check platform without dart:io
+    if (defaultTargetPlatform != TargetPlatform.android) return null;
 
     final updateInfo = await _repository.fetchUpdateInfo();
     if (updateInfo == null) return null;
