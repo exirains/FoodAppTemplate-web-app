@@ -13,8 +13,8 @@ interface WebhookPayload {
 const getLocalizedContent = (type: string, lang: string, orderNumber: string) => {
   const translations: any = {
     new_delivery_order: {
-      en: { title: '🛵 New Sangak Order!', body: `Order #${orderNumber} is ready!` },
-      tr: { title: '🛵 Yeni Sangak Siparişi!', body: `Sipariş #${orderNumber} hazır!` },
+      en: { title: '🛵 New Babka Order!', body: `Order #${orderNumber} is ready!` },
+      tr: { title: '🛵 Yeni Babka Siparişi!', body: `Sipariş #${orderNumber} hazır!` },
       fa: { title: '🛵 سفارش جدید سنگک!', body: `سفارش #${orderNumber} آماده است!` },
     },
     delivery_assignment: {
@@ -131,3 +131,4 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 })
   }
 })
+

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_typography.dart';
-import '../../../core/design_system/sangak_dimens.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_typography.dart';
+import '../../../core/design_system/babka_dimens.dart';
 import '../../../models/order.dart';
-import '../../../shared/widgets/sangak_button.dart';
-import '../../../shared/utils/sangak_toast.dart';
+import '../../../shared/widgets/babka_button.dart';
+import '../../../shared/utils/babka_toast.dart';
 import '../../../shared/widgets/cancel_order_dialog.dart';
 import '../../auth/auth_provider.dart';
 import '../../admin/admin_provider.dart';
 import '../../../core/localization/locale_provider.dart';
-import '../../../core/localization/sangak_number_formatter.dart';
+import '../../../core/localization/babka_number_formatter.dart';
 
 class StaffOrderCard extends ConsumerStatefulWidget {
   final OrderModel order;
@@ -52,7 +52,7 @@ class _StaffOrderCardState extends ConsumerState<StaffOrderCard> {
     setState(() => _isUpdating = true);
     try {
       final l10n = AppLocalizations.of(context);
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
+      await ref.read(babkaOrderRepositoryProvider).updateOrderStatus(
             orderId: widget.order.id,
             status: newStatus,
             changedBy: user.id,
@@ -413,3 +413,4 @@ class _FooterBadge extends StatelessWidget {
     );
   }
 }
+

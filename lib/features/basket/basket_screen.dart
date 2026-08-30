@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_empty_states.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_empty_states.dart';
+import '../../shared/widgets/babka_dialogs.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../home/tab_provider.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../core/localization/sangak_number_formatter.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../core/localization/babka_number_formatter.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import 'basket_provider.dart';
 import '../auth/auth_provider.dart';
 import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 import '../auth/models/user_profile.dart';
-import '../../models/sangak_customization.dart';
-import '../custom_sangak/data/sangak_customization_options.dart';
+import '../../models/babka_customization.dart';
+import '../custom_babka/data/babka_customization_options.dart';
 
 import '../../services/options_repository.dart';
 
@@ -46,7 +46,7 @@ class BasketScreen extends ConsumerWidget {
       return Scaffold(
         backgroundColor: BabkaColors.background,
         appBar: AppBar(title: Text(l10n.basket)),
-        body: SangakEmptyState(
+        body: BabkaEmptyState(
           title: l10n.yourBasketIsWaiting,
           message: l10n.basketGuestMessage,
           icon: Icons.shopping_basket_outlined,
@@ -380,12 +380,12 @@ class BasketScreen extends ConsumerWidget {
     );
   }
 
-  String _getCustomizationSummary(SangakCustomization customization) {
+  String _getCustomizationSummary(BabkaCustomization customization) {
     if (customization.selectedOptions.isEmpty) return 'Plain';
     
     final List<String> parts = [];
     for (final entry in customization.selectedOptions.entries) {
-      final option = sangakCustomizationOptions.cast<SangakCustomizationOption?>().firstWhere(
+      final option = babkaCustomizationOptions.cast<BabkaCustomizationOption?>().firstWhere(
         (o) => o?.id == entry.key,
         orElse: () => null,
       );
@@ -398,3 +398,4 @@ class BasketScreen extends ConsumerWidget {
     return parts.isEmpty ? 'Custom' : parts.join(', ');
   }
 }
+

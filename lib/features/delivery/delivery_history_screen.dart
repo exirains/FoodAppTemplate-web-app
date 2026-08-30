@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../models/order.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/sangak_empty_states.dart';
+import '../../shared/widgets/babka_text_field.dart';
+import '../../shared/widgets/babka_empty_states.dart';
 import '../admin/admin_provider.dart';
 import '../auth/auth_provider.dart';
 
@@ -51,7 +51,7 @@ final deliveryHistoryProvider = FutureProvider<List<OrderModel>>((ref) async {
   if (user == null) return [];
 
   final filters = ref.watch(historyFilterProvider);
-  final repo = ref.read(sangakOrderRepositoryProvider);
+  final repo = ref.read(babkaOrderRepositoryProvider);
 
   OrderStatus? dbStatus;
   if (filters.status == HistoryStatusFilter.delivered) dbStatus = OrderStatus.delivered;
@@ -112,7 +112,7 @@ class DeliveryHistoryScreen extends ConsumerWidget {
           Expanded(
             child: historyAsync.when(
               data: (orders) => orders.isEmpty
-                  ? SangakEmptyState(
+                  ? BabkaEmptyState(
                       title: l10n.noOrdersYet,
                       message: filters.query.isNotEmpty || filters.dateRange != null
                           ? l10n.adjustFilters
@@ -473,3 +473,4 @@ class _HistoryOrderCard extends StatelessWidget {
     );
   }
 }
+

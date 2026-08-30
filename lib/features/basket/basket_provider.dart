@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import '../../models/bread.dart';
 import '../../models/basket_item.dart';
-import '../../models/sangak_customization.dart';
+import '../../models/babka_customization.dart';
 import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 
@@ -174,7 +174,7 @@ class BasketNotifier extends StateNotifier<List<BasketItem>> {
     }
   }
 
-  void addItem(Bread bread, {int quantity = 1, SangakCustomization? customization}) {
+  void addItem(Bread bread, {int quantity = 1, BabkaCustomization? customization}) {
     final existingIndex = state.indexWhere(
       (item) => item.bread.id == bread.id && item.customization == customization
     );
@@ -276,3 +276,4 @@ final basketItemCountProvider = Provider<int>((ref) {
   final basket = ref.watch(basketProvider);
   return basket.fold(0, (sum, item) => sum + item.quantity);
 });
+

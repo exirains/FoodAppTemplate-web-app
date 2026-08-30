@@ -1,12 +1,12 @@
 import 'package:uuid/uuid.dart';
 import 'bread.dart';
-import 'sangak_customization.dart';
+import 'babka_customization.dart';
 
 class BasketItem {
   final String basketId;
   final Bread bread;
   final int quantity;
-  final SangakCustomization? customization;
+  final BabkaCustomization? customization;
 
   BasketItem({
     String? basketId,
@@ -24,7 +24,7 @@ class BasketItem {
   BasketItem copyWith({
     String? basketId,
     int? quantity,
-    SangakCustomization? customization,
+    BabkaCustomization? customization,
   }) {
     return BasketItem(
       basketId: basketId ?? this.basketId,
@@ -49,8 +49,9 @@ class BasketItem {
       bread: Bread.fromJson(json['bread'] as Map<String, dynamic>),
       quantity: json['quantity'] as int,
       customization: json['customization'] != null
-          ? SangakCustomization.fromJson(json['customization'] as Map<String, dynamic>)
+          ? BabkaCustomization.fromJson(json['customization'] as Map<String, dynamic>)
           : null,
     );
   }
 }
+

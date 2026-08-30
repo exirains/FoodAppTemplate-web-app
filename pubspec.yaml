@@ -108,11 +108,11 @@ flutter:
     - lib/assets/fonts/Peyda/
     - lib/assets/fonts/IranYekan/
     - lib/assets/audio/
-    - lib/assets/images/customization/sangak/base/
-    - lib/assets/images/customization/sangak/sesame/
-    - lib/assets/images/customization/sangak/nigella/
-    - lib/assets/images/customization/sangak/cheese/
-    - lib/assets/images/customization/sangak/herbs/
+    - lib/assets/images/customization/babka/base/
+    - lib/assets/images/customization/babka/sesame/
+    - lib/assets/images/customization/babka/nigella/
+    - lib/assets/images/customization/babka/cheese/
+    - lib/assets/images/customization/babka/herbs/
     - .env
 
   # To add assets to your application, add an assets section, like this:
@@ -151,3 +151,4 @@ flutter:
           weight: 800
         - asset: lib/assets/fonts/IranYekan/fonnts.com-Qs_Iranyekan-extrablack.ttf
           weight: 900
+

@@ -9,13 +9,13 @@ class AppLocalizationsFa extends AppLocalizations {
   AppLocalizationsFa([String locale = 'fa']) : super(locale);
 
   @override
-  String get appName => 'Sangak';
+  String get appName => 'Babka';
 
   @override
-  String get bakerySubtitle => 'نانوایی سنتی سنگک';
+  String get bakerySubtitle => 'نانوایی سنتی و آرتیزان';
 
   @override
-  String get welcomeToSangak => 'به سنگک خوش آمدید';
+  String get welcomeToBabka => 'به بابکا خوش آمدید';
 
   @override
   String get chooseLanguage => 'زبان خود را انتخاب کنید';
@@ -103,7 +103,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get goodEvening => 'عصر بخیر،';
 
   @override
-  String get welcomeToSangakGuest => 'به سنگک خوش آمدید،';
+  String get welcomeToBabkaGuest => 'به بابکا خوش آمدید،';
 
   @override
   String get guest => 'مهمان';
@@ -136,7 +136,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get registeredSuccessfully =>
-      'به خانواده سنگک خوش آمدید! حساب کاربری با موفقیت ایجاد شد.';
+      'به خانواده بابکا خوش آمدید! حساب کاربری با موفقیت ایجاد شد.';
 
   @override
   String get addPhoneToOrder =>
@@ -147,7 +147,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'وارد کردن شماره تلفن برای تحویل سفارش الزامی است.';
 
   @override
-  String get buildYourSangak => 'سنگک خود را بسازید';
+  String get buildYourBabka => 'بابکا خود را بسازید';
 
   @override
   String get base => 'پایه';
@@ -162,10 +162,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get total => 'جمع کل';
 
   @override
-  String get customizeYourSangak => 'شخصی‌سازی سنگک';
+  String get customizeYourBabka => 'شخصی‌سازی سفارش';
 
   @override
-  String get addedCustomSangak => 'سنگک سفارشی شما به سبد خرید اضافه شد!';
+  String get addedCustomBabka => 'سفارش سفارشی شما به سبد خرید اضافه شد!';
 
   @override
   String get saveYourFavorites => 'علاقه‌مندی‌های خود را ذخیره کنید';
@@ -182,7 +182,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'برای ذخیره اقلام، پیگیری سفارشات و تکمیل خرید خود، یک حساب کاربری بسازید.';
 
   @override
-  String get joinTheFamily => 'به خانواده سنگک بپیوندید';
+  String get joinTheFamily => 'به خانواده بابکا بپیوندید';
 
   @override
   String get profileGuestMessage =>
@@ -208,7 +208,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get updateAvailableMessage =>
-      'نسخه جدید سنگک در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.';
+      'نسخه جدید بابکا در دسترس است. برای بهره‌مندی از آخرین ویژگی‌ها و بهبودها، همین حالا بروزرسانی کنید.';
 
   @override
   String get whatsNew => 'موارد جدید:';
@@ -383,10 +383,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get errorLoadingBreads => 'خطا در بارگذاری';
 
   @override
-  String get freshlyBakedSangak => 'سنگک تازه';
+  String get freshlyBakedArtisan => 'محصولات تازه پخته شده';
 
   @override
-  String get heroSubtitle => 'مستقیم از تنور به درب منزل شما.';
+  String get heroSubtitle => 'نان‌های با کیفیت آرتیزان، تحویل درب منزل شما.';
 
   @override
   String get pleaseAgreeToTerms => 'لطفاً با شرایط موافقت کنید';
@@ -564,7 +564,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get payWithCardOnDelivery => 'پرداخت با کارت (بزودی)';
 
   @override
-  String get thankYouSangak => 'ممنون از خرید شما!';
+  String get thankYouBabka => 'ممنون از خرید شما!';
 
   @override
   String get no => 'خیر';
@@ -1265,11 +1265,11 @@ class AppLocalizationsFa extends AppLocalizations {
   String get customization => 'شخصی‌سازی';
 
   @override
-  String get customSangak => 'سنگک سفارشی';
+  String get customBabka => 'بابکا سفارشی';
 
   @override
-  String get customSangakDescription =>
-      'فعال یا غیرفعال کردن قابلیت «سنگک خودت رو بساز» برای مشتریان.';
+  String get customBabkaDescription =>
+      'فعال یا غیرفعال کردن قابلیت «بابکا خودت رو بساز» برای مشتریان.';
 
   @override
   String get minOrderLimitLabel => 'حداقل مبلغ سفارش (لیر)';
@@ -1359,7 +1359,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get rateExperience => 'امتیاز به تجربه خرید';
 
   @override
-  String get rateOrderMessage => 'تجربه شما از سفارش سنگک چطور بود؟';
+  String get rateOrderMessage => 'تجربه شما از سفارش بابکا چطور بود؟';
 
   @override
   String get overallSatisfaction => 'رضایت کلی';
@@ -1523,7 +1523,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'هیچ‌چیزی جای سنگک تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nثبت‌نام با لینک دعوت من:\nhttps://app.sangak.tr/?ref=$code';
+    return 'هیچ‌چیزی جای بابکا تازه و داغ، مستقیم از تنور رو نمی‌گیره! 🍞🔥\n\nثبت‌نام با لینک دعوت من:\nhttps://app.Babka.tr/?ref=$code';
   }
 
   @override
@@ -1544,7 +1544,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get referralSystemDesc =>
-      'دوستت رو به سنگک دعوت کن و امتیاز وفاداری بگیر.';
+      'دوستت رو به بابکا دعوت کن و امتیاز وفاداری بگیر.';
 
   @override
   String get referralStatusPending => 'در انتظار';
@@ -1579,7 +1579,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get openInMaps => 'مشاهده روی نقشه';
 
   @override
-  String get newSangakOrder => 'سفارش جدید سنگک';
+  String get newBabkaOrder => 'سفارش جدید بابکا';
 
   @override
   String orderIsReadyForPickup(Object number) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
 
-/// Sangak Design System Language Card (v1.1.0)
+/// Babka Design System Language Card (v1.1.0)
 ///
 /// Refined with 200ms animation and tactile selection feel.
 class LanguageCard extends StatelessWidget {
@@ -70,3 +70,4 @@ class LanguageCard extends StatelessWidget {
     );
   }
 }
+

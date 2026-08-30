@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_tokens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_tokens.dart';
 import '../../main.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../shared/widgets/app_logo.dart';
@@ -142,24 +142,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                   tag: 'app_logo',
                   child: AppLogo.large(),
                 ),
-                const SizedBox(height: 56), 
-                /*
+                const SizedBox(height: 32),
                 Text(
                   l10n.appName.toUpperCase(),
                   style: BabkaTypography.display(context).copyWith(
-                    letterSpacing: 8, 
+                    letterSpacing: 12,
                     color: BabkaColors.primary,
-                    fontSize: 48, 
+                    fontSize: 42,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                */
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Text(
                   l10n.bakerySubtitle.toUpperCase(),
                   style: BabkaTypography.subtitle(context).copyWith(
-                    letterSpacing: 4,
-                    fontSize: 16,
-                    color: BabkaColors.inkLight,
+                    letterSpacing: 6,
+                    fontSize: 14,
+                    color: BabkaColors.inkLight.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -170,3 +169,4 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     );
   }
 }
+

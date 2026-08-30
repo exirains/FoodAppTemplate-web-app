@@ -6,13 +6,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:babka/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
+import '../../shared/widgets/babka_dialogs.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/utils/action_guard.dart';
 import '../../shared/widgets/user_role_tag.dart';
@@ -21,6 +21,7 @@ import '../../services/supabase_service.dart';
 import '../auth/auth_provider.dart';
 import '../auth/profile_provider.dart';
 import '../loyalty/loyalty_provider.dart';
+import '../favorites/favorites_provider.dart';
 import '../../features/home/home_provider.dart';
 import '../orders/orders_provider.dart';
 import 'widgets/referral_section.dart';
@@ -678,3 +679,4 @@ class _TurkeyPhoneInputFormatter extends TextInputFormatter {
     );
   }
 }
+

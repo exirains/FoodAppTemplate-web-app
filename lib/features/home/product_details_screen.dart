@@ -3,22 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../models/bread.dart';
-import '../../shared/widgets/sangak_button.dart';
+import '../../shared/widgets/babka_button.dart';
 import '../../shared/widgets/freshness_badge.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../../shared/widgets/product_tag.dart';
 import '../../shared/utils/auth_gate.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../services/options_repository.dart';
 import '../basket/basket_provider.dart';
-import 'home_provider.dart';
+import '../favorites/favorites_provider.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final Bread bread;
@@ -51,8 +51,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     final formattedPrice = BabkaNumberFormatter.formatCurrency(widget.bread.price, languageCode);
     
     final optionsAsync = ref.watch(appOptionsProvider);
-    final isCustomSangakEnabled = optionsAsync.value?['custom_sangak_enabled'] == true || 
-                                 optionsAsync.value?['custom_sangak_enabled'] == 'true';
+    final isCustomBabkaEnabled = optionsAsync.value?['custom_babka_enabled'] == true || 
+                                 optionsAsync.value?['custom_babka_enabled'] == 'true';
 
     return Scaffold(
       backgroundColor: BabkaColors.background,
@@ -184,13 +184,13 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   ),
                   const SizedBox(height: BabkaDimens.spacing32),
                   
-                  if (isCustomSangakEnabled && widget.bread.name.toLowerCase().contains('sangak'))
+                  if (isCustomBabkaEnabled && widget.bread.name.toLowerCase().contains('babka'))
                     Padding(
                       padding: const EdgeInsets.only(bottom: BabkaDimens.spacing16),
                       child: BabkaButton.outlined(
-                        label: l10n.customizeYourSangak,
+                        label: l10n.customizeYourBabka,
                         icon: Icons.auto_awesome_outlined,
-                        onPressed: () => context.push('/custom-sangak', extra: widget.bread),
+                        onPressed: () => context.push('/custom-babka', extra: widget.bread),
                       ),
                     ),
 
@@ -299,3 +299,4 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     );
   }
 }
+

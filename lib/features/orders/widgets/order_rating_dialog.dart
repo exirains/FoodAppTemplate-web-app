@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_typography.dart';
-import '../../../shared/widgets/sangak_button.dart';
-import '../../../shared/widgets/sangak_text_field.dart';
-import '../../../shared/utils/sangak_toast.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_typography.dart';
+import '../../../shared/widgets/babka_button.dart';
+import '../../../shared/widgets/babka_text_field.dart';
+import '../../../shared/utils/babka_toast.dart';
 import '../../../services/rating_repository.dart';
 import '../../../models/order_rating.dart';
 import '../../../services/loyalty_repository.dart';
@@ -154,3 +154,4 @@ class _OrderRatingDialogState extends ConsumerState<OrderRatingDialog> {
     );
   }
 }
+

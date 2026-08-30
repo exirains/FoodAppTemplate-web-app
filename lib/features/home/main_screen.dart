@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../shared/widgets/sangak_bottom_nav.dart';
+import '../../shared/widgets/babka_bottom_nav.dart';
 import '../auth/auth_provider.dart';
 import '../auth/pending_action_provider.dart';
 import 'home_screen.dart';
@@ -13,9 +13,9 @@ import '../auth/profile_provider.dart';
 import '../../services/loyalty_repository.dart';
 import '../../services/options_repository.dart';
 import '../../services/supabase_service.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/babka_toast.dart';
 import 'tab_provider.dart';
-import '../../shared/widgets/sangak_back_handler.dart';
+import '../../shared/widgets/babka_back_handler.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -138,10 +138,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       isGuest ? const ProfileGuestView() : const ProfileScreen(),
     ];
 
-    return SangakBackHandler(
+    return BabkaBackHandler(
       child: Scaffold(
         body: IndexedStack(index: currentIndex, children: screens),
-        bottomNavigationBar: SangakBottomNav(
+        bottomNavigationBar: BabkaBottomNav(
           currentIndex: currentIndex,
           onTap: _onTabTapped,
         ),
@@ -149,3 +149,4 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     );
   }
 }
+

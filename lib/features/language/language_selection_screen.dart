@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../shared/widgets/sangak_button.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../shared/widgets/babka_button.dart';
 import '../../shared/widgets/language_card.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../core/localization/locale_provider.dart';
@@ -96,3 +96,4 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
     );
   }
 }
+

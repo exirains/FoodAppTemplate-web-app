@@ -3,31 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../auth/auth_provider.dart';
 import '../auth/auth_validators.dart';
 import '../auth/profile_provider.dart';
 import '../basket/basket_provider.dart';
 import 'home_provider.dart';
+import '../favorites/favorites_provider.dart';
 import 'tab_provider.dart';
 import 'widgets/settings_bottom_sheet.dart';
 import 'widgets/promotion_banners.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../services/greeting_service.dart';
 import '../../shared/utils/auth_gate.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/utils/action_guard.dart';
 import '../../shared/widgets/category_chip.dart';
 import '../../shared/widgets/hero_banner.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/quantity_selector.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
-import '../../shared/widgets/sangak_skeletons.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_dialogs.dart';
+import '../../shared/widgets/babka_skeletons.dart';
 import '../../shared/widgets/user_role_tag.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -65,14 +66,19 @@ class HomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(GreetingService.getGreeting(context), style: BabkaTypography.bodySmall(context)),
+                        Text(GreetingService.getGreeting(context).toUpperCase(), 
+                          style: BabkaTypography.bodySmall(context).copyWith(
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 1),
                         if (!isGuest)
                           Row(
                             children: [
                               Text(
-                                user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-                                style: BabkaTypography.h3(context),
+                                (user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User').toUpperCase(),
+                                style: BabkaTypography.h3(context).copyWith(letterSpacing: 0.5),
                               ),
                               const SizedBox(width: 8),
                               UserRoleTag(role: ref.watch(userProfileProvider).value?.role ?? 'customer'),
@@ -125,9 +131,10 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   // Hero Banner
                   HeroBanner(
-                    title: l10n.freshlyBakedSangak,
+                    title: l10n.freshlyBakedArtisan.toUpperCase(),
                     subtitle: l10n.heroSubtitle,
-                    imageUrl: 'https://obealvlqkffozfigtobc.supabase.co/storage/v1/object/public/branding/top_banner_dark.jpg',
+                    imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=1200',
+                    onTap: () => context.push('/explore'),
                   ),
                   const SizedBox(height: BabkaDimens.spacing24),
 
@@ -186,7 +193,12 @@ class HomeScreen extends ConsumerWidget {
                     ),
 
                   // Categories
-                  Text(l10n.categories, style: BabkaTypography.h3(context)),
+                  Text(l10n.categories.toUpperCase(), 
+                    style: BabkaTypography.h3(context).copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
                   const SizedBox(height: BabkaDimens.spacing16),
                   categoriesAsync.when(
                     data: (categories) => SizedBox(
@@ -201,7 +213,7 @@ class HomeScreen extends ConsumerWidget {
                             return Padding(
                               padding: const EdgeInsetsDirectional.only(start: 0),
                               child: CategoryChip(
-                                label: l10n.all,
+                                label: l10n.all.toUpperCase(),
                                 isSelected: selectedCategoryId == null,
                                 onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = null,
                               ),
@@ -209,7 +221,7 @@ class HomeScreen extends ConsumerWidget {
                           }
                           final category = categories[index - 1];
                           return CategoryChip(
-                            label: category.localizedName(lang),
+                            label: category.localizedName(lang).toUpperCase(),
                             isSelected: selectedCategoryId == category.id,
                             onTap: () => ref.read(selectedCategoryIdProvider.notifier).state = category.id,
                           );
@@ -226,7 +238,12 @@ class HomeScreen extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(l10n.popularToday, style: BabkaTypography.h3(context)),
+                        Text(l10n.popularToday.toUpperCase(), 
+                          style: BabkaTypography.h3(context).copyWith(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
                         TextButton(
                           onPressed: () => ref.read(tabProvider.notifier).state = 1,
                           child: Text(l10n.seeAll, style: BabkaTypography.bodySmall(context).copyWith(color: BabkaColors.primary)),
@@ -256,7 +273,7 @@ class HomeScreen extends ConsumerWidget {
                     final displayName = bread.localizedName(lang);
                     return ProductCard(
                       bread: bread,
-                      name: displayName,
+                      name: displayName.toUpperCase(),
                       description: bread.localizedDescription(lang),
                       price: bread.price,
                       imageUrl: bread.imageUrl,
@@ -309,7 +326,12 @@ class HomeScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.traditionalFavorites, style: BabkaTypography.h3(context)),
+                  Text(l10n.traditionalFavorites.toUpperCase(), 
+                    style: BabkaTypography.h3(context).copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
                   const SizedBox(height: BabkaDimens.spacing16),
                 ],
               ),
@@ -384,9 +406,11 @@ class HomeScreen extends ConsumerWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          displayName,
+                                          displayName.toUpperCase(),
                                           style: BabkaTypography.title(context).copyWith(
-                                            fontSize: 16,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
                                             color: isAvailable ? BabkaColors.ink : BabkaColors.inkLight,
                                           ),
                                           maxLines: 1,
@@ -529,9 +553,59 @@ class HomeScreen extends ConsumerWidget {
             error: (error, stack) => SliverToBoxAdapter(child: Center(child: Text(l10n.errorLoadingBreads))),
           ),
           
+          const SliverToBoxAdapter(child: SizedBox(height: BabkaDimens.spacing32)),
+
+          // Photo Gallery Section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: BabkaDimens.spacing24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("EKMEKLERİMİZ".toUpperCase(), 
+                    style: BabkaTypography.h3(context).copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: BabkaDimens.spacing16),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      final galleryUrls = [
+                        'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600',
+                        'https://images.unsplash.com/photo-1540333563391-76671ab1d17a?w=600',
+                        'https://images.unsplash.com/photo-1585478259715-876a6a81fc08?w=600',
+                        'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600',
+                      ];
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(BabkaDimens.radiusM),
+                        child: CachedNetworkImage(
+                          imageUrl: galleryUrls[index],
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(color: BabkaColors.border),
+                          errorWidget: (context, url, error) => const Icon(Icons.image),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
           const SliverToBoxAdapter(child: SizedBox(height: BabkaDimens.spacing64)),
         ],
       ),
     );
   }
 }
+

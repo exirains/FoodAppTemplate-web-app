@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Sangak Design System Quantity Selector (v1.1.0)
+/// Babka Design System Quantity Selector (v1.1.0)
 ///
 /// Supports Trash icon for deletion when quantity is 1.
 class QuantitySelector extends ConsumerWidget {
@@ -111,3 +111,4 @@ class _IconButton extends StatelessWidget {
     );
   }
 }
+

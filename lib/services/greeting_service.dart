@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 
 class GreetingService {
   static String getGreeting(BuildContext context) {
@@ -15,3 +15,4 @@ class GreetingService {
     }
   }
 }
+

@@ -190,7 +190,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   Future<User?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
-        final redirectUrl = 'https://app.sangak.tr';
+        final redirectUrl = 'https://app.Babka.tr';
         await SupabaseService.client.auth.signInWithOAuth(
           OAuthProvider.google,
           redirectTo: redirectUrl,
@@ -343,3 +343,4 @@ class AuthRateLimitException implements Exception {
   @override
   String toString() => message;
 }
+

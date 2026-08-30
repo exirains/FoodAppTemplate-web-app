@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Sangak Responsive Layout Utility (v1.0.0)
+/// Babka Responsive Layout Utility (v1.0.0)
 ///
 /// Provides a consistent way to handle adaptive layouts across Mobile, Web, and Desktop.
 class ResponsiveLayout extends StatelessWidget {
@@ -116,3 +116,4 @@ class AdaptiveBuilder extends StatelessWidget {
     );
   }
 }
+

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../design_system/sangak_colors.dart';
-import '../design_system/sangak_typography.dart';
-import '../design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
+import '../design_system/babka_colors.dart';
+import '../design_system/babka_typography.dart';
+import '../design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
 import 'update_model.dart';
 
 class UpdateDialog extends StatelessWidget {
@@ -135,3 +135,4 @@ class UpdateDialog extends StatelessWidget {
     );
   }
 }
+

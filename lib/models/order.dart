@@ -1,5 +1,5 @@
 import 'order_item.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 
 enum OrderStatus {
   pending,
@@ -140,3 +140,4 @@ class OrderModel {
 
   String get orderNumber => 'SNK-${id.substring(0, 4).toUpperCase()}';
 }
+

@@ -1,4 +1,4 @@
-// User profile model for Sangak.
+// User profile model for Babka.
 // Represents user data with progressive completion support.
 
 class UserProfile {
@@ -237,3 +237,4 @@ class GuestUserData {
     );
   }
 }
+

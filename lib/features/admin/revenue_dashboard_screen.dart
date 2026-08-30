@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/widgets/sangak_back_handler.dart';
+import '../../shared/widgets/babka_back_handler.dart';
 import '../../models/order.dart';
 import 'admin_provider.dart';
 
@@ -25,7 +25,7 @@ class RevenueDashboardScreen extends ConsumerWidget {
 
     return RoleGuard(
       allowedRoles: const ['admin'],
-      child: SangakBackHandler(
+      child: BabkaBackHandler(
         child: Scaffold(
           backgroundColor: BabkaColors.background,
           appBar: AppBar(
@@ -524,3 +524,4 @@ class _RangeSelector extends ConsumerWidget {
     );
   }
 }
+

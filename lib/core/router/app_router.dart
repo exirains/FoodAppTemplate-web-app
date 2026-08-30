@@ -11,7 +11,7 @@ import '../../features/auth/register_screen.dart';
 
 import '../../features/home/main_screen.dart';
 import '../../features/home/product_details_screen.dart';
-import '../../features/custom_sangak/pages/custom_sangak_page.dart';
+import '../../features/custom_babka/pages/custom_babka_page.dart';
 import '../../features/basket/checkout_screen.dart';
 import '../../features/basket/address_selection_screen.dart';
 import '../../features/basket/payment_selection_screen.dart';
@@ -449,7 +449,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/custom-sangak',
+        path: '/custom-babka',
         pageBuilder: (context, state) {
           final bread = state.extra as Bread;
           return _buildPageWithTransition(
@@ -462,3 +462,4 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+

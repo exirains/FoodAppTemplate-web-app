@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/design_system/sangak_tokens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/design_system/babka_tokens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
 import '../../shared/widgets/freshness_badge.dart';
 import '../../shared/widgets/product_card.dart';
 import '../../shared/widgets/hero_banner.dart';
@@ -26,7 +26,7 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sangak Design System v1.0.0'),
+        title: const Text('Babka Design System v1.0.0'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(BabkaDimens.spacing24),
@@ -121,14 +121,14 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
 
           _buildSection('Signature Components', [
             const HeroBanner(
-              title: 'Artisan Sangak',
+              title: 'Artisan Babka',
               subtitle: 'Traditional stone-baked perfection',
               imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600',
             ),
             const SizedBox(height: 24),
             Center(
               child: ProductCard(
-                name: 'Traditional Sangak',
+                name: 'Traditional Babka',
                 description: 'Stone-baked whole wheat flatbread, perfect for breakfast.',
                 price: 80,
                 imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?q=80&w=400',
@@ -182,3 +182,4 @@ class _DesignSystemGalleryScreenState extends State<DesignSystemGalleryScreen> {
     );
   }
 }
+

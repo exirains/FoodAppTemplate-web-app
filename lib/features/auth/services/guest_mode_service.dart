@@ -7,8 +7,8 @@ import 'dart:convert';
 import '../models/user_profile.dart';
 
 class GuestModeService {
-  static const String _guestDataKey = 'sangak_guest_user_data';
-  static const String _isGuestKey = 'sangak_is_guest_mode';
+  static const String _guestDataKey = 'babka_guest_user_data';
+  static const String _isGuestKey = 'babka_is_guest_mode';
 
   /// Check if user is in guest mode
   static Future<bool> isGuestMode() async {
@@ -172,3 +172,4 @@ class GuestModeService {
     }
   }
 }
+

@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/widgets/role_guard.dart';
 import '../../services/options_repository.dart';
 
@@ -54,7 +54,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
         'streak_bonus': int.tryParse(_streakBonusController.text) ?? 50,
         'streak_threshold': int.tryParse(_streakThresholdController.text) ?? 3,
         'points_earning_rule': _pointsEarningRule,
-        'custom_sangak_enabled': _customizationEnabled,
+        'custom_babka_enabled': _customizationEnabled,
       };
 
       await ref.read(optionsRepositoryProvider).updateOptions(updates);
@@ -109,8 +109,8 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
             if (options.containsKey('points_earning_rule')) {
               _pointsEarningRule = options['points_earning_rule'].toString();
             }
-            if (options.containsKey('custom_sangak_enabled')) {
-              _customizationEnabled = options['custom_sangak_enabled'] == true || options['custom_sangak_enabled'] == 'true';
+            if (options.containsKey('custom_babka_enabled')) {
+              _customizationEnabled = options['custom_babka_enabled'] == true || options['custom_babka_enabled'] == 'true';
             }
 
             return SingleChildScrollView(
@@ -233,8 +233,8 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                   const SizedBox(height: BabkaDimens.spacing32),
                   _buildSectionTitle(context, l10n.customization),
                   _buildFeatureToggle(
-                    l10n.customSangak,
-                    l10n.customSangakDescription,
+                    l10n.customBabka,
+                    l10n.customBabkaDescription,
                     _customizationEnabled,
                     (v) => setState(() => _customizationEnabled = v),
                     context,
@@ -310,3 +310,4 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
     );
   }
 }
+

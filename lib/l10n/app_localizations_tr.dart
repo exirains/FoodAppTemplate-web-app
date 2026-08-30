@@ -9,13 +9,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appName => 'Sangak';
+  String get appName => 'Babka';
 
   @override
-  String get bakerySubtitle => 'Artizan Pers Fırını';
+  String get bakerySubtitle => 'GELENEKSEL ZANAATKAR FIRINI';
 
   @override
-  String get welcomeToSangak => 'Sangak\'a Hoş Geldiniz';
+  String get welcomeToBabka => 'Babka\'a Hoş Geldiniz';
 
   @override
   String get chooseLanguage => 'Dilinizi seçin';
@@ -104,7 +104,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get goodEvening => 'İyi Akşamlar,';
 
   @override
-  String get welcomeToSangakGuest => 'Sangak\'a Hoş Geldiniz,';
+  String get welcomeToBabkaGuest => 'Babka\'a Hoş Geldiniz,';
 
   @override
   String get guest => 'Misafir';
@@ -148,7 +148,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Teslimat için telefon numarası gereklidir.';
 
   @override
-  String get buildYourSangak => 'Sangak Ekmeğini Oluştur';
+  String get buildYourBabka => 'Babka Ekmeğini Oluştur';
 
   @override
   String get base => 'Taban';
@@ -163,10 +163,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get total => 'Toplam';
 
   @override
-  String get customizeYourSangak => 'Sangak Ekmeğini Özelleştir';
+  String get customizeYourBabka => 'Siparişi Özelleştir';
 
   @override
-  String get addedCustomSangak => 'Özel Sangak ekmeğiniz sepete eklendi!';
+  String get addedCustomBabka => 'Özel siparişiniz sepete eklendi!';
 
   @override
   String get saveYourFavorites => 'Favorilerinizi kaydedin';
@@ -183,7 +183,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Ürünlerinizi kaydetmek, siparişlerinizi takip etmek ve ödemenizi zahmetsizce tamamlamak için bir hesap oluşturun.';
 
   @override
-  String get joinTheFamily => 'Sangak ailesine katılın';
+  String get joinTheFamily => 'Babka ailesine katılın';
 
   @override
   String get profileGuestMessage =>
@@ -209,7 +209,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get updateAvailableMessage =>
-      'Sangak\'ın yeni bir versiyonu mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.';
+      'Babka\'ın yeni bir versiyonu mevcut. En yeni özelliklerin ve iyileştirmelerin keyfini çıkarmak için şimdi güncelleyin.';
 
   @override
   String get whatsNew => 'Yenilikler:';
@@ -384,10 +384,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get errorLoadingBreads => 'Ekmekler yüklenirken hata oluştu';
 
   @override
-  String get freshlyBakedSangak => 'Taze Pişmiş Sangak';
+  String get freshlyBakedArtisan => 'Taze Pişmiş Ürünler';
 
   @override
-  String get heroSubtitle => 'Taş fırından doğrudan kapınıza.';
+  String get heroSubtitle => 'Premium zanaatkar ekmekleri, kapınıza teslim.';
 
   @override
   String get pleaseAgreeToTerms => 'Lütfen şartları kabul edin';
@@ -544,7 +544,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get signOutConfirmation =>
-      'Sangak hesabınızdan çıkış yapmak istediğinize emin misiniz?';
+      'Babka hesabınızdan çıkış yapmak istediğinize emin misiniz?';
 
   @override
   String get profilePictureUpdated => 'Profil resmi başarıyla güncellendi!';
@@ -568,8 +568,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get payWithCardOnDelivery => 'Kapıda kartla ödeme (Yakında)';
 
   @override
-  String get thankYouSangak =>
-      'Sangak\'ı tercih ettiğiniz için teşekkürler! Taze ekmeğiniz hazırlanıyor.';
+  String get thankYouBabka =>
+      'Babka\'ı tercih ettiğiniz için teşekkürler! Taze ekmeğiniz hazırlanıyor.';
 
   @override
   String get no => 'Hayır';
@@ -1275,11 +1275,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get customization => 'Özelleştirme';
 
   @override
-  String get customSangak => 'Özel Sangak';
+  String get customBabka => 'Özel Babka';
 
   @override
-  String get customSangakDescription =>
-      'Müşteriler için Kendi Sangak\'ını Yap özelliğini etkinleştirin veya devre dışı bırakın.';
+  String get customBabkaDescription =>
+      'Müşteriler için Kendi Babka\'ını Yap özelliğini etkinleştirin veya devre dışı bırakın.';
 
   @override
   String get minOrderLimitLabel => 'Minimum Sipariş Tutarı (TL)';
@@ -1369,7 +1369,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get rateExperience => 'Deneyiminizi oylayın';
 
   @override
-  String get rateOrderMessage => 'Sangak siparişiniz nasıldı?';
+  String get rateOrderMessage => 'Babka siparişiniz nasıldı?';
 
   @override
   String get overallSatisfaction => 'Genel Memnuniyet';
@@ -1534,7 +1534,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'Fırından yeni çıkmış sıcacık taze Sangak\'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.sangak.tr/?ref=$code';
+    return 'Fırından yeni çıkmış sıcacık taze Babka\'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.Babka.tr/?ref=$code';
   }
 
   @override
@@ -1554,7 +1554,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get referralSystemDesc =>
-      'Sangak\'a bir arkadaşını davet et ve Sadakat Puanı kazan.';
+      'Babka\'a bir arkadaşını davet et ve Sadakat Puanı kazan.';
 
   @override
   String get referralStatusPending => 'Beklemede';
@@ -1589,7 +1589,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get openInMaps => 'Haritada Aç';
 
   @override
-  String get newSangakOrder => 'Yeni Sangak Siparişi';
+  String get newBabkaOrder => 'Yeni Babka Siparişi';
 
   @override
   String orderIsReadyForPickup(Object number) {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
 import '../../shared/widgets/google_mark.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/referral_repository.dart';
 import '../home/tab_provider.dart';
@@ -273,3 +273,4 @@ class _SignupChoiceScreenState extends ConsumerState<SignupChoiceScreen> {
     );
   }
 }
+

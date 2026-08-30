@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../models/order.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/utils/sangak_toast.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/utils/babka_toast.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../shared/widgets/role_guard.dart';
 import '../../shared/widgets/cancel_order_dialog.dart';
@@ -34,7 +34,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
     setState(() => _isUpdating = true);
     try {
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
+      await ref.read(babkaOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: newStatus,
         changedBy: user.id,
@@ -63,7 +63,7 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
 
     setState(() => _isUpdating = true);
     try {
-      await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
+      await ref.read(babkaOrderRepositoryProvider).updateOrderStatus(
         orderId: widget.orderId,
         status: OrderStatus.cancelled,
         changedBy: user.id,
@@ -567,10 +567,10 @@ class _AdminOrderDetailScreenState extends ConsumerState<AdminOrderDetailScreen>
                             setState(() => _isUpdating = true);
                             try {
                               // 1. Assign in database
-                              await ref.read(sangakOrderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
+                              await ref.read(babkaOrderRepositoryProvider).assignDeliveryPerson(widget.orderId, s['id']);
                               
                               // 2. Update status to 'out_for_delivery' (matching existing workflow)
-                              await ref.read(sangakOrderRepositoryProvider).updateOrderStatus(
+                              await ref.read(babkaOrderRepositoryProvider).updateOrderStatus(
                                 orderId: widget.orderId,
                                 status: OrderStatus.outForDelivery,
                                 changedBy: ref.read(authProvider).asData!.value!.id,
@@ -683,3 +683,4 @@ class _StatusBadge extends StatelessWidget {
     );
   }
 }
+

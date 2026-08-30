@@ -6,21 +6,21 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
 import '../../services/supabase_service.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/utils/sangak_toast.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/sangak_button.dart';
+import '../../shared/utils/babka_toast.dart';
+import '../../shared/widgets/babka_dialogs.dart';
+import '../../shared/widgets/babka_text_field.dart';
+import '../../shared/widgets/babka_button.dart';
 import '../../shared/widgets/user_role_tag.dart';
 import '../../models/order.dart';
 import '../../models/address.dart';
 import '../../models/bread.dart';
 import '../../services/order_repository.dart';
 
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import 'user_management_screen.dart';
 
@@ -31,7 +31,7 @@ final userDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((
   final profileRes = await client.from('profiles').select().eq('id', userId).single();
   
   // Fetch Orders using robust join query
-  final List<OrderModel> orders = await ref.read(sangakOrderRepositoryProvider).getMyOrders(userId);
+  final List<OrderModel> orders = await ref.read(babkaOrderRepositoryProvider).getMyOrders(userId);
   
   // Fetch Saved Addresses (from user_addresses table)
   final addressesRes = await client.from('user_addresses').select().eq('user_id', userId);
@@ -55,7 +55,7 @@ final userDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((
   // Fetch Assigned Orders (for drivers)
   List<OrderModel> assignedOrders = [];
   if (profileRes['role'] == 'delivery') {
-    assignedOrders = await ref.read(sangakOrderRepositoryProvider).getAssignedOrders(userId);
+    assignedOrders = await ref.read(babkaOrderRepositoryProvider).getAssignedOrders(userId);
   }
 
   return {
@@ -679,3 +679,4 @@ class _AdminEditUserDialogState extends ConsumerState<_AdminEditUserDialog> {
     );
   }
 }
+

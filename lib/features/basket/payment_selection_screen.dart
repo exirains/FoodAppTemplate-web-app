@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/utils/babka_toast.dart';
 import 'checkout_provider.dart';
 
 class PaymentSelectionScreen extends ConsumerWidget {
@@ -127,3 +127,4 @@ class PaymentSelectionScreen extends ConsumerWidget {
     );
   }
 }
+

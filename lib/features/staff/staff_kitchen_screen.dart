@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../models/order.dart';
 import '../../shared/utils/role_switcher.dart';
 import '../../shared/widgets/role_guard.dart';
-import '../../shared/widgets/sangak_back_handler.dart';
+import '../../shared/widgets/babka_back_handler.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../auth/profile_provider.dart';
 import 'staff_provider.dart';
@@ -31,7 +31,7 @@ class _StaffKitchenScreenState extends ConsumerState<StaffKitchenScreen> {
     
     return RoleGuard(
       allowedRoles: const ['admin', 'staff'],
-      child: SangakBackHandler(
+      child: BabkaBackHandler(
         child: Scaffold(
           backgroundColor: BabkaColors.background,
           appBar: isWide ? null : AppBar(
@@ -462,3 +462,4 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
+

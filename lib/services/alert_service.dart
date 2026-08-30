@@ -14,7 +14,7 @@ class AlertService {
 
   /// Triggers a chime sound and vibration with debouncing
   void triggerNewOrderAlert({
-    String assetPath = 'lib/assets/audio/sangak_chime.mp3',
+    String assetPath = 'lib/assets/audio/babka_chime.mp3',
     int vibrationDuration = 500,
     int debounceMs = 600,
   }) {
@@ -50,3 +50,4 @@ final alertServiceProvider = Provider((ref) {
   ref.onDispose(() => service.dispose());
   return service;
 });
+

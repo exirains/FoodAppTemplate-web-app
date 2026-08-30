@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'update_model.dart';
 
 class UpdateRepository {
-  static const String _updateUrl = 'https://raw.githubusercontent.com/exirains/sangak-app/main/update.json';
+  static const String _updateUrl = 'https://raw.githubusercontent.com/exirains/Babka-app/main/update.json';
 
   Future<UpdateModel?> fetchUpdateInfo() async {
     try {
@@ -23,3 +23,4 @@ class UpdateRepository {
     return null;
   }
 }
+

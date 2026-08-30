@@ -10,124 +10,117 @@ import '../auth/auth_provider.dart';
 
 final breadRepositoryProvider = Provider((ref) => BreadRepository());
 
+final selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
+
 final categoriesProvider = FutureProvider<List<Category>>((ref) async {
-  final repo = ref.read(breadRepositoryProvider);
-  final cache = ref.read(cacheServiceProvider);
-  final locale = ref.watch(localeProvider);
-  final lang = locale.languageCode;
-  
-  final cached = cache.getCategories(lang);
-  if (cached != null && cached.isNotEmpty) {
-    repo.getCategories().then((value) {
-      if (value.isNotEmpty) cache.saveCategories(value, lang);
-    }).catchError((_) {});
-    return cached;
-  }
-  
-  final live = await repo.getCategories();
-  if (live.isNotEmpty) {
-    try {
-      await cache.saveCategories(live, lang);
-    } catch (_) {}
-  }
-  return live;
-});
-
-final favoritesProvider = StateNotifierProvider<FavoritesNotifier, AsyncValue<List<String>>>((ref) {
-  return FavoritesNotifier(ref);
-});
-
-class FavoritesNotifier extends StateNotifier<AsyncValue<List<String>>> {
-  final Ref _ref;
-  FavoritesNotifier(this._ref) : super(const AsyncValue.loading()) {
-    _init();
-  }
-
-  void _init() async {
-    final user = _ref.watch(authProvider).asData?.value;
-    if (user == null) {
-      state = const AsyncValue.data([]);
-      return;
-    }
-    try {
-      final favorites = await _ref.read(favoriteServiceProvider).getFavoriteProductIds();
-      state = AsyncValue.data(favorites);
-    } catch (e) {
-      // If auth is null (likely due to error elsewhere), don't set global error
-      // just default to empty favorites
-      state = const AsyncValue.data([]);
-    }
-  }
-
-  Future<void> toggle(String productId) async {
-    final user = _ref.read(authProvider).asData?.value;
-    if (user == null) return;
-
-    final currentIds = state.asData?.value ?? [];
-    final isFavorite = currentIds.contains(productId);
-
-    if (isFavorite) {
-      state = AsyncValue.data(currentIds.where((id) => id != productId).toList());
-    } else {
-      state = AsyncValue.data([...currentIds, productId]);
-    }
-
-    try {
-      await _ref.read(favoriteServiceProvider).toggleFavorite(productId);
-    } catch (e) {
-      state = AsyncValue.data(currentIds);
-    }
-  }
-}
-
-final isFavoriteProvider = Provider.family<bool, String>((ref, productId) {
-  final favoritesAsync = ref.watch(favoritesProvider);
-  return favoritesAsync.asData?.value.contains(productId) ?? false;
-});
-
-final favoriteCountProvider = Provider<int>((ref) {
-  return ref.watch(favoritesProvider).asData?.value.length ?? 0;
+  // Babka Bakery Categories
+  return const [
+    Category(
+      id: 'ekmekler',
+      name: 'Ekmekler',
+      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',
+      translations: {'tr': 'Ekmekler', 'en': 'Breads'},
+    ),
+    Category(
+      id: 'kekler',
+      name: 'Kekler',
+      imageUrl: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=400',
+      translations: {'tr': 'Kekler', 'en': 'Cakes'},
+    ),
+    Category(
+      id: 'pasta',
+      name: 'Pasta',
+      imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',
+      translations: {'tr': 'Pasta', 'en': 'Pastries'},
+    ),
+    Category(
+      id: 'kurabiye',
+      name: 'Kurabiye',
+      imageUrl: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400',
+      translations: {'tr': 'Kurabiye', 'en': 'Cookies'},
+    ),
+    Category(
+      id: 'corekler',
+      name: 'Çörekler',
+      imageUrl: 'https://images.unsplash.com/photo-1586444248902-2f64eddf13cf?w=400',
+      translations: {'tr': 'Çörekler', 'en': 'Buns'},
+    ),
+    Category(
+      id: 'specialty-babka',
+      name: 'Specialty Babka',
+      imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',
+      translations: {'tr': 'Specialty Babka', 'en': 'Specialty Babka'},
+    ),
+  ];
 });
 
 final breadsProvider = StreamProvider<List<Bread>>((ref) {
   final selectedId = ref.watch(selectedCategoryIdProvider);
-  final repo = ref.read(breadRepositoryProvider);
   
-  // Watch for app resume to recover stale realtime connections
-  ref.listen(appLifecycleProvider, (previous, next) {
-    if (next.value == AppLifecycleState.resumed) {
-      debugPrint('♻️ App Resumed: Invalidating Breads Realtime Provider');
-      ref.invalidateSelf();
-    }
-  });
+  // Return mock data for the selected category
+  final mockBreads = [
+    Bread(
+      id: 'b1',
+      categoryId: 'ekmekler',
+      name: 'Ekşi Mayalı Ekmek',
+      description: 'Artisanal sourdough bread with a crunchy crust.',
+      price: 45.0,
+      imageUrl: 'https://images.unsplash.com/photo-1585478259715-876a6a81fc08?w=800',
+      tag: 'FRESH',
+      translations: {'tr': {'name': 'Ekşi Mayalı Ekmek', 'description': 'Çıtır kabuklu zanaatkar ekşi maya ekmeği.'}},
+    ),
+    Bread(
+      id: 'b2',
+      categoryId: 'specialty-babka',
+      name: 'Çikolatalı Babka',
+      description: 'Signature chocolate swirl babka.',
+      price: 120.0,
+      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
+      tag: 'BEST SELLER',
+      translations: {'tr': {'name': 'Çikolatalı Babka', 'description': 'İmza çikolata dolgulu babka.'}},
+    ),
+    Bread(
+      id: 'b3',
+      categoryId: 'kekler',
+      name: 'Limonlu Kek',
+      description: 'Zesty lemon cake with glaze.',
+      price: 85.0,
+      imageUrl: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=800',
+      translations: {'tr': {'name': 'Limonlu Kek', 'description': 'Limon aromalı ve sır kaplı kek.'}},
+    ),
+    Bread(
+      id: 'b4',
+      categoryId: 'kurabiye',
+      name: 'Damla Çikolatalı Kurabiye',
+      description: 'Soft and chewy chocolate chip cookies.',
+      price: 35.0,
+      imageUrl: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800',
+      translations: {'tr': {'name': 'Damla Çikolatalı Kurabiye', 'description': 'Yumuşak ve bol çikolatalı kurabiyeler.'}},
+    ),
+  ];
 
-  // Realtime stream triggers a high-fidelity fetch with translations
-  return repo.watchBreads(categoryId: selectedId).asyncMap((_) async {
-    return await repo.getBreads(categoryId: selectedId);
-  });
+  if (selectedId == null) return Stream.value(mockBreads);
+  return Stream.value(mockBreads.where((b) => b.categoryId == selectedId).toList());
 });
-
-final selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
 
 final filteredBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {
   return ref.watch(breadsProvider);
 });
 
 final popularBreadsProvider = StreamProvider<List<Bread>>((ref) {
-  final repo = ref.read(breadRepositoryProvider);
-  
-  // Watch for app resume to recover stale realtime connections
-  ref.listen(appLifecycleProvider, (previous, next) {
-    if (next.value == AppLifecycleState.resumed) {
-      debugPrint('♻️ App Resumed: Invalidating Popular Breads Realtime Provider');
-      ref.invalidateSelf();
-    }
-  });
-
-  // Realtime stream triggers a fetch for popular items
-  return repo.watchBreads().asyncMap((_) async {
-    return await repo.getPopularToday();
-  });
+  // Mock popular items
+  return Stream.value([
+    const Bread(
+      id: 'b2',
+      categoryId: 'specialty-babka',
+      name: 'Çikolatalı Babka',
+      description: 'Signature chocolate swirl babka.',
+      price: 120.0,
+      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
+      tag: 'BEST SELLER',
+      translations: {'tr': {'name': 'Çikolatalı Babka', 'description': 'İmza çikolata dolgulu babka.'}},
+    ),
+  ]);
 });
 
 final filteredPopularBreadsProvider = Provider<AsyncValue<List<Bread>>>((ref) {

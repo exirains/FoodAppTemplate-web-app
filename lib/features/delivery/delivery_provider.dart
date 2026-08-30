@@ -10,7 +10,7 @@ import '../../services/lifecycle_service.dart';
 import '../auth/auth_provider.dart';
 
 final deliveryDashboardProvider = StateNotifierProvider<DeliveryDashboardNotifier, DeliveryDashboardState>((ref) {
-  final repo = ref.read(sangakOrderRepositoryProvider);
+  final repo = ref.read(babkaOrderRepositoryProvider);
   final alertService = ref.read(alertServiceProvider);
   final analyticsService = ref.read(analyticsServiceProvider);
   final userId = ref.watch(authProvider).value?.id;
@@ -150,3 +150,4 @@ class DeliveryDashboardNotifier extends StateNotifier<DeliveryDashboardState> {
     super.dispose();
   }
 }
+

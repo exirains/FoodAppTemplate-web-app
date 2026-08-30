@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sangak/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import 'package:babka/l10n/app_localizations.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
 
 enum ProductTagType {
   traditional,
@@ -142,3 +142,4 @@ class _TagTheme {
   final IconData? icon;
   const _TagTheme({required this.color, this.icon});
 }
+

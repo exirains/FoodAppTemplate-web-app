@@ -8,7 +8,7 @@ import '../../services/alert_service.dart';
 import '../../services/lifecycle_service.dart';
 
 final staffOrdersProvider = StateNotifierProvider<StaffOrdersNotifier, AsyncValue<List<OrderModel>>>((ref) {
-  final repository = ref.read(sangakOrderRepositoryProvider);
+  final repository = ref.read(babkaOrderRepositoryProvider);
   final alertService = ref.read(alertServiceProvider);
   
   // Watch for app resume to recover stale realtime connections
@@ -95,3 +95,4 @@ final pendingOrdersCountProvider = Provider<int>((ref) {
   final ordersAsync = ref.watch(activeBakeryOrdersProvider);
   return ordersAsync.value?.where((o) => o.status == OrderStatus.pending).length ?? 0;
 });
+

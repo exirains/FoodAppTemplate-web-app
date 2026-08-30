@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangak/l10n/app_localizations.dart';
+import 'package:babka/l10n/app_localizations.dart';
 import '../../features/auth/profile_provider.dart';
 
 class RoleGuard extends ConsumerWidget {
@@ -37,3 +37,4 @@ class RoleGuard extends ConsumerWidget {
     );
   }
 }
+

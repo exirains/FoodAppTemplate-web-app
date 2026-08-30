@@ -1,7 +1,7 @@
 {
   "@@locale": "tr",
   "appName": "Babka",
-  "bakerySubtitle": "Artizan Pers Fırını",
+  "bakerySubtitle": "GELENEKSEL ZANAATKAR FIRINI",
   "welcomeToBabka": "Babka'a Hoş Geldiniz",
   "chooseLanguage": "Dilinizi seçin",
   "pleaseSelectLanguage": "Devam etmek için lütfen tercih ettiğiniz dili seçin.",
@@ -49,8 +49,8 @@
   "seeds": "Tohumlar",
   "extras": "Ekstralar",
   "total": "Toplam",
-  "customizeYourBabka": "Babka Ekmeğini Özelleştir",
-  "addedCustomBabka": "Özel Babka ekmeğiniz sepete eklendi!",
+  "customizeYourBabka": "Siparişi Özelleştir",
+  "addedCustomBabka": "Özel siparişiniz sepete eklendi!",
   "@addedToBasket": {
     "placeholders": {
       "title": {
@@ -129,8 +129,8 @@
   "errorLoadingCategories": "Kategoriler yüklenirken hata oluştu",
   "noCategoriesFound": "Kategori bulunamadı",
   "errorLoadingBreads": "Ekmekler yüklenirken hata oluştu",
-  "freshlyBakedBabka": "Taze Pişmiş Babka",
-  "heroSubtitle": "Taş fırından doğrudan kapınıza.",
+  "freshlyBakedArtisan": "Taze Pişmiş Ürünler",
+  "heroSubtitle": "Premium zanaatkar ekmekleri, kapınıza teslim.",
   "pleaseAgreeToTerms": "Lütfen şartları kabul edin",
   "passwordsDoNotMatch": "Şifreler eşleşmiyor",
   "reviewsCount": "{count} değerlendirme",
@@ -524,7 +524,7 @@
   "invitationCodeApplied": "Davet kodu uygulandı!",
   "invitationReward": "Davet Ödülü",
   "referralRewardNotification": "Davet ödülünüz hesabınıza eklendi!",
-  "inviteFriendMessage": "Fırından yeni çıkmış sıcacık taze Babka'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.sangak.tr/?ref={code}",
+  "inviteFriendMessage": "Fırından yeni çıkmış sıcacık taze Babka'ın yerini hiçbir şey tutamaz! 🍞🔥\n\nDavet bağlantımla kaydol:\nhttps://app.Babka.tr/?ref={code}",
   "copySuccess": "Kod panoya kopyalandı!",
   "selfReferralError": "Kendi davet kodunuzu kullanamazsınız",
   "inactiveReferralCodeError": "Bu davet kodu artık aktif değil",
@@ -596,3 +596,4 @@
     }
   }
 }
+

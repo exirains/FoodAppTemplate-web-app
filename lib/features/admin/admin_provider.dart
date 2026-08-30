@@ -8,7 +8,7 @@ import '../../core/localization/locale_provider.dart';
 export '../../services/order_repository.dart';
 
 final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
-  final repo = ref.read(sangakOrderRepositoryProvider);
+  final repo = ref.read(babkaOrderRepositoryProvider);
 
   // Watch for app resume to recover stale realtime connections
   ref.listen(appLifecycleProvider, (previous, next) {
@@ -25,7 +25,7 @@ final adminOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
 });
 
 final adminOrderDetailProvider = FutureProvider.family<OrderModel?, String>((ref, orderId) async {
-  final response = await ref.read(sangakOrderRepositoryProvider).getOrderById(orderId);
+  final response = await ref.read(babkaOrderRepositoryProvider).getOrderById(orderId);
   return response;
 });
 
@@ -201,5 +201,6 @@ class AdminStats {
 }
 
 final deliveryStaffProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
-  return await ref.read(sangakOrderRepositoryProvider).getDeliveryStaff();
+  return await ref.read(babkaOrderRepositoryProvider).getDeliveryStaff();
 });
+

@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appName": "Babka",
-  "bakerySubtitle": "Artisan Persian Bakery",
+  "bakerySubtitle": "AUTHENTIC ARTISAN BAKERY",
   "welcomeToBabka": "Welcome to Babka",
   "chooseLanguage": "Choose your language",
   "pleaseSelectLanguage": "Please select your preferred language to continue.",
@@ -49,8 +49,8 @@
   "seeds": "Seeds",
   "extras": "Extras",
   "total": "Total",
-  "customizeYourBabka": "Customize Your Babka",
-  "addedCustomBabka": "Added your custom Babka to basket!",
+  "customizeYourBabka": "Customize Your Order",
+  "addedCustomBabka": "Added your custom creation to basket!",
   "@addedToBasket": {
     "placeholders": {
       "title": {
@@ -129,8 +129,8 @@
   "errorLoadingCategories": "Error loading categories",
   "noCategoriesFound": "No categories found",
   "errorLoadingBreads": "Error loading breads",
-  "freshlyBakedBabka": "Freshly Baked Babka",
-  "heroSubtitle": "Straight from the stone oven to your door.",
+  "freshlyBakedArtisan": "Freshly Baked Products",
+  "heroSubtitle": "Premium artisan breads, delivered to your door.",
   "pleaseAgreeToTerms": "Please agree to the terms",
   "passwordsDoNotMatch": "Passwords do not match",
   "reviewsCount": "{count} reviews",
@@ -533,7 +533,7 @@
   "invitationCodeApplied": "Invitation code applied!",
   "invitationReward": "Invitation Reward",
   "referralRewardNotification": "Your referral reward has been added!",
-  "inviteFriendMessage": "Nothing beats fresh, hot Babka straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref={code}",
+  "inviteFriendMessage": "Nothing beats fresh, hot Babka straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.Babka.tr/?ref={code}",
   "copySuccess": "Code copied to clipboard!",
   "selfReferralError": "You cannot use your own referral code",
   "inactiveReferralCodeError": "This referral code is no longer active",
@@ -605,3 +605,4 @@
     }
   }
 }
+

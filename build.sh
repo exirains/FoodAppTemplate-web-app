@@ -43,13 +43,13 @@ write_env_var "SUPABASE_PUBLISHABLE_KEY" "$SUPABASE_PUBLISHABLE_KEY"
 write_env_var "GOOGLE_WEB_CLIENT_ID" "$GOOGLE_WEB_CLIENT_ID"
 write_env_var "GEOAPIFY_API_KEY" "$GEOAPIFY_API_KEY"
 
-echo "Building Sangak web..."
+echo "Building Babka web..."
 flutter build web --release -v
 
 # 4. PWA Support: Create a minimal service worker that allows "Add to Home Screen"
 # without caching assets (avoiding stale content/update risks).
 cat > build/web/flutter_service_worker.js << 'EOF'
-const CACHE_NAME = 'sangak-v1';
+const CACHE_NAME = 'Babka-v1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -85,3 +85,4 @@ EOF
 cp web/manifest.json build/web/manifest.json
 
 echo "Build finished successfully!"
+

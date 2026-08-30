@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// Sangak Design System App Logo (v1.0.0)
+/// Babka Design System App Logo (v1.0.0)
 ///
 /// Centered around the primary brand identity (favicon.svg).
 /// Supports multiple sizes for different app locations.
@@ -31,3 +31,4 @@ class AppLogo extends StatelessWidget {
     );
   }
 }
+

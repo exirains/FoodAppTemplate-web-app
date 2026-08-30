@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
 import '../../l10n/app_localizations.dart';
 
 class RejectOrderDialog extends StatefulWidget {
@@ -137,3 +137,4 @@ class _FullWidthTrackShape extends RoundedRectSliderTrackShape {
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
+

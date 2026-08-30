@@ -3,22 +3,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/design_system/sangak_tokens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/design_system/babka_tokens.dart';
 import '../../models/bread.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../features/basket/basket_provider.dart';
-import '../../features/home/home_provider.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../features/favorites/favorites_provider.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../utils/action_guard.dart';
 import 'freshness_badge.dart';
 import 'quantity_selector.dart';
-import 'sangak_dialogs.dart';
+import 'babka_dialogs.dart';
 import 'product_tag.dart';
 
-/// Sangak Design System Signature Product Card (v1.1.0)
+/// Babka Design System Signature Product Card (v1.1.0)
 class ProductCard extends ConsumerStatefulWidget {
   final String name;
   final String description;
@@ -350,3 +350,4 @@ class _ProductCardState extends ConsumerState<ProductCard> with SingleTickerProv
     );
   }
 }
+

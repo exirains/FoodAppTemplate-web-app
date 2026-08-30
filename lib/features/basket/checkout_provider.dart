@@ -80,7 +80,7 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
 
     setSubmitting(true);
     try {
-      final order = await _ref.read(sangakOrderRepositoryProvider).createOrder(
+      final order = await _ref.read(babkaOrderRepositoryProvider).createOrder(
         userId: user.id,
         items: basket,
         address: state.selectedAddress!,
@@ -105,3 +105,4 @@ final checkoutProvider = StateNotifierProvider<CheckoutNotifier, CheckoutState>(
 });
 
 final locationServiceProvider = Provider((ref) => LocationService());
+

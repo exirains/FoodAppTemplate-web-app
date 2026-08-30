@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
+import '../../core/design_system/babka_colors.dart';
 
 class UserRoleTag extends StatelessWidget {
   final String role;
@@ -44,3 +44,4 @@ class UserRoleTag extends StatelessWidget {
     );
   }
 }
+

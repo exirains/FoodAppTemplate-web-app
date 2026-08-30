@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/Babka_colors.dart';
+import '../../core/design_system/Babka_typography.dart';
 import '../../l10n/app_localizations.dart';
 
 class RoleSwitcher {
@@ -126,3 +126,4 @@ class RoleSwitcher {
     );
   }
 }
+

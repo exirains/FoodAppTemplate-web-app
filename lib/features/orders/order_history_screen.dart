@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../models/order.dart';
 import 'package:go_router/go_router.dart';
-import '../../shared/widgets/sangak_button.dart';
+import '../../shared/widgets/babka_button.dart';
 import 'orders_provider.dart';
 import 'widgets/order_rating_dialog.dart';
 import '../../services/options_repository.dart';
@@ -197,3 +197,4 @@ class _StatusBadge extends StatelessWidget {
     );
   }
 }
+

@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_typography.dart';
-import '../../../core/design_system/sangak_dimens.dart';
-import '../../../shared/utils/sangak_toast.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_typography.dart';
+import '../../../core/design_system/babka_dimens.dart';
+import '../../../shared/utils/babka_toast.dart';
 import '../../../models/referral.dart';
 import '../referral_provider.dart';
 
@@ -258,3 +258,4 @@ class _ReferralDetailsSheet extends ConsumerWidget {
     );
   }
 }
+

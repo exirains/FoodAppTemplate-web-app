@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../core/design_system/sangak_tokens.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../core/design_system/babka_tokens.dart';
 
-/// Sangak Design System Freshness Badge (v1.1.0)
+/// Babka Design System Freshness Badge (v1.1.0)
 ///
 /// Reusable status badge for freshness indicators.
 class FreshnessBadge extends StatelessWidget {
@@ -53,3 +53,4 @@ class FreshnessBadge extends StatelessWidget {
     );
   }
 }
+

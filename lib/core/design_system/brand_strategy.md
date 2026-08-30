@@ -1,4 +1,4 @@
-# Sangak Brand Strategy & Visual Identity (v1.0.0)
+# Babka Brand Strategy & Visual Identity (v1.0.0)
 
 ## Brand Values
 - **Authenticity**: Honoring traditional Persian baking methods.
@@ -29,3 +29,4 @@ Product photography is the most important visual asset.
 - Animations must feel smooth, calm, and intentional.
 - Durations: 120ms (taps), 180ms (cards), 300ms (page transitions).
 - Microinteractions: Morphing buttons (Add -> Quantity) and elegant fills.
+

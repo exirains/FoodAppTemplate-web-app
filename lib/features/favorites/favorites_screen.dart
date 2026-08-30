@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../shared/widgets/product_card.dart';
-import '../../shared/widgets/sangak_empty_states.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/widgets/babka_empty_states.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../core/localization/locale_provider.dart';
+import 'favorites_provider.dart';
 import '../home/home_provider.dart';
 import '../home/tab_provider.dart';
 import '../basket/basket_provider.dart';
@@ -34,7 +35,7 @@ class FavoritesScreen extends ConsumerWidget {
       body: favoritesAsync.when(
         data: (favoriteIds) {
           if (favoriteIds.isEmpty) {
-            return SangakEmptyState(
+            return BabkaEmptyState(
               title: l10n.saveYourFavorites,
               message: l10n.saveYourFavoritesDescription,
               icon: Icons.favorite_border_rounded,
@@ -92,3 +93,4 @@ class FavoritesScreen extends ConsumerWidget {
     );
   }
 }
+

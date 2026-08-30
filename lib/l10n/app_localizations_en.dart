@@ -9,13 +9,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Sangak';
+  String get appName => 'Babka';
 
   @override
-  String get bakerySubtitle => 'Artisan Persian Bakery';
+  String get bakerySubtitle => 'AUTHENTIC ARTISAN BAKERY';
 
   @override
-  String get welcomeToSangak => 'Welcome to Sangak';
+  String get welcomeToBabka => 'Welcome to Babka';
 
   @override
   String get chooseLanguage => 'Choose your language';
@@ -103,7 +103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goodEvening => 'Good Evening,';
 
   @override
-  String get welcomeToSangakGuest => 'Welcome to Sangak,';
+  String get welcomeToBabkaGuest => 'Welcome to Babka,';
 
   @override
   String get guest => 'Guest';
@@ -145,7 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumberRequired => 'Phone number is required for delivery.';
 
   @override
-  String get buildYourSangak => 'Build Your Sangak';
+  String get buildYourBabka => 'Build Your Babka';
 
   @override
   String get base => 'Base';
@@ -160,10 +160,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get total => 'Total';
 
   @override
-  String get customizeYourSangak => 'Customize Your Sangak';
+  String get customizeYourBabka => 'Customize Your Order';
 
   @override
-  String get addedCustomSangak => 'Added your custom Sangak to basket!';
+  String get addedCustomBabka => 'Added your custom creation to basket!';
 
   @override
   String get saveYourFavorites => 'Save your favorites';
@@ -180,7 +180,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Create an account to save your items, track orders, and complete your checkout effortlessly.';
 
   @override
-  String get joinTheFamily => 'Join the Sangak family';
+  String get joinTheFamily => 'Join the Babka family';
 
   @override
   String get profileGuestMessage =>
@@ -206,7 +206,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateAvailableMessage =>
-      'A new version of Sangak is available. Update now to enjoy the latest features and improvements.';
+      'A new version of Babka is available. Update now to enjoy the latest features and improvements.';
 
   @override
   String get whatsNew => 'What\'s New:';
@@ -381,10 +381,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLoadingBreads => 'Error loading breads';
 
   @override
-  String get freshlyBakedSangak => 'Freshly Baked Sangak';
+  String get freshlyBakedArtisan => 'Freshly Baked Products';
 
   @override
-  String get heroSubtitle => 'Straight from the stone oven to your door.';
+  String get heroSubtitle => 'Premium artisan breads, delivered to your door.';
 
   @override
   String get pleaseAgreeToTerms => 'Please agree to the terms';
@@ -547,7 +547,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signOutConfirmation =>
-      'Are you sure you want to sign out of your Sangak account?';
+      'Are you sure you want to sign out of your Babka account?';
 
   @override
   String get profilePictureUpdated => 'Profile picture updated successfully!';
@@ -572,8 +572,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pay with card upon delivery (Coming Soon)';
 
   @override
-  String get thankYouSangak =>
-      'Thank you for choosing Sangak! Your fresh bread is being prepared.';
+  String get thankYouBabka =>
+      'Thank you for choosing Babka! Your fresh bread is being prepared.';
 
   @override
   String get no => 'No';
@@ -1280,11 +1280,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customization => 'Customization';
 
   @override
-  String get customSangak => 'Custom Sangak';
+  String get customBabka => 'Custom Babka';
 
   @override
-  String get customSangakDescription =>
-      'Enable or disable the Make Your Own Sangak feature for customers.';
+  String get customBabkaDescription =>
+      'Enable or disable the Make Your Own Babka feature for customers.';
 
   @override
   String get minOrderLimitLabel => 'Minimum Order Limit (TL)';
@@ -1380,7 +1380,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rateExperience => 'Rate your experience';
 
   @override
-  String get rateOrderMessage => 'How was your order from Sangak?';
+  String get rateOrderMessage => 'How was your order from Babka?';
 
   @override
   String get overallSatisfaction => 'Overall Satisfaction';
@@ -1546,7 +1546,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String inviteFriendMessage(Object code) {
-    return 'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref=$code';
+    return 'Nothing beats fresh, hot Babka straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.Babka.tr/?ref=$code';
   }
 
   @override
@@ -1567,7 +1567,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referralSystemDesc =>
-      'Invite a friend to Sangak and earn Loyalty Points.';
+      'Invite a friend to Babka and earn Loyalty Points.';
 
   @override
   String get referralStatusPending => 'Pending';
@@ -1602,7 +1602,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openInMaps => 'Open in Maps';
 
   @override
-  String get newSangakOrder => 'New Sangak Order';
+  String get newBabkaOrder => 'New Babka Order';
 
   @override
   String orderIsReadyForPickup(Object number) {

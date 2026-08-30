@@ -4,15 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../core/localization/sangak_number_formatter.dart';
-import '../../shared/utils/sangak_toast.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
-import '../../shared/widgets/sangak_dialogs.dart';
+import '../../core/localization/babka_number_formatter.dart';
+import '../../shared/utils/babka_toast.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
+import '../../shared/widgets/babka_dialogs.dart';
 import '../../shared/widgets/product_tag.dart';
 import '../../models/bread.dart';
 import '../home/home_provider.dart';
@@ -627,3 +627,4 @@ class _EditProductDialogState extends ConsumerState<_EditProductDialog> {
     );
   }
 }
+

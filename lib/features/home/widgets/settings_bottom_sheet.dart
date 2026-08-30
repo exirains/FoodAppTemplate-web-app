@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_typography.dart';
-import '../../../core/design_system/sangak_dimens.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_typography.dart';
+import '../../../core/design_system/babka_dimens.dart';
 import '../../../core/constants/version_config.dart';
 import '../../../core/localization/locale_provider.dart';
-import '../../../core/localization/sangak_number_formatter.dart';
+import '../../../core/localization/babka_number_formatter.dart';
 import '../../../shared/widgets/language_card.dart';
 
 class SettingsBottomSheet extends ConsumerWidget {
@@ -98,9 +98,9 @@ class SettingsBottomSheet extends ConsumerWidget {
                   ),
                   const SizedBox(width: 24),
                   GestureDetector(
-                    onTap: () => launchUrl(Uri.parse('https://www.sangak.tr'), mode: LaunchMode.externalApplication),
+                    onTap: () => launchUrl(Uri.parse('https://www.Babka.tr'), mode: LaunchMode.externalApplication),
                     child: Text(
-                      'www.sangak.tr',
+                      'www.Babka.tr',
                       style: BabkaTypography.caption(context).copyWith(
                         color: BabkaColors.primary,
                         fontWeight: FontWeight.bold,
@@ -118,3 +118,4 @@ class SettingsBottomSheet extends ConsumerWidget {
     );
   }
 }
+

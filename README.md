@@ -1,6 +1,6 @@
-# Sangak 🥖
+# Babka 🥖
 
-Sangak is a premium Flutter app for browsing and ordering authentic Persian artisan bread and baked goods.
+Babka is a premium Flutter app for browsing and ordering authentic Persian artisan bread and baked goods.
 
 ### Features
 
@@ -26,3 +26,4 @@ flutter run
 ### Status
 
 🚧 This project is currently under active development.
+

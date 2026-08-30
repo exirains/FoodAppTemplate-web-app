@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../l10n/app_localizations.dart';
 import 'auth_validators.dart';
 
@@ -182,3 +182,4 @@ class _RequirementItem extends StatelessWidget {
     );
   }
 }
+

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 import '../../models/order.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../core/localization/locale_provider.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import '../../services/order_repository.dart';
 import '../../services/analytics_service.dart';
 import '../auth/auth_provider.dart';
@@ -460,7 +460,7 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
       final pin = controller.text;
       setState(() => _isUpdating = true);
       try {
-        await ref.read(sangakOrderRepositoryProvider).confirmDelivery(
+        await ref.read(babkaOrderRepositoryProvider).confirmDelivery(
           orderId: order.id,
           pin: pin,
         );
@@ -524,3 +524,4 @@ class _DeliveryOrderDetailScreenState extends ConsumerState<DeliveryOrderDetailS
     );
   }
 }
+

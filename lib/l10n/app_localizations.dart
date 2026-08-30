@@ -103,20 +103,20 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Sangak'**
+  /// **'Babka'**
   String get appName;
 
   /// No description provided for @bakerySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Artisan Persian Bakery'**
+  /// **'AUTHENTIC ARTISAN BAKERY'**
   String get bakerySubtitle;
 
-  /// No description provided for @welcomeToSangak.
+  /// No description provided for @welcomeToBabka.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Sangak'**
-  String get welcomeToSangak;
+  /// **'Welcome to Babka'**
+  String get welcomeToBabka;
 
   /// No description provided for @chooseLanguage.
   ///
@@ -286,11 +286,11 @@ abstract class AppLocalizations {
   /// **'Good Evening,'**
   String get goodEvening;
 
-  /// No description provided for @welcomeToSangakGuest.
+  /// No description provided for @welcomeToBabkaGuest.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Sangak,'**
-  String get welcomeToSangakGuest;
+  /// **'Welcome to Babka,'**
+  String get welcomeToBabkaGuest;
 
   /// No description provided for @guest.
   ///
@@ -364,11 +364,11 @@ abstract class AppLocalizations {
   /// **'Phone number is required for delivery.'**
   String get phoneNumberRequired;
 
-  /// No description provided for @buildYourSangak.
+  /// No description provided for @buildYourBabka.
   ///
   /// In en, this message translates to:
-  /// **'Build Your Sangak'**
-  String get buildYourSangak;
+  /// **'Build Your Babka'**
+  String get buildYourBabka;
 
   /// No description provided for @base.
   ///
@@ -394,17 +394,17 @@ abstract class AppLocalizations {
   /// **'Total'**
   String get total;
 
-  /// No description provided for @customizeYourSangak.
+  /// No description provided for @customizeYourBabka.
   ///
   /// In en, this message translates to:
-  /// **'Customize Your Sangak'**
-  String get customizeYourSangak;
+  /// **'Customize Your Order'**
+  String get customizeYourBabka;
 
-  /// No description provided for @addedCustomSangak.
+  /// No description provided for @addedCustomBabka.
   ///
   /// In en, this message translates to:
-  /// **'Added your custom Sangak to basket!'**
-  String get addedCustomSangak;
+  /// **'Added your custom creation to basket!'**
+  String get addedCustomBabka;
 
   /// No description provided for @saveYourFavorites.
   ///
@@ -433,7 +433,7 @@ abstract class AppLocalizations {
   /// No description provided for @joinTheFamily.
   ///
   /// In en, this message translates to:
-  /// **'Join the Sangak family'**
+  /// **'Join the Babka family'**
   String get joinTheFamily;
 
   /// No description provided for @profileGuestMessage.
@@ -481,7 +481,7 @@ abstract class AppLocalizations {
   /// No description provided for @updateAvailableMessage.
   ///
   /// In en, this message translates to:
-  /// **'A new version of Sangak is available. Update now to enjoy the latest features and improvements.'**
+  /// **'A new version of Babka is available. Update now to enjoy the latest features and improvements.'**
   String get updateAvailableMessage;
 
   /// No description provided for @whatsNew.
@@ -826,16 +826,16 @@ abstract class AppLocalizations {
   /// **'Error loading breads'**
   String get errorLoadingBreads;
 
-  /// No description provided for @freshlyBakedSangak.
+  /// No description provided for @freshlyBakedArtisan.
   ///
   /// In en, this message translates to:
-  /// **'Freshly Baked Sangak'**
-  String get freshlyBakedSangak;
+  /// **'Freshly Baked Products'**
+  String get freshlyBakedArtisan;
 
   /// No description provided for @heroSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Straight from the stone oven to your door.'**
+  /// **'Premium artisan breads, delivered to your door.'**
   String get heroSubtitle;
 
   /// No description provided for @pleaseAgreeToTerms.
@@ -1129,7 +1129,7 @@ abstract class AppLocalizations {
   /// No description provided for @signOutConfirmation.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to sign out of your Sangak account?'**
+  /// **'Are you sure you want to sign out of your Babka account?'**
   String get signOutConfirmation;
 
   /// No description provided for @profilePictureUpdated.
@@ -1174,11 +1174,11 @@ abstract class AppLocalizations {
   /// **'Pay with card upon delivery (Coming Soon)'**
   String get payWithCardOnDelivery;
 
-  /// No description provided for @thankYouSangak.
+  /// No description provided for @thankYouBabka.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for choosing Sangak! Your fresh bread is being prepared.'**
-  String get thankYouSangak;
+  /// **'Thank you for choosing Babka! Your fresh bread is being prepared.'**
+  String get thankYouBabka;
 
   /// No description provided for @no.
   ///
@@ -2536,17 +2536,17 @@ abstract class AppLocalizations {
   /// **'Customization'**
   String get customization;
 
-  /// No description provided for @customSangak.
+  /// No description provided for @customBabka.
   ///
   /// In en, this message translates to:
-  /// **'Custom Sangak'**
-  String get customSangak;
+  /// **'Custom Babka'**
+  String get customBabka;
 
-  /// No description provided for @customSangakDescription.
+  /// No description provided for @customBabkaDescription.
   ///
   /// In en, this message translates to:
-  /// **'Enable or disable the Make Your Own Sangak feature for customers.'**
-  String get customSangakDescription;
+  /// **'Enable or disable the Make Your Own Babka feature for customers.'**
+  String get customBabkaDescription;
 
   /// No description provided for @minOrderLimitLabel.
   ///
@@ -2707,7 +2707,7 @@ abstract class AppLocalizations {
   /// No description provided for @rateOrderMessage.
   ///
   /// In en, this message translates to:
-  /// **'How was your order from Sangak?'**
+  /// **'How was your order from Babka?'**
   String get rateOrderMessage;
 
   /// No description provided for @overallSatisfaction.
@@ -3019,7 +3019,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteFriendMessage.
   ///
   /// In en, this message translates to:
-  /// **'Nothing beats fresh, hot Sangak straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.sangak.tr/?ref={code}'**
+  /// **'Nothing beats fresh, hot Babka straight from the oven! 🍞🔥\n\nSign up with my invite link:\nhttps://app.Babka.tr/?ref={code}'**
   String inviteFriendMessage(Object code);
 
   /// No description provided for @copySuccess.
@@ -3055,7 +3055,7 @@ abstract class AppLocalizations {
   /// No description provided for @referralSystemDesc.
   ///
   /// In en, this message translates to:
-  /// **'Invite a friend to Sangak and earn Loyalty Points.'**
+  /// **'Invite a friend to Babka and earn Loyalty Points.'**
   String get referralSystemDesc;
 
   /// No description provided for @referralStatusPending.
@@ -3106,11 +3106,11 @@ abstract class AppLocalizations {
   /// **'Open in Maps'**
   String get openInMaps;
 
-  /// No description provided for @newSangakOrder.
+  /// No description provided for @newBabkaOrder.
   ///
   /// In en, this message translates to:
-  /// **'New Sangak Order'**
-  String get newSangakOrder;
+  /// **'New Babka Order'**
+  String get newBabkaOrder;
 
   /// No description provided for @orderIsReadyForPickup.
   ///

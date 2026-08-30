@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../../shared/utils/auth_gate.dart';
 import '../../shared/utils/action_guard.dart';
 import '../../core/localization/locale_provider.dart';
 import '../../models/basket_item.dart';
 import '../../models/address.dart';
-import '../../core/localization/sangak_number_formatter.dart';
+import '../../core/localization/babka_number_formatter.dart';
 import 'basket_provider.dart';
 import 'checkout_provider.dart';
 import '../../services/options_repository.dart';
@@ -251,3 +251,4 @@ class CheckoutScreen extends ConsumerWidget {
     );
   }
 }
+

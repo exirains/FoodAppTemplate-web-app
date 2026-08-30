@@ -1,6 +1,6 @@
-# Sangak Product Management CLI Tool (v1.0.0)
+# Babka Product Management CLI Tool (v1.0.0)
 
-Internal tool for managing the Sangak bakery catalog in Supabase.
+Internal tool for managing the Babka bakery catalog in Supabase.
 
 ## Setup
 
@@ -44,3 +44,4 @@ python -m pip install -r requirements.txt
 
 ### Authentication Error
 Ensure your `.env` has the correct `SUPABASE_SERVICE_KEY` (formatted as `sb_secret_...`). This tool requires admin privileges to manage products and storage.
+

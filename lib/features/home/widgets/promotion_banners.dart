@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../services/promotions_repository.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_dimens.dart';
-import '../../../core/design_system/sangak_typography.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_dimens.dart';
+import '../../../core/design_system/babka_typography.dart';
 
 class PromotionBanners extends ConsumerWidget {
   const PromotionBanners({super.key});
@@ -80,3 +80,4 @@ class PromotionBanners extends ConsumerWidget {
     );
   }
 }
+

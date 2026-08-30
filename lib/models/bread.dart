@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import '../core/design_system/sangak_tokens.dart';
+import '../core/design_system/babka_tokens.dart';
 
 part 'bread.g.dart';
 
@@ -196,3 +196,4 @@ class Bread {
     );
   }
 }
+

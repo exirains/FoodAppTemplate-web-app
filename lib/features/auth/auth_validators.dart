@@ -1,4 +1,4 @@
-// Authentication validation utilities for Sangak.
+// Authentication validation utilities for Babka.
 // Provides production-level validation for email, password, name, and phone fields.
 
 class AuthValidators {
@@ -200,3 +200,4 @@ extension PasswordStrengthExtension on double {
     return PasswordStrengthLevel.strong;
   }
 }
+

@@ -19,7 +19,7 @@ final myOrdersProvider = StreamProvider<List<OrderModel>>((ref) {
     }
   });
 
-  return ref.read(sangakOrderRepositoryProvider).watchMyOrders(user.id);
+  return ref.read(babkaOrderRepositoryProvider).watchMyOrders(user.id);
 });
 
 final isOrderRatedProvider = FutureProvider.family<bool, String>((ref, orderId) async {
@@ -36,7 +36,7 @@ final orderStatusProvider = StreamProvider.family<OrderModel?, String>((ref, ord
     }
   });
 
-  return ref.read(sangakOrderRepositoryProvider).watchOrderStatus(orderId).map((list) {
+  return ref.read(babkaOrderRepositoryProvider).watchOrderStatus(orderId).map((list) {
     if (list.isEmpty) return null;
     return OrderModel.fromJson(list.first);
   });
@@ -57,3 +57,4 @@ final orderHistoryProvider = StreamProvider.family<List<Map<String, dynamic>>, S
       .eq('order_id', orderId)
       .order('created_at', ascending: true);
 });
+

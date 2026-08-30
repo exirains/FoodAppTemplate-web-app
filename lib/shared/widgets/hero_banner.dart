@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
 
-/// Sangak Design System Hero Banner (v1.0.0)
+/// Babka Design System Hero Banner (v1.0.0)
 class HeroBanner extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -80,3 +80,4 @@ class HeroBanner extends StatelessWidget {
     );
   }
 }
+

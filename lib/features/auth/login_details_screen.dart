@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:babka/l10n/app_localizations.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
-import '../../core/design_system/sangak_dimens.dart';
-import '../../shared/widgets/sangak_button.dart';
-import '../../shared/widgets/sangak_text_field.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
+import '../../core/design_system/babka_dimens.dart';
+import '../../shared/widgets/babka_button.dart';
+import '../../shared/widgets/babka_text_field.dart';
 import '../../shared/widgets/app_logo.dart';
-import '../../shared/utils/sangak_toast.dart';
+import '../../shared/utils/babka_toast.dart';
 import '../home/tab_provider.dart';
 import 'auth_provider.dart';
 import 'auth_validators.dart';
@@ -208,3 +208,4 @@ class _LoginDetailsScreenState extends ConsumerState<LoginDetailsScreen> {
     );
   }
 }
+

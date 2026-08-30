@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'firebase_options.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/router/app_router.dart';
-import 'core/theme/sangak_theme.dart';
+import 'core/theme/babka_theme.dart';
 import 'services/supabase_service.dart';
 import 'services/storage_service.dart';
 import 'services/favorite_service.dart';
@@ -44,13 +44,13 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     
-    debugPrint('SANGAK: Initializing app...');
+    debugPrint('Babka: Initializing app...');
 
     // Initialize Firebase first
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    debugPrint('SANGAK: Firebase ready.');
+    debugPrint('Babka: Firebase ready.');
     
     // 1. Initialize Hive (Essential for local state)
     await Hive.initFlutter();
@@ -76,7 +76,7 @@ void main() async {
       final refCode = Uri.base.queryParameters['ref']?.trim();
       if (refCode != null && refCode.isNotEmpty) {
         await storage.setReferralCode(refCode);
-        debugPrint('SANGAK: Web referral code captured from Uri.base: $refCode');
+        debugPrint('Babka: Web referral code captured from Uri.base: $refCode');
       }
     } else {
       // For Mobile, use AppLinks for deep links
@@ -89,31 +89,31 @@ void main() async {
           final refCode = initialUri.queryParameters['ref']?.trim();
           if (refCode != null && refCode.isNotEmpty) {
             await storage.setReferralCode(refCode);
-            debugPrint('SANGAK: Initial referral code captured: $refCode');
+            debugPrint('Babka: Initial referral code captured: $refCode');
           }
         }
       } catch (e) {
-        debugPrint('SANGAK: Deep link error: $e');
+        debugPrint('Babka: Deep link error: $e');
       }
     }
 
     // 3. Initialize Critical Services (Must await Supabase to avoid FCM null-check errors)
     await SupabaseService.initialize();
-    debugPrint('SANGAK: Supabase ready.');
+    debugPrint('Babka: Supabase ready.');
 
     // 4. Initialize background services
-    NotificationService.initialize().catchError((e) => debugPrint('SANGAK ERROR: Firebase init failed: $e'));
+    NotificationService.initialize().catchError((e) => debugPrint('Babka ERROR: Firebase init failed: $e'));
     
     runApp(
       ProviderScope(
         overrides: [
           storageServiceProvider.overrideWithValue(StorageService(prefs)),
         ],
-        child: const SangakApp(),
+        child: const BabkaApp(),
       ),
     );
   } catch (e, stack) {
-    debugPrint('SANGAK CRITICAL ERROR: $e');
+    debugPrint('Babka CRITICAL ERROR: $e');
     debugPrint('STACK TRACE: $stack');
     runApp(MaterialApp(
       home: Scaffold(
@@ -123,14 +123,14 @@ void main() async {
   }
 }
 
-class SangakApp extends ConsumerStatefulWidget {
-  const SangakApp({super.key});
+class BabkaApp extends ConsumerStatefulWidget {
+  const BabkaApp({super.key});
 
   @override
-  ConsumerState<SangakApp> createState() => _SangakAppState();
+  ConsumerState<BabkaApp> createState() => _BabkaAppState();
 }
 
-class _SangakAppState extends ConsumerState<SangakApp> {
+class _BabkaAppState extends ConsumerState<BabkaApp> {
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
 
@@ -145,7 +145,7 @@ class _SangakAppState extends ConsumerState<SangakApp> {
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       final refCode = uri.queryParameters['ref']?.trim();
       if (refCode != null && refCode.isNotEmpty) {
-        debugPrint('SANGAK: Incoming stream referral code: $refCode');
+        debugPrint('Babka: Incoming stream referral code: $refCode');
         // Update both the provider and persistent storage
         ref.read(pendingReferralProvider.notifier).state = refCode;
         ref.read(storageServiceProvider).setReferralCode(refCode);
@@ -168,7 +168,7 @@ class _SangakAppState extends ConsumerState<SangakApp> {
     NotificationService.setNavigatorKey(router.configuration.navigatorKey);
 
     return MaterialApp.router(
-      title: 'Sangak',
+      title: 'Babka',
       debugShowCheckedModeBanner: false,
       theme: BabkaTheme.light(locale),
       routerConfig: router,
@@ -191,3 +191,4 @@ class _SangakAppState extends ConsumerState<SangakApp> {
     );
   }
 }
+

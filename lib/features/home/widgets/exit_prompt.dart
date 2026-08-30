@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/design_system/sangak_colors.dart';
-import '../../../core/design_system/sangak_typography.dart';
-import '../../../core/design_system/sangak_dimens.dart';
+import '../../../core/design_system/babka_colors.dart';
+import '../../../core/design_system/babka_typography.dart';
+import '../../../core/design_system/babka_dimens.dart';
 
 class ExitPrompt extends StatefulWidget {
   final bool visible;
@@ -110,3 +110,4 @@ class _ExitPromptState extends State<ExitPrompt> with SingleTickerProviderStateM
     );
   }
 }
+

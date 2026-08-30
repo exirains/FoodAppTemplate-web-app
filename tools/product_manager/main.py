@@ -194,7 +194,7 @@ def delete_product(product_id):
         print("Delete aborted.")
 
 def main():
-    parser = argparse.ArgumentParser(description="Sangak Product Management CLI")
+    parser = argparse.ArgumentParser(description="Babka Product Management CLI")
     subparsers = parser.add_subparsers(dest="command")
 
     subparsers.add_parser("list", help="List all products")
@@ -243,3 +243,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

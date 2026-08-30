@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/sangak_colors.dart';
-import '../../core/design_system/sangak_typography.dart';
+import '../../core/design_system/babka_colors.dart';
+import '../../core/design_system/babka_typography.dart';
 import '../../l10n/app_localizations.dart';
-import '../utils/sangak_toast.dart';
+import '../utils/babka_toast.dart';
 
 class CancelOrderDialog extends StatefulWidget {
   final Function(String reason) onConfirm;
@@ -241,3 +241,4 @@ class _FullWidthTrackShape extends RoundedRectSliderTrackShape {
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
+
