@@ -72,6 +72,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'crested-photon-435918-h1.firebasestorage.app',
     androidClientId: '82369512623-6b0gqiqmvse41g6l2sm6ufkfsvtg6t8h.apps.googleusercontent.com',
     iosClientId: '82369512623-rn4e664numvs4fhmnpi15b8rhvlrnvvv.apps.googleusercontent.com',
-    iosBundleId: 'com.foodapp.template',
+    iosBundleId: 'com.babka.app',
   );
 }

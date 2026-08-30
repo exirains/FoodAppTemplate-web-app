@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    namespace = "com.foodapp.template"
+    namespace = "com.babka.app"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.foodapp.template"
+        applicationId = "com.babka.app"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode
